@@ -1,11 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import logo from "./logo.svg";
+import { Button } from "@material-ui/core";
+import "./App.css";
+import { connect } from "react-redux";
+import { setUser, setSongs, fetchUser } from "./redux/actions";
+import * as selectors from "./redux/selectors";
 
-function App() {
+function App(props) {
+  const { setSongs, setUser, songs, user, fetchUser } = props;
   return (
     <div className="App">
       <header className="App-header">
+        <a href="https://glacial-castle-81952.herokuapp.com/authorize">
+          <Button variant="contained">Authorize</Button>
+        </a>
+        <Button onClick={() => setUser()} variant="contained">
+          Set User
+        </Button>
+        <Button onClick={() => setSongs()} variant="contained">
+          Set Songs
+        </Button>
+        <Button onClick={() => fetchUser()} variant="contained">
+          Fetch User
+        </Button>
         <img src={logo} className="App-logo" alt="logo" />
         <p>
           Edit <code>src/App.js</code> and save to reload.
@@ -23,4 +40,10 @@ function App() {
   );
 }
 
-export default App;
+const mapState = state => ({
+  user: selectors.getUser(state),
+  songs: selectors.getSongs(state)
+});
+
+export default connect(mapState, { setUser, setSongs, fetchUser })(App);
+// export default App;
