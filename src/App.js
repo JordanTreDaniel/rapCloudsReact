@@ -11,7 +11,13 @@ function App(props) {
   return (
     <div className="App">
       <header className="App-header">
-        <a href="https://glacial-castle-81952.herokuapp.com/authorize">
+        <a
+          href={
+            process.env.NODE_ENV === "development"
+              ? `http://localhost:3333/authorize`
+              : `https://rap-clouds-server.herokuapp.com/authorize`
+          }
+        >
           <Button variant="contained">Authorize</Button>
         </a>
         <Button onClick={() => setUser()} variant="contained">
