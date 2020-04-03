@@ -39,7 +39,7 @@ function App(props) {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Learn React little bish
+          Learn React to Beat Corona
         </a>
       </header>
     </div>
