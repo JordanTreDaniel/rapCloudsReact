@@ -3,7 +3,7 @@ import FontAwesome from "react-fontawesome";
 import io from "socket.io-client";
 import { connect } from "react-redux";
 import { Button } from '@material-ui/core';
-// import "./Signup.css"; //Don't think we need this
+// import "./SignIn.css"; //Don't think we need this
 
 import { setUser, setSongs, fetchUser } from "../redux/actions";
 import * as selectors from "../redux/selectors";
@@ -14,7 +14,7 @@ const API_URL =
     : "https://rap-clouds-server.herokuapp.com";
 const socket = io(API_URL);
 
-class Signup extends Component {
+class SignIn extends Component {
   constructor() {
     super();
     this.state = {
@@ -118,4 +118,4 @@ const mapState = state => ({
   songs: selectors.getSongs(state)
 });
 
-export default connect(mapState, { setUser, setSongs, fetchUser })(Signup);
+export default connect(mapState, { setUser, setSongs, fetchUser })(SignIn);

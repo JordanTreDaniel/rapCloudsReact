@@ -2,13 +2,13 @@ import React from "react";
 import { Route } from "react-router-dom";
 import { Typography } from "@material-ui/core";
 import "./App.css";
-import Signup from "./components/Signup";
+import SignIn from "./components/SignIn";
 function App(props) {
   return (
     <div className="App">
       <Typography variant="title">Rap Clouds</Typography>
-      <Route path="/signup">
-        <Signup />
+      <Route path="/signin">
+        <SignIn />
       </Route>
 
     </div>
