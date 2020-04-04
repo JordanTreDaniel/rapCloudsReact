@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import FontAwesome from "react-fontawesome";
 import io from "socket.io-client";
 import { connect } from "react-redux";
+import { Button } from '@material-ui/core';
 // import "./Signup.css"; //Don't think we need this
 
 import { setUser, setSongs, fetchUser } from "../redux/actions";
@@ -9,7 +10,7 @@ import * as selectors from "../redux/selectors";
 
 const API_URL =
   process.env.NODE_ENV === "development"
-    ? "http://127.0.0.1:3333"
+    ? "http://localhost:3333"
     : "https://rap-clouds-server.herokuapp.com";
 const socket = io(API_URL);
 
@@ -18,16 +19,19 @@ class Signup extends Component {
     super();
     this.state = {
       user: {},
-      disabled: ""
+      popUpOpen: false
     };
     this.popup = null;
   }
 
   componentDidMount = () => {
-    socket.on("user", user => {
-      this.popup.close();
-      this.setState({ user });
-    });
+
+    // Retrieve the object from storage
+    const user = localStorage.getItem('rapCloudsUser');
+    if (user) {
+      this.setState({ user: JSON.parse(user) })
+    }
+
   };
 
   // Routinely checks the popup to re-enable the login button
@@ -37,7 +41,7 @@ class Signup extends Component {
       const { popup } = this;
       if (!popup || popup.closed || popup.closed === undefined) {
         clearInterval(check);
-        this.setState({ disabled: "" });
+        this.setState({ popUpOpen: false });
       }
     }, 1000);
   };
@@ -51,7 +55,7 @@ class Signup extends Component {
     const left = window.innerWidth / 2 - width / 2;
     const top = window.innerHeight / 2 - height / 2;
 
-    const url = `${API_URL}/authorize?socketId=${socket.id}`;
+    const url = `${API_URL}/authorize/genius?socketId=${socket.id}`;
 
     return window.open(
       url,
@@ -66,10 +70,17 @@ class Signup extends Component {
   // to the popup. It also disables the login button so the user can not
   // attempt to login to the provider twice.
   startAuth = () => {
-    if (!this.state.disabled) {
+
+    if (!this.state.popUpOpen) {
+      socket.on("genius", data => {
+        const { user } = data.response;
+        this.popup.close();
+        this.setState({ user });
+        localStorage.setItem('rapCloudsUser', JSON.stringify(user));
+      });
+      this.setState({ popUpOpen: true });
       this.popup = this.openPopup();
       this.checkPopup();
-      this.setState({ disabled: "disabled" });
     }
   };
 
@@ -79,29 +90,24 @@ class Signup extends Component {
 
   render = () => {
     const { setSongs, setUser, songs, user, fetchUser } = this.props;
-    const { name, photo } = this.state.user;
-    const { disabled } = this.state;
-
+    const { name, avatar = { medium: {} } } = this.state.user;
+    const { popUpOpen } = this.state;
+    const { url: photoUrl } = avatar.medium;
     return (
       <div className={"container"}>
         {/* Show the user if it exists. Otherwise show the login button */}
         {name ? (
           <div className={"card"}>
-            <img src={photo} alt={name} />
-            <FontAwesome
-              name={"times-circle"}
-              className={"close"}
-              onClick={this.closeCard}
-            />
+            <img src={photoUrl} alt={name} />
             <h4>{`@${name}`}</h4>
           </div>
         ) : (
-          <div className={"button"}>
-            <button onClick={this.startAuth} className={`twitter ${disabled}`}>
-              <FontAwesome name={"twitter"} />
-            </button>
-          </div>
-        )}
+            <div className={"button"}>
+              <Button onClick={this.startAuth} className={`twitter ${popUpOpen && "disabled"}`}>
+                Authorize
+              </Button>
+            </div>
+          )}
       </div>
     );
   };
