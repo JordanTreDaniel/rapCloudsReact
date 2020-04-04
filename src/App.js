@@ -11,6 +11,15 @@ function App(props) {
       <Route path="/signup">
         <Signup />
       </Route>
+      <a
+        href={
+          process.env.NODE_ENV === "development"
+            ? `http://localhost:3333/authorize`
+            : `https://rap-clouds-server.herokuapp.com/authorize`
+        }
+      >
+        <Button variant="contained">Authorize</Button>
+      </a>
     </div>
   );
 }
