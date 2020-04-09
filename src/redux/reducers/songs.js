@@ -1,7 +1,7 @@
 import { SET_SONGS } from "../actionTypes";
 
 const initialState = {
-  songs: [{ name: "Marvin's Room" }]
+  songs: []
 };
 
 const setSongs = (state, action) => {
