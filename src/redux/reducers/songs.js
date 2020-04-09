@@ -6,8 +6,7 @@ const initialState = {
 
 const setSongs = (state, action) => {
   const { songs } = action;
-  console.log("set Songs!", songs);
-  return Object.assign(state, { songs });
+  return Object.assign({}, state, { songs });
 };
 
 const handlers = {
