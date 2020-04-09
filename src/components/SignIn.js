@@ -4,7 +4,6 @@ import io from "socket.io-client";
 import { connect } from "react-redux";
 import { Button } from '@material-ui/core';
 // import "./SignIn.css"; //Don't think we need this
-
 import { setUser, setSongs, fetchUser } from "../redux/actions";
 import * as selectors from "../redux/selectors";
 
@@ -18,21 +17,10 @@ class SignIn extends Component {
   constructor() {
     super();
     this.state = {
-      user: {},
       popUpOpen: false
     };
     this.popup = null;
   }
-
-  componentDidMount = () => {
-
-    // Retrieve the object from storage
-    const user = localStorage.getItem('rapCloudsUser');
-    if (user) {
-      this.setState({ user: JSON.parse(user) })
-    }
-
-  };
 
   // Routinely checks the popup to re-enable the login button
   // if the user closes the popup without authenticating.
@@ -70,13 +58,12 @@ class SignIn extends Component {
   // to the popup. It also disables the login button so the user can not
   // attempt to login to the provider twice.
   startAuth = () => {
-
     if (!this.state.popUpOpen) {
-      socket.on("genius", data => {
-        const { user } = data.response;
+      socket.on("genius", user => {
         this.popup.close();
-        this.setState({ user });
+        this.props.setUser(user)
         localStorage.setItem('rapCloudsUser', JSON.stringify(user));
+        this.props.history.push('/search')
       });
       this.setState({ popUpOpen: true });
       this.popup = this.openPopup();
@@ -84,38 +71,18 @@ class SignIn extends Component {
     }
   };
 
-  closeCard = () => {
-    this.setState({ user: {} });
-  };
-
   render = () => {
-    const { setSongs, setUser, songs, user, fetchUser } = this.props;
-    const { name, avatar = { medium: {} } } = this.state.user;
     const { popUpOpen } = this.state;
-    const { url: photoUrl } = avatar.medium;
     return (
-      <div className={"container"}>
-        {/* Show the user if it exists. Otherwise show the login button */}
-        {name ? (
-          <div className={"card"}>
-            <img src={photoUrl} alt={name} />
-            <h4>{`@${name}`}</h4>
-          </div>
-        ) : (
-            <div className={"button"}>
-              <Button onClick={this.startAuth} className={`twitter ${popUpOpen && "disabled"}`}>
-                Authorize
+      <div className={"button"}>
+        <Button onClick={this.startAuth} className={`twitter ${popUpOpen && "disabled"}`}>
+          Sign In
               </Button>
-            </div>
-          )}
       </div>
-    );
-  };
+    )
+  }
 }
 
-const mapState = state => ({
-  user: selectors.getUser(state),
-  songs: selectors.getSongs(state)
-});
 
-export default connect(mapState, { setUser, setSongs, fetchUser })(SignIn);
+
+export default connect(null, { setUser, setSongs, fetchUser })(SignIn);
