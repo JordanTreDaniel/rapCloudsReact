@@ -32,6 +32,7 @@ export function* searchSongs(action) {
     if (error) {
         console.log("Something went wrong", error)
     } else {
+        localStorage.setItem("songs", JSON.stringify(songs))
         yield put({ type: SET_SONGS, songs });
     }
 }
