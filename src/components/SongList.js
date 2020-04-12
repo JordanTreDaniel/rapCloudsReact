@@ -32,7 +32,7 @@ class SongList extends Component {
 		const { songs } = this.props;
 		if (!songs.length) {
 			const recoveredSongs = localStorage.getItem('songs');
-			if (songs) {
+			if (recoveredSongs) {
 				console.log('found songs', songs);
 				this.props.setSongs(JSON.parse(recoveredSongs));
 			}
