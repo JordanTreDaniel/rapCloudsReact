@@ -6,6 +6,8 @@ import SignIn from './components/SignIn';
 import Search from './components/Search';
 import RapCloud from './components/RapCloud';
 import { setUser } from './redux/actions';
+import { Redirect } from "react-router-dom";
+import * as selectors from "./redux/selectors";
 import { connect } from 'react-redux';
 class App extends React.Component {
 	componentDidMount = () => {
@@ -16,6 +18,10 @@ class App extends React.Component {
 		}
 	};
 	render = () => {
+		const user = this.props.user;
+        if (!user && this.props.location.pathname !== "/signin") {
+            return <Redirect to="/signin"/>
+        } 
 		return (
 			<div className="App">
 				<Typography variant="h1">Rap Clouds</Typography>
@@ -27,4 +33,8 @@ class App extends React.Component {
 	};
 }
 
-export default connect(null, { setUser })(App);
+const mapState = state => ({
+    user: selectors.getUser(state)
+});
+
+export default connect(mapState, { setUser })(App);
