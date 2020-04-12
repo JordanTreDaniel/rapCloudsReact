@@ -1,4 +1,4 @@
-import watchFetchUser from "./fetchUser";
-import watchSearchSongs from "./songs";
 
-export default [watchFetchUser, watchSearchSongs];
+import watchingSongSagas from "./songs";
+
+export default [...watchingSongSagas];

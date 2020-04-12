@@ -4,7 +4,7 @@ import io from "socket.io-client";
 import { connect } from "react-redux";
 import { Button } from '@material-ui/core';
 // import "./SignIn.css"; //Don't think we need this
-import { setUser, setSongs, fetchUser } from "../redux/actions";
+import { setUser, setSongs } from "../redux/actions";
 import * as selectors from "../redux/selectors";
 
 const API_URL =
@@ -85,4 +85,4 @@ class SignIn extends Component {
 
 
 
-export default connect(null, { setUser, setSongs, fetchUser })(SignIn);
+export default connect(null, { setUser, setSongs })(SignIn);
