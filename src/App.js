@@ -19,7 +19,8 @@ class App extends React.Component {
 	};
 	render = () => {
 		const user = this.props.user;
-        if (!user && this.props.location.pathname !== "/signin") {
+		const recoveredUser = localStorage.getItem('rapCloudsUser');
+        if ((!user && !recoveredUser) && this.props.location.pathname !== "/signin") {
             return <Redirect to="/signin"/>
         } 
 		return (

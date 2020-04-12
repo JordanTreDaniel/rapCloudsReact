@@ -7,7 +7,7 @@ const initialState = {
 const setUser = (state, action) => {
   const { user } = action;
   console.log("set User!", user);
-  return Object.assign(state, { user });
+  return Object.assign({}, state, { user });
 };
 
 const handlers = {
