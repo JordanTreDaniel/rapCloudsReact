@@ -18,7 +18,7 @@ class App extends React.Component {
 	render = () => {
 		return (
 			<div className="App">
-				<Typography variant="title">Rap Clouds</Typography>
+				<Typography variant="h1">Rap Clouds</Typography>
 				<Route path="/signin" render={(routerProps) => <SignIn history={routerProps.history} />} />
 				<Route path="/search" render={(routerProps) => <Search history={routerProps.history} />} />
 				<Route path="/clouds/:songId" render={(routerProps) => <RapCloud history={routerProps.history} />} />
