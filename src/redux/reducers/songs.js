@@ -1,12 +1,17 @@
 import { ADD_SONGS } from '../actionTypes';
 
 const initialState = {
-	songs: []
+	byId: {}
 };
 
 const addSongs = (state, action) => {
 	const { songs } = action;
-	return Object.assign({}, state, { songs });
+	const songsById = songs.reduce((acc, song) => {
+		acc[song.id] = song;
+		return acc;
+	}, {});
+
+	return { ...state, byId: { ...state.byId, ...songsById } };
 };
 
 const handlers = {

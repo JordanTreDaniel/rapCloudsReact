@@ -40,10 +40,10 @@ class SongList extends Component {
 	};
 
 	//TO-DO: Make SongCard component before MVP branch closes.
-	renderCard = (song) => {
+	renderCard = (song, idx) => {
 		const { classes } = this.props;
 		return (
-			<Card className={classes.root}>
+			<Card className={classes.root} key={idx}>
 				<CardActionArea>
 					<CardMedia
 						className={classes.media}
@@ -70,12 +70,14 @@ class SongList extends Component {
 	render = () => {
 		const { classes } = this.props;
 		console.log(this.props);
-		return <div className={classes.songList}>{this.props.songs.map((song) => this.renderCard(song))}</div>;
+		return (
+			<div className={classes.songList}>{this.props.songs.map((song, idx) => this.renderCard(song, idx))}</div>
+		);
 	};
 }
 
 const mapState = (state) => ({
-	songs: selectors.getSongs(state)
+	songs: selectors.getSongsList(state)
 });
 
 SongList.defaultProps = {

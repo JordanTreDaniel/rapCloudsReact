@@ -1,12 +1,11 @@
 import { createSelector } from 'reselect';
 
-export const getUser = state => state.userInfo.user;
-export const getSongs = state => {
-    const { songs } = state.songs;
-    return songs
-}
-export const getAccessToken = createSelector(
-    getUser,
-    user => user.accessToken
-)
-
+export const getUser = (state) => state.userInfo.user;
+export const getSongsById = (state) => {
+	const { byId } = state.songs;
+	return byId;
+};
+export const getSongsList = createSelector(getSongsById, (songsById) => {
+	return Object.values(songsById);
+});
+export const getAccessToken = createSelector(getUser, (user) => user.accessToken);
