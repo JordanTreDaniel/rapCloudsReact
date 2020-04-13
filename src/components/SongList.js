@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { addSongs } from '../redux/actions';
 import * as selectors from '../redux/selectors';
@@ -60,16 +61,17 @@ class SongList extends Component {
 					<Button size="small" color="primary" href={`https://genius.com${song.path}`}>
 						Genius
 					</Button>
-					<Button size="small" color="primary" href={`/clouds/${song.id}`}>
-						RapCloud
-					</Button>
+					<Link to={`/clouds/${song.id}`}>
+						<Button size="small" color="primary">
+							RapCloud
+						</Button>
+					</Link>
 				</CardActions>
 			</Card>
 		);
 	};
 	render = () => {
 		const { classes } = this.props;
-		console.log(this.props);
 		return (
 			<div className={classes.songList}>{this.props.songs.map((song, idx) => this.renderCard(song, idx))}</div>
 		);
