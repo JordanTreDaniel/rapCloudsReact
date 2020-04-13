@@ -5,13 +5,14 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
 import * as selectors from '../redux/selectors';
-const useStyles = (theme) => {
-	return makeStyles({
-		header: {
-			fontWeight: 2
-		}
-	});
-};
+const useStyles = makeStyles({
+	header: {
+		fontWeight: 2
+	},
+	lyrics: {
+		whiteSpace: 'pre-line'
+	}
+});
 
 const RapCloud = (props) => {
 	const classes = useStyles();
@@ -22,15 +23,17 @@ const RapCloud = (props) => {
 		fetchSongDetails(songId);
 	}, []);
 
-	return (
+	return song ? (
 		<React.Fragment>
 			<Typography variant="h1" className={classes.header}>
-				RapCloud
+				{song.full_title}
 			</Typography>
 			<br />
-			<Typography variant="p">{song ? song.lyrics : null}</Typography>
+			<Typography variant="p" classes={{ root: classes.lyrics }}>
+				{song.lyrics}
+			</Typography>
 		</React.Fragment>
-	);
+	) : null;
 };
 
 const mapState = (state) => {
