@@ -1,5 +1,5 @@
 import { put, takeEvery, call, select } from 'redux-saga/effects';
-import { SEARCH_SONGS, ADD_SONGS, FETCH_SONG_DETAILS } from '../actionTypes';
+import { SEARCH_SONGS, ADD_SONGS, FETCH_SONG_DETAILS, ADD_SONG_DETAILS } from '../actionTypes';
 import { getAccessToken } from '../selectors';
 import axios from 'axios';
 
@@ -41,19 +41,15 @@ export function* searchSongs(action) {
 const apiFetchSongDetails = async (songId, accessToken) => {
 	const res = await axios({
 		method: 'get',
-		url: `${REACT_APP_SERVER_ROOT}/getSongDetails`,
-		params: {
-			songId
-		},
+		url: `${REACT_APP_SERVER_ROOT}/getSongDetails/${songId}`,
 		headers: {
 			Authorization: accessToken
 		}
 	});
-	console.log('song details backend call', { res });
 	const { status, statusText, data } = res;
-	const { songs } = data;
+	const { song } = data;
 	if (status === 200) {
-		return { songs };
+		return { song };
 	}
 
 	return { error: { status, statusText } };
@@ -68,7 +64,7 @@ export function* fetchSongDetails(action) {
 		console.log('Something went wrong', error);
 	} else {
 		localStorage.setItem('song', JSON.stringify(song));
-		yield put({ type: ADD_SONGS, song });
+		yield put({ type: ADD_SONG_DETAILS, song });
 	}
 }
 

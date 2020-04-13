@@ -1,7 +1,8 @@
-import { ADD_SONGS } from '../actionTypes';
+import { ADD_SONGS, ADD_SONG_DETAILS, FETCH_SONG_DETAILS } from '../actionTypes';
 
 const initialState = {
-	byId: {}
+	byId: {},
+	currentSongId: null
 };
 
 const addSongs = (state, action) => {
@@ -14,8 +15,26 @@ const addSongs = (state, action) => {
 	return { ...state, byId: { ...state.byId, ...songsById } };
 };
 
+const setCurrentSongId = (state, action) => {
+	const { songId = null } = action;
+	return { ...state, currentSongId: songId };
+};
+
+const addSongDetails = (state, action) => {
+	const { song } = action;
+	if (!song) return state;
+	const { id: songId } = song;
+	const songsById = state.byId;
+	const oldSong = songsById[songId];
+	const mergedSong = { ...oldSong, ...song };
+	songsById[songId] = mergedSong;
+	return { ...state, byId: { ...songsById } };
+};
+
 const handlers = {
-	[ADD_SONGS]: addSongs
+	[ADD_SONGS]: addSongs,
+	[ADD_SONG_DETAILS]: addSongDetails,
+	[FETCH_SONG_DETAILS]: setCurrentSongId
 };
 
 export default (state = initialState, action) => {

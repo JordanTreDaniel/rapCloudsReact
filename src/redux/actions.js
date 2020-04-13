@@ -1,4 +1,4 @@
-import { SET_USER, ADD_SONGS, SEARCH_SONGS, FETCH_SONG_DETAILS } from './actionTypes';
+import { SET_USER, ADD_SONGS, SEARCH_SONGS, FETCH_SONG_DETAILS, ADD_SONG_DETAILS } from './actionTypes';
 
 export const setUser = (user = { name: 'Tupac' }) => {
 	return { type: SET_USER, user };
@@ -14,4 +14,8 @@ export const searchSongs = (searchTerm = 'wonder') => {
 
 export const fetchSongDetails = (songId) => {
 	return { type: FETCH_SONG_DETAILS, songId };
+};
+
+export const addSongDetails = (song) => {
+	return { type: ADD_SONG_DETAILS, song };
 };
