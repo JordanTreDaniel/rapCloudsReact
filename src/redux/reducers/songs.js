@@ -1,4 +1,4 @@
-import { SET_SONGS } from '../actionTypes';
+import { ADD_SONGS } from '../actionTypes';
 
 const initialState = {
 	songs: []
@@ -10,7 +10,7 @@ const addSongs = (state, action) => {
 };
 
 const handlers = {
-	[SET_SONGS]: addSongs
+	[ADD_SONGS]: addSongs
 };
 
 export default (state = initialState, action) => {

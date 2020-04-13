@@ -1,5 +1,5 @@
 import { put, takeEvery, call, select } from 'redux-saga/effects';
-import { SEARCH_SONGS, SET_SONGS, FETCH_SONG_DETAILS } from '../actionTypes';
+import { SEARCH_SONGS, ADD_SONGS, FETCH_SONG_DETAILS } from '../actionTypes';
 import { getAccessToken } from '../selectors';
 import axios from 'axios';
 
@@ -34,7 +34,7 @@ export function* searchSongs(action) {
 		console.log('Something went wrong', error);
 	} else {
 		localStorage.setItem('songs', JSON.stringify(songs));
-		yield put({ type: SET_SONGS, songs });
+		yield put({ type: ADD_SONGS, songs });
 	}
 }
 
@@ -68,7 +68,7 @@ export function* fetchSongDetails(action) {
 		console.log('Something went wrong', error);
 	} else {
 		localStorage.setItem('song', JSON.stringify(song));
-		yield put({ type: SET_SONGS, song });
+		yield put({ type: ADD_SONGS, song });
 	}
 }
 
