@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { setSongs } from '../redux/actions';
+import { addSongs } from '../redux/actions';
 import * as selectors from '../redux/selectors';
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -34,7 +34,7 @@ class SongList extends Component {
 			const recoveredSongs = localStorage.getItem('songs');
 			if (recoveredSongs) {
 				console.log('found songs', songs);
-				this.props.setSongs(JSON.parse(recoveredSongs));
+				this.props.addSongs(JSON.parse(recoveredSongs));
 			}
 		}
 	};
@@ -82,4 +82,4 @@ SongList.defaultProps = {
 	songs: []
 };
 const StyledSongList = withStyles(styles)(SongList);
-export default connect(mapState, { setSongs })(StyledSongList);
+export default connect(mapState, { addSongs })(StyledSongList);

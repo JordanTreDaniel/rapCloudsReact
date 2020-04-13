@@ -1,20 +1,20 @@
-import { SET_SONGS } from "../actionTypes";
+import { SET_SONGS } from '../actionTypes';
 
 const initialState = {
-  songs: []
+	songs: []
 };
 
-const setSongs = (state, action) => {
-  const { songs } = action;
-  return Object.assign({}, state, { songs });
+const addSongs = (state, action) => {
+	const { songs } = action;
+	return Object.assign({}, state, { songs });
 };
 
 const handlers = {
-  [SET_SONGS]: setSongs
+	[SET_SONGS]: addSongs
 };
 
 export default (state = initialState, action) => {
-  const handle = handlers[action.type];
-  if (handle) return handle(state, action);
-  return state;
+	const handle = handlers[action.type];
+	if (handle) return handle(state, action);
+	return state;
 };
