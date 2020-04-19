@@ -1,4 +1,4 @@
+import watchingSongSagas from './songs';
+import watchingUserSagas from './user';
 
-import watchingSongSagas from "./songs";
-
-export default [...watchingSongSagas];
+export default [ ...watchingSongSagas, ...watchingUserSagas ];
