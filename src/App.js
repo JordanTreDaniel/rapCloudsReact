@@ -6,15 +6,16 @@ import SignIn from './components/SignIn';
 import Search from './components/Search';
 import RapCloud from './components/RapCloud';
 import { setUser } from './redux/actions';
-import { Redirect } from "react-router-dom";
-import * as selectors from "./redux/selectors";
+import { Redirect } from 'react-router-dom';
+import * as selectors from './redux/selectors';
 import { connect } from 'react-redux';
 class App extends React.Component {
 	render = () => {
-		const user = this.props.user;
-        if ((!user) && this.props.location.pathname !== "/signin") {
-            return <Redirect to="/signin"/>
-        } 
+		const { user, appIsHydrated } = this.props;
+		if (!user && appIsHydrated && this.props.location.pathname !== '/signin') {
+			console.log('APP rendered w/ no user after hydration, redirecting.');
+			return <Redirect to="/signin" />;
+		}
 		return (
 			<div className="App">
 				<Typography variant="h1">Rap Clouds</Typography>
@@ -26,8 +27,9 @@ class App extends React.Component {
 	};
 }
 
-const mapState = state => ({
-    user: selectors.getUser(state)
+const mapState = (state) => ({
+	user: selectors.getUser(state),
+	appIsHydrated: selectors.isAppRehydrated(state)
 });
 
 export default connect(mapState, { setUser })(App);

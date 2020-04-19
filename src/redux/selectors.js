@@ -18,3 +18,5 @@ export const getCurrentSong = createSelector(getSongsById, getCurrentSongId, (so
 });
 
 export const getAccessToken = createSelector(getUser, (user) => user.accessToken);
+
+export const isAppRehydrated = (state) => state.userInfo.hydrated;
