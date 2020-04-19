@@ -4,7 +4,7 @@ import { getAccessToken } from '../selectors';
 import axios from 'axios';
 
 const REACT_APP_SERVER_ROOT =
-	process.env.NODE_ENV === 'development' ? 'http://localhost:3333' : 'https://rap-clouds-server.herokuapp.com/';
+	process.env.NODE_ENV === 'development' ? 'http://localhost:3333' : 'https://rap-clouds-server.herokuapp.com';
 
 const apiSearchSongs = async (searchTerm, accessToken) => {
 	const res = await axios({
