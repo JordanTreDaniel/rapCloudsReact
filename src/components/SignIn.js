@@ -60,7 +60,6 @@ class SignIn extends Component {
 			socket.on('genius', (user) => {
 				this.popup.close();
 				this.props.setUser(user);
-				localStorage.setItem('rapCloudsUser', JSON.stringify(user));
 				this.props.history.push('/search');
 			});
 			this.setState({ popUpOpen: true });

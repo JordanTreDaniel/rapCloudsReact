@@ -33,7 +33,6 @@ export function* searchSongs(action) {
 	if (error) {
 		console.log('Something went wrong', error);
 	} else {
-		localStorage.setItem('songs', JSON.stringify(songs));
 		yield put({ type: ADD_SONGS, songs });
 	}
 }
@@ -63,7 +62,6 @@ export function* fetchSongDetails(action) {
 	if (error) {
 		console.log('Something went wrong', error);
 	} else {
-		localStorage.setItem('song', JSON.stringify(song));
 		yield put({ type: ADD_SONG_DETAILS, song });
 	}
 }

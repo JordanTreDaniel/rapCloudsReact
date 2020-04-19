@@ -10,17 +10,9 @@ import { Redirect } from "react-router-dom";
 import * as selectors from "./redux/selectors";
 import { connect } from 'react-redux';
 class App extends React.Component {
-	componentDidMount = () => {
-		const user = localStorage.getItem('rapCloudsUser');
-		if (user) {
-			this.props.setUser(JSON.parse(user));
-			// this.props.history.push('/search')
-		}
-	};
 	render = () => {
 		const user = this.props.user;
-		const recoveredUser = localStorage.getItem('rapCloudsUser');
-        if ((!user && !recoveredUser) && this.props.location.pathname !== "/signin") {
+        if ((!user) && this.props.location.pathname !== "/signin") {
             return <Redirect to="/signin"/>
         } 
 		return (

@@ -29,17 +29,6 @@ const styles = {
 };
 
 class SongList extends Component {
-	componentDidMount = () => {
-		const { songs } = this.props;
-		if (!songs.length) {
-			const recoveredSongs = localStorage.getItem('songs');
-			if (recoveredSongs) {
-				console.log('found songs', songs);
-				this.props.addSongs(JSON.parse(recoveredSongs));
-			}
-		}
-	};
-
 	//TO-DO: Make SongCard component before MVP branch closes.
 	renderCard = (song, idx) => {
 		const { classes } = this.props;
