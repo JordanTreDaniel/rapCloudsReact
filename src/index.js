@@ -16,7 +16,6 @@ ReactDOM.render(
       <Switch>
         <Provider store={store}>
           <Route path="/" render={(routerProps) => <App {...routerProps}/>}>
-            
           </Route>
         </Provider>
       </Switch>
