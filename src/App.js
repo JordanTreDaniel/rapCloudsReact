@@ -1,14 +1,21 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
-import { Typography } from '@material-ui/core';
 import './App.css';
 import SignIn from './components/SignIn';
-import Search from './components/Search';
 import RapCloud from './components/RapCloud';
+import Search from './components/Search';
+import Navbar from './components/Navbar';
 import { setUser } from './redux/actions';
 import { Redirect } from 'react-router-dom';
 import * as selectors from './redux/selectors';
 import { connect } from 'react-redux';
+import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
+
+
+const theme = createMuiTheme({
+	background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+  })
+
 class App extends React.Component {
 	render = () => {
 		const { user, appIsHydrated } = this.props;
@@ -17,15 +24,18 @@ class App extends React.Component {
 			return <Redirect to="/signin" />;
 		}
 		return (
-			<div className="App">
-				<Typography variant="h1">Rap Clouds</Typography>
-				<Route path="/signin" render={(routerProps) => <SignIn history={routerProps.history} />} />
-				<Route path="/search" render={(routerProps) => <Search history={routerProps.history} />} />
-				<Route path="/clouds/:songId" render={(routerProps) => <RapCloud history={routerProps.history} />} />
-			</div>
+			<ThemeProvider theme={theme}>
+				<div className="App">
+					<Navbar />
+					<Route path="/signin" render={(routerProps) => <SignIn history={routerProps.history} />} />
+					<Route path="/search" render={(routerProps) => <Search history={routerProps.history} />} />
+					<Route path="/clouds/:songId" render={(routerProps) => <RapCloud history={routerProps.history} />} />
+				</div>
+			</ThemeProvider>			
 		);
 	};
 }
+
 
 const mapState = (state) => ({
 	user: selectors.getUser(state),
