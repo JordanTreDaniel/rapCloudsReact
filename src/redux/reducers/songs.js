@@ -1,8 +1,9 @@
-import { ADD_SONGS, ADD_SONG_DETAILS, FETCH_SONG_DETAILS } from '../actionTypes';
+import { ADD_SONGS, ADD_SONG_DETAILS, FETCH_SONG_DETAILS, SET_SONG_SEARCH_TERM } from '../actionTypes';
 
 const initialState = {
 	byId: {},
-	currentSongId: null
+	currentSongId: null,
+	searchTerm: ''
 };
 
 const addSongs = (state, action) => {
@@ -19,6 +20,10 @@ const setCurrentSongId = (state, action) => {
 	const { songId = null } = action;
 	return { ...state, currentSongId: songId };
 };
+const setSearchTerm = (state, action) => {
+	const { searchTerm } = action;
+	return { ...state, searchTerm: String(searchTerm) };
+};
 
 const addSongDetails = (state, action) => {
 	const { song } = action;
@@ -34,7 +39,8 @@ const addSongDetails = (state, action) => {
 const handlers = {
 	[ADD_SONGS]: addSongs,
 	[ADD_SONG_DETAILS]: addSongDetails,
-	[FETCH_SONG_DETAILS]: setCurrentSongId
+	[FETCH_SONG_DETAILS]: setCurrentSongId,
+	[SET_SONG_SEARCH_TERM]: setSearchTerm
 };
 
 export default (state = initialState, action) => {

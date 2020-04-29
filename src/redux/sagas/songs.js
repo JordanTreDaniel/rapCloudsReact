@@ -1,6 +1,6 @@
-import { put, takeEvery, call, select } from 'redux-saga/effects';
+import { put, takeEvery, call, select, cancel } from 'redux-saga/effects';
 import { SEARCH_SONGS, ADD_SONGS, FETCH_SONG_DETAILS, ADD_SONG_DETAILS } from '../actionTypes';
-import { getAccessToken } from '../selectors';
+import { getAccessToken, getSearchTerm } from '../selectors';
 import axios from 'axios';
 
 const REACT_APP_SERVER_ROOT =
@@ -27,8 +27,12 @@ const apiSearchSongs = async (searchTerm, accessToken) => {
 };
 
 export function* searchSongs(action) {
-	const { searchTerm } = action;
+	const searchTerm = yield select(getSearchTerm);
 	const accessToken = yield select(getAccessToken);
+	if (!accessToken || !searchTerm.length) {
+		//TO-DO: If there is no accessToken, log the user out.
+		yield cancel();
+	}
 	const { songs, error } = yield call(apiSearchSongs, searchTerm, accessToken);
 	if (error) {
 		console.log('Something went wrong', error);
@@ -55,7 +59,6 @@ const apiFetchSongDetails = async (songId, accessToken) => {
 };
 
 export function* fetchSongDetails(action) {
-	console.log('fetching song details!!', action);
 	const { songId } = action;
 	const accessToken = yield select(getAccessToken);
 	const { song, error } = yield call(apiFetchSongDetails, songId, accessToken);
@@ -66,12 +69,11 @@ export function* fetchSongDetails(action) {
 	}
 }
 
-function* watchSearchSongs(action) {
+function* watchSearchSongs() {
 	yield takeEvery(SEARCH_SONGS, searchSongs);
 }
 
-function* watchFetchSongDetails(action) {
-	console.log(`watching for ${FETCH_SONG_DETAILS}`);
+function* watchFetchSongDetails() {
 	yield takeEvery(FETCH_SONG_DETAILS, fetchSongDetails);
 }
 

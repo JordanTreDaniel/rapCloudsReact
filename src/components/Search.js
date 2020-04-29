@@ -1,23 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Button, Input } from '@material-ui/core';
-import { searchSongs } from '../redux/actions';
+import { searchSongs, setSongSearchTerm } from '../redux/actions';
 import * as selectors from '../redux/selectors';
 import SongList from './SongList';
 class Search extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			searchTerm: ''
-		};
-	}
-
 	search = () => {
-		const { searchTerm } = this.state;
+		const { searchTerm } = this.props;
 		this.props.searchSongs(searchTerm);
 	};
 
 	render = () => {
+		const { setSongSearchTerm, searchTerm } = this.props;
 		return (
 			<div className={'masterBox'}>
 				<div className={'searchBar'}>
@@ -25,9 +19,9 @@ class Search extends Component {
 						type="text"
 						onChange={(e) => {
 							const { value: searchTerm } = e.target;
-							this.setState({ searchTerm });
+							setSongSearchTerm(searchTerm);
 						}}
-						value={this.state.searchTerm}
+						value={searchTerm}
 						disableUnderline
 						fullWidth
 						placeholder="Search Songs..."
@@ -44,11 +38,14 @@ class Search extends Component {
 }
 
 const mapState = (state) => ({
-	songs: selectors.getSongsList(state)
+	songs: selectors.getSongsList(state),
+	searchTerm: selectors.getSearchTerm(state)
 });
 
 Search.defaultProps = {
 	searchSongs: () => console.log('No function set for searchSongs'),
-	songs: []
+	setSongSearchTerm: () => console.log('No function set for setSongSearchTerm'),
+	songs: [],
+	searchTerm: 'No search term provided.'
 };
-export default connect(mapState, { searchSongs })(Search);
+export default connect(mapState, { searchSongs, setSongSearchTerm })(Search);

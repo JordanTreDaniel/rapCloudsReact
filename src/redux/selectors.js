@@ -23,6 +23,15 @@ export const getCurrentSongId = (state) => state.songs.currentSongId;
 export const getSongsList = createSelector(getSongsById, (songsById) => {
 	return Object.values(songsById);
 });
+export const getSearchTerm = (state) => state.songs.searchTerm;
+export const getSearchedSongsList = createSelector(getSongsList, getSearchTerm, (songsList, searchTerm) => {
+	return searchTerm.length
+		? songsList.filter((song) => {
+				const normalizedTitle = song.full_title.toLowerCase();
+				return normalizedTitle.includes(searchTerm.toLowerCase());
+			})
+		: songsList;
+});
 
 export const getCurrentSong = createSelector(getSongsById, getCurrentSongId, (songsById, songId) => {
 	const song = songsById[songId] || {};

@@ -68,7 +68,7 @@ class SongList extends Component {
 }
 
 const mapState = (state) => ({
-	songs: selectors.getSongsList(state)
+	songs: selectors.getSearchedSongsList(state)
 });
 
 SongList.defaultProps = {
