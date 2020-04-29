@@ -7,50 +7,47 @@ import { connect } from 'react-redux';
 import { Avatar } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => {
-    return {
-        buttonBox: {
-            display: "flex",       
-        },
-        toolBar: {
-            display: "flex",
-            justifyContent: "space-between",
-            backgroundColor: theme.palette.primary.light
-        },
-        homeLink: {
-            textDecoration: "none",
-            color: "black"
-        }
-    }
+	return {
+		buttonBox: {
+			display: 'flex'
+		},
+		toolBar: {
+			display: 'flex',
+			justifyContent: 'space-between',
+			backgroundColor: theme.palette.primary.light
+		},
+		homeLink: {
+			textDecoration: 'none',
+			color: 'black'
+		}
+	};
 });
 
 const Navbar = (props) => {
-    const classes = useStyles();
-    const { user } = props;
-        return (
-        <AppBar color="inherit" position="static">
-            <Toolbar className={classes.toolBar}>
-                <Link className={classes.homeLink} to="/search">
-                    <Typography variant="h6" >
-                        Rap Clouds
-                    </Typography>
-                </Link>
-                <Box className={classes.buttonBox}>
-                    <Button href="/search">
-                        Search
-                    </Button>
-                    {user 
-                    ? <Avatar alt="User Profile Pic" src={props.user.photo_url} className={classes.small} /> 
-                    : <Button href="/signin">Sign In</Button>}
-                </Box>
-                </Toolbar>
-        </AppBar>
-    )
-}
+	const classes = useStyles();
+	const { userImgURL } = props;
+	return (
+		<AppBar color="inherit" position="static">
+			<Toolbar className={classes.toolBar}>
+				<Link className={classes.homeLink} to="/search">
+					<Typography variant="h6">Rap Clouds</Typography>
+				</Link>
+				<Box className={classes.buttonBox}>
+					<Button href="/search">Search</Button>
+					{userImgURL ? (
+						<Avatar alt="User Profile Pic" src={userImgURL} />
+					) : (
+						<Button href="/signin">Sign In</Button>
+					)}
+				</Box>
+			</Toolbar>
+		</AppBar>
+	);
+};
 
 const mapState = (state) => ({
-	user: selectors.getUser(state),
+	userImgURL: selectors.getUserImg(state, 'small'),
 	appIsHydrated: selectors.isAppRehydrated(state)
 });
 
 export default connect(mapState, null)(Navbar);
-

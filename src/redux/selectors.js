@@ -1,11 +1,24 @@
 import { createSelector } from 'reselect';
 
+//User
+/********************************************************************* */
 export const getUser = (state) => state.userInfo.user;
+export const getAccessToken = createSelector(getUser, (user) => user.accessToken);
+export const getUserImg = createSelector(
+	getUser,
+	(_, size) => size,
+	(user, size) => {
+		const { avatar = {} } = user || {};
+		return avatar[size] && avatar[size]['url'];
+	}
+);
+
+//Songs
+/********************************************************************* */
 export const getSongsById = (state) => {
 	const { byId } = state.songs;
 	return byId;
 };
-
 export const getCurrentSongId = (state) => state.songs.currentSongId;
 export const getSongsList = createSelector(getSongsById, (songsById) => {
 	return Object.values(songsById);
@@ -65,6 +78,6 @@ export const getCurrentSong = createSelector(getSongsById, getCurrentSongId, (so
 	return song;
 });
 
-export const getAccessToken = createSelector(getUser, (user) => user.accessToken);
-
-export const isAppRehydrated = (state) => state.userInfo.hydrated;
+//General
+/********************************************************************* */
+export const isAppRehydrated = (state) => state.userInfo.hydrated; //TO-DO: Move hydration detection to 'general' reducer
