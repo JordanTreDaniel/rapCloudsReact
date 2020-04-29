@@ -2,7 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Typography, AppBar, Button, Toolbar, Box } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-
+import * as selectors from '../redux/selectors';
+import { connect } from 'react-redux';
+import { Avatar } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -23,7 +25,8 @@ const useStyles = makeStyles((theme) => {
 
 const Navbar = (props) => {
     const classes = useStyles();
-    return (
+    const { user } = props;
+        return (
         <AppBar color="inherit" position="static">
             <Toolbar className={classes.toolBar}>
                 <Link className={classes.homeLink} to="/search">
@@ -35,15 +38,19 @@ const Navbar = (props) => {
                     <Button href="/search">
                         Search
                     </Button>
-                    <Button href="/signin">
-                        Sign In
-                    </Button>
+                    {user 
+                    ? <Avatar alt="User Profile Pic" src={props.user.photo_url} className={classes.small} /> 
+                    : <Button href="/signin">Sign In</Button>}
                 </Box>
                 </Toolbar>
         </AppBar>
     )
-	
 }
 
+const mapState = (state) => ({
+	user: selectors.getUser(state),
+	appIsHydrated: selectors.isAppRehydrated(state)
+});
 
-export default Navbar;
+export default connect(mapState, null)(Navbar);
+
