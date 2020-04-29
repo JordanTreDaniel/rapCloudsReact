@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import './App.css';
 import SignIn from './components/SignIn';
 import RapCloud from './components/RapCloud';
@@ -9,12 +9,11 @@ import { setUser } from './redux/actions';
 import { Redirect } from 'react-router-dom';
 import * as selectors from './redux/selectors';
 import { connect } from 'react-redux';
-import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
-
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 
 const theme = createMuiTheme({
-	background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-  })
+	background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)'
+});
 
 class App extends React.Component {
 	render = () => {
@@ -27,15 +26,20 @@ class App extends React.Component {
 			<ThemeProvider theme={theme}>
 				<div className="App">
 					<Navbar />
-					<Route path="/signin" render={(routerProps) => <SignIn history={routerProps.history} />} />
-					<Route path="/search" render={(routerProps) => <Search history={routerProps.history} />} />
-					<Route path="/clouds/:songId" render={(routerProps) => <RapCloud history={routerProps.history} />} />
+					<Switch>
+						<Route path="/signin" render={(routerProps) => <SignIn history={routerProps.history} />} />
+						<Route path="/search" render={(routerProps) => <Search history={routerProps.history} />} />
+						<Route
+							path="/clouds/:songId"
+							render={(routerProps) => <RapCloud history={routerProps.history} />}
+						/>
+						<Route render={() => <Redirect to="/search" />} />
+					</Switch>
 				</div>
-			</ThemeProvider>			
+			</ThemeProvider>
 		);
 	};
 }
-
 
 const mapState = (state) => ({
 	user: selectors.getUser(state),
