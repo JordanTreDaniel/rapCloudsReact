@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => {
 			justifyContent: 'space-between',
 			backgroundColor: theme.palette.primary.light
 		},
-		homeLink: {
+		navBarLink: {
 			textDecoration: 'none',
 			color: 'black'
 		}
@@ -29,11 +29,14 @@ const Navbar = (props) => {
 	return (
 		<AppBar color="inherit" position="static">
 			<Toolbar className={classes.toolBar}>
-				<Link className={classes.homeLink} to="/search">
+				<Link className={classes.navBarLink} to="/search">
 					<Typography variant="h6">Rap Clouds</Typography>
 				</Link>
 				<Box className={classes.buttonBox}>
-					<Button href="/search">Search</Button>
+					<Link to={'/search'} className={classes.navBarLink}>
+						<Button>Search</Button>
+					</Link>
+
 					{userImgURL ? (
 						<Avatar alt="User Profile Pic" src={userImgURL} />
 					) : (
