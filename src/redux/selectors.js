@@ -3,7 +3,7 @@ import { createSelector } from 'reselect';
 //User
 /********************************************************************* */
 export const getUser = (state) => state.userInfo.user;
-export const getAccessToken = createSelector(getUser, (user) => user.accessToken);
+export const getAccessToken = createSelector(getUser, (user) => user && user.accessToken);
 export const getUserImg = createSelector(
 	getUser,
 	(_, size) => size,
