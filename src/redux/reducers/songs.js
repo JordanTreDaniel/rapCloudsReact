@@ -9,6 +9,10 @@ const initialState = {
 const addSongs = (state, action) => {
 	const { songs } = action;
 	const songsById = songs.reduce((acc, song) => {
+		const existingVersion = state.byId[song.id];
+		if (existingVersion) {
+			song = { ...existingVersion, ...song };
+		}
 		acc[song.id] = song;
 		return acc;
 	}, {});
