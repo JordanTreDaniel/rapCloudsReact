@@ -7,13 +7,9 @@ const REACT_APP_SERVER_ROOT =
 	process.env.NODE_ENV === 'development' ? 'http://localhost:3333' : 'https://rap-clouds-server.herokuapp.com';
 
 const apiFetchArtist = async (artistId, accessToken) => {
-	console.log('api fetch artist', artistId, accessToken);
 	const res = await axios({
 		method: 'get',
-		url: `${REACT_APP_SERVER_ROOT}/artists`,
-		params: {
-			artistId
-		},
+		url: `${REACT_APP_SERVER_ROOT}/getArtistDetails/${artistId}`,
 		headers: {
 			Authorization: accessToken
 		}
@@ -29,7 +25,6 @@ const apiFetchArtist = async (artistId, accessToken) => {
 
 export function* fetchArtist(action) {
 	const { artistId } = action;
-	console.log('Fetch artists', { artistId });
 	const accessToken = yield select(getAccessToken);
 	if (!accessToken || !artistId) {
 		console.error(`Could not fetch artist without access token & artist id`, { artistId, accessToken });
@@ -45,7 +40,6 @@ export function* fetchArtist(action) {
 }
 
 function* watchFetchArtist() {
-	console.log('watcing!');
 	yield takeEvery(FETCH_ARTIST, fetchArtist);
 }
 

@@ -6,13 +6,11 @@ const initialState = {
 };
 
 const addArtist = (state, action) => {
-	const { songs } = action;
-	const songsById = songs.reduce((acc, song) => {
-		acc[song.id] = song;
-		return acc;
-	}, {});
-
-	return { ...state, byId: { ...state.byId, ...songsById } };
+	const { artist } = action;
+	const { id } = artist;
+	if (!artist || !id) return state;
+	const artistsById = state.byId;
+	return { ...state, byId: { ...artistsById, [id]: artist } };
 };
 
 const handlers = {
