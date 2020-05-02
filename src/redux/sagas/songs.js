@@ -7,6 +7,8 @@ const REACT_APP_SERVER_ROOT =
 	process.env.NODE_ENV === 'development' ? 'http://localhost:3333' : 'https://rap-clouds-server.herokuapp.com';
 
 const apiSearchSongs = async (searchTerm, accessToken) => {
+	if (!searchTerm || !searchTerm.length || !accessToken)
+		console.error(`Could not search songs without search term & access token`, { searchTerm, accessToken });
 	const res = await axios({
 		method: 'get',
 		url: `${REACT_APP_SERVER_ROOT}/search`,
@@ -42,6 +44,8 @@ export function* searchSongs(action) {
 }
 
 const apiFetchSongDetails = async (songId, accessToken) => {
+	if (!songId || !accessToken)
+		console.error(`Could not fetch song without access token & song id`, { songId, accessToken });
 	const res = await axios({
 		method: 'get',
 		url: `${REACT_APP_SERVER_ROOT}/getSongDetails/${songId}`,
