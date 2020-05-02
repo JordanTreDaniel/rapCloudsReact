@@ -4,7 +4,8 @@ import {
 	SEARCH_SONGS,
 	FETCH_SONG_DETAILS,
 	ADD_SONG_DETAILS,
-	SET_SONG_SEARCH_TERM
+	SET_SONG_SEARCH_TERM,
+	FETCH_ARTIST
 } from './actionTypes';
 
 export const setUser = (user = { name: 'Tupac' }) => {
@@ -25,6 +26,11 @@ export const setSongSearchTerm = (searchTerm = '') => {
 
 export const fetchSongDetails = (songId) => {
 	return { type: FETCH_SONG_DETAILS, songId };
+};
+
+export const fetchArtist = (artistId) => {
+	console.log('from actions', artistId);
+	return { type: FETCH_ARTIST, artistId };
 };
 
 export const addSongDetails = (song) => {

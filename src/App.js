@@ -5,6 +5,7 @@ import SignIn from './components/SignIn';
 import SongDetail from './components/SongDetail';
 import Search from './components/Search';
 import Navbar from './components/Navbar';
+import ArtistPage from './components/ArtistPage';
 import { setUser } from './redux/actions';
 import { Redirect } from 'react-router-dom';
 import * as selectors from './redux/selectors';
@@ -32,6 +33,10 @@ class App extends React.Component {
 						<Route
 							path="/clouds/:songId"
 							render={(routerProps) => <SongDetail history={routerProps.history} />}
+						/>
+						<Route
+							path="/cloudMakers/:artistId"
+							render={(routerProps) => <ArtistPage history={routerProps.history} />}
 						/>
 						<Route render={() => <Redirect to="/search" />} />
 					</Switch>
