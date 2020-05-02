@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import './App.css';
 import SignIn from './components/SignIn';
-import RapCloud from './components/RapCloud';
+import SongDetail from './components/SongDetail';
 import Search from './components/Search';
 import Navbar from './components/Navbar';
 import { setUser } from './redux/actions';
@@ -31,7 +31,7 @@ class App extends React.Component {
 						<Route path="/search" render={(routerProps) => <Search history={routerProps.history} />} />
 						<Route
 							path="/clouds/:songId"
-							render={(routerProps) => <RapCloud history={routerProps.history} />}
+							render={(routerProps) => <SongDetail history={routerProps.history} />}
 						/>
 						<Route render={() => <Redirect to="/search" />} />
 					</Switch>

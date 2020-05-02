@@ -85,10 +85,6 @@ const RapCloud = (props) => {
 
 	return song ? (
 		<React.Fragment>
-			<Typography variant="h1" className={classes.header}>
-				{song.full_title}
-			</Typography>
-			<br />
 			<Grid container maxWidth={9} id="rap-cloud-content">
 				<Grid item sm={12} md={12} classes={{ root: classes.wordCloudBox }}>
 					<Box id="word-cloud-box">
