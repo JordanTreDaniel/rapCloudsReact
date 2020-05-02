@@ -1,5 +1,5 @@
 import { put, takeEvery, call, select, cancel } from 'redux-saga/effects';
-import { ADD_ARTIST, FETCH_ARTIST } from '../actionTypes';
+import { ADD_ARTIST, FETCH_ARTIST, ADD_SONGS } from '../actionTypes';
 import { getAccessToken } from '../selectors';
 import axios from 'axios';
 
@@ -35,7 +35,10 @@ export function* fetchArtist(action) {
 	if (error) {
 		console.log('Something went wrong', error);
 	} else {
+		const { songs = [] } = artist;
+		delete artist.songs;
 		yield put({ type: ADD_ARTIST, artist });
+		yield put({ type: ADD_SONGS, songs });
 	}
 }
 
