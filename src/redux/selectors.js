@@ -15,20 +15,28 @@ export const getUserImg = createSelector(
 
 //Songs
 /********************************************************************* */
+export const getSearchTerm = (state) => state.songs.searchTerm;
+
+export const getCurrentSongId = (state) => state.songs.currentSongId;
+
 export const getSongsById = (state) => {
 	const { byId } = state.songs;
 	return byId;
 };
-export const getCurrentSongId = (state) => state.songs.currentSongId;
+
 export const getSongsList = createSelector(getSongsById, (songsById) => {
 	return Object.values(songsById);
 });
-export const getSearchTerm = (state) => state.songs.searchTerm;
+
 export const getSearchedSongsList = createSelector(getSongsList, getSearchTerm, (songsList, searchTerm) => {
 	return searchTerm.length
 		? songsList.filter((song) => {
 				const normalizedTitle = song.full_title.toLowerCase();
-				return normalizedTitle.includes(searchTerm.toLowerCase());
+				const normalizedArtistName = song.primary_artist.name.toLowerCase();
+				const normalizedSearchTerm = searchTerm.toLowerCase().split(' ');
+				return normalizedSearchTerm.some(
+					(word) => normalizedTitle.match(word) || normalizedArtistName.match(word)
+				);
 			})
 		: songsList;
 });
