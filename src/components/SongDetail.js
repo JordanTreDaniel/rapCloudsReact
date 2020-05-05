@@ -37,9 +37,9 @@ const SongDetail = (props) => {
 			<AppBar color="inherit" position="static">
 				<Toolbar className={classes.toolBar}>
 					<div>
-						<Link to={`https://genius.com${path}`} alt={`${song.full_title} on Genius`}>
+						<a href={`https://genius.com${path}`} alt={`${song.full_title} on Genius`} target="_blank">
 							<Avatar src="https://pbs.twimg.com/profile_images/885222003174551552/cv3KtGVS_400x400.jpg" />
-						</Link>
+						</a>
 					</div>
 
 					<div className={classes.artistBubbles}>
