@@ -47,7 +47,7 @@ class SongList extends Component {
 					</CardContent>
 				</CardActionArea>
 				<CardActions>
-					<Button size="small" color="primary" href={`https://genius.com${song.path}`}>
+					<Button size="small" color="primary" href={`https://genius.com${song.path}`} target="_blank">
 						Genius
 					</Button>
 					<Link to={`/clouds/${song.id}`}>
