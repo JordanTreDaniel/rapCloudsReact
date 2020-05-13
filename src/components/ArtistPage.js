@@ -3,31 +3,34 @@ import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { Typography, AppBar, Button, Toolbar, Grid, Avatar } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import * as selectors from '../redux/selectors';
 import { fetchArtist } from '../redux/actions';
 
 import { connect } from 'react-redux';
+import ArtistSongList from './ArtistSongList';
 
 const useStyles = makeStyles((theme) => {
-	return {};
+	return {
+		artistPageGrid: {
+			width: '100vh'
+		}
+	};
 });
 
 const ArtistPage = (props) => {
 	const classes = useStyles();
-	let { artistId } = useParams();
 
-	const { artist, history, fetchArtist } = props;
+	const { fetchArtist, artistId } = props;
 	useEffect(() => {
 		console.log('use effect');
 		fetchArtist(artistId);
 	}, []);
-	// if (!artist) return null;
 
-	return <h1>Artist Page</h1>;
+	return (
+		<Grid className={classes.artistPageGrid}>
+			<h1>Artist Page</h1>
+			<ArtistSongList artistId={artistId} />
+		</Grid>
+	);
 };
 
-const mapState = (state) => ({
-	song: selectors.getCurrentSong(state)
-});
-
-export default connect(mapState, { fetchArtist })(ArtistPage);
+export default connect(null, { fetchArtist })(ArtistPage);
