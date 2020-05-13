@@ -41,6 +41,14 @@ export const getSearchedSongsList = createSelector(getSongsList, getSearchTerm, 
 		: songsList;
 });
 
+export const getArtistsSongs = createSelector(
+	getSongsList,
+	(_, artistId) => artistId,
+	(songsList, artistId) => {
+		const artistsSongs = songsList.filter((song) => String(song.primary_artist.id) === String(artistId));
+	}
+);
+
 export const getCurrentSong = createSelector(getSongsById, getCurrentSongId, (songsById, songId) => {
 	const song = songsById[songId] || {};
 	let { lyrics = '' } = song;
