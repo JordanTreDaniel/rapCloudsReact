@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Switch, useParams } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import './App.css';
 import SignIn from './components/SignIn';
 import SongDetail from './components/SongDetail';
@@ -18,7 +18,6 @@ const theme = createMuiTheme({
 
 const App = (props) => {
 	const { user, appIsHydrated, location } = props;
-	const { artistId } = useParams();
 	if (!user && appIsHydrated && location.pathname !== '/signin') {
 		console.log('APP rendered w/ no user after hydration, redirecting.');
 		return <Redirect to="/signin" />;
@@ -36,7 +35,7 @@ const App = (props) => {
 					/>
 					<Route
 						path="/cloudMakers/:artistId"
-						render={(routerProps) => <ArtistPage history={routerProps.history} artistId={artistId} />}
+						render={(routerProps) => <ArtistPage history={routerProps.history} />}
 					/>
 					<Route render={() => <Redirect to="/search" />} />
 				</Switch>
