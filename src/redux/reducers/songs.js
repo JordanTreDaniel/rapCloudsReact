@@ -1,4 +1,4 @@
-import { ADD_SONGS, ADD_SONG_DETAILS, FETCH_SONG_DETAILS, SET_SONG_SEARCH_TERM } from '../actionTypes';
+import { ADD_SONGS, ADD_SONG_DETAILS, SET_SONG_SEARCH_TERM, SET_CURRENT_SONG_ID } from '../actionTypes';
 
 const initialState = {
 	byId: {},
@@ -54,7 +54,7 @@ const addSongDetails = (state, action) => {
 const handlers = {
 	[ADD_SONGS]: addSongs,
 	[ADD_SONG_DETAILS]: addSongDetails,
-	[FETCH_SONG_DETAILS]: setCurrentSongId,
+	[SET_CURRENT_SONG_ID]: setCurrentSongId,
 	[SET_SONG_SEARCH_TERM]: setSearchTerm
 };
 

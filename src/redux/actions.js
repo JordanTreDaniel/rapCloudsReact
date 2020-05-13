@@ -3,6 +3,7 @@ import {
 	ADD_SONGS,
 	SEARCH_SONGS,
 	FETCH_SONG_DETAILS,
+	SET_CURRENT_SONG_ID,
 	ADD_SONG_DETAILS,
 	SET_SONG_SEARCH_TERM,
 	FETCH_ARTIST
@@ -24,8 +25,12 @@ export const setSongSearchTerm = (searchTerm = '') => {
 	return { type: SET_SONG_SEARCH_TERM, searchTerm };
 };
 
-export const fetchSongDetails = (songId) => {
-	return { type: FETCH_SONG_DETAILS, songId };
+export const fetchSongDetails = () => {
+	return { type: FETCH_SONG_DETAILS };
+};
+
+export const setCurrentSongId = (songId = null) => {
+	return { type: SET_CURRENT_SONG_ID, songId };
 };
 
 export const fetchArtist = (artistId) => {

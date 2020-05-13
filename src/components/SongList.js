@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { addSongs } from '../redux/actions';
+import { addSongs, setCurrentSongId } from '../redux/actions';
 import * as selectors from '../redux/selectors';
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -31,7 +30,7 @@ const styles = {
 class SongList extends Component {
 	//TO-DO: Make SongCard component before MVP branch closes.
 	renderCard = (song, idx) => {
-		const { classes } = this.props;
+		const { classes, setCurrentSongId } = this.props;
 		return (
 			<Card className={classes.root} key={idx}>
 				<CardActionArea>
@@ -50,11 +49,9 @@ class SongList extends Component {
 					<Button size="small" color="primary" href={`https://genius.com${song.path}`}>
 						Genius
 					</Button>
-					<Link to={`/clouds/${song.id}`}>
-						<Button size="small" color="primary">
-							RapCloud
-						</Button>
-					</Link>
+					<Button size="small" color="primary" onClick={() => setCurrentSongId(song.id)}>
+						RapCloud
+					</Button>
 				</CardActions>
 			</Card>
 		);
@@ -75,4 +72,4 @@ SongList.defaultProps = {
 	songs: []
 };
 const StyledSongList = withStyles(styles)(SongList);
-export default connect(mapState, { addSongs })(StyledSongList);
+export default connect(mapState, { addSongs, setCurrentSongId })(StyledSongList);
