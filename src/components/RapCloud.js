@@ -1,9 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import { fetchSongDetails } from '../redux/actions';
 import { makeStyles } from '@material-ui/core/styles';
 import { Typography, Box, Grid } from '@material-ui/core';
-import { useParams } from 'react-router-dom';
 import * as selectors from '../redux/selectors';
 import { createCanvas } from 'canvas';
 import cloud from 'd3-cloud';
@@ -13,24 +11,14 @@ const useStyles = makeStyles({
 	header: {
 		fontWeight: 2
 	},
-	lyrics: {
-		whiteSpace: 'pre-line'
-	},
 	wordCloudBox: {
 		// minWidth:
-	},
-	lyricBox: {}
+	}
 });
 
 const RapCloud = (props) => {
 	const classes = useStyles();
-	let { songId } = useParams();
-	const { fetchSongDetails, song } = props;
-	const { normalizedLyrics } = song;
-	useEffect(() => {
-		console.log('use EFfect!!', { fetchSongDetails, songId, song });
-		fetchSongDetails(songId);
-	}, []);
+	const { normalizedLyrics, songTitle } = props;
 
 	const renderCloud = () => {
 		let layout = null;
@@ -83,24 +71,19 @@ const RapCloud = (props) => {
 		}
 	};
 
-	return song ? (
+	return normalizedLyrics ? (
 		<React.Fragment>
 			<Grid container maxWidth={9} id="rap-cloud-content">
 				<Grid item sm={12} md={12} classes={{ root: classes.wordCloudBox }}>
 					<Box id="word-cloud-box">
-						{song.lyrics ? (
+						{normalizedLyrics && normalizedLyrics.length ? (
 							renderCloud()
 						) : (
 							<Typography variant="p" classes={{ root: classes.lyrics }}>
-								{`Preparing the Rap Cloud for ${song.full_title}`}
+								{`Preparing the Rap Cloud for ${songTitle}`}
 							</Typography>
 						)}
 					</Box>
-				</Grid>
-				<Grid item sm={12} md={12} classes={{ root: classes.lyricBox }}>
-					<Typography variant="p" classes={{ root: classes.lyrics }}>
-						{song.lyrics}
-					</Typography>
 				</Grid>
 			</Grid>
 		</React.Fragment>
@@ -112,4 +95,4 @@ const mapState = (state) => {
 		song: selectors.getCurrentSong(state)
 	};
 };
-export default connect(mapState, { fetchSongDetails })(RapCloud);
+export default connect(mapState, null)(RapCloud);

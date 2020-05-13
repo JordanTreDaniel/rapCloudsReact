@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { Typography, AppBar, Button, Toolbar, Grid, Avatar } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import * as selectors from '../redux/selectors';
@@ -22,16 +22,22 @@ const useStyles = makeStyles((theme) => {
 		artistBubbles: {
 			display: 'flex',
 			justifyContent: 'space-evenly'
-		}
+		},
+		lyrics: {
+			whiteSpace: 'pre-line'
+		},
+		lyricBox: {}
 	};
 });
 
 const SongDetail = (props) => {
 	const classes = useStyles();
-	const { song, history } = props;
-	if (!song) return null;
-	const { full_title, path, writer_artists, primary_artist } = song;
+	const { song, history, songId } = props;
+	if (!songId) return <Redirect to="/search" />;
+	const { normalizedLyrics } = song;
+	const { full_title, path, writer_artists, primary_artist, lyrics } = song;
 	const artists = writer_artists ? [ ...writer_artists ] : primary_artist ? [ primary_artist ] : [];
+
 	return (
 		<Grid>
 			<AppBar color="inherit" position="static">
@@ -59,13 +65,19 @@ const SongDetail = (props) => {
 					{full_title}
 				</Typography>
 			</div>
-			<RapCloud history={history} />
+			<RapCloud history={history} normalizedLyrics={normalizedLyrics} songTitle={full_title} />
+			<Grid item sm={12} md={12} classes={{ root: classes.lyricBox }}>
+				<Typography variant="p" classes={{ root: classes.lyrics }}>
+					{lyrics}
+				</Typography>
+			</Grid>
 		</Grid>
 	);
 };
 
 const mapState = (state) => ({
-	song: selectors.getCurrentSong(state)
+	song: selectors.getCurrentSong(state),
+	songId: selectors.getCurrentSongId(state)
 });
 
 export default connect(mapState, null)(SongDetail);
