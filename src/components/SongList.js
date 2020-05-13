@@ -46,7 +46,7 @@ class SongList extends Component {
 					</CardContent>
 				</CardActionArea>
 				<CardActions>
-					<Button size="small" color="primary" href={`https://genius.com${song.path}`}>
+					<Button size="small" color="primary" href={`https://genius.com${song.path}`} target="_blank">
 						Genius
 					</Button>
 					<Button size="small" color="primary" onClick={() => setCurrentSongId(song.id)}>
