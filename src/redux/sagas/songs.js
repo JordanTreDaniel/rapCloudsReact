@@ -1,14 +1,16 @@
 import { put, takeEvery, call, select, cancel } from 'redux-saga/effects';
-import { SEARCH_SONGS, ADD_SONGS, FETCH_SONG_DETAILS, ADD_SONG_DETAILS } from '../actionTypes';
-import { getAccessToken, getSearchTerm } from '../selectors';
+import { SEARCH_SONGS, ADD_SONGS, FETCH_SONG_DETAILS, ADD_SONG_DETAILS, SET_CURRENT_SONG_ID } from '../actionTypes';
+import { getAccessToken, getSearchTerm, getCurrentSongId } from '../selectors';
 import axios from 'axios';
-
+import { history } from '../store';
 const REACT_APP_SERVER_ROOT =
 	process.env.NODE_ENV === 'development' ? 'http://localhost:3333' : 'https://rap-clouds-server.herokuapp.com';
 
 const apiSearchSongs = async (searchTerm, accessToken) => {
-	if (!searchTerm || !searchTerm.length || !accessToken)
+	if (!searchTerm || !searchTerm.length || !accessToken) {
 		console.error(`Could not search songs without search term & access token`, { searchTerm, accessToken });
+		return { error: `Could not search songs without search term & access token` };
+	}
 	const res = await axios({
 		method: 'get',
 		url: `${REACT_APP_SERVER_ROOT}/search`,
@@ -44,8 +46,10 @@ export function* searchSongs(action) {
 }
 
 const apiFetchSongDetails = async (songId, accessToken) => {
-	if (!songId || !accessToken)
+	if (!songId || !accessToken) {
 		console.error(`Could not fetch song without access token & song id`, { songId, accessToken });
+		return { error: `Could not fetch song without access token & song id` };
+	}
 	const res = await axios({
 		method: 'get',
 		url: `${REACT_APP_SERVER_ROOT}/getSongDetails/${songId}`,
@@ -63,14 +67,23 @@ const apiFetchSongDetails = async (songId, accessToken) => {
 };
 
 export function* fetchSongDetails(action) {
-	const { songId } = action;
 	const accessToken = yield select(getAccessToken);
+	const songId = yield select(getCurrentSongId);
 	const { song, error } = yield call(apiFetchSongDetails, songId, accessToken);
 	if (error) {
 		console.log('Something went wrong', error);
 	} else {
 		yield put({ type: ADD_SONG_DETAILS, song });
 	}
+}
+
+export function* navigateToSongPage(action) {
+	const { songId } = action;
+	if (!songId) {
+		yield cancel();
+	}
+	yield put({ type: FETCH_SONG_DETAILS, songId });
+	history.push(`/clouds/${songId}`);
 }
 
 function* watchSearchSongs() {
@@ -81,4 +94,8 @@ function* watchFetchSongDetails() {
 	yield takeEvery(FETCH_SONG_DETAILS, fetchSongDetails);
 }
 
-export default [ watchSearchSongs, watchFetchSongDetails ];
+function* watchSetCurrentSongId() {
+	yield takeEvery(SET_CURRENT_SONG_ID, navigateToSongPage);
+}
+
+export default [ watchSearchSongs, watchFetchSongDetails, watchSetCurrentSongId ];
