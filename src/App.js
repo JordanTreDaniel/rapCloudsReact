@@ -35,10 +35,8 @@ const App = (props) => {
 					/>
 					<Route
 						path="/cloudMakers/:artistId"
-						render={({ history, match }) => {
-							const { params } = match;
-							const { artistId } = params;
-							return <ArtistPage history={history} artistId={artistId} />;
+						render={({ history }) => {
+							return <ArtistPage history={history} />;
 						}}
 					/>
 					<Route render={() => <Redirect to="/search" />} />

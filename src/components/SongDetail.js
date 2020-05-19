@@ -3,6 +3,7 @@ import { Link, Redirect } from 'react-router-dom';
 import { Typography, AppBar, Button, Toolbar, Grid, Avatar } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import * as selectors from '../redux/selectors';
+import { fetchArtist } from '../redux/actions';
 import { connect } from 'react-redux';
 import RapCloud from './RapCloud';
 const useStyles = makeStyles((theme) => {
@@ -32,7 +33,7 @@ const useStyles = makeStyles((theme) => {
 
 const SongDetail = (props) => {
 	const classes = useStyles();
-	const { song, history, songId } = props;
+	const { song, history, songId, fetchArtist } = props;
 	if (!songId) return <Redirect to="/search" />;
 	const { normalizedLyrics } = song;
 	const { full_title, path, writer_artists, primary_artist, lyrics } = song;
@@ -50,11 +51,13 @@ const SongDetail = (props) => {
 
 					<div className={classes.artistBubbles}>
 						{artists.map((artist, idx) => {
-							const artistPath = `/cloudMakers/${artist.id}`;
 							return (
-								<Link to={artistPath} key={idx}>
-									<Avatar src={artist.header_image_url} alt={artist.name} />
-								</Link>
+								<Avatar
+									src={artist.header_image_url}
+									alt={artist.name}
+									key={idx}
+									onClick={() => fetchArtist(artist.id)}
+								/>
 							);
 						})}
 					</div>
@@ -80,4 +83,4 @@ const mapState = (state) => ({
 	songId: selectors.getCurrentSongId(state)
 });
 
-export default connect(mapState, null)(SongDetail);
+export default connect(mapState, { fetchArtist })(SongDetail);

@@ -41,6 +41,8 @@ export const getSearchedSongsList = createSelector(getSongsList, getSearchTerm, 
 		: songsList;
 });
 
+//Songs
+/********************************************************************* */
 export const getArtistsSongs = createSelector(
 	getSongsList,
 	(_, artistId) => artistId,
@@ -49,6 +51,13 @@ export const getArtistsSongs = createSelector(
 		return artistsSongs;
 	}
 );
+
+export const getArtistsById = (state) => state.artists.byId;
+
+export const getCurrentArtist = createSelector((_, artistId) => artistId, getArtistsById, (artistId, artistsById) => {
+	const currentArtist = artistsById['148'];
+	return currentArtist;
+});
 
 export const getCurrentSong = createSelector(getSongsById, getCurrentSongId, (songsById, songId) => {
 	const song = songsById[songId] || {};

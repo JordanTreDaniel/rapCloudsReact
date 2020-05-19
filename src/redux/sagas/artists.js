@@ -2,6 +2,7 @@ import { put, takeEvery, call, select, cancel } from 'redux-saga/effects';
 import { ADD_ARTIST, FETCH_ARTIST, ADD_SONGS } from '../actionTypes';
 import { getAccessToken } from '../selectors';
 import axios from 'axios';
+import { history } from '../store';
 
 const REACT_APP_SERVER_ROOT =
 	process.env.NODE_ENV === 'development' ? 'http://localhost:3333' : 'https://rap-clouds-server.herokuapp.com';
@@ -39,6 +40,7 @@ export function* fetchArtist(action) {
 		delete artist.songs;
 		yield put({ type: ADD_ARTIST, artist });
 		yield put({ type: ADD_SONGS, songs });
+		history.push(`/cloudMakers/${artistId}`);
 	}
 }
 
