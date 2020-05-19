@@ -46,6 +46,7 @@ export const getArtistsSongs = createSelector(
 	(_, artistId) => artistId,
 	(songsList, artistId) => {
 		const artistsSongs = songsList.filter((song) => String(song.primary_artist.id) === String(artistId));
+		return artistsSongs;
 	}
 );
 

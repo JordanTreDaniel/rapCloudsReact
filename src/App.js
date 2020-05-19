@@ -3,9 +3,9 @@ import { Route, Switch } from 'react-router-dom';
 import './App.css';
 import SignIn from './components/SignIn';
 import SongDetail from './components/SongDetail';
-import Search from './components/Search';
-import Navbar from './components/Navbar';
-import ArtistPage from './components/ArtistPage';
+import Search from './connected/Search';
+import Navbar from './connected/Navbar';
+import ArtistPage from './connected/ArtistPage';
 import { setUser } from './redux/actions';
 import { Redirect } from 'react-router-dom';
 import * as selectors from './redux/selectors';
@@ -35,7 +35,11 @@ const App = (props) => {
 					/>
 					<Route
 						path="/cloudMakers/:artistId"
-						render={(routerProps) => <ArtistPage history={routerProps.history} />}
+						render={({ history, match }) => {
+							const { params } = match;
+							const { artistId } = params;
+							return <ArtistPage history={history} artistId={artistId} />;
+						}}
 					/>
 					<Route render={() => <Redirect to="/search" />} />
 				</Switch>

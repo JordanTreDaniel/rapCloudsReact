@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import { Button, Input } from '@material-ui/core';
 import { searchSongs, setSongSearchTerm } from '../redux/actions';
 import * as selectors from '../redux/selectors';
-import SongList from './SongList';
+import SearchSongList from './SearchSongList';
+
 class Search extends Component {
 	search = () => {
 		const { searchTerm } = this.props;
@@ -30,7 +31,7 @@ class Search extends Component {
 				</div>
 				<div style={{ width: '80vw', margin: 'auto', textAlign: 'left' }}>
 					{/* <pre>{JSON.stringify(this.props.songs, null, 2)}</pre> */}
-					<SongList songs={this.props.songs} />
+					<SearchSongList songs={this.props.songs} />
 				</div>
 			</div>
 		);

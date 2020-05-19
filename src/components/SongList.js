@@ -1,7 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { addSongs, setCurrentSongId } from '../redux/actions';
-import * as selectors from '../redux/selectors';
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -31,6 +28,7 @@ class SongList extends Component {
 	//TO-DO: Make SongCard component before MVP branch closes.
 	renderCard = (song, idx) => {
 		const { classes, setCurrentSongId } = this.props;
+
 		return (
 			<Card className={classes.root} key={idx}>
 				<CardActionArea>
@@ -64,12 +62,9 @@ class SongList extends Component {
 	};
 }
 
-const mapState = (state) => ({
-	songs: selectors.getSearchedSongsList(state)
-});
-
 SongList.defaultProps = {
 	songs: []
 };
+
 const StyledSongList = withStyles(styles)(SongList);
-export default connect(mapState, { addSongs, setCurrentSongId })(StyledSongList);
+export default StyledSongList;
