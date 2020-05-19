@@ -1,8 +1,6 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import { Typography, Box, Grid } from '@material-ui/core';
-import * as selectors from '../redux/selectors';
 import { createCanvas } from 'canvas';
 import cloud from 'd3-cloud';
 import * as d3 from 'd3';
@@ -18,7 +16,7 @@ const useStyles = makeStyles({
 
 const RapCloud = (props) => {
 	const classes = useStyles();
-	const { normalizedLyrics, songTitle } = props;
+	const { normalizedLyrics, title } = props;
 
 	const renderCloud = () => {
 		let layout = null;
@@ -80,7 +78,7 @@ const RapCloud = (props) => {
 							renderCloud()
 						) : (
 							<Typography variant="p" classes={{ root: classes.lyrics }}>
-								{`Preparing the Rap Cloud for ${songTitle}`}
+								{`Preparing the Rap Cloud for ${title}`}
 							</Typography>
 						)}
 					</Box>
@@ -90,9 +88,4 @@ const RapCloud = (props) => {
 	) : null;
 };
 
-const mapState = (state) => {
-	return {
-		song: selectors.getCurrentSong(state)
-	};
-};
-export default connect(mapState, null)(RapCloud);
+export default RapCloud;

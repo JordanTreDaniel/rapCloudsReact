@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import * as selectors from '../redux/selectors';
 import { fetchArtist } from '../redux/actions';
 import { connect } from 'react-redux';
-import RapCloud from './RapCloud';
+import CurrentSongCloud from '../connected/CurrentSongCloud';
 const useStyles = makeStyles((theme) => {
 	return {
 		buttonBox: {
@@ -35,8 +35,7 @@ const SongDetail = (props) => {
 	const classes = useStyles();
 	const { song, history, songId, fetchArtist } = props;
 	if (!songId) return <Redirect to="/search" />;
-	const { normalizedLyrics } = song;
-	const { full_title, path, writer_artists, primary_artist, lyrics } = song;
+	const { normalizedLyrics, full_title, path, writer_artists, primary_artist, lyrics } = song;
 	const artists = writer_artists ? [ ...writer_artists ] : primary_artist ? [ primary_artist ] : [];
 
 	return (
@@ -68,7 +67,7 @@ const SongDetail = (props) => {
 					{full_title}
 				</Typography>
 			</div>
-			<RapCloud history={history} normalizedLyrics={normalizedLyrics} songTitle={full_title} />
+			<CurrentSongCloud history={history} />
 			<Grid item sm={12} md={12} classes={{ root: classes.lyricBox }}>
 				<Typography variant="p" classes={{ root: classes.lyrics }}>
 					{lyrics}
