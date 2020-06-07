@@ -7,12 +7,14 @@ import SearchSongList from './SearchSongList';
 
 class Search extends Component {
 	search = () => {
+		console.log("this method has run");
 		const { searchTerm } = this.props;
 		this.props.searchSongs(searchTerm);
 	};
 
 	render = () => {
-		const { setSongSearchTerm, searchTerm } = this.props;
+		const { setSongSearchTerm, searchTerm, loading } = this.props;
+		console.log(this.props);
 		return (
 			<div className={'masterBox'}>
 				<div className={'searchBar'}>
@@ -29,7 +31,10 @@ class Search extends Component {
 					/>
 					<Button onClick={this.search}>Search</Button>
 				</div>
+
 				<div style={{ width: '80vw', margin: 'auto', textAlign: 'left' }}>
+					
+			        {loading ? <span style={{margin: "auto"}}>Loading...</span> : null}
 					{/* <pre>{JSON.stringify(this.props.songs, null, 2)}</pre> */}
 					<SearchSongList songs={this.props.songs} />
 				</div>
@@ -38,9 +43,11 @@ class Search extends Component {
 	};
 }
 
+
 const mapState = (state) => ({
 	songs: selectors.getSongsList(state),
-	searchTerm: selectors.getSearchTerm(state)
+	searchTerm: selectors.getSearchTerm(state),
+	loading: selectors.areSongsLoading(state)
 });
 
 Search.defaultProps = {

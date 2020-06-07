@@ -1,9 +1,10 @@
-import { ADD_SONGS, ADD_SONG_DETAILS, SET_SONG_SEARCH_TERM, SET_CURRENT_SONG_ID } from '../actionTypes';
+import { ADD_SONGS, ADD_SONG_DETAILS, SET_SONG_SEARCH_TERM, SET_CURRENT_SONG_ID, SEARCH_SONGS } from '../actionTypes';
 
 const initialState = {
 	byId: {},
 	currentSongId: null,
-	searchTerm: ''
+	searchTerm: '',
+	loading: false
 };
 
 const addSongs = (state, action) => {
@@ -51,11 +52,20 @@ const addSongDetails = (state, action) => {
 	return { ...state, byId: { ...songsById } };
 };
 
+const toggleLoading = (state, action) => {
+	console.log("this is toggle Loading");
+	const { isLoading } = action;
+	console.log(isLoading);
+	return { ...state, loading: isLoading };
+};
+
+
 const handlers = {
 	[ADD_SONGS]: addSongs,
 	[ADD_SONG_DETAILS]: addSongDetails,
 	[SET_CURRENT_SONG_ID]: setCurrentSongId,
-	[SET_SONG_SEARCH_TERM]: setSearchTerm
+	[SET_SONG_SEARCH_TERM]: setSearchTerm,
+	[SEARCH_SONGS]: toggleLoading
 };
 
 export default (state = initialState, action) => {
