@@ -31,10 +31,9 @@ const ArtistPage = (props) => {
 	);
 };
 
-const mapState = (state, ownProps) => {
-	const { artistId } = ownProps;
+const mapState = (state) => {
 	return {
-		artist: selectors.getCurrentArtist(state, artistId)
+		artist: selectors.getCurrentArtist(state)
 	};
 };
 

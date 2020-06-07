@@ -2,6 +2,25 @@ import { createSelector } from 'reselect';
 import { normalizeLyrics, whichPath } from './utils';
 import { createMatchSelector } from 'connected-react-router';
 
+//General
+/********************************************************************* */
+export const isAppRehydrated = (state) => state.userInfo.hydrated; //TO-DO: Move hydration detection to 'general' reducer
+
+export const getCurrentPath = (state) => {
+	const { pathname } = state.router.location;
+	return pathname;
+};
+
+export const getMatchParams = createSelector(
+	getCurrentPath,
+	(state) => state,
+	(currentPath, state) => {
+		const routePattern = whichPath(currentPath);
+		const match = createMatchSelector(routePattern)(state);
+		return (match && match.params) || {};
+	}
+);
+
 //User
 /********************************************************************* */
 export const getUser = (state) => state.userInfo.user;
@@ -45,14 +64,15 @@ export const getSearchedSongsList = createSelector(getSongsList, getSearchTerm, 
 
 //Artist
 /********************************************************************* */
-export const getArtistsSongs = createSelector(
-	getSongsList,
-	(_, artistId) => artistId,
-	(songsList, artistId) => {
-		const artistsSongs = songsList.filter((song) => String(song.primary_artist.id) === String(artistId));
-		return artistsSongs;
+export const getArtistsSongs = createSelector(getSongsList, getMatchParams, (songsList, matchParams) => {
+	const { artistId } = matchParams;
+	if (!artistId) {
+		console.warn(`The "getArtistsSongs" selector has been called with no artistId detected in match params`);
+		return [];
 	}
-);
+	const artistsSongs = songsList.filter((song) => String(song.primary_artist.id) === String(artistId));
+	return artistsSongs;
+});
 
 export const getArtistCloud = createSelector();
 //get their songs
@@ -61,8 +81,13 @@ export const getArtistCloud = createSelector();
 
 export const getArtistsById = (state) => state.artists.byId;
 
-export const getCurrentArtist = createSelector((_, artistId) => artistId, getArtistsById, (artistId, artistsById) => {
-	const currentArtist = artistsById['148'];
+export const getCurrentArtist = createSelector(getMatchParams, getArtistsById, (matchParams, artistsById) => {
+	const { artistId } = matchParams;
+	if (!artistId) {
+		console.warn(`The "getCurrentArtist" selector has been called with no artistId detected in match params`);
+		return null;
+	}
+	const currentArtist = artistsById[artistId];
 	return currentArtist;
 });
 
@@ -74,22 +99,3 @@ export const getCurrentSong = createSelector(getSongsById, getCurrentSongId, (so
 	song.normalizedLyrics = normalizedLyrics;
 	return song;
 });
-
-//General
-/********************************************************************* */
-export const isAppRehydrated = (state) => state.userInfo.hydrated; //TO-DO: Move hydration detection to 'general' reducer
-
-export const getCurrentPath = (state) => {
-	const { pathname } = state.router.location;
-	return pathname;
-};
-
-export const getMatchParams = createSelector(
-	getCurrentPath,
-	(state) => state,
-	(currentPath, state) => {
-		const routePattern = whichPath(currentPath);
-		const match = createMatchSelector(routePattern)(state);
-		return (match && match.params) || {};
-	}
-);

@@ -8,8 +8,8 @@ const ArtistSongList = (props) => {
 	return <SongList {...props} />;
 };
 
-const mapState = (state, ownProps) => ({
-	songs: selectors.getArtistsSongs(state, ownProps.artistId)
+const mapState = (state) => ({
+	songs: selectors.getArtistsSongs(state)
 });
 
 export default connect(mapState, { addSongs, setCurrentSongId })(ArtistSongList);
