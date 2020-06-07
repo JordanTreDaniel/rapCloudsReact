@@ -1,5 +1,7 @@
 import { createSelector } from 'reselect';
-import { normalizeLyrics } from './utils';
+import { normalizeLyrics, whichPath } from './utils';
+import { createMatchSelector } from 'connected-react-router';
+
 //User
 /********************************************************************* */
 export const getUser = (state) => state.userInfo.user;
@@ -76,3 +78,18 @@ export const getCurrentSong = createSelector(getSongsById, getCurrentSongId, (so
 //General
 /********************************************************************* */
 export const isAppRehydrated = (state) => state.userInfo.hydrated; //TO-DO: Move hydration detection to 'general' reducer
+
+export const getCurrentPath = (state) => {
+	const { pathname } = state.router.location;
+	return pathname;
+};
+
+export const getMatchParams = createSelector(
+	getCurrentPath,
+	(state) => state,
+	(currentPath, state) => {
+		const routePattern = whichPath(currentPath);
+		const match = createMatchSelector(routePattern)(state);
+		return (match && match.params) || {};
+	}
+);
