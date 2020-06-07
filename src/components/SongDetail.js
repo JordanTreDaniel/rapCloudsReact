@@ -6,6 +6,7 @@ import * as selectors from '../redux/selectors';
 import { fetchArtist } from '../redux/actions';
 import { connect } from 'react-redux';
 import CurrentSongCloud from '../connected/CurrentSongCloud';
+import paths from '../paths';
 const useStyles = makeStyles((theme) => {
 	return {
 		buttonBox: {
@@ -34,7 +35,7 @@ const useStyles = makeStyles((theme) => {
 const SongDetail = (props) => {
 	const classes = useStyles();
 	const { song, history, songId, fetchArtist } = props;
-	if (!songId) return <Redirect to="/search" />;
+	if (!songId) return <Redirect to={paths.search} />;
 	const { normalizedLyrics, full_title, path, writer_artists, primary_artist, lyrics } = song;
 	const artists = writer_artists ? [ ...writer_artists ] : primary_artist ? [ primary_artist ] : [];
 

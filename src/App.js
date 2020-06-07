@@ -11,6 +11,7 @@ import { Redirect } from 'react-router-dom';
 import * as selectors from './redux/selectors';
 import { connect } from 'react-redux';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import paths from './paths.js';
 
 const theme = createMuiTheme({
 	background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)'
@@ -18,28 +19,28 @@ const theme = createMuiTheme({
 
 const App = (props) => {
 	const { user, appIsHydrated, location } = props;
-	if (!user && appIsHydrated && location.pathname !== '/signin') {
+	if (!user && appIsHydrated && location.pathname !== paths.signIn) {
 		console.log('APP rendered w/ no user after hydration, redirecting.');
-		return <Redirect to="/signin" />;
+		return <Redirect to={paths.signIn} />;
 	}
 	return (
 		<ThemeProvider theme={theme}>
 			<div className="App">
 				<Navbar />
 				<Switch>
-					<Route path="/signin" render={(routerProps) => <SignIn history={routerProps.history} />} />
-					<Route path="/search" render={(routerProps) => <Search history={routerProps.history} />} />
+					<Route path={paths.signIn} render={(routerProps) => <SignIn history={routerProps.history} />} />
+					<Route path={paths.search} render={(routerProps) => <Search history={routerProps.history} />} />
 					<Route
-						path="/clouds/:songId"
+						path={paths.songPage}
 						render={(routerProps) => <SongDetail history={routerProps.history} />}
 					/>
 					<Route
-						path="/cloudMakers/:artistId"
+						path={paths.artistPage}
 						render={({ history }) => {
 							return <ArtistPage history={history} />;
 						}}
 					/>
-					<Route render={() => <Redirect to="/search" />} />
+					<Route render={() => <Redirect to={paths.search} />} />
 				</Switch>
 			</div>
 		</ThemeProvider>

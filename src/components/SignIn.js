@@ -6,7 +6,7 @@ import { Button } from '@material-ui/core';
 // import "./SignIn.css"; //Don't think we need this
 import { setUser, addSongs } from '../redux/actions';
 import * as selectors from '../redux/selectors';
-
+import paths from '../paths';
 const API_URL =
 	process.env.NODE_ENV === 'development' ? 'http://localhost:3333' : 'https://rap-clouds-server.herokuapp.com';
 const socket = io(API_URL);
@@ -60,7 +60,7 @@ class SignIn extends Component {
 			socket.on('genius', (user) => {
 				this.popup.close();
 				this.props.setUser(user);
-				this.props.history.push('/search');
+				this.props.history.push(paths.search);
 			});
 			this.setState({ popUpOpen: true });
 			this.popup = this.openPopup();
