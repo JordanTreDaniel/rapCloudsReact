@@ -38,7 +38,7 @@ export const getUserImg = createSelector(
 /********************************************************************* */
 export const getSearchTerm = (state) => state.songs.searchTerm;
 
-export const getCurrentSongId = (state) => state.songs.currentSongId;
+export const getCurrentSongId = createSelector(getMatchParams, (matchParams) => matchParams.songId);
 
 export const getSongsById = (state) => {
 	const { byId } = state.songs;
@@ -92,6 +92,10 @@ export const getCurrentArtist = createSelector(getMatchParams, getArtistsById, (
 });
 
 export const getCurrentSong = createSelector(getSongsById, getCurrentSongId, (songsById, songId) => {
+	if (!songId) {
+		console.warn(`The "getCurrentSong" selector has been called with no songId detected in match params`);
+		return null;
+	}
 	const song = songsById[songId] || {};
 	let { lyrics = '' } = song;
 

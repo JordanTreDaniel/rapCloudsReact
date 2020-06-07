@@ -1,6 +1,6 @@
 import { put, takeEvery, call, select, cancel } from 'redux-saga/effects';
 import { SEARCH_SONGS, ADD_SONGS, FETCH_SONG_DETAILS, ADD_SONG_DETAILS, SET_CURRENT_SONG_ID } from '../actionTypes';
-import { getAccessToken, getSearchTerm, getCurrentSongId } from '../selectors';
+import { getAccessToken, getSearchTerm } from '../selectors';
 import axios from 'axios';
 import { history } from '../store';
 const REACT_APP_SERVER_ROOT =
@@ -68,22 +68,13 @@ const apiFetchSongDetails = async (songId, accessToken) => {
 
 export function* fetchSongDetails(action) {
 	const accessToken = yield select(getAccessToken);
-	const songId = yield select(getCurrentSongId);
+	const songId = action;
 	const { song, error } = yield call(apiFetchSongDetails, songId, accessToken);
 	if (error) {
 		console.log('Something went wrong', error);
 	} else {
 		yield put({ type: ADD_SONG_DETAILS, song });
 	}
-}
-
-export function* navigateToSongPage(action) {
-	const { songId } = action;
-	if (!songId) {
-		yield cancel();
-	}
-	yield put({ type: FETCH_SONG_DETAILS, songId });
-	history.push(`/clouds/${songId}`);
 }
 
 function* watchSearchSongs() {
@@ -94,8 +85,4 @@ function* watchFetchSongDetails() {
 	yield takeEvery(FETCH_SONG_DETAILS, fetchSongDetails);
 }
 
-function* watchSetCurrentSongId() {
-	yield takeEvery(SET_CURRENT_SONG_ID, navigateToSongPage);
-}
-
-export default [ watchSearchSongs, watchFetchSongDetails, watchSetCurrentSongId ];
+export default [ watchSearchSongs, watchFetchSongDetails ];

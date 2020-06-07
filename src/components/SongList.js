@@ -7,6 +7,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import { Link } from 'react-router-dom';
 
 const styles = {
 	root: {
@@ -24,43 +25,47 @@ const styles = {
 	}
 };
 
-class SongList extends Component {
+const SongList = (props) => {
 	//TO-DO: Make SongCard component before MVP branch closes.
-	renderCard = (song, idx) => {
-		const { classes, setCurrentSongId } = this.props;
-
-		return (
-			<Card className={classes.root} key={idx}>
-				<CardActionArea>
-					<CardMedia
-						className={classes.media}
-						image={song.header_image_thumbnail_url}
-						title={song.full_title}
-					/>
-					<CardContent>
-						<Typography gutterBottom variant="h5" component="h2">
-							{song.full_title}
-						</Typography>
-					</CardContent>
-				</CardActionArea>
-				<CardActions>
-					<Button size="small" color="primary" href={`https://genius.com${song.path}`} target="_blank">
-						Genius
-					</Button>
-					<Button size="small" color="primary" onClick={() => setCurrentSongId(song.id)}>
-						RapCloud
-					</Button>
-				</CardActions>
-			</Card>
-		);
-	};
-	render = () => {
-		const { classes } = this.props;
-		return (
-			<div className={classes.songList}>{this.props.songs.map((song, idx) => this.renderCard(song, idx))}</div>
-		);
-	};
-}
+	const { classes, songs } = props;
+	return (
+		<div className={classes.songList}>
+			{songs.map((song, idx) => {
+				return (
+					<Card className={classes.root} key={idx}>
+						<CardActionArea>
+							<CardMedia
+								className={classes.media}
+								image={song.header_image_thumbnail_url}
+								title={song.full_title}
+							/>
+							<CardContent>
+								<Typography gutterBottom variant="h5" component="h2">
+									{song.full_title}
+								</Typography>
+							</CardContent>
+						</CardActionArea>
+						<CardActions>
+							<Button
+								size="small"
+								color="primary"
+								href={`https://genius.com${song.path}`}
+								target="_blank"
+							>
+								Genius
+							</Button>
+							<Link to={`/clouds/${song.id}`}>
+								<Button size="small" color="primary">
+									RapCloud
+								</Button>
+							</Link>
+						</CardActions>
+					</Card>
+				);
+			})}
+		</div>
+	);
+};
 
 SongList.defaultProps = {
 	songs: []

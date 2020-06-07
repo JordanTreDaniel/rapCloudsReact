@@ -2,7 +2,6 @@ import { ADD_SONGS, ADD_SONG_DETAILS, SET_SONG_SEARCH_TERM, SET_CURRENT_SONG_ID 
 
 const initialState = {
 	byId: {},
-	currentSongId: null,
 	searchTerm: ''
 };
 
@@ -18,21 +17,6 @@ const addSongs = (state, action) => {
 	}, {});
 
 	return { ...state, byId: { ...state.byId, ...songsById } };
-};
-
-const setCurrentSongId = (state, action) => {
-	const { songId = null } = action;
-	return { ...state, currentSongId: songId };
-};
-
-/**
- * 1. Install connected-react-router
- * 2. Install code from iRoute that Helps with this
- * 3. Derive paramProps from the selector
- */
-const setCurrentArtistId = (state, action) => {
-	const { songId = null } = action;
-	return { ...state, currentSongId: songId };
 };
 
 const setSearchTerm = (state, action) => {
@@ -54,7 +38,6 @@ const addSongDetails = (state, action) => {
 const handlers = {
 	[ADD_SONGS]: addSongs,
 	[ADD_SONG_DETAILS]: addSongDetails,
-	[SET_CURRENT_SONG_ID]: setCurrentSongId,
 	[SET_SONG_SEARCH_TERM]: setSearchTerm
 };
 

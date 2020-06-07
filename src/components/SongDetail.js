@@ -1,9 +1,9 @@
 import React from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { Link, Redirect, useParams } from 'react-router-dom';
 import { Typography, AppBar, Button, Toolbar, Grid, Avatar } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import * as selectors from '../redux/selectors';
-import { fetchArtist } from '../redux/actions';
+import { fetchArtist, fetchSongDetails } from '../redux/actions';
 import { connect } from 'react-redux';
 import CurrentSongCloud from '../connected/CurrentSongCloud';
 import paths from '../paths';
@@ -34,8 +34,10 @@ const useStyles = makeStyles((theme) => {
 
 const SongDetail = (props) => {
 	const classes = useStyles();
-	const { song, history, songId, fetchArtist } = props;
+	const { song, history, fetchArtist } = props;
+	const { songId } = useParams();
 	if (!songId) return <Redirect to={paths.search} />;
+
 	const { normalizedLyrics, full_title, path, writer_artists, primary_artist, lyrics } = song;
 	const artists = writer_artists ? [ ...writer_artists ] : primary_artist ? [ primary_artist ] : [];
 
@@ -56,7 +58,7 @@ const SongDetail = (props) => {
 									src={artist.header_image_url}
 									alt={artist.name}
 									key={idx}
-									onClick={() => fetchArtist(artist.id)}
+									onClick={() => fetchArtist(artist.id)} //TO-DO: Make this a link to artist, not dispatch fetch action
 								/>
 							);
 						})}
@@ -79,8 +81,7 @@ const SongDetail = (props) => {
 };
 
 const mapState = (state) => ({
-	song: selectors.getCurrentSong(state),
-	songId: selectors.getCurrentSongId(state)
+	song: selectors.getCurrentSong(state)
 });
 
 export default connect(mapState, { fetchArtist })(SongDetail);
