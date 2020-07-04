@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, Redirect, useParams } from 'react-router-dom';
 import { Typography, AppBar, Button, Toolbar, Grid, Avatar } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -7,6 +7,7 @@ import { fetchArtist, fetchSongDetails } from '../redux/actions';
 import { connect } from 'react-redux';
 import CurrentSongCloud from '../connected/CurrentSongCloud';
 import paths from '../paths';
+ 
 const useStyles = makeStyles((theme) => {
 	return {
 		buttonBox: {
@@ -34,8 +35,16 @@ const useStyles = makeStyles((theme) => {
 
 const SongDetail = (props) => {
 	const classes = useStyles();
-	const { song, history, fetchArtist } = props;
+	const { song, history, fetchArtist, fetchSongDetails } = props;
 	const { songId } = useParams();
+	useEffect(
+		() => {
+			if (songId) {
+				fetchSongDetails(songId);
+			}
+		},
+		[ songId ]
+	);
 	if (!songId) return <Redirect to={paths.search} />;
 	if (!song) return null;
 
@@ -85,4 +94,4 @@ const mapState = (state) => ({
 	song: selectors.getCurrentSong(state)
 });
 
-export default connect(mapState, { fetchArtist })(SongDetail);
+export default connect(mapState, { fetchArtist, fetchSongDetails })(SongDetail);
