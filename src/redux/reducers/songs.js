@@ -1,4 +1,4 @@
-import { ADD_SONGS, ADD_SONG_DETAILS, SET_SONG_SEARCH_TERM, SET_CURRENT_SONG_ID, SEARCH_SONGS } from '../actionTypes';
+import { ADD_SONGS, ADD_SONG_DETAILS, SET_SONG_SEARCH_TERM, SEARCH_SONGS } from '../actionTypes';
 
 const initialState = {
 	byId: {},
@@ -48,7 +48,6 @@ const toggleLoading = (state, action) => {
 const handlers = {
 	[ADD_SONGS]: addSongs,
 	[ADD_SONG_DETAILS]: addSongDetails,
-	[SET_CURRENT_SONG_ID]: setCurrentSongId,
 	[SET_SONG_SEARCH_TERM]: setSearchTerm,
 	[SEARCH_SONGS]: toggleLoading
 };

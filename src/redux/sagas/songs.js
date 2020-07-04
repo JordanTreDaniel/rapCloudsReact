@@ -1,8 +1,8 @@
 import { put, takeEvery, call, select, cancel } from 'redux-saga/effects';
-import { SEARCH_SONGS, ADD_SONGS, FETCH_SONG_DETAILS, ADD_SONG_DETAILS, SET_CURRENT_SONG_ID } from '../actionTypes';
+import { SEARCH_SONGS, ADD_SONGS, FETCH_SONG_DETAILS, ADD_SONG_DETAILS } from '../actionTypes';
 import { getAccessToken, getSearchTerm } from '../selectors';
 import axios from 'axios';
-import { history } from '../store';
+
 const REACT_APP_SERVER_ROOT =
 	process.env.NODE_ENV === 'development' ? 'http://localhost:3333' : 'https://rap-clouds-server.herokuapp.com';
 
