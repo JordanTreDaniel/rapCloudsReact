@@ -37,6 +37,7 @@ const SongDetail = (props) => {
 	const { song, history, fetchArtist } = props;
 	const { songId } = useParams();
 	if (!songId) return <Redirect to={paths.search} />;
+	if (!song) return null;
 
 	const { normalizedLyrics, full_title, path, writer_artists, primary_artist, lyrics } = song;
 	const artists = writer_artists ? [ ...writer_artists ] : primary_artist ? [ primary_artist ] : [];
