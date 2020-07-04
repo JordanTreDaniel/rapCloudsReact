@@ -1,5 +1,5 @@
 import { put, takeEvery, call, select, cancel } from 'redux-saga/effects';
-import { SEARCH_SONGS, ADD_SONGS, FETCH_SONG_DETAILS, ADD_SONG_DETAILS } from '../actionTypes';
+import { SEARCH_SONGS, ADD_SONGS, FETCH_SONG_DETAILS, ADD_SONG_DETAILS, FETCH_SONG_DETAILS_FAILURE } from '../actionTypes';
 import { getAccessToken, getSearchTerm } from '../selectors';
 import axios from 'axios';
 
@@ -71,10 +71,11 @@ export function* fetchSongDetails(action) {
 	const { songId } = action;
 	const { song, error } = yield call(apiFetchSongDetails, songId, accessToken);
 	if (error) {
+		yield put({ type: FETCH_SONG_DETAILS_FAILURE });
 		console.log('Something went wrong', error);
 	} else {
 		yield put({ type: ADD_SONG_DETAILS, song });
-	}
+	} 
 }
 
 function* watchSearchSongs() {
