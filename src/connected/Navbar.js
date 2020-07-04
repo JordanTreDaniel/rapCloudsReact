@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import * as selectors from '../redux/selectors';
 import { connect } from 'react-redux';
 import { Avatar } from '@material-ui/core';
-
+import paths from '../paths';
 const useStyles = makeStyles((theme) => {
 	return {
 		buttonBox: {
@@ -29,18 +29,18 @@ const Navbar = (props) => {
 	return (
 		<AppBar color="inherit" position="static">
 			<Toolbar className={classes.toolBar}>
-				<Link className={classes.navBarLink} to="/search">
+				<Link className={classes.navBarLink} to={paths.search}>
 					<Typography variant="h6">Rap Clouds</Typography>
 				</Link>
 				<Box className={classes.buttonBox}>
-					<Link to={'/search'} className={classes.navBarLink}>
+					<Link to={paths.search} className={classes.navBarLink}>
 						<Button>Search</Button>
 					</Link>
 
 					{userImgURL ? (
 						<Avatar alt="User Profile Pic" src={userImgURL} />
 					) : (
-						<Button href="/signin">Sign In</Button>
+						<Button href={paths.signIn}>Sign In</Button>
 					)}
 				</Box>
 			</Toolbar>

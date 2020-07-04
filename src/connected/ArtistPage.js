@@ -7,7 +7,7 @@ import * as selectors from '../redux/selectors';
 
 import { connect } from 'react-redux';
 import ArtistSongList from './ArtistSongList';
-
+import paths from '../paths';
 const useStyles = makeStyles((theme) => {
 	return {
 		artistPageGrid: {
@@ -20,7 +20,7 @@ const ArtistPage = (props) => {
 	const classes = useStyles();
 	let { artistId } = useParams();
 	const { artist } = props;
-	if (!artist) return <Redirect to="/search" />;
+	if (!artist) return <Redirect to={paths.search} />;
 	const { name } = artist;
 
 	return (
@@ -31,10 +31,9 @@ const ArtistPage = (props) => {
 	);
 };
 
-const mapState = (state, ownProps) => {
-	const { artistId } = ownProps;
+const mapState = (state) => {
 	return {
-		artist: selectors.getCurrentArtist(state, artistId)
+		artist: selectors.getCurrentArtist(state)
 	};
 };
 
