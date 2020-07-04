@@ -68,7 +68,7 @@ const apiFetchSongDetails = async (songId, accessToken) => {
 
 export function* fetchSongDetails(action) {
 	const accessToken = yield select(getAccessToken);
-	const songId = action;
+	const { songId } = action;
 	const { song, error } = yield call(apiFetchSongDetails, songId, accessToken);
 	if (error) {
 		console.log('Something went wrong', error);

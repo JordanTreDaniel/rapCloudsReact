@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, Redirect, useParams } from 'react-router-dom';
 import { Typography, AppBar, Button, Toolbar, Grid, Avatar } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -34,10 +34,17 @@ const useStyles = makeStyles((theme) => {
 
 const SongDetail = (props) => {
 	const classes = useStyles();
-	const { song, history, fetchArtist } = props;
+	const { song, history, fetchArtist, fetchSongDetails } = props;
 	const { songId } = useParams();
+	useEffect(
+		() => {
+			if (songId) {
+				fetchSongDetails(songId);
+			}
+		},
+		[ songId ]
+	);
 	if (!songId) return <Redirect to={paths.search} />;
-
 	const { normalizedLyrics, full_title, path, writer_artists, primary_artist, lyrics } = song;
 	const artists = writer_artists ? [ ...writer_artists ] : primary_artist ? [ primary_artist ] : [];
 
@@ -84,4 +91,4 @@ const mapState = (state) => ({
 	song: selectors.getCurrentSong(state)
 });
 
-export default connect(mapState, { fetchArtist })(SongDetail);
+export default connect(mapState, { fetchArtist, fetchSongDetails })(SongDetail);

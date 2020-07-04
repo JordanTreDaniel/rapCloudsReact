@@ -25,8 +25,8 @@ export const setSongSearchTerm = (searchTerm = '') => {
 	return { type: SET_SONG_SEARCH_TERM, searchTerm };
 };
 
-export const fetchSongDetails = () => {
-	return { type: FETCH_SONG_DETAILS };
+export const fetchSongDetails = (songId) => {
+	return { type: FETCH_SONG_DETAILS, songId };
 };
 
 export const fetchArtist = (artistId) => {
