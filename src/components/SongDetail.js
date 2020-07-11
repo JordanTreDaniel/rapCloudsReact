@@ -7,6 +7,8 @@ import { fetchArtist, fetchSongDetails } from '../redux/actions';
 import { connect } from 'react-redux';
 import CurrentSongCloud from '../connected/CurrentSongCloud';
 import paths from '../paths';
+import LinearProgress from '@material-ui/core/LinearProgress';
+
  
 const useStyles = makeStyles((theme) => {
 	return {
@@ -29,7 +31,14 @@ const useStyles = makeStyles((theme) => {
 		lyrics: {
 			whiteSpace: 'pre-line'
 		},
-		lyricBox: {}
+		lyricBox: {},
+		loadingDiv: {
+			width: '100%',
+			'& > * + *': {
+			  marginTop: theme.spacing(2),
+			},
+			marginTop: "40%",
+		  },
 	};
 });
 
@@ -80,12 +89,15 @@ const SongDetail = (props) => {
 					{full_title}
 				</Typography>
 			</div>
-			{areSongsLoading ? "loading" : (<React.Fragment><CurrentSongCloud history={history} />
-			<Grid item sm={12} md={12} classes={{ root: classes.lyricBox }}>
-				<Typography variant="p" classes={{ root: classes.lyrics }}>
-					{lyrics}
-				</Typography>
-			</Grid></React.Fragment>)}
+			{areSongsLoading ? (<div className={classes.loadingDiv}>
+				<LinearProgress />
+				<LinearProgress color="secondary" />
+			</div>) : (<React.Fragment><CurrentSongCloud history={history} />
+				<Grid item sm={12} md={12} classes={{ root: classes.lyricBox }}>
+					<Typography variant="p" classes={{ root: classes.lyrics }}>
+						{lyrics}
+					</Typography>
+				</Grid></React.Fragment>)}
 		</Grid>
 	);
 };
