@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => {
 
 const SongDetail = (props) => {
 	const classes = useStyles();
-	const { song, history, fetchArtist, fetchSongDetails } = props;
+	const { song, history, fetchArtist, fetchSongDetails, areSongsLoading } = props;
 	const { songId } = useParams();
 	useEffect(
 		() => {
@@ -80,18 +80,19 @@ const SongDetail = (props) => {
 					{full_title}
 				</Typography>
 			</div>
-			<CurrentSongCloud history={history} />
+			{areSongsLoading ? "loading" : (<React.Fragment><CurrentSongCloud history={history} />
 			<Grid item sm={12} md={12} classes={{ root: classes.lyricBox }}>
 				<Typography variant="p" classes={{ root: classes.lyrics }}>
 					{lyrics}
 				</Typography>
-			</Grid>
+			</Grid></React.Fragment>)}
 		</Grid>
 	);
 };
 
 const mapState = (state) => ({
-	song: selectors.getCurrentSong(state)
+	song: selectors.getCurrentSong(state),
+	areSongsLoading: selectors.areSongsLoading(state)
 });
 
 export default connect(mapState, { fetchArtist, fetchSongDetails })(SongDetail);
