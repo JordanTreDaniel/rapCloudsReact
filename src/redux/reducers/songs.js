@@ -1,4 +1,11 @@
-import { ADD_SONGS, ADD_SONG_DETAILS, SET_SONG_SEARCH_TERM, SEARCH_SONGS, FETCH_SONG_DETAILS, FETCH_SONG_DETAILS_FAILURE } from '../actionTypes';
+import {
+	ADD_SONGS,
+	ADD_SONG_DETAILS,
+	SET_SONG_SEARCH_TERM,
+	SEARCH_SONGS,
+	FETCH_SONG_DETAILS,
+	FETCH_SONG_DETAILS_FAILURE
+} from '../actionTypes';
 
 const initialState = {
 	byId: {},
@@ -18,7 +25,7 @@ const addSongs = (state, action) => {
 		return acc;
 	}, {});
 
-	return { ...state, byId: { ...state.byId, ...songsById } };
+	return { ...state, loading: false, byId: { ...state.byId, ...songsById } };
 };
 
 const setSearchTerm = (state, action) => {
@@ -37,27 +44,19 @@ const addSongDetails = (state, action) => {
 	return { ...state, byId: { ...songsById }, loading: false };
 };
 
-const toggleLoading = (state, action) => {
-	console.log("this is toggle Loading");
-	const { isLoading } = action;
-	console.log(isLoading);
-	return { ...state, loading: isLoading };
-};
-
 const setLoadingTrue = (state, action) => {
-	return { ...state, loading: true}
+	return { ...state, loading: true };
 };
 
 const setLoadingFalse = (state, action) => {
-	return { ...state, loading: false}
-}
-
+	return { ...state, loading: false };
+};
 
 const handlers = {
 	[ADD_SONGS]: addSongs,
 	[ADD_SONG_DETAILS]: addSongDetails,
 	[SET_SONG_SEARCH_TERM]: setSearchTerm,
-	[SEARCH_SONGS]: toggleLoading,
+	[SEARCH_SONGS]: setLoadingTrue,
 	[FETCH_SONG_DETAILS]: setLoadingTrue,
 	[FETCH_SONG_DETAILS_FAILURE]: setLoadingFalse
 };
