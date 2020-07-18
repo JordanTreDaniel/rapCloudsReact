@@ -1,4 +1,5 @@
 const normalizeLyrics = (songLyrics) => {
+	if (!songLyrics || !songLyrics.length) return [];
 	songLyrics = songLyrics.toLowerCase();
 	const sections = songLyrics.split('\n\n');
 	const rawWords = sections.reduce((_rawWords, section) => {
@@ -19,7 +20,7 @@ const normalizeLyrics = (songLyrics) => {
 		const rawSectionWords = section.split(whiteSpaceRegEx); // Markers undetectable after this point.
 
 		const filteredSectionWords = rawSectionWords.filter((word) => {
-			const unwantedWords = [ 'and', 'but', 'the', 'to', 'if', 'it', 'of' ];
+			const unwantedWords = [ 'and', 'but', 'the', 'to', 'if', 'it', 'of', 'at', '' ];
 			if (unwantedWords.includes(word)) return false;
 			return true;
 		});
