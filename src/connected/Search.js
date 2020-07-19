@@ -27,10 +27,10 @@ const useStyles = makeStyles({
 });
 
 const Search = (props) => {
-	const { setSongSearchTerm, searchTerm, loading } = props;
+	const { setSongSearchTerm, searchTerm, loading, searchSongs } = props;
 	const search = () => {
 		const { searchTerm } = props;
-		props.searchSongs(searchTerm);
+		searchSongs(searchTerm);
 	};
 	const classes = useStyles();
 	return (
@@ -41,6 +41,7 @@ const Search = (props) => {
 					onChange={(e) => {
 						const { value: searchTerm } = e.target;
 						setSongSearchTerm(searchTerm);
+						search(searchTerm);
 					}}
 					value={searchTerm}
 					disableUnderline
