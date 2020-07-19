@@ -1,5 +1,13 @@
 import { put, takeEvery, call, select, cancel } from 'redux-saga/effects';
-import { SEARCH_SONGS, ADD_SONGS, FETCH_SONG_DETAILS, ADD_SONG_DETAILS, FETCH_SONG_DETAILS_FAILURE } from '../actionTypes';
+import {
+	SEARCH_SONGS,
+	SEARCH_SONGS_FAILURE,
+	ADD_SONGS,
+	FETCH_SONG_DETAILS,
+	ADD_SONG_DETAILS,
+	FETCH_SONG_DETAILS_FAILURE,
+	SIGN_OUT
+} from '../actionTypes';
 import { getAccessToken, getSearchTerm } from '../selectors';
 import axios from 'axios';
 
@@ -34,12 +42,14 @@ export function* searchSongs(action) {
 	const searchTerm = yield select(getSearchTerm);
 	const accessToken = yield select(getAccessToken);
 	if (!accessToken || !searchTerm.length) {
-		//TO-DO: If there is no accessToken, log the user out.
+		yield put({ type: SEARCH_SONGS_FAILURE });
+		if (!accessToken) yield put({ type: SIGN_OUT });
 		yield cancel();
 	}
 	const { songs, error } = yield call(apiSearchSongs, searchTerm, accessToken);
 	if (error) {
 		console.log('Something went wrong', error);
+		yield put({ type: SEARCH_SONGS_FAILURE });
 	} else {
 		yield put({ type: ADD_SONGS, songs });
 	}
@@ -75,7 +85,7 @@ export function* fetchSongDetails(action) {
 		console.log('Something went wrong', error);
 	} else {
 		yield put({ type: ADD_SONG_DETAILS, song });
-	} 
+	}
 }
 
 function* watchSearchSongs() {

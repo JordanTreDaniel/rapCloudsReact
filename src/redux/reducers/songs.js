@@ -3,6 +3,7 @@ import {
 	ADD_SONG_DETAILS,
 	SET_SONG_SEARCH_TERM,
 	SEARCH_SONGS,
+	SEARCH_SONGS_FAILURE,
 	FETCH_SONG_DETAILS,
 	FETCH_SONG_DETAILS_FAILURE
 } from '../actionTypes';
@@ -57,6 +58,7 @@ const handlers = {
 	[ADD_SONG_DETAILS]: addSongDetails,
 	[SET_SONG_SEARCH_TERM]: setSearchTerm,
 	[SEARCH_SONGS]: setLoadingTrue,
+	[SEARCH_SONGS_FAILURE]: setLoadingFalse,
 	[FETCH_SONG_DETAILS]: setLoadingTrue,
 	[FETCH_SONG_DETAILS_FAILURE]: setLoadingFalse
 };
