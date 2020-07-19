@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import debounce from 'lodash/debounce';
 
-export default function debouncedInput(WrappedComponent, config = { timeout: 1200 }) {
+export default function debouncedInput(WrappedComponent, config = { timeout: 639 }) {
 	return class DebouncedTextField extends Component {
 		constructor(props) {
 			super(props);

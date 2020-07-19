@@ -8,7 +8,7 @@ import SearchSongList from './SearchSongList';
 import { makeStyles } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
 import DebouncedInput from '../components/DebouncedInput';
-const DebouncedTextField = DebouncedInput(Input, { timeout: 1200 });
+const DebouncedTextField = DebouncedInput(Input, { timeout: 639 });
 
 const useStyles = makeStyles({
 	outerLoading: {
@@ -41,7 +41,7 @@ const Search = (props) => {
 					onChange={(e) => {
 						const { value: searchTerm } = e.target;
 						setSongSearchTerm(searchTerm);
-						search(searchTerm);
+						searchTerm.length && search(searchTerm);
 					}}
 					value={searchTerm}
 					disableUnderline
