@@ -8,3 +8,5 @@ export const FETCH_SONG_DETAILS_FAILURE = 'FETCH_SONG_DETAILS_FAILURE';
 export const SET_HYDRATION_TRUE = 'SET_HYDRATION_TRUE';
 export const ADD_ARTIST = 'ADD_ARTIST';
 export const FETCH_ARTIST = 'FETCH_ARTIST';
+export const SIGN_OUT = 'SIGN_OUT';
+export const DO_NOTHING = 'DO_NOTHING';
