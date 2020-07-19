@@ -1,11 +1,14 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import LoadingCloud from '../components/LoadingCloud';
-import { Button, Input, Typography } from '@material-ui/core';
+import { Input, IconButton } from '@material-ui/core';
 import { searchSongs, setSongSearchTerm } from '../redux/actions';
 import * as selectors from '../redux/selectors';
 import SearchSongList from './SearchSongList';
 import { makeStyles } from '@material-ui/core/styles';
+import SearchIcon from '@material-ui/icons/Search';
+import DebouncedInput from '../components/DebouncedInput';
+const DebouncedTextField = DebouncedInput(Input, { timeout: 1200 });
 
 const useStyles = makeStyles({
 	outerLoading: {
@@ -19,7 +22,8 @@ const useStyles = makeStyles({
 		display: 'flex'
 	},
 	innerLoading: { margin: 'auto', color: 'white', width: 'fit-content' },
-	songListContainer: { width: '80vw', margin: 'auto', textAlign: 'left' }
+	songListContainer: { width: '80vw', margin: 'auto', textAlign: 'left' },
+	mainSearchInput: { fontSize: '3em', marginRight: '2em', marginLeft: '2em' }
 });
 
 const Search = (props) => {
@@ -32,7 +36,7 @@ const Search = (props) => {
 	return (
 		<div className={'masterBox'}>
 			<div className={'searchBar'}>
-				<Input
+				<DebouncedTextField
 					type="text"
 					onChange={(e) => {
 						const { value: searchTerm } = e.target;
@@ -42,8 +46,15 @@ const Search = (props) => {
 					disableUnderline
 					fullWidth
 					placeholder="Search Songs..."
+					inputProps={{ className: classes.mainSearchInput }}
+					rowsMax={1}
+					autoFocus
+					endAdornment={
+						<IconButton color="light" aria-label="search-icon" component="span" onClick={search}>
+							<SearchIcon />
+						</IconButton>
+					}
 				/>
-				<Button onClick={search}>Search</Button>
 			</div>
 
 			<div className={classes.songListContainer}>
