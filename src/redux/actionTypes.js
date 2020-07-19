@@ -1,3 +1,13 @@
-export const SET_USER = "SET_USER";
-export const SET_SONGS = "SET_SONGS";
-export const FETCH_USER = "FETCH_USER";
+export const SET_USER = 'SET_USER';
+export const ADD_SONGS = 'ADD_SONGS';
+export const SEARCH_SONGS = 'SEARCH_SONGS';
+export const SEARCH_SONGS_FAILURE = 'SEARCH_SONGS_FAILURE';
+export const SET_SONG_SEARCH_TERM = 'SET_SONG_SEARCH_TERM';
+export const FETCH_SONG_DETAILS = 'FETCH_SONG_DETAILS';
+export const ADD_SONG_DETAILS = 'ADD_SONG_DETAILS';
+export const FETCH_SONG_DETAILS_FAILURE = 'FETCH_SONG_DETAILS_FAILURE';
+export const SET_HYDRATION_TRUE = 'SET_HYDRATION_TRUE';
+export const ADD_ARTIST = 'ADD_ARTIST';
+export const FETCH_ARTIST = 'FETCH_ARTIST';
+export const SIGN_OUT = 'SIGN_OUT';
+export const DO_NOTHING = 'DO_NOTHING';

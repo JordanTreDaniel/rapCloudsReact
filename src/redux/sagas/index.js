@@ -1,2 +1,5 @@
-import watchFetchUser from "./fetchUser";
-export default [watchFetchUser];
+import watchingSongSagas from './songs';
+import watchingUserSagas from './user';
+import watchingArtistSagas from './artists';
+
+export default [ ...watchingSongSagas, ...watchingUserSagas, ...watchingArtistSagas ];
