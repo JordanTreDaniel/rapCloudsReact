@@ -35,17 +35,17 @@ const normalizeLyrics = (songLyrics) => {
 
 	if (rawWords) {
 		//count words, store results in obj
-		const wordCount = rawWords.reduce(function(wordCount, word) {
-			const currentCount = wordCount[word] + 1 || 1;
-			wordCount[word] = currentCount;
-			return wordCount;
-		}, {});
+		// const wordCount = rawWords.reduce(function(wordCount, word) {
+		// 	const currentCount = wordCount[word] + 1 || 1;
+		// 	wordCount[word] = currentCount;
+		// 	return wordCount;
+		// }, {});
 
-		//convert counted words to cloud-friendly objects for rendering
-		const normalizedLyrics = Object.entries(wordCount).map(([ word, count ]) => {
-			return { text: word, size: 10 + count };
-		});
-		return normalizedLyrics;
+		// //convert counted words to cloud-friendly objects for rendering
+		// const normalizedLyrics = Object.entries(wordCount).map(([ word, count ]) => {
+		// 	return { text: word, size: 10 + count };
+		// });
+		return rawWords.join(' ');
 	}
 };
 

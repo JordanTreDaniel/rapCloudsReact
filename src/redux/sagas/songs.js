@@ -12,6 +12,7 @@ import {
 	FETCH_WORD_CLOUD_SUCCESS
 } from '../actionTypes';
 import { getAccessToken, getSearchTerm } from '../selectors';
+import normalizeLyrics from '../utils/normalizeLyrics';
 import axios from 'axios';
 import { ImageData } from 'canvas';
 
@@ -131,7 +132,8 @@ export function* fetchSongDetails(action) {
 		//get lyrics,
 		//normalize out bs
 		//send lyrics
-		const { lyrics } = song;
+		let { lyrics } = song;
+		lyrics = normalizeLyrics(lyrics);
 		const encodedCloud = yield call(fetchWordCloud, { lyricString: lyrics });
 		song.encodedCloud = encodedCloud;
 		yield put({ type: ADD_SONG_DETAILS, song });
