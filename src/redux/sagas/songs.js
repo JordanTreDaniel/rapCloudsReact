@@ -80,7 +80,7 @@ const apiFetchSongDetails = async (songId, accessToken) => {
 	return { error: { status, statusText } };
 };
 
-const apiFetchWordCloud = async () => {
+const apiFetchWordCloud = async (lyricString) => {
 	// if () {
 	// 	console.error(`Could not fetch song without access token & song id`, { songId, accessToken });
 	// 	return { error: `Could not fetch song without access token & song id` };
@@ -105,7 +105,7 @@ const apiFetchWordCloud = async () => {
 		},
 		data: {
 			lyricJSON: {
-				lyricString: 'ooooooh la laaaaaa!!!! Thank you'
+				lyricString
 			}
 		}
 	});
@@ -128,7 +128,11 @@ export function* fetchSongDetails(action) {
 		yield put({ type: FETCH_SONG_DETAILS_FAILURE });
 		console.log('Something went wrong', error);
 	} else {
-		const encodedCloud = yield call(fetchWordCloud, action);
+		//get lyrics,
+		//normalize out bs
+		//send lyrics
+		const { lyrics } = song;
+		const encodedCloud = yield call(fetchWordCloud, { lyricString: lyrics });
 		song.encodedCloud = encodedCloud;
 		yield put({ type: ADD_SONG_DETAILS, song });
 	}
@@ -136,7 +140,8 @@ export function* fetchSongDetails(action) {
 
 export function* fetchWordCloud(action) {
 	console.log('FEtch World cloud');
-	const { data, error } = yield call(apiFetchWordCloud);
+	const { lyricString } = action;
+	const { data, error } = yield call(apiFetchWordCloud, lyricString);
 	const { encodedCloud } = data;
 	if (error) {
 		yield put({ type: FETCH_WORD_CLOUD_FAILURE });
