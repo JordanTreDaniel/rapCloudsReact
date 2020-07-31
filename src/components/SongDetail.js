@@ -56,8 +56,8 @@ const SongDetail = (props) => {
 	);
 	if (!songId) return <Redirect to={paths.search} />;
 	if (!song) return null;
-
-	const { normalizedLyrics, full_title, path, writer_artists, primary_artist, lyrics } = song;
+	console.log('song', song);
+	const { normalizedLyrics, full_title, path, writer_artists, primary_artist, lyrics, encodedCloud } = song;
 	const artists = writer_artists ? [ ...writer_artists ] : primary_artist ? [ primary_artist ] : [];
 
 	return (
@@ -93,7 +93,8 @@ const SongDetail = (props) => {
 				<LoadingCloud />
 			) : (
 				<React.Fragment>
-					<CurrentSongCloud history={history} />
+					{/* <CurrentSongCloud history={history} /> */}
+					<img src={`data:image/png;base64, ${encodedCloud}`} alt={'Rap Cloud'} />
 					<Grid item sm={12} md={12} classes={{ root: classes.lyricBox }}>
 						<Typography variant="p" classes={{ root: classes.lyrics }}>
 							{lyrics}
