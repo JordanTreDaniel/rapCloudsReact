@@ -38,6 +38,10 @@ const useStyles = makeStyles((theme) => {
 				marginTop: theme.spacing(2)
 			},
 			marginTop: '40%'
+		},
+		wordCloud: {
+			width: '90vw',
+			margin: 'auto'
 		}
 	};
 });
@@ -94,7 +98,11 @@ const SongDetail = (props) => {
 			) : (
 				<React.Fragment>
 					{/* <CurrentSongCloud history={history} /> */}
-					<img src={`data:image/png;base64, ${encodedCloud}`} alt={'Rap Cloud'} />
+					<img
+						src={`data:image/png;base64, ${encodedCloud}`}
+						alt={'Rap Cloud'}
+						className={classes.wordCloud}
+					/>
 					<Grid item sm={12} md={12} classes={{ root: classes.lyricBox }}>
 						<Typography variant="p" classes={{ root: classes.lyrics }}>
 							{lyrics}
