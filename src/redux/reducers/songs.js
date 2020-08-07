@@ -5,7 +5,8 @@ import {
 	SEARCH_SONGS,
 	SEARCH_SONGS_FAILURE,
 	FETCH_SONG_DETAILS,
-	FETCH_SONG_DETAILS_FAILURE
+	FETCH_SONG_DETAILS_FAILURE,
+	SET_LOADING_FALSE
 } from '../actionTypes';
 
 const initialState = {
@@ -58,6 +59,7 @@ const handlers = {
 	[ADD_SONG_DETAILS]: addSongDetails,
 	[SET_SONG_SEARCH_TERM]: setSearchTerm,
 	[SEARCH_SONGS]: setLoadingTrue,
+	[SET_LOADING_FALSE]: setLoadingFalse,
 	[SEARCH_SONGS_FAILURE]: setLoadingFalse,
 	[FETCH_SONG_DETAILS]: setLoadingTrue,
 	[FETCH_SONG_DETAILS_FAILURE]: setLoadingFalse

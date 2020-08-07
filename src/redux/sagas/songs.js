@@ -9,9 +9,10 @@ import {
 	SIGN_OUT,
 	FETCH_WORD_CLOUD,
 	FETCH_WORD_CLOUD_FAILURE,
-	FETCH_WORD_CLOUD_SUCCESS
+	FETCH_WORD_CLOUD_SUCCESS,
+	SET_LOADING_FALSE
 } from '../actionTypes';
-import { getAccessToken, getSearchTerm } from '../selectors';
+import { getAccessToken, getSearchTerm, getSongFromId } from '../selectors';
 import normalizeLyrics from '../utils/normalizeLyrics';
 import axios from 'axios';
 import { ImageData } from 'canvas';
@@ -124,6 +125,11 @@ const apiFetchWordCloud = async (lyricString) => {
 export function* fetchSongDetails(action) {
 	const accessToken = yield select(getAccessToken);
 	const { songId } = action;
+	const existingSong = yield select(getSongFromId, songId);
+	if (existingSong && existingSong.normalizedLyrics && existingSong.encodedCloud) {
+		yield put({ type: SET_LOADING_FALSE });
+		yield cancel();
+	}
 	const { song, error } = yield call(apiFetchSongDetails, songId, accessToken);
 	if (error) {
 		yield put({ type: FETCH_SONG_DETAILS_FAILURE });
