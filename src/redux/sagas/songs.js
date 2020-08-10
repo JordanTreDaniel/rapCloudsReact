@@ -133,32 +133,31 @@ export function* fetchSongDetails(action) {
 	const { song, error } = yield call(apiFetchSongDetails, songId, accessToken);
 	if (error) {
 		yield put({ type: FETCH_SONG_DETAILS_FAILURE });
-		console.log('Something went wrong', error);
+		console.error('Something went wrong', error);
 	} else {
-		//get lyrics,
-		//normalize out bs
-		//send lyrics
 		let { lyrics } = song;
 		lyrics = normalizeLyrics(lyrics);
 		const encodedCloud = yield call(fetchWordCloud, { lyricString: lyrics });
-		song.encodedCloud = encodedCloud;
+		if (!!encodedCloud) song.encodedCloud = encodedCloud;
 		yield put({ type: ADD_SONG_DETAILS, song });
 	}
 }
 
 export function* fetchWordCloud(action) {
-	console.log('FEtch World cloud');
-	const { lyricString } = action;
-	const { data, error } = yield call(apiFetchWordCloud, lyricString);
-	const { encodedCloud } = data;
-	if (error) {
+	try {
+		const { lyricString } = action;
+		const { data, error } = yield call(apiFetchWordCloud, lyricString);
+		const { encodedCloud } = data;
+		if (error) {
+			yield put({ type: FETCH_WORD_CLOUD_FAILURE });
+			console.log('Something went wrong', error);
+		} else {
+			yield put({ type: FETCH_WORD_CLOUD_SUCCESS });
+			return encodedCloud;
+		}
+	} catch (err) {
 		yield put({ type: FETCH_WORD_CLOUD_FAILURE });
-		console.log('Something went wrong', error);
-	} else {
-		console.log('Fetch word cloud!', data);
-
-		yield put({ type: FETCH_WORD_CLOUD_SUCCESS });
-		return encodedCloud;
+		console.log('Something went wrong', err);
 	}
 }
 
