@@ -51,7 +51,7 @@ const Search = (props) => {
 					rowsMax={1}
 					autoFocus
 					endAdornment={
-						<IconButton color="light" aria-label="search-icon" component="span" onClick={search}>
+						<IconButton aria-label="search-icon" component="span" onClick={search}>
 							<SearchIcon />
 						</IconButton>
 					}

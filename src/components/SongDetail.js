@@ -1,13 +1,11 @@
 import React, { useEffect } from 'react';
-import { Link, Redirect, useParams } from 'react-router-dom';
-import { Typography, AppBar, Button, Toolbar, Grid, Avatar } from '@material-ui/core';
+import { Redirect, useParams } from 'react-router-dom';
+import { Typography, AppBar, Toolbar, Grid, Avatar } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import * as selectors from '../redux/selectors';
 import { fetchArtist, fetchSongDetails } from '../redux/actions';
 import { connect } from 'react-redux';
-import CurrentSongCloud from '../connected/CurrentSongCloud';
 import paths from '../paths';
-import LinearProgress from '@material-ui/core/LinearProgress';
 import LoadingCloud from './LoadingCloud';
 
 const useStyles = makeStyles((theme) => {
@@ -38,6 +36,10 @@ const useStyles = makeStyles((theme) => {
 				marginTop: theme.spacing(2)
 			},
 			marginTop: '40%'
+		},
+		wordCloud: {
+			width: '90vw',
+			margin: 'auto'
 		}
 	};
 });
@@ -57,7 +59,7 @@ const SongDetail = (props) => {
 	if (!songId) return <Redirect to={paths.search} />;
 	if (!song) return null;
 
-	const { normalizedLyrics, full_title, path, writer_artists, primary_artist, lyrics } = song;
+	const { normalizedLyrics, full_title, path, writer_artists, primary_artist, lyrics, encodedCloud } = song;
 	const artists = writer_artists ? [ ...writer_artists ] : primary_artist ? [ primary_artist ] : [];
 
 	return (
@@ -93,9 +95,13 @@ const SongDetail = (props) => {
 				<LoadingCloud />
 			) : (
 				<React.Fragment>
-					<CurrentSongCloud history={history} />
+					<img
+						src={`data:image/png;base64, ${encodedCloud}`}
+						alt={'Rap Cloud'}
+						className={classes.wordCloud}
+					/>
 					<Grid item sm={12} md={12} classes={{ root: classes.lyricBox }}>
-						<Typography variant="p" classes={{ root: classes.lyrics }}>
+						<Typography variant="body1" classes={{ root: classes.lyrics }}>
 							{lyrics}
 						</Typography>
 					</Grid>

@@ -46,6 +46,15 @@ export const getSongsById = (state) => {
 	return byId;
 };
 
+export const getSongFromId = createSelector(
+	getSongsById,
+	(_, songId) => songId,
+	(songsById, songId) => {
+		const song = songsById[songId];
+		return song ? { ...song } : null;
+	}
+);
+
 export const getSongsList = createSelector(getSongsById, (songsById) => {
 	return Object.values(songsById);
 });

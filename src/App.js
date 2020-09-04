@@ -25,24 +25,28 @@ const App = (props) => {
 	}
 	return (
 		<ThemeProvider theme={theme}>
-			<div className="App">
-				<Navbar />
-				<Switch>
-					<Route path={paths.signIn} render={(routerProps) => <SignIn history={routerProps.history} />} />
-					<Route path={paths.search} render={(routerProps) => <Search history={routerProps.history} />} />
-					<Route
-						path={paths.songPage}
-						render={(routerProps) => <SongDetail history={routerProps.history} />}
-					/>
-					<Route
-						path={paths.artistPage}
-						render={({ history }) => {
-							return <ArtistPage history={history} />;
-						}}
-					/>
-					<Route render={() => <Redirect to={paths.search} />} />
-				</Switch>
-			</div>
+			{appIsHydrated ? (
+				<div className="App">
+					<Navbar />
+					<Switch>
+						<Route path={paths.signIn} render={(routerProps) => <SignIn history={routerProps.history} />} />
+						<Route path={paths.search} render={(routerProps) => <Search history={routerProps.history} />} />
+						<Route
+							path={paths.songPage}
+							render={(routerProps) => <SongDetail history={routerProps.history} />}
+						/>
+						<Route
+							path={paths.artistPage}
+							render={({ history }) => {
+								return <ArtistPage history={history} />;
+							}}
+						/>
+						<Route render={() => <Redirect to={paths.search} />} />
+					</Switch>
+				</div>
+			) : (
+				<h1>Rap Clouds</h1>
+			)}
 		</ThemeProvider>
 	);
 };
