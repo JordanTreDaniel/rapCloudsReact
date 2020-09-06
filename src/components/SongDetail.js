@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => {
 
 const SongDetail = (props) => {
 	const classes = useStyles();
-	const { song, history, fetchArtist, fetchSongDetails, areSongsLoading } = props;
+	const { song, fetchArtist, fetchSongDetails, isSongDetailLoading } = props;
 	const { songId } = useParams();
 	useEffect(
 		() => {
@@ -91,7 +91,7 @@ const SongDetail = (props) => {
 					{full_title}
 				</Typography>
 			</div>
-			{areSongsLoading ? (
+			{isSongDetailLoading ? (
 				<LoadingCloud />
 			) : (
 				<React.Fragment>
@@ -113,7 +113,7 @@ const SongDetail = (props) => {
 
 const mapState = (state) => ({
 	song: selectors.getCurrentSong(state),
-	areSongsLoading: selectors.areSongsLoading(state)
+	isSongDetailLoading: selectors.isSongDetailLoading(state)
 });
 
 export default connect(mapState, { fetchArtist, fetchSongDetails })(SongDetail);

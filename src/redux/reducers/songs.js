@@ -15,7 +15,7 @@ const initialState = {
 	currentSongId: null,
 	searchTerm: '',
 	searchLoading: false,
-	loading: false
+	songDetailLoading: false
 };
 
 const addSongs = (state, action) => {
@@ -45,12 +45,14 @@ const addSongDetails = (state, action) => {
 	const oldSong = songsById[songId];
 	const mergedSong = { ...oldSong, ...song };
 	songsById[songId] = mergedSong;
-	return { ...state, byId: { ...songsById }, loading: false };
+	return { ...state, byId: { ...songsById }, songDetailLoading: false };
 };
 
 const loadingMap = {
 	[SEARCH_SONGS]: 'searchLoading',
-	[SEARCH_SONGS_FAILURE]: 'searchLoading'
+	[SEARCH_SONGS_FAILURE]: 'searchLoading',
+	[FETCH_SONG_DETAILS]: 'songDetailLoading',
+	[FETCH_SONG_DETAILS_FAILURE]: 'songDetailLoading'
 };
 
 const setLoadingTrue = (state, action) => {
