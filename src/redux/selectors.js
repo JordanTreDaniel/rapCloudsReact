@@ -59,18 +59,26 @@ export const getSongsList = createSelector(getSongsById, (songsById) => {
 	return Object.values(songsById);
 });
 
-export const getSearchedSongsList = createSelector(getSongsList, getSearchTerm, (songsList, searchTerm) => {
-	return searchTerm.length
-		? songsList.filter((song) => {
-				const normalizedTitle = song.full_title.toLowerCase();
-				const normalizedArtistName = song.primary_artist.name.toLowerCase();
-				const normalizedSearchTerm = searchTerm.toLowerCase().split(' ');
-				return normalizedSearchTerm.some(
-					(word) => normalizedTitle.match(word) || normalizedArtistName.match(word)
-				);
-			})
-		: songsList;
+export const getNormedSearchTerm = createSelector(getSearchTerm, (rawSearchTerm) => {
+	return rawSearchTerm.toLowerCase().replace(/[.,\/#!%\^\*;:{}=\-_`~()\[\]]/g, '');
 });
+
+export const getSearchedSongsList = createSelector(
+	getSongsList,
+	getNormedSearchTerm,
+	(songsList, normalizedSearchTerm) => {
+		return normalizedSearchTerm.length
+			? songsList.filter((song) => {
+					const normalizedTitle = song.full_title.toLowerCase();
+					const normalizedArtistName = song.primary_artist.name.toLowerCase();
+					const searchTermItems = normalizedSearchTerm.split(' ');
+					return searchTermItems.some(
+						(word) => normalizedTitle.match(word) || normalizedArtistName.match(word)
+					);
+				})
+			: songsList;
+	}
+);
 
 //Artist
 /********************************************************************* */
