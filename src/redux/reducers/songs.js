@@ -14,6 +14,7 @@ const initialState = {
 	byId: {},
 	currentSongId: null,
 	searchTerm: '',
+	searchLoading: false,
 	loading: false
 };
 
@@ -28,7 +29,7 @@ const addSongs = (state, action) => {
 		return acc;
 	}, {});
 
-	return { ...state, loading: false, byId: { ...state.byId, ...songsById } };
+	return { ...state, searchLoading: false, byId: { ...state.byId, ...songsById } };
 };
 
 const setSearchTerm = (state, action) => {
@@ -47,12 +48,21 @@ const addSongDetails = (state, action) => {
 	return { ...state, byId: { ...songsById }, loading: false };
 };
 
+const loadingMap = {
+	[SEARCH_SONGS]: 'searchLoading',
+	[SEARCH_SONGS_FAILURE]: 'searchLoading'
+};
+
 const setLoadingTrue = (state, action) => {
-	return { ...state, loading: true };
+	const { type } = action;
+	const loadingProperty = loadingMap[type];
+	return { ...state, [loadingProperty]: true };
 };
 
 const setLoadingFalse = (state, action) => {
-	return { ...state, loading: false };
+	const { type } = action;
+	const loadingProperty = loadingMap[type];
+	return { ...state, [loadingProperty]: false };
 };
 
 const handlers = {

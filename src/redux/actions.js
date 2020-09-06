@@ -17,7 +17,6 @@ export const addSongs = (songs = [ { name: 'We finally made it.' } ]) => {
 };
 
 export const searchSongs = () => {
-	console.log("action triggered");
 	return { type: SEARCH_SONGS };
 };
 

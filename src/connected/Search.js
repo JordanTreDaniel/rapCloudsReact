@@ -69,7 +69,7 @@ const Search = (props) => {
 const mapState = (state) => ({
 	songs: selectors.getSongsList(state),
 	searchTerm: selectors.getSearchTerm(state),
-	loading: selectors.areSongsLoading(state)
+	loading: selectors.isSongSearchLoading(state)
 });
 
 Search.defaultProps = {

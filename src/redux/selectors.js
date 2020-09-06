@@ -38,6 +38,7 @@ export const getUserImg = createSelector(
 /********************************************************************* */
 export const getSearchTerm = (state) => state.songs.searchTerm;
 export const areSongsLoading = (state) => state.songs.loading;
+export const isSongSearchLoading = (state) => state.songs.searchLoading;
 
 export const getCurrentSongId = createSelector(getMatchParams, (matchParams) => matchParams.songId);
 
