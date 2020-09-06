@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => {
 
 const SongDetail = (props) => {
 	const classes = useStyles();
-	const { song, fetchArtist, fetchSongDetails, isSongDetailLoading } = props;
+	const { song, fetchArtist, fetchSongDetails, isSongDetailLoading, isWordCloudLoading } = props;
 	const { songId } = useParams();
 	useEffect(
 		() => {
@@ -59,7 +59,7 @@ const SongDetail = (props) => {
 	if (!songId) return <Redirect to={paths.search} />;
 	if (!song) return null;
 
-	const { normalizedLyrics, full_title, path, writer_artists, primary_artist, lyrics, encodedCloud } = song;
+	const { full_title, path, writer_artists, primary_artist, lyrics, encodedCloud } = song;
 	const artists = writer_artists ? [ ...writer_artists ] : primary_artist ? [ primary_artist ] : [];
 
 	return (
@@ -91,21 +91,19 @@ const SongDetail = (props) => {
 					{full_title}
 				</Typography>
 			</div>
+			{isWordCloudLoading ? (
+				<LoadingCloud />
+			) : (
+				<img src={`data:image/png;base64, ${encodedCloud}`} alt={'Rap Cloud'} className={classes.wordCloud} />
+			)}
 			{isSongDetailLoading ? (
 				<LoadingCloud />
 			) : (
-				<React.Fragment>
-					<img
-						src={`data:image/png;base64, ${encodedCloud}`}
-						alt={'Rap Cloud'}
-						className={classes.wordCloud}
-					/>
-					<Grid item sm={12} md={12} classes={{ root: classes.lyricBox }}>
-						<Typography variant="body1" classes={{ root: classes.lyrics }}>
-							{lyrics}
-						</Typography>
-					</Grid>
-				</React.Fragment>
+				<Grid item sm={12} md={12} classes={{ root: classes.lyricBox }}>
+					<Typography variant="body1" classes={{ root: classes.lyrics }}>
+						{lyrics}
+					</Typography>
+				</Grid>
 			)}
 		</Grid>
 	);
@@ -113,7 +111,8 @@ const SongDetail = (props) => {
 
 const mapState = (state) => ({
 	song: selectors.getCurrentSong(state),
-	isSongDetailLoading: selectors.isSongDetailLoading(state)
+	isSongDetailLoading: selectors.isSongDetailLoading(state),
+	isWordCloudLoading: selectors.isWordCloudLoading(state)
 });
 
 export default connect(mapState, { fetchArtist, fetchSongDetails })(SongDetail);

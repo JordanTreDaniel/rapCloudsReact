@@ -7,7 +7,9 @@ import {
 	FETCH_SONG_DETAILS,
 	FETCH_SONG_DETAILS_FAILURE,
 	FETCH_WORD_CLOUD_FAILURE,
-	SET_LOADING_FALSE
+	SET_LOADING_FALSE,
+	FETCH_WORD_CLOUD_SUCCESS,
+	FETCH_WORD_CLOUD
 } from '../actionTypes';
 
 const initialState = {
@@ -15,7 +17,8 @@ const initialState = {
 	currentSongId: null,
 	searchTerm: '',
 	searchLoading: false,
-	songDetailLoading: false
+	songDetailLoading: false,
+	wordCloudLoading: false
 };
 
 const addSongs = (state, action) => {
@@ -48,11 +51,23 @@ const addSongDetails = (state, action) => {
 	return { ...state, byId: { ...songsById }, songDetailLoading: false };
 };
 
+const addWordCloud = (state, action) => {
+	const { songId, encodedCloud } = action;
+	if (!songId || !encodedCloud) return state;
+	const songsById = state.byId;
+	const oldSong = songsById[songId];
+	const mergedSong = { ...oldSong, encodedCloud };
+	songsById[songId] = mergedSong;
+	return { ...state, byId: { ...songsById }, wordCloudLoading: false };
+};
+
 const loadingMap = {
 	[SEARCH_SONGS]: 'searchLoading',
 	[SEARCH_SONGS_FAILURE]: 'searchLoading',
 	[FETCH_SONG_DETAILS]: 'songDetailLoading',
-	[FETCH_SONG_DETAILS_FAILURE]: 'songDetailLoading'
+	[FETCH_SONG_DETAILS_FAILURE]: 'songDetailLoading',
+	[FETCH_WORD_CLOUD_FAILURE]: 'wordCloudLoading',
+	[FETCH_WORD_CLOUD]: 'wordCloudLoading'
 };
 
 const setLoadingTrue = (state, action) => {
@@ -76,7 +91,9 @@ const handlers = {
 	[SEARCH_SONGS_FAILURE]: setLoadingFalse,
 	[FETCH_SONG_DETAILS]: setLoadingTrue,
 	[FETCH_SONG_DETAILS_FAILURE]: setLoadingFalse,
-	[FETCH_WORD_CLOUD_FAILURE]: setLoadingFalse
+	[FETCH_WORD_CLOUD_FAILURE]: setLoadingFalse,
+	[FETCH_WORD_CLOUD]: setLoadingTrue,
+	[FETCH_WORD_CLOUD_SUCCESS]: addWordCloud
 };
 
 export default (state = initialState, action) => {

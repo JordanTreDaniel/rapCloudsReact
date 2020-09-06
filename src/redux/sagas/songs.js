@@ -137,22 +137,26 @@ export function* fetchSongDetails(action) {
 	} else {
 		let { lyrics } = song;
 		lyrics = normalizeLyrics(lyrics);
-		const encodedCloud = yield call(fetchWordCloud, { lyricString: lyrics });
-		if (!!encodedCloud) song.encodedCloud = encodedCloud;
 		yield put({ type: ADD_SONG_DETAILS, song });
+		yield call(fetchWordCloud, { lyricString: lyrics, songId });
 	}
 }
 
 export function* fetchWordCloud(action) {
 	try {
-		const { lyricString } = action;
+		const { lyricString, songId, justForLoading } = action;
+		if (justForLoading) {
+			yield cancel();
+			return;
+		}
+		yield put({ type: FETCH_WORD_CLOUD, justForLoading: true });
 		const { data, error } = yield call(apiFetchWordCloud, lyricString);
 		const { encodedCloud } = data;
 		if (error) {
 			yield put({ type: FETCH_WORD_CLOUD_FAILURE });
 			console.log('Something went wrong', error);
 		} else {
-			yield put({ type: FETCH_WORD_CLOUD_SUCCESS });
+			yield put({ type: FETCH_WORD_CLOUD_SUCCESS, songId, encodedCloud });
 			return encodedCloud;
 		}
 	} catch (err) {
