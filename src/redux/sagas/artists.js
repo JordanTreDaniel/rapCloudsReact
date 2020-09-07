@@ -1,5 +1,5 @@
 import { put, takeEvery, call, select, cancel } from 'redux-saga/effects';
-import { FETCH_ARTIST, ADD_SONGS } from '../actionTypes';
+import { FETCH_ARTIST, ADD_SONGS, SIGN_OUT } from '../actionTypes';
 import { getAccessToken, getArtistFromId } from '../selectors';
 import axios from 'axios';
 
@@ -24,23 +24,28 @@ const apiFetchArtist = async (artistId, accessToken) => {
 };
 
 export function* fetchArtist(action) {
+	const accessToken = yield select(getAccessToken);
+	if (!accessToken) {
+		console.error(`Could not fetch artist without access token `, { accessToken });
+		yield put({ type: SIGN_OUT });
+		yield cancel();
+	}
 	const { artistId } = action;
+	if (!artistId) {
+		console.error(`Could not fetch artist without artist id`, { artistId });
+		yield put({ type: FETCH_ARTIST.failure, artistId });
+		yield cancel();
+	}
 	const exisitingInStore = yield select(getArtistFromId, artistId);
 	if (exisitingInStore) {
 		yield put({ type: FETCH_ARTIST.cancellation });
 		yield cancel();
 		return;
 	}
-	const accessToken = yield select(getAccessToken);
 
-	if (!accessToken || !artistId) {
-		console.error(`Could not fetch artist without access token & artist id`, { artistId, accessToken });
-		//TO-DO: If there is no accessToken, log the user out.
-		yield cancel();
-	}
 	const { artist, error } = yield call(apiFetchArtist, artistId, accessToken);
 	if (error) {
-		yield put(FETCH_ARTIST.failure);
+		yield put({ type: FETCH_ARTIST.failure, artistId });
 	} else {
 		const { songs = [] } = artist;
 		delete artist.songs;
