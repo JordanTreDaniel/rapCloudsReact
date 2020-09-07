@@ -29,8 +29,7 @@ export const fetchSongDetails = (songId) => {
 };
 
 export const fetchArtist = (artistId) => {
-	console.log('from actions', artistId);
-	return { type: FETCH_ARTIST, artistId };
+	return { type: FETCH_ARTIST.start, artistId };
 };
 
 export const addSongDetails = (song) => {

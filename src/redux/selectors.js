@@ -113,6 +113,11 @@ export const getArtistCloud = createSelector();
 
 export const getArtistsById = (state) => state.artists.byId;
 
+export const getArtistFromId = createSelector(
+	getArtistsById,
+	(_, artistId) => artistId,
+	(artistsById, artistId) => artistsById[artistId]
+);
 export const getCurrentArtist = createSelector(getMatchParams, getArtistsById, (matchParams, artistsById) => {
 	const { artistId } = matchParams;
 	if (!artistId) {
