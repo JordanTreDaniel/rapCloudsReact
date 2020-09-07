@@ -7,6 +7,7 @@ import { fetchSongDetails } from '../redux/actions';
 import { connect } from 'react-redux';
 import paths from '../paths';
 import LoadingCloud from './LoadingCloud';
+import BackButton from './BackButton';
 
 const useStyles = makeStyles((theme) => {
 	return {
@@ -23,6 +24,10 @@ const useStyles = makeStyles((theme) => {
 			color: 'black'
 		},
 		artistBubbles: {
+			display: 'flex',
+			justifyContent: 'space-evenly'
+		},
+		leftBubbles: {
 			display: 'flex',
 			justifyContent: 'space-evenly'
 		},
@@ -66,7 +71,8 @@ const SongDetail = (props) => {
 		<Grid>
 			<AppBar color="inherit" position="static">
 				<Toolbar className={classes.toolBar}>
-					<div>
+					<div className={classes.leftBubbles}>
+						<BackButton />
 						<a href={`https://genius.com${path}`} alt={`${song.full_title} on Genius`} target="_blank">
 							<Avatar src="https://pbs.twimg.com/profile_images/885222003174551552/cv3KtGVS_400x400.jpg" />
 						</a>
