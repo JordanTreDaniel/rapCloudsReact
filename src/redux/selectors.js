@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect';
 import { normalizeLyrics, whichPath } from './utils';
 import { createMatchSelector } from 'connected-react-router';
+import sortBy from 'lodash/sortBy';
 
 //General
 /********************************************************************* */
@@ -70,16 +71,26 @@ export const getSearchedSongsList = createSelector(
 	getSongsList,
 	getNormedSearchTerm,
 	(songsList, normalizedSearchTerm) => {
-		return normalizedSearchTerm.length
-			? songsList.filter((song) => {
-					const normalizedTitle = song.full_title.toLowerCase();
-					const normalizedArtistName = song.primary_artist.name.toLowerCase();
-					const searchTermItems = normalizedSearchTerm.split(' ');
-					return searchTermItems.some(
-						(word) => normalizedTitle.match(word) || normalizedArtistName.match(word)
-					);
-				})
-			: songsList;
+		if (!normalizedSearchTerm.length) return songsList;
+		const matchingSongs = songsList.reduce((matchingSongs, song) => {
+			const normalizedTitle = song.full_title.toLowerCase();
+			const normalizedArtistName = song.primary_artist.name.toLowerCase();
+			const searchTermItems = normalizedSearchTerm.split(' ');
+			let isMatch = false;
+			let searchRank = 0;
+			searchTermItems.forEach((word) => {
+				const titleMatch = normalizedTitle.match(word);
+				const artistMatch = normalizedArtistName.match(word);
+				if (titleMatch || artistMatch) isMatch = true;
+				searchRank += titleMatch ? titleMatch[0].length * 2 : 0;
+				searchRank += artistMatch ? artistMatch[0].length : 0;
+			});
+			if (!isMatch) return matchingSongs;
+			const rankedSong = { ...song, searchRank };
+			matchingSongs.push(rankedSong);
+			return matchingSongs;
+		}, []);
+		return sortBy(matchingSongs, (song) => song.searchRank).reverse();
 	}
 );
 
