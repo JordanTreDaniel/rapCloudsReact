@@ -40,7 +40,6 @@ export function* fetchArtist(action) {
 		delete artist.songs;
 		yield put({ type: ADD_ARTIST, artist });
 		yield put({ type: ADD_SONGS, songs });
-		history.push(`/cloudMakers/${artistId}`);
 	}
 }
 

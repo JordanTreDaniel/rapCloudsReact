@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { Typography, AppBar, Button, Toolbar, Grid, Avatar } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import * as selectors from '../redux/selectors';
-
+import { fetchArtist } from '../redux/actions';
 import { connect } from 'react-redux';
 import ArtistSongList from './ArtistSongList';
 import paths from '../paths';
@@ -18,11 +18,22 @@ const useStyles = makeStyles((theme) => {
 
 const ArtistPage = (props) => {
 	const classes = useStyles();
-	let { artistId } = useParams();
+	const { artistId } = useParams();
+	const { fetchArtist } = props;
+	console.log({ artistId });
+	useEffect(
+		() => {
+			if (artistId) {
+				fetchArtist(artistId);
+			}
+		},
+		[ artistId ]
+	);
+	if (!artistId) return <Redirect to={paths.search} />;
 	const { artist } = props;
-	if (!artist) return <Redirect to={paths.search} />;
-	const { name } = artist;
+	if (!artist) return null;
 
+	const { name } = artist;
 	return (
 		<Grid className={classes.artistPageGrid}>
 			<Typography variant="h2">{name}</Typography>
@@ -37,4 +48,4 @@ const mapState = (state) => {
 	};
 };
 
-export default connect(mapState, null)(ArtistPage);
+export default connect(mapState, { fetchArtist })(ArtistPage);

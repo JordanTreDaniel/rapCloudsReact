@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
-import { Redirect, useParams } from 'react-router-dom';
+import { Redirect, useParams, Link } from 'react-router-dom';
 import { Typography, AppBar, Toolbar, Grid, Avatar } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import * as selectors from '../redux/selectors';
-import { fetchArtist, fetchSongDetails } from '../redux/actions';
+import { fetchSongDetails } from '../redux/actions';
 import { connect } from 'react-redux';
 import paths from '../paths';
 import LoadingCloud from './LoadingCloud';
@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => {
 
 const SongDetail = (props) => {
 	const classes = useStyles();
-	const { song, fetchArtist, fetchSongDetails, isSongDetailLoading, isWordCloudLoading } = props;
+	const { song, fetchSongDetails, isSongDetailLoading, isWordCloudLoading } = props;
 	const { songId } = useParams();
 	useEffect(
 		() => {
@@ -75,12 +75,9 @@ const SongDetail = (props) => {
 					<div className={classes.artistBubbles}>
 						{artists.map((artist, idx) => {
 							return (
-								<Avatar
-									src={artist.header_image_url}
-									alt={artist.name}
-									key={idx}
-									onClick={() => fetchArtist(artist.id)} //TO-DO: Make this a link to artist, not dispatch fetch action
-								/>
+								<Link to={`/cloudMakers/${artist.id}`}>
+									<Avatar src={artist.header_image_url} alt={artist.name} key={idx} />
+								</Link>
 							);
 						})}
 					</div>
@@ -115,4 +112,4 @@ const mapState = (state) => ({
 	isWordCloudLoading: selectors.isWordCloudLoading(state)
 });
 
-export default connect(mapState, { fetchArtist, fetchSongDetails })(SongDetail);
+export default connect(mapState, { fetchSongDetails })(SongDetail);
