@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Redirect, useParams, Link } from 'react-router-dom';
-import { Typography, AppBar, Toolbar, Grid, Avatar } from '@material-ui/core';
+import { Typography, AppBar, Toolbar, Grid, Avatar, Tooltip } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import * as selectors from '../redux/selectors';
 import { fetchSongDetails } from '../redux/actions';
@@ -73,17 +73,25 @@ const SongDetail = (props) => {
 				<Toolbar className={classes.toolBar}>
 					<div className={classes.leftBubbles}>
 						<BackButton />
-						<a href={`https://genius.com${path}`} alt={`${song.full_title} on Genius`} target="_blank">
-							<Avatar src="https://pbs.twimg.com/profile_images/885222003174551552/cv3KtGVS_400x400.jpg" />
-						</a>
+						<Tooltip placement="bottom" title={`See ${full_title} on Genius`}>
+							<a href={`https://genius.com${path}`} alt={`${song.full_title} on Genius`} target="_blank">
+								<Avatar src="https://pbs.twimg.com/profile_images/885222003174551552/cv3KtGVS_400x400.jpg" />
+							</a>
+						</Tooltip>
 					</div>
 
 					<div className={classes.artistBubbles}>
 						{artists.map((artist, idx) => {
 							return (
-								<Link to={`/cloudMakers/${artist.id}`}>
-									<Avatar src={artist.header_image_url} alt={artist.name} key={idx} />
-								</Link>
+								<Tooltip placement="bottom" title={`See ${artist.name}`}>
+									<Link to={`/cloudMakers/${artist.id}`} key={idx}>
+										<Avatar
+											src={artist.header_image_url}
+											alt={`Link to ${artist.name}'s page`}
+											key={idx}
+										/>
+									</Link>
+								</Tooltip>
 							);
 						})}
 					</div>
