@@ -10,7 +10,7 @@ import {
 	FETCH_WORD_CLOUD,
 	FETCH_WORD_CLOUD_FAILURE,
 	FETCH_WORD_CLOUD_SUCCESS,
-	SET_LOADING_FALSE
+	CANCEL_SONG_DETAIL_CALL
 } from '../actionTypes';
 import { getAccessToken, getSearchTerm, getSongFromId } from '../selectors';
 import normalizeLyrics from '../utils/normalizeLyrics';
@@ -127,7 +127,7 @@ export function* fetchSongDetails(action) {
 	const { songId } = action;
 	const existingSong = yield select(getSongFromId, songId);
 	if (existingSong && existingSong.normalizedLyrics && existingSong.encodedCloud) {
-		yield put({ type: SET_LOADING_FALSE });
+		yield put({ type: CANCEL_SONG_DETAIL_CALL });
 		yield cancel();
 	}
 	const { song, error } = yield call(apiFetchSongDetails, songId, accessToken);

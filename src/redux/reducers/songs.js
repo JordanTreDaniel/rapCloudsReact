@@ -7,7 +7,7 @@ import {
 	FETCH_SONG_DETAILS,
 	FETCH_SONG_DETAILS_FAILURE,
 	FETCH_WORD_CLOUD_FAILURE,
-	SET_LOADING_FALSE,
+	CANCEL_SONG_DETAIL_CALL,
 	FETCH_WORD_CLOUD_SUCCESS,
 	FETCH_WORD_CLOUD
 } from '../actionTypes';
@@ -66,6 +66,7 @@ const loadingMap = {
 	[SEARCH_SONGS_FAILURE]: 'searchLoading',
 	[FETCH_SONG_DETAILS]: 'songDetailLoading',
 	[FETCH_SONG_DETAILS_FAILURE]: 'songDetailLoading',
+	[CANCEL_SONG_DETAIL_CALL]: 'songDetailLoading',
 	[FETCH_WORD_CLOUD_FAILURE]: 'wordCloudLoading',
 	[FETCH_WORD_CLOUD]: 'wordCloudLoading'
 };
@@ -87,7 +88,7 @@ const handlers = {
 	[ADD_SONG_DETAILS]: addSongDetails,
 	[SET_SONG_SEARCH_TERM]: setSearchTerm,
 	[SEARCH_SONGS]: setLoadingTrue,
-	[SET_LOADING_FALSE]: setLoadingFalse,
+	[CANCEL_SONG_DETAIL_CALL]: setLoadingFalse,
 	[SEARCH_SONGS_FAILURE]: setLoadingFalse,
 	[FETCH_SONG_DETAILS]: setLoadingTrue,
 	[FETCH_SONG_DETAILS_FAILURE]: setLoadingFalse,
