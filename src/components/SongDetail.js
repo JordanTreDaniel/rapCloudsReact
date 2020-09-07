@@ -96,7 +96,7 @@ const SongDetail = (props) => {
 			</div>
 			{isWordCloudLoading ? (
 				<LoadingCloud />
-			) : (
+			) : isSongDetailLoading ? null : (
 				<img src={`data:image/png;base64, ${encodedCloud}`} alt={'Rap Cloud'} className={classes.wordCloud} />
 			)}
 			{isSongDetailLoading ? (
