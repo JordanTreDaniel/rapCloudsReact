@@ -10,6 +10,7 @@ import { ConnectedRouter } from 'connected-react-router';
 import { PersistGate } from 'redux-persist/es/integration/react';
 import { history } from './redux/store';
 import LoadingCloud from './components/LoadingCloud';
+import ErrorBoundary from './components/ErrorBoundary';
 if (process.env.NODE_ENV === 'development') {
 	window.store = store;
 }
@@ -35,7 +36,14 @@ ReactDOM.render(
 			>
 				<ConnectedRouter history={history}>
 					<Switch>
-						<Route path="/" render={(routerProps) => <App {...routerProps} />} />
+						<Route
+							path="/"
+							render={(routerProps) => (
+								<ErrorBoundary>
+									<App {...routerProps} />
+								</ErrorBoundary>
+							)}
+						/>
 					</Switch>
 				</ConnectedRouter>
 			</PersistGate>
