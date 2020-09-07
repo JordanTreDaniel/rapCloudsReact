@@ -14,7 +14,6 @@ import {
 
 const initialState = {
 	byId: {},
-	currentSongId: null,
 	searchTerm: '',
 	searchLoading: false,
 	songDetailLoading: false,

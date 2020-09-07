@@ -1,8 +1,7 @@
 import { ADD_ARTIST } from '../actionTypes';
 
 const initialState = {
-	byId: {},
-	currentArtistId: null
+	byId: {}
 };
 
 const addArtist = (state, action) => {
