@@ -6,14 +6,14 @@ import sagas from './sagas';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { routerMiddleware } from 'connected-react-router';
 import { persistStore, persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
+import localforage from 'localforage';
 import axios from 'axios';
 import { SIGN_OUT } from './actionTypes';
 
 export const history = createBrowserHistory();
 const persistConfig = {
 	key: 'authType',
-	storage: storage,
+	storage: localforage,
 	whitelist: [ 'songs', 'userInfo' ] // which reducer want to store
 };
 const rootReducer = createRootReducer(history);

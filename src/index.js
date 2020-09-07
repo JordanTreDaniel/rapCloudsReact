@@ -4,21 +4,41 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { Provider } from 'react-redux';
-import { store } from './redux/store';
+import { store, persistor } from './redux/store';
 import { Switch, Route, Link } from 'react-router-dom';
 import { ConnectedRouter } from 'connected-react-router';
+import { PersistGate } from 'redux-persist/es/integration/react';
 import { history } from './redux/store';
+import LoadingCloud from './components/LoadingCloud';
 if (process.env.NODE_ENV === 'development') {
 	window.store = store;
 }
+
+const onBeforeLift = () => {
+	// take some action before the gate lifts
+	return;
+};
+
 ReactDOM.render(
 	<React.StrictMode>
 		<Provider store={store}>
-			<ConnectedRouter history={history}>
-				<Switch>
-					<Route path="/" render={(routerProps) => <App {...routerProps} />} />
-				</Switch>
-			</ConnectedRouter>
+			<PersistGate
+				loading={
+					<div style={{ height: '100vh', width: '100vh', paddingTop: '40%' }}>
+						<div style={{ margin: 'auto' }}>
+							<LoadingCloud />
+						</div>
+					</div>
+				}
+				onBeforeLift={onBeforeLift}
+				persistor={persistor}
+			>
+				<ConnectedRouter history={history}>
+					<Switch>
+						<Route path="/" render={(routerProps) => <App {...routerProps} />} />
+					</Switch>
+				</ConnectedRouter>
+			</PersistGate>
 		</Provider>
 	</React.StrictMode>,
 	document.getElementById('root')
