@@ -126,8 +126,7 @@ const apiFetchWordCloud = async (lyricString) => {
 	});
 
 	const { status, statusText, data } = res;
-	console.log('original data', data);
-	console.log({ status, statusText, data: data.data });
+
 	if (status === 200) {
 		return { data: data.data, status, statusText };
 	}

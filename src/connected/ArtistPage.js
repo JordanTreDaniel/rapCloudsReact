@@ -21,7 +21,7 @@ const ArtistPage = (props) => {
 	const classes = useStyles();
 	const { artistId } = useParams();
 	const { fetchArtist } = props;
-	console.log({ artistId });
+
 	useEffect(
 		() => {
 			if (artistId) {
