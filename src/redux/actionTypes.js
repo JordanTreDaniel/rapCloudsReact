@@ -20,5 +20,6 @@ export const FETCH_SONG_DETAILS_FAILURE = 'FETCH_SONG_DETAILS_FAILURE';
 export const CANCEL_SONG_DETAIL_CALL = 'CANCEL_SONG_DETAIL_CALL';
 export const SET_HYDRATION_TRUE = 'SET_HYDRATION_TRUE';
 export const FETCH_ARTIST = actionNamesForProcess('FETCH_ARTIST');
+export const FETCH_SONG_LYRICS = actionNamesForProcess('FETCH_SONG_LYRICS');
 export const SIGN_OUT = 'SIGN_OUT';
 export const DO_NOTHING = 'DO_NOTHING';

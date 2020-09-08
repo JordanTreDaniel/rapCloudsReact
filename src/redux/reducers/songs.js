@@ -9,7 +9,8 @@ import {
 	FETCH_WORD_CLOUD_FAILURE,
 	CANCEL_SONG_DETAIL_CALL,
 	FETCH_WORD_CLOUD_SUCCESS,
-	FETCH_WORD_CLOUD
+	FETCH_WORD_CLOUD,
+	FETCH_SONG_LYRICS
 } from '../actionTypes';
 
 const initialState = {
@@ -60,6 +61,16 @@ const addWordCloud = (state, action) => {
 	return { ...state, byId: { ...songsById }, wordCloudLoading: false };
 };
 
+const addLyrics = (state, action) => {
+	const { songId, lyrics } = action;
+	if (!songId || !lyrics) return state;
+	const songsById = state.byId;
+	const oldSong = songsById[songId];
+	const mergedSong = { ...oldSong, lyrics };
+	songsById[parseInt(songId)] = mergedSong;
+	return { ...state, byId: { ...songsById }, lyricsLoading: false };
+};
+
 const loadingMap = {
 	[SEARCH_SONGS]: 'searchLoading',
 	[SEARCH_SONGS_FAILURE]: 'searchLoading',
@@ -93,7 +104,8 @@ const handlers = {
 	[FETCH_SONG_DETAILS_FAILURE]: setLoadingFalse,
 	[FETCH_WORD_CLOUD_FAILURE]: setLoadingFalse,
 	[FETCH_WORD_CLOUD]: setLoadingTrue,
-	[FETCH_WORD_CLOUD_SUCCESS]: addWordCloud
+	[FETCH_WORD_CLOUD_SUCCESS]: addWordCloud,
+	[FETCH_SONG_LYRICS.success]: addLyrics
 };
 
 export default (state = initialState, action) => {

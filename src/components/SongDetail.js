@@ -83,13 +83,9 @@ const SongDetail = (props) => {
 					<div className={classes.artistBubbles}>
 						{artists.map((artist, idx) => {
 							return (
-								<Tooltip placement="bottom" title={`See ${artist.name}`}>
-									<Link to={`/cloudMakers/${artist.id}`} key={idx}>
-										<Avatar
-											src={artist.header_image_url}
-											alt={`Link to ${artist.name}'s page`}
-											key={idx}
-										/>
+								<Tooltip placement="bottom" title={`See ${artist.name}`} key={idx}>
+									<Link to={`/cloudMakers/${artist.id}`}>
+										<Avatar src={artist.header_image_url} alt={`Link to ${artist.name}'s page`} />
 									</Link>
 								</Tooltip>
 							);
