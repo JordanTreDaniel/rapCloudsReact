@@ -9,10 +9,15 @@ import { connect } from 'react-redux';
 import ArtistSongList from './ArtistSongList';
 import paths from '../paths';
 import BackButton from '../components/BackButton';
+import LoadingCloud from '../components/LoadingCloud';
 const useStyles = makeStyles((theme) => {
 	return {
 		artistPageGrid: {
 			width: '100vh'
+		},
+		wordCloud: {
+			width: '90vw',
+			margin: 'auto'
 		}
 	};
 });
@@ -31,14 +36,23 @@ const ArtistPage = (props) => {
 		[ artistId ]
 	);
 	if (!artistId) return <Redirect to={paths.search} />;
-	const { artist } = props;
+	const { artist, isArtistLoading } = props;
 	if (!artist) return null;
 
-	const { name } = artist;
+	const { name, encodedCloud } = artist;
 	return (
 		<Grid className={classes.artistPageGrid}>
 			<BackButton />
 			<Typography variant="h2">{name}</Typography>
+			{isArtistLoading ? (
+				<LoadingCloud />
+			) : !encodedCloud ? null : (
+				<img
+					src={`data:image/png;base64, ${encodedCloud}`}
+					alt={`Rap Cloud for ${name}'s Top Songs`}
+					className={classes.wordCloud}
+				/>
+			)}
 			<ArtistSongList artistId={artistId} />
 		</Grid>
 	);
@@ -46,7 +60,8 @@ const ArtistPage = (props) => {
 
 const mapState = (state) => {
 	return {
-		artist: selectors.getCurrentArtist(state)
+		artist: selectors.getCurrentArtist(state),
+		isArtistLoading: selectors.isArtistLoading(state)
 	};
 };
 

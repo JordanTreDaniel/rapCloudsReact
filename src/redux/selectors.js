@@ -94,6 +94,19 @@ export const getSearchedSongsList = createSelector(
 	}
 );
 
+export const getCurrentSong = createSelector(getSongsById, getCurrentSongId, (songsById, songId) => {
+	if (!songId) {
+		console.warn(`The "getCurrentSong" selector has been called with no songId detected in match params`);
+		return null;
+	}
+	const song = songsById[songId] || {};
+	let { lyrics = '' } = song;
+
+	const normalizedLyrics = normalizeLyrics(lyrics);
+	song.normalizedLyrics = normalizedLyrics;
+	return song;
+});
+
 //Artist
 /********************************************************************* */
 export const getArtistsSongs = createSelector(getSongsList, getMatchParams, (songsList, matchParams) => {
@@ -128,15 +141,4 @@ export const getCurrentArtist = createSelector(getMatchParams, getArtistsById, (
 	return currentArtist;
 });
 
-export const getCurrentSong = createSelector(getSongsById, getCurrentSongId, (songsById, songId) => {
-	if (!songId) {
-		console.warn(`The "getCurrentSong" selector has been called with no songId detected in match params`);
-		return null;
-	}
-	const song = songsById[songId] || {};
-	let { lyrics = '' } = song;
-
-	const normalizedLyrics = normalizeLyrics(lyrics);
-	song.normalizedLyrics = normalizedLyrics;
-	return song;
-});
+export const isArtistLoading = (state) => state.artists.artistLoading;
