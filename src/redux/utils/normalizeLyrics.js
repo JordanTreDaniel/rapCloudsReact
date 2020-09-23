@@ -6,14 +6,12 @@ const normalizeLyrics = (songLyrics) => {
 		//set multiplier to influence weight
 		const markerMatchingRegEx = /\[.+\]/;
 		const marker = section.match(markerMatchingRegEx);
-		let multiplier = 1;
-		if (marker && marker[0] && [ '[chorus]', '[refrain]' ].includes(marker[0])) {
-			multiplier = 3;
-		}
+		const isChorus = marker && marker[0] && [ '[chorus]', '[refrain]' ].includes(marker[0]);
+		const multiplier = isChorus ? 3 : 1;
 
 		//trim punctuation, markers, & later, whitespace
 		section = section.replace(markerMatchingRegEx, '');
-		const punctuationMatchingRegEx = new RegExp('[.,/#!$%^*;:{}=`~()"]', 'g');
+		const punctuationMatchingRegEx = new RegExp('[.,/#!$%^*;:{}=`~()"\']', 'g');
 		section = section.replace(punctuationMatchingRegEx, '');
 
 		const whiteSpaceRegEx = /\s+/g;
@@ -26,11 +24,14 @@ const normalizeLyrics = (songLyrics) => {
 		});
 
 		//multiply words to influence weight
-		let multipliedWords = [];
-		for (var i = 0; i < multiplier; i++) {
-			multipliedWords = [ ...multipliedWords, ...filteredSectionWords ];
+		if (isChorus) {
+			for (let i = 1; i < multiplier; i++) {
+				_rawWords.push(...filteredSectionWords);
+			}
+			return _rawWords;
 		}
-		return [ ..._rawWords, ...multipliedWords ];
+
+		return [ ..._rawWords, ...filteredSectionWords ];
 	}, []);
 
 	if (rawWords) {
