@@ -83,10 +83,10 @@ const apiFetchSongDetails = async (songId, accessToken) => {
 	return { error: { status, statusText } };
 };
 
-const apiFetchSongLyrics = async (songPath) => {
-	if (!songPath) {
-		console.error(`Could not fetch song lyrics without song path.`, { songPath });
-		return { error: `Could not fetch song lyrics without song path.` };
+const apiFetchSongLyrics = async (songPath, songId) => {
+	if (!songPath || !songId) {
+		console.error(`Could not fetch song lyrics without song path/song id.`, { songPath, songId });
+		return { error: `Could not fetch song lyrics without song path/song id.` };
 	}
 	const res = await axios({
 		method: 'post',
@@ -95,7 +95,8 @@ const apiFetchSongLyrics = async (songPath) => {
 			'Content-Type': 'application/json'
 		},
 		data: {
-			songPath
+			songPath,
+			songId
 		}
 	});
 	const { status, statusText, data } = res;
@@ -159,27 +160,40 @@ export function* fetchSongDetails(action) {
 export function* fetchSongLyrics(action) {
 	const { songPath, songId, fetchWordCloud = true } = action;
 	const song = yield select(getSongFromId, songId);
-	if (song.lyrics) {
-		yield put({ type: FETCH_SONG_LYRICS.cancellation });
-		return song.lyrics;
-	}
-	let { lyrics, error } = yield call(apiFetchSongLyrics, songPath);
-	if (error) {
-		yield put({ type: FETCH_SONG_LYRICS.failure, songId, songPath });
-		console.error('Something went wrong', error);
-	} else {
-		yield put({ type: FETCH_SONG_LYRICS.success, songId, lyrics });
-		if (fetchWordCloud) {
-			lyrics = normalizeLyrics(lyrics);
-			yield put({ type: FETCH_WORD_CLOUD, lyricString: lyrics, songId });
+	let lyrics = song.lyrics;
+	try {
+		if (song.lyrics) {
+			yield put({ type: FETCH_SONG_LYRICS.cancellation });
+			return song.lyrics;
 		}
-		return lyrics;
+		const { lyrics: newLyrics, error } = yield call(apiFetchSongLyrics, songPath, songId);
+		lyrics = newLyrics;
+		if (error) {
+			yield put({ type: FETCH_SONG_LYRICS.failure, songId, songPath });
+			console.error('Something went wrong', error);
+		} else {
+			yield put({ type: FETCH_SONG_LYRICS.success, songId, lyrics });
+			return lyrics;
+		}
+	} catch (err) {
+		console.log('Something went wrong in fetchSongLyrics', err);
+	} finally {
+		if (fetchWordCloud) {
+			const normalizedLyrics = normalizeLyrics(lyrics);
+			yield put({ type: FETCH_WORD_CLOUD, lyricString: normalizedLyrics, songId });
+		}
 	}
 }
 
 export function* fetchWordCloud(action) {
 	try {
-		const { lyricString, songId, isArtistCloud } = action;
+		const { lyricString, songId, isArtistCloud, forceFetch = false } = action;
+		const song = yield select(getSongFromId, songId);
+		if (song.encodedCloud && !forceFetch) {
+			// yield put({type: FETCH_WORD_CLOUD.cancellation})
+			yield cancel();
+			return;
+		}
 		const { data, error } = yield call(apiFetchWordCloud, lyricString);
 		const { encodedCloud } = data;
 		if (error) {
