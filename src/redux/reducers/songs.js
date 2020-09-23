@@ -6,9 +6,7 @@ import {
 	SEARCH_SONGS_FAILURE,
 	FETCH_SONG_DETAILS,
 	FETCH_SONG_DETAILS_FAILURE,
-	FETCH_WORD_CLOUD_FAILURE,
 	CANCEL_SONG_DETAIL_CALL,
-	FETCH_WORD_CLOUD_SUCCESS,
 	FETCH_WORD_CLOUD,
 	FETCH_SONG_LYRICS
 } from '../actionTypes';
@@ -76,10 +74,9 @@ const loadingMap = {
 	[SEARCH_SONGS_FAILURE]: 'searchLoading',
 	[FETCH_SONG_DETAILS]: 'songDetailLoading',
 	[FETCH_SONG_DETAILS_FAILURE]: 'songDetailLoading',
-	[CANCEL_SONG_DETAIL_CALL]: 'songDetailLoading',
-	[FETCH_WORD_CLOUD_FAILURE]: 'wordCloudLoading',
-	[FETCH_WORD_CLOUD]: 'wordCloudLoading'
+	[CANCEL_SONG_DETAIL_CALL]: 'songDetailLoading'
 };
+Object.values(FETCH_WORD_CLOUD).forEach((actionType) => (loadingMap[actionType] = 'wordCloudLoading'));
 
 const setLoadingTrue = (state, action) => {
 	const { type } = action;
@@ -102,9 +99,10 @@ const handlers = {
 	[SEARCH_SONGS_FAILURE]: setLoadingFalse,
 	[FETCH_SONG_DETAILS]: setLoadingTrue,
 	[FETCH_SONG_DETAILS_FAILURE]: setLoadingFalse,
-	[FETCH_WORD_CLOUD_FAILURE]: setLoadingFalse,
-	[FETCH_WORD_CLOUD]: setLoadingTrue,
-	[FETCH_WORD_CLOUD_SUCCESS]: addWordCloud,
+	[FETCH_WORD_CLOUD.failure]: setLoadingFalse,
+	[FETCH_WORD_CLOUD.cancellation]: setLoadingFalse,
+	[FETCH_WORD_CLOUD.start]: setLoadingTrue,
+	[FETCH_WORD_CLOUD.success]: addWordCloud,
 	[FETCH_SONG_LYRICS.success]: addLyrics
 };
 

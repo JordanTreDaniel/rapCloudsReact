@@ -9,8 +9,6 @@ import {
 	FETCH_SONG_LYRICS,
 	SIGN_OUT,
 	FETCH_WORD_CLOUD,
-	FETCH_WORD_CLOUD_FAILURE,
-	FETCH_WORD_CLOUD_SUCCESS,
 	CANCEL_SONG_DETAIL_CALL
 } from '../actionTypes';
 import { getAccessToken, getSearchTerm, getSongFromId } from '../selectors';
@@ -180,7 +178,7 @@ export function* fetchSongLyrics(action) {
 	} finally {
 		if (fetchWordCloud) {
 			const normalizedLyrics = normalizeLyrics(lyrics);
-			yield put({ type: FETCH_WORD_CLOUD, lyricString: normalizedLyrics, songId });
+			yield put({ type: FETCH_WORD_CLOUD.start, lyricString: normalizedLyrics, songId });
 		}
 	}
 }
@@ -190,24 +188,24 @@ export function* fetchWordCloud(action) {
 		const { lyricString, songId, isArtistCloud, forceFetch = false } = action;
 		const song = yield select(getSongFromId, songId);
 		if (song.encodedCloud && !forceFetch) {
-			// yield put({type: FETCH_WORD_CLOUD.cancellation})
+			yield put({ type: FETCH_WORD_CLOUD.cancellation });
 			yield cancel();
 			return;
 		}
 		const { data, error } = yield call(apiFetchWordCloud, lyricString);
 		const { encodedCloud } = data;
 		if (error) {
-			yield put({ type: FETCH_WORD_CLOUD_FAILURE });
+			yield put({ type: FETCH_WORD_CLOUD.failure });
 			console.log('Something went wrong', error);
 		} else {
 			if (isArtistCloud) {
 				return encodedCloud;
 			}
-			yield put({ type: FETCH_WORD_CLOUD_SUCCESS, songId, encodedCloud });
+			yield put({ type: FETCH_WORD_CLOUD.success, songId, encodedCloud });
 			return encodedCloud;
 		}
 	} catch (err) {
-		yield put({ type: FETCH_WORD_CLOUD_FAILURE });
+		yield put({ type: FETCH_WORD_CLOUD.failure });
 		console.log('Something went wrong', err);
 	}
 }
@@ -221,7 +219,7 @@ function* watchFetchSongDetails() {
 }
 
 function* watchFetchWordCloud() {
-	yield takeEvery(FETCH_WORD_CLOUD, fetchWordCloud);
+	yield takeEvery(FETCH_WORD_CLOUD.start, fetchWordCloud);
 }
 
 function* watchFetchSongLyrics() {
