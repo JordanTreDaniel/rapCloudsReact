@@ -6,7 +6,7 @@ const normalizeLyrics = (songLyrics) => {
 		//set multiplier to influence weight
 		const markerMatchingRegEx = /\[.+\]/;
 		const marker = section.match(markerMatchingRegEx);
-		const isChorus = marker && marker[0] && [ '[chorus]', '[refrain]' ].includes(marker[0]);
+		const isChorus = marker && marker[0] && [ 'chorus', 'refrain' ].some((tag) => marker[0].match(tag));
 		const multiplier = isChorus ? 3 : 1;
 
 		//trim punctuation, markers, & later, whitespace
