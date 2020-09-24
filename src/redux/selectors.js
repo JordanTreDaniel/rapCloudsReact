@@ -35,6 +35,11 @@ export const getUserImg = createSelector(
 	}
 );
 
+export const getUserName = createSelector(getUser, (user) => {
+	const { name = 'Our Favorite User' } = user || {};
+	return name;
+});
+
 //Songs
 /********************************************************************* */
 export const getSearchTerm = (state) => state.songs.searchTerm;
