@@ -37,9 +37,9 @@ const ArtistPage = (props) => {
 	);
 	if (!artistId) return <Redirect to={paths.search} />;
 	const { artist, isArtistLoading } = props;
-	if (!artist) return null;
+	if (!artist && !isArtistLoading) return null;
 
-	const { name, encodedCloud } = artist;
+	const { name, encodedCloud } = artist || {};
 	return (
 		<Grid className={classes.artistPageGrid}>
 			<BackButton />
