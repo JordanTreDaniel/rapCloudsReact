@@ -8,13 +8,13 @@ import {
 	FETCH_SONG_DETAILS_FAILURE,
 	FETCH_SONG_LYRICS,
 	SIGN_OUT,
-	FETCH_WORD_CLOUD,
+	FETCH_SONG_CLOUD,
 	CANCEL_SONG_DETAIL_CALL
 } from '../actionTypes';
+import { fetchWordCloud } from './index';
 import { getAccessToken, getSearchTerm, getSongFromId } from '../selectors';
 import normalizeLyrics from '../utils/normalizeLyrics';
 import axios from 'axios';
-import { ImageData } from 'canvas';
 
 const REACT_APP_SERVER_ROOT =
 	process.env.NODE_ENV === 'development' ? 'http://localhost:3333' : 'https://rap-clouds-server.herokuapp.com';
@@ -106,33 +106,6 @@ const apiFetchSongLyrics = async (songPath, songId) => {
 	return { error: { status, statusText } };
 };
 
-const apiFetchWordCloud = async (lyricString) => {
-	const res = await axios({
-		method: 'post',
-		url: `http://localhost:3333/makeWordCloud`,
-		headers: {
-			'Content-Type': 'application/json'
-			// 'Accept-Encoding': 'gzip',
-			// 'Access-Control-Allow-Origin': '*'
-			// 'Access-Control-Allow-Headers': 'Content-Type',
-			// Accept: 'application/json'
-		},
-		data: {
-			lyricJSON: {
-				lyricString
-			}
-		}
-	});
-
-	const { status, statusText, data } = res;
-
-	if (status === 200) {
-		return { data: data.data, status, statusText };
-	}
-
-	return { error: { status, statusText } };
-};
-
 export function* fetchSongDetails(action) {
 	const accessToken = yield select(getAccessToken);
 	const { songId, fetchLyrics = true, fetchWordCloud = true } = action;
@@ -178,35 +151,31 @@ export function* fetchSongLyrics(action) {
 	} finally {
 		if (fetchWordCloud) {
 			const normalizedLyrics = normalizeLyrics(lyrics);
-			yield put({ type: FETCH_WORD_CLOUD.start, lyricString: normalizedLyrics, songId });
+			yield put({ type: FETCH_SONG_CLOUD.start, lyricString: normalizedLyrics, songId });
 		}
 	}
 }
 
-export function* fetchWordCloud(action) {
+export function* fetchSongCloud(action) {
 	try {
-		const { lyricString, songId, isArtistCloud, forceFetch = false } = action;
+		const { lyricString, songId, forceFetch = false } = action;
 		const song = yield select(getSongFromId, songId);
 		if (song.encodedCloud && !forceFetch) {
-			yield put({ type: FETCH_WORD_CLOUD.cancellation });
+			yield put({ type: FETCH_SONG_CLOUD.cancellation });
 			yield cancel();
 			return;
 		}
-		const { data, error } = yield call(apiFetchWordCloud, lyricString);
-		const { encodedCloud } = data;
+		const { encodedCloud, error } = yield call(fetchWordCloud, { lyricString });
 		if (error) {
-			yield put({ type: FETCH_WORD_CLOUD.failure });
-			console.log('Something went wrong', error);
+			yield put({ type: FETCH_SONG_CLOUD.failure });
+			console.log('Something went wrong in fetch song cloud', error);
 		} else {
-			if (isArtistCloud) {
-				return encodedCloud;
-			}
-			yield put({ type: FETCH_WORD_CLOUD.success, songId, encodedCloud });
+			yield put({ type: FETCH_SONG_CLOUD.success, songId, encodedCloud });
 			return encodedCloud;
 		}
 	} catch (err) {
-		yield put({ type: FETCH_WORD_CLOUD.failure });
-		console.log('Something went wrong', err);
+		yield put({ type: FETCH_SONG_CLOUD.failure });
+		console.log('Something went wrong in fetch song cloud', err);
 	}
 }
 
@@ -218,12 +187,12 @@ function* watchFetchSongDetails() {
 	yield takeEvery(FETCH_SONG_DETAILS, fetchSongDetails);
 }
 
-function* watchFetchWordCloud() {
-	yield takeEvery(FETCH_WORD_CLOUD.start, fetchWordCloud);
+function* watchFetchSongCloud() {
+	yield takeEvery(FETCH_SONG_CLOUD.start, fetchSongCloud);
 }
 
 function* watchFetchSongLyrics() {
 	yield takeEvery(FETCH_SONG_LYRICS.start, fetchSongLyrics);
 }
 
-export default [ watchSearchSongs, watchFetchSongDetails, watchFetchWordCloud, watchFetchSongLyrics ];
+export default [ watchSearchSongs, watchFetchSongDetails, watchFetchSongCloud, watchFetchSongLyrics ];

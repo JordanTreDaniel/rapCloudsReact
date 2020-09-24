@@ -7,7 +7,7 @@ import {
 	FETCH_SONG_DETAILS,
 	FETCH_SONG_DETAILS_FAILURE,
 	CANCEL_SONG_DETAIL_CALL,
-	FETCH_WORD_CLOUD,
+	FETCH_SONG_CLOUD,
 	FETCH_SONG_LYRICS
 } from '../actionTypes';
 
@@ -76,7 +76,7 @@ const loadingMap = {
 	[FETCH_SONG_DETAILS_FAILURE]: 'songDetailLoading',
 	[CANCEL_SONG_DETAIL_CALL]: 'songDetailLoading'
 };
-Object.values(FETCH_WORD_CLOUD).forEach((actionType) => (loadingMap[actionType] = 'wordCloudLoading'));
+Object.values(FETCH_SONG_CLOUD).forEach((actionType) => (loadingMap[actionType] = 'wordCloudLoading'));
 
 const setLoadingTrue = (state, action) => {
 	const { type } = action;
@@ -99,10 +99,10 @@ const handlers = {
 	[SEARCH_SONGS_FAILURE]: setLoadingFalse,
 	[FETCH_SONG_DETAILS]: setLoadingTrue,
 	[FETCH_SONG_DETAILS_FAILURE]: setLoadingFalse,
-	[FETCH_WORD_CLOUD.failure]: setLoadingFalse,
-	[FETCH_WORD_CLOUD.cancellation]: setLoadingFalse,
-	[FETCH_WORD_CLOUD.start]: setLoadingTrue,
-	[FETCH_WORD_CLOUD.success]: addWordCloud,
+	[FETCH_SONG_CLOUD.failure]: setLoadingFalse,
+	[FETCH_SONG_CLOUD.cancellation]: setLoadingFalse,
+	[FETCH_SONG_CLOUD.start]: setLoadingTrue,
+	[FETCH_SONG_CLOUD.success]: addWordCloud,
 	[FETCH_SONG_LYRICS.success]: addLyrics
 };
 
