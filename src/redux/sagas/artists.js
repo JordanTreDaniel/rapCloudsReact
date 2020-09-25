@@ -41,6 +41,7 @@ export function* fetchArtist(action) {
 	}
 	const exisitingInStore = yield select(getArtistFromId, artistId);
 	if (exisitingInStore) {
+		//TO-DO: This efficiency check doesn't work around rehydration time
 		yield put({ type: FETCH_ARTIST.cancellation });
 		yield cancel();
 		return;
@@ -53,6 +54,8 @@ export function* fetchArtist(action) {
 		const { songs = [] } = artist;
 		delete artist.songs;
 		yield put({ type: ADD_SONGS, songs });
+		yield put({ type: FETCH_ARTIST.success, artist });
+
 		if (fetchCloudToo) {
 			const allLyrics = yield all(
 				songs.map((song) => {
@@ -64,11 +67,13 @@ export function* fetchArtist(action) {
 				(acc, songLyrics) => acc + ' ' + normalizeLyrics(songLyrics),
 				''
 			);
-			console.log('made it to fetch the cloud');
-			const encodedCloud = yield call(fetchArtistCloud, { lyricString: normalizedLyricsJumble, artistId });
-			artist.encodedCloud = encodedCloud;
+
+			yield put({
+				type: FETCH_ARTIST_CLOUD.start,
+				lyricString: normalizedLyricsJumble,
+				artistId
+			});
 		}
-		yield put({ type: FETCH_ARTIST.success, artist });
 	}
 }
 
