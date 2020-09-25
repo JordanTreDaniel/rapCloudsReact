@@ -1,8 +1,10 @@
-import { put, takeEvery, call, select, cancel } from 'redux-saga/effects';
-import { ADD_ARTIST, FETCH_ARTIST, ADD_SONGS } from '../actionTypes';
-import { getAccessToken } from '../selectors';
+import { put, takeEvery, call, select, cancel, all } from 'redux-saga/effects';
+import { FETCH_ARTIST, ADD_SONGS, SIGN_OUT, FETCH_SONG_LYRICS, FETCH_ARTIST_CLOUD } from '../actionTypes';
+import { getAccessToken, getArtistFromId } from '../selectors';
+import { fetchSongLyrics } from './songs';
+import { fetchWordCloud } from './index';
 import axios from 'axios';
-import { history } from '../store';
+import normalizeLyrics from '../utils/normalizeLyrics';
 
 const REACT_APP_SERVER_ROOT =
 	process.env.NODE_ENV === 'development' ? 'http://localhost:3333' : 'https://rap-clouds-server.herokuapp.com';
@@ -25,27 +27,83 @@ const apiFetchArtist = async (artistId, accessToken) => {
 };
 
 export function* fetchArtist(action) {
-	const { artistId } = action;
+	const { fetchCloudToo = true, artistId } = action;
 	const accessToken = yield select(getAccessToken);
-	if (!accessToken || !artistId) {
-		console.error(`Could not fetch artist without access token & artist id`, { artistId, accessToken });
-		//TO-DO: If there is no accessToken, log the user out.
+	if (!accessToken) {
+		console.error(`Could not fetch artist without access token `, { accessToken });
+		yield put({ type: SIGN_OUT });
 		yield cancel();
 	}
+	if (!artistId) {
+		console.error(`Could not fetch artist without artist id`, { artistId });
+		yield put({ type: FETCH_ARTIST.failure, artistId });
+		yield cancel();
+	}
+	const exisitingInStore = yield select(getArtistFromId, artistId);
+	if (exisitingInStore) {
+		//TO-DO: This efficiency check doesn't work around rehydration time
+		yield put({ type: FETCH_ARTIST.cancellation });
+		yield cancel();
+		return;
+	}
+
 	const { artist, error } = yield call(apiFetchArtist, artistId, accessToken);
 	if (error) {
-		console.log('Something went wrong', error);
+		yield put({ type: FETCH_ARTIST.failure, artistId });
 	} else {
 		const { songs = [] } = artist;
 		delete artist.songs;
-		yield put({ type: ADD_ARTIST, artist });
 		yield put({ type: ADD_SONGS, songs });
-		history.push(`/cloudMakers/${artistId}`);
+		yield put({ type: FETCH_ARTIST.success, artist });
+
+		if (fetchCloudToo) {
+			yield put({
+				type: FETCH_ARTIST_CLOUD.start,
+				songs: songs.map((song) => ({ id: song.id, path: song.path })),
+				artistId
+			});
+		}
+	}
+}
+
+export function* fetchArtistCloud(action) {
+	try {
+		const { artistId, forceFetch = false, songs } = action;
+		const artist = yield select(getArtistFromId, artistId);
+		if (artist && artist.encodedCloud && !forceFetch) {
+			yield put({ type: FETCH_ARTIST_CLOUD.cancellation });
+			yield cancel();
+			return;
+		}
+		const allLyrics = yield all(
+			songs.map((song) => {
+				const { id: songId, path: songPath } = song;
+				return fetchSongLyrics({ type: FETCH_SONG_LYRICS.start, songId, songPath, fetchWordCloud: false });
+			})
+		);
+		const normalizedLyricsJumble = allLyrics.reduce(
+			(acc, songLyrics) => acc + ' ' + normalizeLyrics(songLyrics),
+			''
+		);
+		const { encodedCloud, error } = yield call(fetchWordCloud, { lyricString: normalizedLyricsJumble });
+		if (error) {
+			yield put({ type: FETCH_ARTIST_CLOUD.failure });
+			console.log('Something went wrong in fetch artist cloud', error);
+		} else {
+			yield put({ type: FETCH_ARTIST_CLOUD.success, artistId, encodedCloud });
+			return encodedCloud;
+		}
+	} catch (err) {
+		yield put({ type: FETCH_ARTIST_CLOUD.failure });
+		console.log('Something went wrong in fetch artist cloud', err);
 	}
 }
 
 function* watchFetchArtist() {
-	yield takeEvery(FETCH_ARTIST, fetchArtist);
+	yield takeEvery(FETCH_ARTIST.start, fetchArtist);
 }
 
-export default [ watchFetchArtist ];
+function* watchFetchArtistCloud() {
+	yield takeEvery(FETCH_ARTIST_CLOUD.start, fetchArtistCloud);
+}
+export default [ watchFetchArtist, watchFetchArtistCloud ];

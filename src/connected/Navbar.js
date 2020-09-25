@@ -1,11 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Typography, AppBar, Button, Toolbar, Box } from '@material-ui/core';
+import {
+	Typography,
+	AppBar,
+	Button,
+	Toolbar,
+	Box,
+	MenuItem,
+	Dialog,
+	DialogTitle,
+	List,
+	ListItemText,
+	ListItem,
+	Menu,
+	Tooltip
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { history } from '../redux/store';
 import * as selectors from '../redux/selectors';
 import { connect } from 'react-redux';
 import { Avatar } from '@material-ui/core';
 import paths from '../paths';
+import localForage from 'localforage';
+
 const useStyles = makeStyles((theme) => {
 	return {
 		buttonBox: {
@@ -19,13 +36,25 @@ const useStyles = makeStyles((theme) => {
 		navBarLink: {
 			textDecoration: 'none',
 			color: 'black'
+		},
+		logOutDialog: {
+			textAlign: 'center'
+		},
+		logOutDialogPaper: {
+			backgroundColor: theme.palette.primary.light
+		},
+		logOutBtn: {
+			backgroundColor: theme.palette.secondary.dark,
+			color: 'white',
+			textAlign: 'center'
 		}
 	};
 });
 
 const Navbar = (props) => {
 	const classes = useStyles();
-	const { userImgURL } = props;
+	const { userImgURL, userName } = props;
+	const [ logOutDialogOpen, toggleLogOutDialog ] = useState(false);
 	return (
 		<AppBar color="inherit" position="static">
 			<Toolbar className={classes.toolBar}>
@@ -38,18 +67,44 @@ const Navbar = (props) => {
 					</Link>
 
 					{userImgURL ? (
-						<Avatar alt="User Profile Pic" src={userImgURL} />
+						<Avatar alt="User Profile Pic" src={userImgURL} onClick={() => toggleLogOutDialog(true)} />
 					) : (
 						<Button href={paths.signIn}>Sign In</Button>
 					)}
 				</Box>
 			</Toolbar>
+			{logOutDialogOpen && (
+				<Dialog
+					className={classes.logOutDialog}
+					onClose={() => toggleLogOutDialog(false)}
+					aria-label="logOutModal"
+					open={logOutDialogOpen}
+					PaperProps={{ className: classes.logOutDialogPaper }}
+				>
+					<DialogTitle>{userName}</DialogTitle>
+					<List>
+						<ListItem
+							className={classes.logOutBtn}
+							autoFocus
+							button
+							onClick={() => {
+								localForage.clear();
+								toggleLogOutDialog(false);
+								history.push('/signin');
+							}}
+						>
+							<ListItemText primary="Log Out" />
+						</ListItem>
+					</List>
+				</Dialog>
+			)}
 		</AppBar>
 	);
 };
 
 const mapState = (state) => ({
 	userImgURL: selectors.getUserImg(state, 'small'),
+	userName: selectors.getUserName(state),
 	appIsHydrated: selectors.isAppRehydrated(state)
 });
 

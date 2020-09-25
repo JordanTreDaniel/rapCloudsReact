@@ -1,4 +1,4 @@
-import { put, takeEvery, call, select, cancel } from 'redux-saga/effects';
+import { put, takeEvery, call, select, cancel, delay } from 'redux-saga/effects';
 import {
 	SEARCH_SONGS,
 	SEARCH_SONGS_FAILURE,
@@ -6,16 +6,15 @@ import {
 	FETCH_SONG_DETAILS,
 	ADD_SONG_DETAILS,
 	FETCH_SONG_DETAILS_FAILURE,
+	FETCH_SONG_LYRICS,
 	SIGN_OUT,
-	FETCH_WORD_CLOUD,
-	FETCH_WORD_CLOUD_FAILURE,
-	FETCH_WORD_CLOUD_SUCCESS,
-	SET_LOADING_FALSE
+	FETCH_SONG_CLOUD,
+	CANCEL_SONG_DETAIL_CALL
 } from '../actionTypes';
+import { fetchWordCloud } from './index';
 import { getAccessToken, getSearchTerm, getSongFromId } from '../selectors';
 import normalizeLyrics from '../utils/normalizeLyrics';
 import axios from 'axios';
-import { ImageData } from 'canvas';
 
 const REACT_APP_SERVER_ROOT =
 	process.env.NODE_ENV === 'development' ? 'http://localhost:3333' : 'https://rap-clouds-server.herokuapp.com';
@@ -82,41 +81,26 @@ const apiFetchSongDetails = async (songId, accessToken) => {
 	return { error: { status, statusText } };
 };
 
-const apiFetchWordCloud = async (lyricString) => {
-	// if () {
-	// 	console.error(`Could not fetch song without access token & song id`, { songId, accessToken });
-	// 	return { error: `Could not fetch song without access token & song id` };
-	// }
-	// const res = await axios({
-	// 	method: 'post',
-	// 	url: `https://ukaecdgqm1.execute-api.us-east-1.amazonaws.com/default/generateRapClouds`,
-	// 	headers: { accept: 'application/json' },
-	// 	body: {
-	// 		purpose: 'Hit it from faaar away'
-	// 	}
-	// });
+const apiFetchSongLyrics = async (songPath, songId) => {
+	if (!songPath || !songId) {
+		console.error(`Could not fetch song lyrics without song path/song id.`, { songPath, songId });
+		return { error: `Could not fetch song lyrics without song path/song id.` };
+	}
 	const res = await axios({
 		method: 'post',
-		url: `http://localhost:3333/makeWordCloud`,
+		url: `${REACT_APP_SERVER_ROOT}/getSongLyrics`,
 		headers: {
 			'Content-Type': 'application/json'
-			// 'Accept-Encoding': 'gzip',
-			// 'Access-Control-Allow-Origin': '*'
-			// 'Access-Control-Allow-Headers': 'Content-Type',
-			// Accept: 'application/json'
 		},
 		data: {
-			lyricJSON: {
-				lyricString
-			}
+			songPath,
+			songId
 		}
 	});
-
 	const { status, statusText, data } = res;
-	console.log('original data', data);
-	console.log({ status, statusText, data: data.data });
+	const { lyrics } = data;
 	if (status === 200) {
-		return { data: data.data, status, statusText };
+		return { lyrics };
 	}
 
 	return { error: { status, statusText } };
@@ -124,10 +108,10 @@ const apiFetchWordCloud = async (lyricString) => {
 
 export function* fetchSongDetails(action) {
 	const accessToken = yield select(getAccessToken);
-	const { songId } = action;
+	const { songId, fetchLyrics = true, fetchWordCloud = true } = action;
 	const existingSong = yield select(getSongFromId, songId);
 	if (existingSong && existingSong.normalizedLyrics && existingSong.encodedCloud) {
-		yield put({ type: SET_LOADING_FALSE });
+		yield put({ type: CANCEL_SONG_DETAIL_CALL });
 		yield cancel();
 	}
 	const { song, error } = yield call(apiFetchSongDetails, songId, accessToken);
@@ -135,29 +119,63 @@ export function* fetchSongDetails(action) {
 		yield put({ type: FETCH_SONG_DETAILS_FAILURE });
 		console.error('Something went wrong', error);
 	} else {
-		let { lyrics } = song;
-		lyrics = normalizeLyrics(lyrics);
-		const encodedCloud = yield call(fetchWordCloud, { lyricString: lyrics });
-		if (!!encodedCloud) song.encodedCloud = encodedCloud;
+		const { path: songPath } = song;
 		yield put({ type: ADD_SONG_DETAILS, song });
+		if (fetchLyrics) {
+			yield delay(500);
+			yield put({ type: FETCH_SONG_LYRICS.start, songId, songPath, fetchWordCloud });
+		}
 	}
 }
 
-export function* fetchWordCloud(action) {
+export function* fetchSongLyrics(action) {
+	const { songPath, songId, fetchWordCloud = true } = action;
+	const song = yield select(getSongFromId, songId);
+	let lyrics = song.lyrics;
 	try {
-		const { lyricString } = action;
-		const { data, error } = yield call(apiFetchWordCloud, lyricString);
-		const { encodedCloud } = data;
+		if (song.lyrics) {
+			yield put({ type: FETCH_SONG_LYRICS.cancellation });
+			return song.lyrics;
+		}
+		const { lyrics: newLyrics, error } = yield call(apiFetchSongLyrics, songPath, songId);
+		lyrics = newLyrics;
 		if (error) {
-			yield put({ type: FETCH_WORD_CLOUD_FAILURE });
-			console.log('Something went wrong', error);
+			yield put({ type: FETCH_SONG_LYRICS.failure, songId, songPath });
+			console.error('Something went wrong', error);
 		} else {
-			yield put({ type: FETCH_WORD_CLOUD_SUCCESS });
+			yield put({ type: FETCH_SONG_LYRICS.success, songId, lyrics });
+			return lyrics;
+		}
+	} catch (err) {
+		console.log('Something went wrong in fetchSongLyrics', err);
+	} finally {
+		if (fetchWordCloud) {
+			const normalizedLyrics = normalizeLyrics(lyrics);
+			yield put({ type: FETCH_SONG_CLOUD.start, lyricString: normalizedLyrics, songId });
+		}
+	}
+}
+
+export function* fetchSongCloud(action) {
+	try {
+		const { lyricString, songId, forceFetch = false } = action;
+		const song = yield select(getSongFromId, songId);
+		if (song.encodedCloud && !forceFetch) {
+			yield put({ type: FETCH_SONG_CLOUD.cancellation });
+			yield cancel();
+			return;
+		}
+		const { encodedCloud, error } = yield call(fetchWordCloud, { lyricString });
+		if (error) {
+			yield put({ type: FETCH_SONG_CLOUD.failure });
+			console.log('Something went wrong in fetch song cloud', error);
+		} else {
+			yield put({ type: FETCH_SONG_CLOUD.success, songId, encodedCloud });
 			return encodedCloud;
 		}
 	} catch (err) {
-		yield put({ type: FETCH_WORD_CLOUD_FAILURE });
-		console.log('Something went wrong', err);
+		yield put({ type: FETCH_SONG_CLOUD.failure });
+		console.log('Something went wrong in fetch song cloud', err);
 	}
 }
 
@@ -169,8 +187,12 @@ function* watchFetchSongDetails() {
 	yield takeEvery(FETCH_SONG_DETAILS, fetchSongDetails);
 }
 
-function* watchFetchWordCloud() {
-	yield takeEvery(FETCH_WORD_CLOUD, fetchWordCloud);
+function* watchFetchSongCloud() {
+	yield takeEvery(FETCH_SONG_CLOUD.start, fetchSongCloud);
 }
 
-export default [ watchSearchSongs, watchFetchSongDetails, watchFetchWordCloud ];
+function* watchFetchSongLyrics() {
+	yield takeEvery(FETCH_SONG_LYRICS.start, fetchSongLyrics);
+}
+
+export default [ watchSearchSongs, watchFetchSongDetails, watchFetchSongCloud, watchFetchSongLyrics ];

@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
-import { Redirect, useParams } from 'react-router-dom';
-import { Typography, AppBar, Toolbar, Grid, Avatar } from '@material-ui/core';
+import { Redirect, useParams, Link } from 'react-router-dom';
+import { Typography, AppBar, Toolbar, Grid, Avatar, Tooltip } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import * as selectors from '../redux/selectors';
-import { fetchArtist, fetchSongDetails } from '../redux/actions';
+import { fetchSongDetails } from '../redux/actions';
 import { connect } from 'react-redux';
 import paths from '../paths';
 import LoadingCloud from './LoadingCloud';
+import BackButton from './BackButton';
 
 const useStyles = makeStyles((theme) => {
 	return {
@@ -23,6 +24,10 @@ const useStyles = makeStyles((theme) => {
 			color: 'black'
 		},
 		artistBubbles: {
+			display: 'flex',
+			justifyContent: 'space-evenly'
+		},
+		leftBubbles: {
 			display: 'flex',
 			justifyContent: 'space-evenly'
 		},
@@ -46,7 +51,7 @@ const useStyles = makeStyles((theme) => {
 
 const SongDetail = (props) => {
 	const classes = useStyles();
-	const { song, history, fetchArtist, fetchSongDetails, areSongsLoading } = props;
+	const { song, fetchSongDetails, isSongDetailLoading, isWordCloudLoading } = props;
 	const { songId } = useParams();
 	useEffect(
 		() => {
@@ -59,28 +64,30 @@ const SongDetail = (props) => {
 	if (!songId) return <Redirect to={paths.search} />;
 	if (!song) return null;
 
-	const { normalizedLyrics, full_title, path, writer_artists, primary_artist, lyrics, encodedCloud } = song;
+	const { full_title, path, writer_artists, primary_artist, lyrics, encodedCloud } = song;
 	const artists = writer_artists ? [ ...writer_artists ] : primary_artist ? [ primary_artist ] : [];
 
 	return (
 		<Grid>
 			<AppBar color="inherit" position="static">
 				<Toolbar className={classes.toolBar}>
-					<div>
-						<a href={`https://genius.com${path}`} alt={`${song.full_title} on Genius`} target="_blank">
-							<Avatar src="https://pbs.twimg.com/profile_images/885222003174551552/cv3KtGVS_400x400.jpg" />
-						</a>
+					<div className={classes.leftBubbles}>
+						<BackButton />
+						<Tooltip placement="bottom" title={`See ${full_title} on Genius`}>
+							<a href={`https://genius.com${path}`} alt={`${song.full_title} on Genius`} target="_blank">
+								<Avatar src="https://pbs.twimg.com/profile_images/885222003174551552/cv3KtGVS_400x400.jpg" />
+							</a>
+						</Tooltip>
 					</div>
 
 					<div className={classes.artistBubbles}>
 						{artists.map((artist, idx) => {
 							return (
-								<Avatar
-									src={artist.header_image_url}
-									alt={artist.name}
-									key={idx}
-									onClick={() => fetchArtist(artist.id)} //TO-DO: Make this a link to artist, not dispatch fetch action
-								/>
+								<Tooltip placement="bottom" title={`See ${artist.name}`} key={idx}>
+									<Link to={`/cloudMakers/${artist.id}`}>
+										<Avatar src={artist.header_image_url} alt={`Link to ${artist.name}'s page`} />
+									</Link>
+								</Tooltip>
 							);
 						})}
 					</div>
@@ -91,21 +98,19 @@ const SongDetail = (props) => {
 					{full_title}
 				</Typography>
 			</div>
-			{areSongsLoading ? (
+			{isWordCloudLoading ? (
+				<LoadingCloud />
+			) : isSongDetailLoading || !lyrics ? null : (
+				<img src={`data:image/png;base64, ${encodedCloud}`} alt={'Rap Cloud'} className={classes.wordCloud} />
+			)}
+			{isSongDetailLoading ? (
 				<LoadingCloud />
 			) : (
-				<React.Fragment>
-					<img
-						src={`data:image/png;base64, ${encodedCloud}`}
-						alt={'Rap Cloud'}
-						className={classes.wordCloud}
-					/>
-					<Grid item sm={12} md={12} classes={{ root: classes.lyricBox }}>
-						<Typography variant="body1" classes={{ root: classes.lyrics }}>
-							{lyrics}
-						</Typography>
-					</Grid>
-				</React.Fragment>
+				<Grid item sm={12} md={12} classes={{ root: classes.lyricBox }}>
+					<Typography variant="body1" classes={{ root: classes.lyrics }}>
+						{lyrics}
+					</Typography>
+				</Grid>
 			)}
 		</Grid>
 	);
@@ -113,7 +118,8 @@ const SongDetail = (props) => {
 
 const mapState = (state) => ({
 	song: selectors.getCurrentSong(state),
-	areSongsLoading: selectors.areSongsLoading(state)
+	isSongDetailLoading: selectors.isSongDetailLoading(state),
+	isWordCloudLoading: selectors.isWordCloudLoading(state)
 });
 
-export default connect(mapState, { fetchArtist, fetchSongDetails })(SongDetail);
+export default connect(mapState, { fetchSongDetails })(SongDetail);

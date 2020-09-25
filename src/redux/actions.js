@@ -17,7 +17,6 @@ export const addSongs = (songs = [ { name: 'We finally made it.' } ]) => {
 };
 
 export const searchSongs = () => {
-	console.log("action triggered");
 	return { type: SEARCH_SONGS };
 };
 
@@ -30,8 +29,7 @@ export const fetchSongDetails = (songId) => {
 };
 
 export const fetchArtist = (artistId) => {
-	console.log('from actions', artistId);
-	return { type: FETCH_ARTIST, artistId };
+	return { type: FETCH_ARTIST.start, artistId };
 };
 
 export const addSongDetails = (song) => {

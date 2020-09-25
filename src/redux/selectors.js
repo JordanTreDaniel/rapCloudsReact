@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect';
-import { normalizeLyrics, whichPath } from './utils';
+import { normalizeLyrics, whichPath, replaceDiacritics } from './utils';
 import { createMatchSelector } from 'connected-react-router';
+import sortBy from 'lodash/sortBy';
 
 //General
 /********************************************************************* */
@@ -34,10 +35,18 @@ export const getUserImg = createSelector(
 	}
 );
 
+export const getUserName = createSelector(getUser, (user) => {
+	const { name = 'Our Favorite User' } = user || {};
+	return name;
+});
+
 //Songs
 /********************************************************************* */
 export const getSearchTerm = (state) => state.songs.searchTerm;
 export const areSongsLoading = (state) => state.songs.loading;
+export const isSongSearchLoading = (state) => state.songs.searchLoading;
+export const isSongDetailLoading = (state) => state.songs.songDetailLoading;
+export const isWordCloudLoading = (state) => state.songs.wordCloudLoading;
 
 export const getCurrentSongId = createSelector(getMatchParams, (matchParams) => matchParams.songId);
 
@@ -59,17 +68,50 @@ export const getSongsList = createSelector(getSongsById, (songsById) => {
 	return Object.values(songsById);
 });
 
-export const getSearchedSongsList = createSelector(getSongsList, getSearchTerm, (songsList, searchTerm) => {
-	return searchTerm.length
-		? songsList.filter((song) => {
-				const normalizedTitle = song.full_title.toLowerCase();
-				const normalizedArtistName = song.primary_artist.name.toLowerCase();
-				const normalizedSearchTerm = searchTerm.toLowerCase().split(' ');
-				return normalizedSearchTerm.some(
-					(word) => normalizedTitle.match(word) || normalizedArtistName.match(word)
-				);
-			})
-		: songsList;
+export const getNormedSearchTerm = createSelector(getSearchTerm, (rawSearchTerm) => {
+	const preNormed = rawSearchTerm.toLowerCase().replace(/[.,\/#!%\^\*;:{}=\-_`~()\[\]]/g, '');
+	const result = replaceDiacritics(preNormed);
+	return result;
+});
+
+export const getSearchedSongsList = createSelector(
+	getSongsList,
+	getNormedSearchTerm,
+	(songsList, normalizedSearchTerm) => {
+		if (!normalizedSearchTerm.length) return songsList;
+		const matchingSongs = songsList.reduce((matchingSongs, song) => {
+			const normalizedTitle = replaceDiacritics(song.full_title.toLowerCase());
+			const normalizedArtistName = replaceDiacritics(song.primary_artist.name.toLowerCase());
+			const searchTermItems = normalizedSearchTerm.split(' ');
+			let isMatch = false;
+			let searchRank = 0;
+			searchTermItems.forEach((word) => {
+				const titleMatch = normalizedTitle.match(word);
+				const artistMatch = normalizedArtistName.match(word);
+				if (titleMatch || artistMatch) isMatch = true;
+				searchRank += titleMatch ? titleMatch[0].length * 2 : 0;
+				searchRank += artistMatch ? artistMatch[0].length : 0;
+			});
+			if (!isMatch) return matchingSongs;
+			const rankedSong = { ...song, searchRank };
+			matchingSongs.push(rankedSong);
+			return matchingSongs;
+		}, []);
+		return sortBy(matchingSongs, (song) => song.searchRank).reverse();
+	}
+);
+
+export const getCurrentSong = createSelector(getSongsById, getCurrentSongId, (songsById, songId) => {
+	if (!songId) {
+		console.warn(`The "getCurrentSong" selector has been called with no songId detected in match params`);
+		return null;
+	}
+	const song = songsById[songId] || {};
+	let { lyrics = '' } = song;
+
+	const normalizedLyrics = normalizeLyrics(lyrics);
+	song.normalizedLyrics = normalizedLyrics;
+	return song;
 });
 
 //Artist
@@ -91,6 +133,11 @@ export const getArtistCloud = createSelector();
 
 export const getArtistsById = (state) => state.artists.byId;
 
+export const getArtistFromId = createSelector(
+	getArtistsById,
+	(_, artistId) => artistId,
+	(artistsById, artistId) => artistsById[artistId]
+);
 export const getCurrentArtist = createSelector(getMatchParams, getArtistsById, (matchParams, artistsById) => {
 	const { artistId } = matchParams;
 	if (!artistId) {
@@ -101,15 +148,5 @@ export const getCurrentArtist = createSelector(getMatchParams, getArtistsById, (
 	return currentArtist;
 });
 
-export const getCurrentSong = createSelector(getSongsById, getCurrentSongId, (songsById, songId) => {
-	if (!songId) {
-		console.warn(`The "getCurrentSong" selector has been called with no songId detected in match params`);
-		return null;
-	}
-	const song = songsById[songId] || {};
-	let { lyrics = '' } = song;
-
-	const normalizedLyrics = normalizeLyrics(lyrics);
-	song.normalizedLyrics = normalizedLyrics;
-	return song;
-});
+export const isArtistLoading = (state) => state.artists.artistLoading;
+export const isArtistCloudLoading = (state) => state.artists.artistCloudLoading;

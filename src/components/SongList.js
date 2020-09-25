@@ -26,7 +26,6 @@ const styles = {
 };
 
 const SongList = (props) => {
-	//TO-DO: Make SongCard component before MVP branch closes.
 	const { classes, songs } = props;
 	return (
 		<div className={classes.songList}>
