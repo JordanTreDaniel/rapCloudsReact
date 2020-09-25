@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { normalizeLyrics, whichPath } from './utils';
+import { normalizeLyrics, whichPath, replaceDiacritics } from './utils';
 import { createMatchSelector } from 'connected-react-router';
 import sortBy from 'lodash/sortBy';
 
@@ -69,7 +69,9 @@ export const getSongsList = createSelector(getSongsById, (songsById) => {
 });
 
 export const getNormedSearchTerm = createSelector(getSearchTerm, (rawSearchTerm) => {
-	return rawSearchTerm.toLowerCase().replace(/[.,\/#!%\^\*;:{}=\-_`~()\[\]]/g, '');
+	const preNormed = rawSearchTerm.toLowerCase().replace(/[.,\/#!%\^\*;:{}=\-_`~()\[\]]/g, '');
+	const result = replaceDiacritics(preNormed);
+	return result;
 });
 
 export const getSearchedSongsList = createSelector(
@@ -78,8 +80,8 @@ export const getSearchedSongsList = createSelector(
 	(songsList, normalizedSearchTerm) => {
 		if (!normalizedSearchTerm.length) return songsList;
 		const matchingSongs = songsList.reduce((matchingSongs, song) => {
-			const normalizedTitle = song.full_title.toLowerCase();
-			const normalizedArtistName = song.primary_artist.name.toLowerCase();
+			const normalizedTitle = replaceDiacritics(song.full_title.toLowerCase());
+			const normalizedArtistName = replaceDiacritics(song.primary_artist.name.toLowerCase());
 			const searchTermItems = normalizedSearchTerm.split(' ');
 			let isMatch = false;
 			let searchRank = 0;

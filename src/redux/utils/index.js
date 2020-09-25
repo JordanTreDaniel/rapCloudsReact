@@ -4,6 +4,12 @@ import intersection from 'lodash/intersection';
 
 export const normalizeLyrics = _normalizeLyrics;
 
+export const replaceDiacritics = (str) => {
+	// NOTE: GREAT explanation of how this works here:
+	// https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript/37511463#37511463
+	const normedStr = str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+	return normedStr;
+};
 // whichPath - Takes the current location path, and matches it to a route pattern
 // NOTE - I'm positive this algorithm could be improved
 export const whichPath = (path) => {
