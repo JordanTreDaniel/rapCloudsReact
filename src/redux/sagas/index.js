@@ -3,11 +3,12 @@ import watchingUserSagas from './user';
 import watchingArtistSagas from './artists';
 import { call } from 'redux-saga/effects';
 import axios from 'axios';
-
+const REACT_APP_SERVER_ROOT =
+	process.env.NODE_ENV === 'development' ? 'http://localhost:3333' : 'https://rap-clouds-server.herokuapp.com';
 const apiFetchWordCloud = async (lyricString) => {
 	const res = await axios({
 		method: 'post',
-		url: `http://localhost:3333/makeWordCloud`,
+		url: `${REACT_APP_SERVER_ROOT}/makeWordCloud`,
 		headers: {
 			'Content-Type': 'application/json'
 			// 'Accept-Encoding': 'gzip',
