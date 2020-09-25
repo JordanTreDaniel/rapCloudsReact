@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => {
 const ArtistPage = (props) => {
 	const classes = useStyles();
 	const { artistId } = useParams();
-	const { fetchArtist } = props;
+	const { fetchArtist, artist, isArtistCloudLoading, isArtistLoading } = props;
 
 	useEffect(
 		() => {
@@ -36,24 +36,22 @@ const ArtistPage = (props) => {
 		[ artistId ]
 	);
 	if (!artistId) return <Redirect to={paths.search} />;
-	const { artist, isArtistLoading } = props;
 	if (!artist && !isArtistLoading) return null;
 
 	const { name, encodedCloud } = artist || {};
 	return (
 		<Grid className={classes.artistPageGrid}>
 			<BackButton />
-			<Typography variant="h2">{name}</Typography>
-			{isArtistLoading ? (
-				<LoadingCloud />
-			) : !encodedCloud ? null : (
+			<Typography variant="h2">{name || 'Artist Page'}</Typography>
+			{(isArtistCloudLoading || isArtistLoading) && <LoadingCloud />}
+			{isArtistCloudLoading ? null : !encodedCloud ? null : (
 				<img
 					src={`data:image/png;base64, ${encodedCloud}`}
 					alt={`Rap Cloud for ${name}'s Top Songs`}
 					className={classes.wordCloud}
 				/>
 			)}
-			<ArtistSongList artistId={artistId} />
+			{isArtistLoading ? null : <ArtistSongList artistId={artistId} />}
 		</Grid>
 	);
 };
@@ -61,7 +59,8 @@ const ArtistPage = (props) => {
 const mapState = (state) => {
 	return {
 		artist: selectors.getCurrentArtist(state),
-		isArtistLoading: selectors.isArtistLoading(state)
+		isArtistLoading: selectors.isArtistLoading(state),
+		isArtistCloudLoading: selectors.isArtistCloudLoading(state)
 	};
 };
 

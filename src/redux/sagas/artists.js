@@ -57,20 +57,9 @@ export function* fetchArtist(action) {
 		yield put({ type: FETCH_ARTIST.success, artist });
 
 		if (fetchCloudToo) {
-			const allLyrics = yield all(
-				songs.map((song) => {
-					const { id: songId, path: songPath } = song;
-					return fetchSongLyrics({ type: FETCH_SONG_LYRICS.start, songId, songPath, fetchWordCloud: false });
-				})
-			);
-			const normalizedLyricsJumble = allLyrics.reduce(
-				(acc, songLyrics) => acc + ' ' + normalizeLyrics(songLyrics),
-				''
-			);
-
 			yield put({
 				type: FETCH_ARTIST_CLOUD.start,
-				lyricString: normalizedLyricsJumble,
+				songs: songs.map((song) => ({ id: song.id, path: song.path })),
 				artistId
 			});
 		}
@@ -79,14 +68,24 @@ export function* fetchArtist(action) {
 
 export function* fetchArtistCloud(action) {
 	try {
-		const { lyricString, artistId, forceFetch = false } = action;
+		const { artistId, forceFetch = false, songs } = action;
 		const artist = yield select(getArtistFromId, artistId);
 		if (artist && artist.encodedCloud && !forceFetch) {
 			yield put({ type: FETCH_ARTIST_CLOUD.cancellation });
 			yield cancel();
 			return;
 		}
-		const { encodedCloud, error } = yield call(fetchWordCloud, { lyricString });
+		const allLyrics = yield all(
+			songs.map((song) => {
+				const { id: songId, path: songPath } = song;
+				return fetchSongLyrics({ type: FETCH_SONG_LYRICS.start, songId, songPath, fetchWordCloud: false });
+			})
+		);
+		const normalizedLyricsJumble = allLyrics.reduce(
+			(acc, songLyrics) => acc + ' ' + normalizeLyrics(songLyrics),
+			''
+		);
+		const { encodedCloud, error } = yield call(fetchWordCloud, { lyricString: normalizedLyricsJumble });
 		if (error) {
 			yield put({ type: FETCH_ARTIST_CLOUD.failure });
 			console.log('Something went wrong in fetch artist cloud', error);
