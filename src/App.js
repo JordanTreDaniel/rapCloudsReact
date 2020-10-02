@@ -16,6 +16,7 @@ import ReactGA from 'react-ga';
 import { history } from './redux/store';
 
 function initializeReactGA() {
+	console.log('Initializing analytics');
 	ReactGA.initialize('UA-166594032-2');
 	ReactGA.pageview('/home');
 	history.listen((location) => {
