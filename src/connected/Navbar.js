@@ -12,8 +12,9 @@ import {
 	ListItemText,
 	ListItemIcon,
 	ListItem,
-	Drawer,
-	IconButton
+	Drawer, //TO-DO: Use swipeable drawer instead
+	IconButton,
+	Divider
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { history } from '../redux/store';
@@ -23,7 +24,7 @@ import { Avatar } from '@material-ui/core';
 import paths from '../paths';
 import localForage from 'localforage';
 
-import SearchIcon from '@material-ui/icons/Search';
+import SearchIcon from '@material-ui/icons/SearchOutlined';
 import MenuIcon from '@material-ui/icons/Menu';
 
 const useStyles = makeStyles((theme) => {
@@ -106,22 +107,29 @@ const Navbar = (props) => {
 				<List component="nav" aria-label="main mailbox folders">
 					<ListItem button onClick={() => toggleLogOutDialog(true)}>
 						<ListItemText primary="Sign Out" />
-						{userImgURL ? (
-							<Avatar alt="User Profile Pic" src={userImgURL} />
-						) : (
-							<Button href={paths.signIn}>Sign In</Button>
-						)}
+						<ListItemIcon>
+							{userImgURL ? (
+								<Avatar alt="User Profile Pic" src={userImgURL} />
+							) : (
+								<Button href={paths.signIn}>Sign In</Button>
+							)}
+						</ListItemIcon>
 					</ListItem>
+					<Divider />
 					<ListItem component={Link} to={paths.search} className={classes.plainLink}>
 						<ListItemText primary={'Search'} />
 						<ListItemIcon>
 							<SearchIcon />
 						</ListItemIcon>
 					</ListItem>
+					<Divider />
 					<ListItem component={Link} to={paths.about} className={classes.plainLink}>
 						<ListItemText primary="About" />
-						<Avatar alt="Rap Clouds Logo" src={process.env.PUBLIC_URL + '/rapClouds.png'} />
+						<ListItemIcon>
+							<Avatar alt="Rap Clouds Logo" src={process.env.PUBLIC_URL + '/rapClouds.png'} />
+						</ListItemIcon>
 					</ListItem>
+					<Divider />
 				</List>
 			</Drawer>
 		</React.Fragment>
