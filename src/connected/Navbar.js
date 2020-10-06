@@ -55,6 +55,9 @@ const useStyles = makeStyles((theme) => {
 		},
 		drawer: {
 			marginTop: '9vw'
+		},
+		thumbnailImg: {
+			width: '5em'
 		}
 	};
 });
@@ -69,7 +72,11 @@ const Navbar = (props) => {
 			<AppBar color="inherit" position="static">
 				<Toolbar className={classes.toolBar}>
 					<Link className={classes.plainLink} to={paths.search}>
-						<Typography variant="h6">Rap Clouds</Typography>
+						<img
+							alt="Rap Clouds Logo"
+							src={process.env.PUBLIC_URL + '/rapClouds.png'}
+							className={classes.thumbnailImg}
+						/>
 					</Link>
 					<Box className={classes.buttonBox}>
 						<IconButton onClick={() => toggleDrawer(true)}>
@@ -104,7 +111,7 @@ const Navbar = (props) => {
 				)}
 			</AppBar>
 			<Drawer anchor={'top'} open={drawerOpen} onClose={() => toggleDrawer(false)}>
-				<List component="nav" aria-label="main mailbox folders">
+				<List component="nav" aria-label="main mailbox folders" onClick={() => toggleDrawer(false)}>
 					<ListItem button onClick={() => toggleLogOutDialog(true)}>
 						<ListItemText primary="Sign Out" />
 						<ListItemIcon>
