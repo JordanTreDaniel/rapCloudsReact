@@ -23,7 +23,7 @@ import { connect } from 'react-redux';
 import { Avatar } from '@material-ui/core';
 import paths from '../paths';
 import localForage from 'localforage';
-
+import { classNames } from '../utils';
 import SearchIcon from '@material-ui/icons/SearchOutlined';
 import MenuIcon from '@material-ui/icons/Menu';
 
@@ -35,12 +35,12 @@ const useStyles = makeStyles((theme) => {
 		toolBar: {
 			display: 'flex',
 			justifyContent: 'space-between',
-			backgroundColor: theme.palette.primary.light,
+			backgroundColor: theme.palette.primary.main,
 			height: '9vw'
 		},
-		plainLink: {
+		whiteLink: {
 			textDecoration: 'none',
-			color: 'black'
+			color: 'white'
 		},
 		logOutDialog: {
 			textAlign: 'center'
@@ -54,10 +54,16 @@ const useStyles = makeStyles((theme) => {
 			textAlign: 'center'
 		},
 		drawer: {
-			marginTop: '9vw'
+			backgroundColor: theme.palette.primary.main,
+			color: theme.palette.primary.contrastText
 		},
 		thumbnailImg: {
 			width: '5em'
+		},
+		navList: {
+			padding: 0,
+			backgroundColor: theme.palette.primary.main,
+			color: theme.palette.primary.contrastText
 		}
 	};
 });
@@ -71,7 +77,7 @@ const Navbar = (props) => {
 		<React.Fragment>
 			<AppBar color="inherit" position="static">
 				<Toolbar className={classes.toolBar}>
-					<Link className={classes.plainLink} to={paths.search}>
+					<Link className={classNames(classes.whiteLink)} to={paths.search}>
 						<img
 							alt="Rap Clouds Logo"
 							src={process.env.PUBLIC_URL + '/rapClouds.png'}
@@ -110,8 +116,13 @@ const Navbar = (props) => {
 					</Dialog>
 				)}
 			</AppBar>
-			<Drawer anchor={'top'} open={drawerOpen} onClose={() => toggleDrawer(false)}>
-				<List component="nav" aria-label="main mailbox folders" onClick={() => toggleDrawer(false)}>
+			<Drawer anchor={'top'} open={drawerOpen} onClose={() => toggleDrawer(false)} className={classes.drawer}>
+				<List
+					component="nav"
+					aria-label="main mailbox folders"
+					onClick={() => toggleDrawer(false)}
+					className={classes.navList}
+				>
 					<ListItem button onClick={() => toggleLogOutDialog(true)}>
 						<ListItemText primary="Sign Out" />
 						<ListItemIcon>
@@ -123,14 +134,14 @@ const Navbar = (props) => {
 						</ListItemIcon>
 					</ListItem>
 					<Divider />
-					<ListItem component={Link} to={paths.search} className={classes.plainLink}>
+					<ListItem component={Link} to={paths.search} className={classNames(classes.whiteLink)}>
 						<ListItemText primary={'Search'} />
 						<ListItemIcon>
 							<SearchIcon />
 						</ListItemIcon>
 					</ListItem>
 					<Divider />
-					<ListItem component={Link} to={paths.about} className={classes.plainLink}>
+					<ListItem component={Link} to={paths.about} className={classNames(classes.whiteLink)}>
 						<ListItemText primary="About" />
 						<ListItemIcon>
 							<Avatar alt="Rap Clouds Logo" src={process.env.PUBLIC_URL + '/rapClouds.png'} />
