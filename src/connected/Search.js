@@ -10,21 +10,27 @@ import SearchIcon from '@material-ui/icons/Search';
 import DebouncedInput from '../components/DebouncedInput';
 const DebouncedTextField = DebouncedInput(Input, { timeout: 639 });
 
-const useStyles = makeStyles({
-	outerLoading: {
-		width: '51vw',
-		height: '51vw',
-		margin: 'auto',
-		backgroundImage: 'url("https://media.giphy.com/media/1uLQUtPLbJMQ0/giphy.gif")',
-		backgroundRepeat: 'no-repeat',
-		backgroundSize: 'cover',
-		borderRadius: '50%',
-		display: 'flex'
-	},
-	innerLoading: { margin: 'auto', color: 'white', width: 'fit-content' },
+const useStyles = makeStyles((theme) => ({
 	songListContainer: { width: '80vw', margin: 'auto', textAlign: 'left' },
-	mainSearchInput: { fontSize: '3em', marginRight: '2em', marginLeft: '2em' }
-});
+	mainSearchInput: {
+		fontSize: '3em',
+		fontWeight: 560,
+		marginRight: '3vw',
+		marginLeft: '9vw',
+		color: theme.palette.secondary.light
+	},
+	masterBox: { backgroundColor: theme.palette.primary.light },
+	searchBar: {},
+	searchIcon: {
+		color: theme.palette.secondary.contrastText,
+		backgroundColor: theme.palette.secondary.light,
+		marginRight: '9vw',
+		'&:hover': {
+			color: theme.palette.secondary.contrastText,
+			backgroundColor: theme.palette.secondary.main
+		}
+	}
+}));
 
 const Search = (props) => {
 	const { setSongSearchTerm, searchTerm, loading, searchSongs } = props;
@@ -34,8 +40,8 @@ const Search = (props) => {
 	};
 	const classes = useStyles();
 	return (
-		<div className={'masterBox'}>
-			<div className={'searchBar'}>
+		<div className={classes.masterBox}>
+			<div className={classes.searchBar}>
 				<DebouncedTextField
 					type="text"
 					onChange={(e) => {
@@ -51,7 +57,12 @@ const Search = (props) => {
 					rowsMax={1}
 					autoFocus
 					endAdornment={
-						<IconButton aria-label="search-icon" component="span" onClick={search}>
+						<IconButton
+							className={classes.searchIcon}
+							aria-label="search-icon"
+							component="span"
+							onClick={search}
+						>
 							<SearchIcon />
 						</IconButton>
 					}
