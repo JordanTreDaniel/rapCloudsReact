@@ -7,6 +7,7 @@ import {
 	Toolbar,
 	Box,
 	Dialog,
+	DialogActions,
 	DialogTitle,
 	List,
 	ListItemText,
@@ -14,7 +15,8 @@ import {
 	ListItem,
 	Drawer, //TO-DO: Use swipeable drawer instead
 	IconButton,
-	Divider
+	Divider,
+	DialogContent
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { history } from '../redux/store';
@@ -43,14 +45,20 @@ const useStyles = makeStyles((theme) => {
 			color: 'white'
 		},
 		logOutDialog: {
-			textAlign: 'center'
+			textAlign: 'center',
+			color: theme.palette.secondary.contrastText
 		},
 		logOutDialogPaper: {
-			backgroundColor: theme.palette.primary.light
+			backgroundColor: theme.palette.secondary.main
 		},
 		logOutBtn: {
-			backgroundColor: theme.palette.secondary.dark,
-			color: 'white',
+			backgroundColor: theme.palette.error.main,
+			color: theme.palette.error.contrastText,
+			textAlign: 'center'
+		},
+		cancelBtn: {
+			backgroundColor: theme.palette.primary.light,
+			color: theme.palette.primary.contrastText,
 			textAlign: 'center'
 		},
 		drawer: {
@@ -98,21 +106,26 @@ const Navbar = (props) => {
 						open={logOutDialogOpen}
 						PaperProps={{ className: classes.logOutDialogPaper }}
 					>
-						<DialogTitle>{userName}</DialogTitle>
-						<List>
-							<ListItem
+						<DialogTitle>{`Signed in as ${userName}`}</DialogTitle>
+						<DialogContent>
+							<Typography variant="h6">Log Out?</Typography>
+						</DialogContent>
+						<DialogActions>
+							<Button
 								className={classes.logOutBtn}
 								autoFocus
-								button
 								onClick={() => {
 									localForage.clear();
 									toggleLogOutDialog(false);
 									history.push('/signin');
 								}}
 							>
-								<ListItemText primary="Log Out" />
-							</ListItem>
-						</List>
+								Log Out
+							</Button>
+							<Button className={classes.cancelBtn} autoFocus onClick={() => toggleLogOutDialog(false)}>
+								Cancel
+							</Button>
+						</DialogActions>
 					</Dialog>
 				)}
 			</AppBar>
