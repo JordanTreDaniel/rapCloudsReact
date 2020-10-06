@@ -26,7 +26,22 @@ function initializeReactGA() {
 }
 
 const theme = createMuiTheme({
-	background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)'
+	background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+	palette: {
+		primary: {
+			light: '#6d6d6d',
+			main: '#424242',
+			dark: '#1b1b1b',
+			contrastText: '#ffffff'
+		},
+		secondary: {
+			light: '#64c1ff',
+			main: '#0091ea',
+			dark: '#0064b7',
+			contrastText: '#f5f5f5'
+		}
+	},
+	type: 'dark'
 });
 
 const App = (props) => {
