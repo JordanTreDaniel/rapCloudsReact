@@ -6,16 +6,14 @@ import {
 	Button,
 	Toolbar,
 	Box,
-	MenuItem,
 	Dialog,
 	DialogTitle,
 	List,
 	ListItemText,
 	ListItemIcon,
 	ListItem,
-	Menu,
-	Tooltip,
-	Drawer
+	Drawer,
+	IconButton
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { history } from '../redux/store';
@@ -26,6 +24,7 @@ import paths from '../paths';
 import localForage from 'localforage';
 
 import SearchIcon from '@material-ui/icons/Search';
+import MenuIcon from '@material-ui/icons/Menu';
 
 const useStyles = makeStyles((theme) => {
 	return {
@@ -61,9 +60,9 @@ const useStyles = makeStyles((theme) => {
 
 const Navbar = (props) => {
 	const classes = useStyles();
-	const { userImgURL, userName, drawerOpen, toggleDrawer } = props;
+	const { userImgURL, userName } = props;
 	const [ logOutDialogOpen, toggleLogOutDialog ] = useState(false);
-	// const [ drawerOpen, toggleDrawer ] = useState(false);
+	const [ drawerOpen, toggleDrawer ] = useState(false);
 	return (
 		<React.Fragment>
 			<AppBar color="inherit" position="static">
@@ -72,15 +71,9 @@ const Navbar = (props) => {
 						<Typography variant="h6">Rap Clouds</Typography>
 					</Link>
 					<Box className={classes.buttonBox}>
-						<Link to={paths.search} className={classes.plainLink}>
-							<Button>Search</Button>
-						</Link>
-
-						{userImgURL ? (
-							<Avatar alt="User Profile Pic" src={userImgURL} onClick={() => toggleLogOutDialog(true)} />
-						) : (
-							<Button href={paths.signIn}>Sign In</Button>
-						)}
+						<IconButton onClick={() => toggleDrawer(true)}>
+							<MenuIcon />
+						</IconButton>
 					</Box>
 				</Toolbar>
 				{logOutDialogOpen && (
