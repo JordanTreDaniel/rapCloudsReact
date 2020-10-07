@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { GridList, GridListTile, GridListTileBar } from '@material-ui/core';
+import { GridList, GridListTile, GridListTileBar, LinearProgress } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => {
@@ -25,15 +25,27 @@ const useStyles = makeStyles((theme) => {
 			flexGrow: '2',
 			overflowX: 'hidden',
 		},
+		loadingBar: {
+			width: '100%',
+			borderRadius: '15%',
+			margin: 0,
+		},
+		loadingBarContainer: {
+			width: '100%',
+			height: '.4em',
+		},
 	};
 });
 
 const SongList = (props) => {
-	const { songs } = props;
+	const { songs, loading } = props;
 	const classes = useStyles();
 	let cols = 1;
 	return (
 		<div className={classes.songListContainer}>
+			<div className={classes.loadingBarContainer}>
+				{loading && <LinearProgress color="secondary" variant="query" className={classes.loadingBar} />}
+			</div>
 			<GridList cellHeight={160} component="div" classes={{ root: classes.gridList }} cols={3}>
 				{songs.map((song, idx) => {
 					const artist = song.primary_artist;

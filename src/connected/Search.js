@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Search = (props) => {
-	const { setSongSearchTerm, searchTerm, loading, searchSongs } = props;
+	const { setSongSearchTerm, searchTerm, songSearchLoading, searchSongs } = props;
 	const search = () => {
 		const { searchTerm } = props;
 		searchSongs(searchTerm);
@@ -70,8 +70,7 @@ const Search = (props) => {
 				/>
 			</div>
 
-			{loading && <LoadingCloud />}
-			<SearchSongList songs={props.songs} />
+			<SearchSongList songs={props.songs} loading={songSearchLoading} />
 		</div>
 	);
 };
@@ -79,7 +78,7 @@ const Search = (props) => {
 const mapState = (state) => ({
 	songs: selectors.getSongsList(state),
 	searchTerm: selectors.getSearchTerm(state),
-	loading: selectors.isSongSearchLoading(state),
+	songSearchLoading: selectors.isSongSearchLoading(state),
 });
 
 Search.defaultProps = {
