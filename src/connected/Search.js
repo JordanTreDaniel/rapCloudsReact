@@ -11,15 +11,16 @@ import DebouncedInput from '../components/DebouncedInput';
 const DebouncedTextField = DebouncedInput(Input, { timeout: 639 });
 
 const useStyles = makeStyles((theme) => ({
-	songListContainer: { width: '80vw', margin: 'auto', textAlign: 'left' },
 	mainSearchInput: {
 		fontSize: '3em',
 		fontWeight: 560,
 		marginRight: '3vw',
 		marginLeft: '9vw',
-		color: theme.palette.secondary.light
+		color: theme.palette.secondary.light,
 	},
-	masterBox: { backgroundColor: theme.palette.primary.light },
+	masterBox: {
+		backgroundColor: theme.palette.primary.light,
+	},
 	searchBar: {},
 	searchIcon: {
 		color: theme.palette.secondary.contrastText,
@@ -27,9 +28,9 @@ const useStyles = makeStyles((theme) => ({
 		marginRight: '9vw',
 		'&:hover': {
 			color: theme.palette.secondary.contrastText,
-			backgroundColor: theme.palette.secondary.main
-		}
-	}
+			backgroundColor: theme.palette.secondary.main,
+		},
+	},
 }));
 
 const Search = (props) => {
@@ -69,10 +70,8 @@ const Search = (props) => {
 				/>
 			</div>
 
-			<div className={classes.songListContainer}>
-				{loading && <LoadingCloud />}
-				<SearchSongList songs={props.songs} />
-			</div>
+			{loading && <LoadingCloud />}
+			<SearchSongList songs={props.songs} />
 		</div>
 	);
 };
@@ -80,13 +79,13 @@ const Search = (props) => {
 const mapState = (state) => ({
 	songs: selectors.getSongsList(state),
 	searchTerm: selectors.getSearchTerm(state),
-	loading: selectors.isSongSearchLoading(state)
+	loading: selectors.isSongSearchLoading(state),
 });
 
 Search.defaultProps = {
 	searchSongs: () => console.log('No function set for searchSongs'),
 	setSongSearchTerm: () => console.log('No function set for setSongSearchTerm'),
 	songs: [],
-	searchTerm: 'No search term provided.'
+	searchTerm: 'No search term provided.',
 };
 export default connect(mapState, { searchSongs, setSongSearchTerm })(Search);

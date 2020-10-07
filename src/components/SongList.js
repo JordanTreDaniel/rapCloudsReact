@@ -5,38 +5,36 @@ import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => {
 	return {
-		root: {
-			display: 'flex',
-			flexWrap: 'wrap',
-			justifyContent: 'space-around',
+		songListContainer: {
+			width: '93vw',
+			height: '80vh',
+			margin: 'auto',
+			textAlign: 'left',
+			flexGrow: 5,
 			overflow: 'hidden',
-			backgroundColor: theme.palette.background.paper,
-			maxWidth: '',
-			minWidth: '20em',
-			margin: '2em'
-		},
-		media: {
-			height: 140
-		},
-		songList: {
 			display: 'flex',
-			justifyContent: 'space-evenly',
-			flexWrap: 'wrap'
+			flexFlow: 'row wrap',
+			justifyContent: 'space-around',
+			backgroundColor: theme.palette.background.paper,
+			maxWidth: '100vw',
+			minWidth: '20em',
 		},
 		gridList: {
-			width: 500,
-			height: 450
-		}
+			width: '93vw',
+			maxHeight: '100%',
+			flexGrow: '2',
+			overflowX: 'hidden',
+		},
 	};
 });
 
 const SongList = (props) => {
 	const { songs } = props;
-	const classes = useStyles;
+	const classes = useStyles();
 	let cols = 1;
 	return (
-		<div className={classes.root}>
-			<GridList cellHeight={160} className={classes.gridList} cols={3}>
+		<div className={classes.songListContainer}>
+			<GridList cellHeight={160} component="div" classes={{ root: classes.gridList }} cols={3}>
 				{songs.map((song, idx) => {
 					const artist = song.primary_artist;
 					const { name: artistName = 'Unknown' } = artist || {};
@@ -59,7 +57,7 @@ const SongList = (props) => {
 };
 
 SongList.defaultProps = {
-	songs: []
+	songs: [],
 };
 
 export default SongList;
