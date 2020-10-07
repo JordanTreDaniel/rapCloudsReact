@@ -30,20 +30,24 @@ const theme = createMuiTheme({
 			light: '#6d6d6d',
 			main: '#424242',
 			dark: '#1b1b1b',
-			contrastText: '#ffffff'
+			contrastText: '#ffffff',
 		},
 		secondary: {
 			light: '#64c1ff',
 			main: '#0091ea',
 			dark: '#0064b7',
-			contrastText: '#f5f5f5'
+			contrastText: '#f5f5f5',
 		},
 		background: {
 			paper: '#6d6d6d',
-			default: '#424242'
-		}
+			default: '#424242',
+		},
+		text: {
+			primary: '#ffffff',
+			secondary: '#0091ea',
+		},
 	},
-	type: 'dark'
+	type: 'dark',
 });
 
 ReactDOM.render(
@@ -69,7 +73,7 @@ ReactDOM.render(
 			</ThemeProvider>
 		</Provider>
 	</React.StrictMode>,
-	document.getElementById('root')
+	document.getElementById('root'),
 );
 
 // If you want your app to work offline and load faster, you can change
