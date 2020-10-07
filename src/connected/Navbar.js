@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => {
 			display: 'flex',
 			justifyContent: 'space-between',
 			backgroundColor: theme.palette.primary.main,
-			height: '9vw'
+			height: '9vh'
 		},
 		whiteLink: {
 			textDecoration: 'none',
