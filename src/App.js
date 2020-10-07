@@ -39,24 +39,29 @@ const App = (props) => {
 	return appIsHydrated ? (
 		<Paper style={{ height: '100vh', width: '100vw', overflow: 'hidden' }}>
 			<Navbar />
-			<Switch>
-				<Route path={paths.signIn} render={(routerProps) => <SignIn history={routerProps.history} />} />
-				<Route path={paths.search} render={(routerProps) => <Search history={routerProps.history} />} />
-				<Route path={paths.songPage} render={(routerProps) => <SongDetail history={routerProps.history} />} />
-				<Route
-					path={paths.artistPage}
-					render={({ history }) => {
-						return <ArtistPage history={history} />;
-					}}
-				/>
-				<Route render={() => <Redirect to={paths.search} />} />
-				{process.env.NODE_ENV === 'development' ? (
-					<React.Fragment>
-						<Route path={'/loadingCloud'} render={(routerProps) => <LoadingCloud />} />
-						<Route path={'/splash'} render={(routerProps) => <SplashScreen />} />
-					</React.Fragment>
-				) : null}
-			</Switch>
+			<Paper style={{ height: '91vh', width: '100vw', overflow: 'hidden' }}>
+				<Switch>
+					<Route path={paths.signIn} render={(routerProps) => <SignIn history={routerProps.history} />} />
+					<Route path={paths.search} render={(routerProps) => <Search history={routerProps.history} />} />
+					<Route
+						path={paths.songPage}
+						render={(routerProps) => <SongDetail history={routerProps.history} />}
+					/>
+					<Route
+						path={paths.artistPage}
+						render={({ history }) => {
+							return <ArtistPage history={history} />;
+						}}
+					/>
+					<Route render={() => <Redirect to={paths.search} />} />
+					{process.env.NODE_ENV === 'development' ? (
+						<React.Fragment>
+							<Route path={'/loadingCloud'} render={(routerProps) => <LoadingCloud />} />
+							<Route path={'/splash'} render={(routerProps) => <SplashScreen />} />
+						</React.Fragment>
+					) : null}
+				</Switch>
+			</Paper>
 		</Paper>
 	) : (
 		<h1>Rap Clouds</h1>
