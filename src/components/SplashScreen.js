@@ -1,5 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import { Paper } from '@material-ui/core';
 
 const useStyles = makeStyles({
 	outerLoading: {
@@ -17,15 +18,17 @@ const SplashScreen = (props) => {
 	const classes = useStyles();
 	const { width = '42vh', height = '27vh' } = props;
 	return (
-		<div
-			className={classes.outerLoading}
-			style={{
-				width,
-				height,
-				marginTop: '18vh',
-				overflow: 'visible',
-			}}
-		/>
+		<Paper style={{ minHeight: '100vh', minWidth: '100vw' }}>
+			<div
+				className={classes.outerLoading}
+				style={{
+					width,
+					height,
+					// marginTop: '18vh', //Cant fix this. Something is wrong.
+					overflow: 'visible',
+				}}
+			/>
+		</Paper>
 	);
 };
 
