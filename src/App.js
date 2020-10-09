@@ -37,32 +37,40 @@ const App = (props) => {
 		return <Redirect to={paths.signIn} />;
 	}
 	return appIsHydrated ? (
-		<Paper style={{ minHeight: '100vh', minWidth: '100vw' }}>
+		<Paper style={{ minHeight: '100vh', minWidth: '100vw' }} square elevation={0}>
 			<Navbar />
-			<Paper style={{ minHeight: '91vh', minWidth: '100vw', overflow: 'hidden' }}>
+			<Paper style={{ minHeight: '91vh', minWidth: '100vw', overflow: 'hidden' }} square elevation={0}>
 				<Switch>
-					<Route path={paths.signIn} render={(routerProps) => <SignIn history={routerProps.history} />} />
-					<Route path={paths.search} render={(routerProps) => <Search history={routerProps.history} />} />
+					<Route
+						path={paths.signIn}
+						exact
+						render={(routerProps) => <SignIn history={routerProps.history} />}
+					/>
+					<Route
+						path={paths.search}
+						exact
+						render={(routerProps) => <Search history={routerProps.history} />}
+					/>
 					<Route
 						path={paths.songPage}
+						exact
 						render={(routerProps) => <SongDetail history={routerProps.history} />}
 					/>
 					<Route
 						path={paths.artistPage}
+						exact
 						render={({ history }) => {
 							return <ArtistPage history={history} />;
 						}}
 					/>
-					{process.env.NODE_ENV === 'development' ? (
-						<React.Fragment>
-							<Route path={'/loadingCloud'} render={(routerProps) => <LoadingCloud />} />
-							<Route path={'/splash'} render={(routerProps) => <SplashScreen />} />
-						</React.Fragment>
-					) : null}
+					{/* <Route path={'/loadingCloud'} exact render={(routerProps) => <LoadingCloud />} /> */}
+					{/* <Route path={'/splash'} exact render={(routerProps) => <SplashScreen />} /> */}
 					<Route render={() => <Redirect to={paths.search} />} />
 				</Switch>
 			</Paper>
 			<Paper
+				square
+				elevation={0}
 				style={{
 					height: '33vh',
 					width: '100vw',

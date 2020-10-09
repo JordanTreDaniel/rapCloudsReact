@@ -54,7 +54,7 @@ ReactDOM.render(
 	<React.StrictMode>
 		<Provider store={store}>
 			<ThemeProvider theme={theme}>
-				<Paper style={{ minHeight: '100vh', minWidth: '100vw' }}>
+				<Paper style={{ minHeight: '100vh', minWidth: '100vw' }} square elevation={0}>
 					<PersistGate loading={<SplashScreen />} onBeforeLift={onBeforeLift} persistor={persistor}>
 						<ConnectedRouter history={history}>
 							<Switch>
