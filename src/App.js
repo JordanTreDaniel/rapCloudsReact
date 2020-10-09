@@ -37,9 +37,9 @@ const App = (props) => {
 		return <Redirect to={paths.signIn} />;
 	}
 	return appIsHydrated ? (
-		<Paper style={{ height: '100vh', width: '100vw', overflow: 'hidden' }}>
+		<Paper style={{ minHeight: '100vh', minWidth: '100vw' }}>
 			<Navbar />
-			<Paper style={{ height: '91vh', width: '100vw', overflow: 'hidden' }}>
+			<Paper style={{ minHeight: '91vh', minWidth: '100vw', overflow: 'hidden' }}>
 				<Switch>
 					<Route path={paths.signIn} render={(routerProps) => <SignIn history={routerProps.history} />} />
 					<Route path={paths.search} render={(routerProps) => <Search history={routerProps.history} />} />
@@ -53,14 +53,25 @@ const App = (props) => {
 							return <ArtistPage history={history} />;
 						}}
 					/>
-					<Route render={() => <Redirect to={paths.search} />} />
 					{process.env.NODE_ENV === 'development' ? (
 						<React.Fragment>
 							<Route path={'/loadingCloud'} render={(routerProps) => <LoadingCloud />} />
 							<Route path={'/splash'} render={(routerProps) => <SplashScreen />} />
 						</React.Fragment>
 					) : null}
+					<Route render={() => <Redirect to={paths.search} />} />
 				</Switch>
+			</Paper>
+			<Paper
+				style={{
+					height: '33vh',
+					width: '100vw',
+					overflow: 'visible',
+					backgroundColor: '#64c1ff',
+					display: 'block',
+				}}
+			>
+				<h1>Footer</h1>
 			</Paper>
 		</Paper>
 	) : (
