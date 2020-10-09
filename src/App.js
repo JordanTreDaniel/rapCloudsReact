@@ -81,6 +81,24 @@ const App = (props) => {
 			>
 				<h1>Footer</h1>
 			</Paper>
+			<Paper
+				id="copyright"
+				square
+				elevation={0}
+				style={{
+					height: '2em',
+					width: '100vw',
+					overflow: 'hidden',
+					backgroundColor: '#424242',
+					color: '#ffffff',
+					display: 'block',
+					textAlign: 'center',
+					paddingTop: '.5em',
+					paddingBottom: '.5em',
+				}}
+			>
+				@RapClouds 2020
+			</Paper>
 		</Paper>
 	) : (
 		<h1>Rap Clouds</h1>
