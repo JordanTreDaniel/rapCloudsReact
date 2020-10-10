@@ -73,10 +73,12 @@ const useStyles = makeStyles((theme) => {
 			margin: '1em',
 			position: 'relative',
 			paddingBottom: '3em',
+			backgroundColor: theme.palette.primary.main,
 		},
 		lyricsPaper: {
 			padding: '1em',
 			margin: '1em',
+			backgroundColor: theme.palette.primary.main,
 		},
 		sectionHeader: {
 			textAlign: 'center',
@@ -103,13 +105,12 @@ const useStyles = makeStyles((theme) => {
 				},
 			},
 		},
-		headerActionLink: {},
+		headerActionLink: { borderRadius: '50%' },
 		cloudActions: {
 			backgroundColor: theme.palette.primary.light,
 			display: 'flex',
 			flexFlow: 'row nowrap',
 			position: 'absolute',
-			flexGrow: '',
 		},
 		cloudActionsTop: {
 			top: '3em',
@@ -173,6 +174,21 @@ const SongDetail = (props) => {
 						onClick={() => base64InNewTab(`data:image/png;base64, ${encodedCloud}`)}
 					>
 						<NewTabIcon />
+					</IconButton>
+				</Tooltip>
+				<Tooltip placement="bottom" title="Share on Instagram">
+					<IconButton id="shareOnIG" size="medium" className={classes.headerAction} onClick={null}>
+						I
+					</IconButton>
+				</Tooltip>
+				<Tooltip placement="bottom" title="Share on Facebook">
+					<IconButton id="shareOnFB" size="medium" className={classes.headerAction} onClick={null}>
+						F
+					</IconButton>
+				</Tooltip>
+				<Tooltip placement="bottom" title="Share on Twitter">
+					<IconButton id="shareOnTwitter" size="medium" className={classes.headerAction} onClick={null}>
+						T
 					</IconButton>
 				</Tooltip>
 			</Paper>
@@ -240,9 +256,13 @@ const SongDetail = (props) => {
 				<Grid item sm={12} md={6} classes={{ root: classes.mainContentChild }}>
 					<Paper className={classes.lyricsPaper}>
 						<LoadingBar loading={false} /> {/* For spacing */}
-						<Typography variant="h3" classes={{ root: classes.sectionHeader }}>
+						<Typography
+							onClick={toggleLyricsExpanded}
+							variant="h3"
+							classes={{ root: classes.sectionHeader }}
+						>
 							Lyrics
-							<IconButton className={classes.headerAction} onClick={toggleLyricsExpanded}>
+							<IconButton className={classes.headerAction}>
 								<AddIcon />
 							</IconButton>
 						</Typography>
