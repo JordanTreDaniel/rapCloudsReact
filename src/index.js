@@ -13,7 +13,7 @@ import SplashScreen from './components/SplashScreen';
 import ErrorBoundary from './components/ErrorBoundary';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { Paper } from '@material-ui/core';
-
+import { defaultShadows } from './utils';
 if (process.env.NODE_ENV === 'development') {
 	window.store = store;
 }
@@ -47,6 +47,16 @@ const theme = createMuiTheme({
 			secondary: '#0091ea',
 		},
 	},
+	shadows: defaultShadows.map((shadowString) => {
+		if (shadowString === 'none') return shadowString;
+		const pxStrMatcher = /(-?\d{1,}px\s-?\d{1,}px\s-?\d{1,}px\s-?\d{1,}px\s)/g;
+		const matches = shadowString.match(pxStrMatcher);
+		const rgbVals = [ 'rgb(109, 171, 280)', 'rgb(109, 171, 260)', 'rgb(109, 171, 270)' ];
+		const result = matches.map((pxMatch, i) => {
+			return `${pxMatch} rgb(0,0,0,${rgbVals[i]})`;
+		});
+		return result.join(',');
+	}),
 	type: 'dark',
 });
 
