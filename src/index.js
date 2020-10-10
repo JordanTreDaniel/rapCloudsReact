@@ -22,7 +22,9 @@ const onBeforeLift = () => {
 	// take some action before the gate lifts
 	return;
 };
-
+/**
+ * Should I go for a scheme based of #9e9e9e & #0064ff?
+ */
 const theme = createMuiTheme({
 	background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
 	palette: {
@@ -53,7 +55,7 @@ const theme = createMuiTheme({
 		const matches = shadowString.match(pxStrMatcher);
 		const rgbVals = [ 'rgb(109, 171, 280)', 'rgb(109, 171, 260)', 'rgb(109, 171, 270)' ];
 		const result = matches.map((pxMatch, i) => {
-			return `${pxMatch} rgb(0,0,0,${rgbVals[i]})`;
+			return `${pxMatch} ${rgbVals[i]}`;
 		});
 		return result.join(',');
 	}),
