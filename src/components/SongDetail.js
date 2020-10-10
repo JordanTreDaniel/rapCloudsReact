@@ -1,27 +1,16 @@
 import React, { useEffect } from 'react';
 import { Redirect, useParams, Link } from 'react-router-dom';
-import {
-	Typography,
-	AppBar,
-	Toolbar,
-	Grid,
-	Avatar,
-	Tooltip,
-	LinearProgress,
-	Paper,
-	IconButton,
-	withWidth,
-} from '@material-ui/core';
+import { Typography, AppBar, Toolbar, Grid, Avatar, Tooltip, Paper, IconButton, withWidth } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import DownloadIcon from '@material-ui/icons/CloudDownload';
-import ShareIcon from '@material-ui/icons/Share';
+import NewTabIcon from '@material-ui/icons/AddToPhotos';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { makeStyles } from '@material-ui/core/styles';
 import * as selectors from '../redux/selectors';
 import { fetchSongDetails } from '../redux/actions';
 import { connect } from 'react-redux';
 import paths from '../paths';
-import LoadingCloud from './LoadingCloud';
+import { base64InNewTab } from '../utils';
 import BackButton from './BackButton';
 import LoadingBar from './LoadingBar';
 
@@ -97,7 +86,7 @@ const useStyles = makeStyles((theme) => {
 		headerAction: {
 			backgroundColor: theme.palette.primary.dark,
 			color: theme.palette.secondary.light,
-			marginLeft: '1em',
+			marginLeft: '.5em',
 			margin: '.5em',
 			'& a': {
 				textDecoration: 'none',
@@ -115,19 +104,18 @@ const useStyles = makeStyles((theme) => {
 			},
 		},
 		headerActionLink: {},
-		cloudActionsTop: {
+		cloudActions: {
 			backgroundColor: theme.palette.primary.light,
 			display: 'flex',
 			flexFlow: 'row nowrap',
 			position: 'absolute',
+			flexGrow: '',
+		},
+		cloudActionsTop: {
 			top: '3em',
 			left: '5em',
 		},
 		cloudActionsBottom: {
-			backgroundColor: theme.palette.primary.light,
-			display: 'flex',
-			flexFlow: 'row nowrap',
-			position: 'absolute',
 			bottom: '2em',
 			left: '5em',
 		},
@@ -148,6 +136,7 @@ const SongDetail = (props) => {
 		},
 		[ songId ],
 	);
+
 	if (!songId) return <Redirect to={paths.search} />;
 	if (!song) return null;
 
@@ -160,27 +149,32 @@ const SongDetail = (props) => {
 			<Paper
 				elevation={12}
 				id="cloudActions"
-				className={conditionsPassed ? classes.cloudActionsTop : classes.cloudActionsBottom}
+				className={` ${classes.cloudActions} ${conditionsPassed
+					? classes.cloudActionsTop
+					: classes.cloudActionsBottom}`}
 			>
 				{/* <Avatar src={}/> */}
-				<IconButton id="downloadBtn" size="medium" className={classes.headerAction}>
-					<a
-						className={classes.headerActionLink}
-						href={`data:image/png;base64, ${encodedCloud}`}
-						download={`${briefedTitle} Rap Cloud.png`}
+				<Tooltip placement="bottom" title="Download Your RapCloud!">
+					<IconButton id="downloadBtn" size="medium" className={classes.headerAction}>
+						<a
+							className={classes.headerActionLink}
+							href={`data:image/png;base64, ${encodedCloud}`}
+							download={`${briefedTitle} Rap Cloud.png`}
+						>
+							<DownloadIcon />
+						</a>
+					</IconButton>
+				</Tooltip>
+				<Tooltip placement="bottom" title="Open Your RapCloud in New Tab">
+					<IconButton
+						id="openInNewTab"
+						size="medium"
+						className={classes.headerAction}
+						onClick={() => base64InNewTab(`data:image/png;base64, ${encodedCloud}`)}
 					>
-						<DownloadIcon />
-					</a>
-				</IconButton>
-				<IconButton id="openInNewTab" size="medium" className={classes.headerAction}>
-					<a
-						className={classes.headerActionLink}
-						href={`data:image/png;base64, ${encodedCloud}`}
-						target="_blank"
-					>
-						<ShareIcon />
-					</a>
-				</IconButton>
+						<NewTabIcon />
+					</IconButton>
+				</Tooltip>
 			</Paper>
 		);
 	};
