@@ -9,12 +9,12 @@ import {
 	Tooltip,
 	LinearProgress,
 	Paper,
-	Accordion,
-	AccordionSummary,
-	AccordionDetails,
 	IconButton,
+	withWidth,
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
+import DownloadIcon from '@material-ui/icons/CloudDownload';
+import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { makeStyles } from '@material-ui/core/styles';
 import * as selectors from '../redux/selectors';
@@ -71,7 +71,6 @@ const useStyles = makeStyles((theme) => {
 			textAlign: 'center',
 		},
 		mainContent: {
-			overflowY: 'scroll',
 			width: '100%',
 			height: '100%',
 			paddingBottom: '6em',
@@ -83,6 +82,8 @@ const useStyles = makeStyles((theme) => {
 		wordCloudPaper: {
 			padding: '1em',
 			margin: '1em',
+			position: 'relative',
+			paddingBottom: '3em',
 		},
 		lyricsPaper: {
 			padding: '1em',
@@ -94,20 +95,48 @@ const useStyles = makeStyles((theme) => {
 			color: theme.palette.secondary.light,
 		},
 		headerAction: {
-			backgroundColor: theme.palette.secondary.light,
-			color: theme.palette.secondary.contrastText,
+			backgroundColor: theme.palette.primary.dark,
+			color: theme.palette.secondary.light,
 			marginLeft: '1em',
+			margin: '.5em',
+			'& a': {
+				textDecoration: 'none',
+				color: theme.palette.secondary.light,
+				backgroundColor: theme.palette.primary.dark,
+			},
 			'&:hover': {
 				backgroundColor: theme.palette.secondary.light,
-				color: theme.palette.secondary.contrastText,
+				color: theme.palette.primary.dark,
+				'& a': {
+					textDecoration: 'none',
+					backgroundColor: theme.palette.secondary.light,
+					color: theme.palette.primary.dark,
+				},
 			},
+		},
+		headerActionLink: {},
+		cloudActionsTop: {
+			backgroundColor: theme.palette.primary.light,
+			display: 'flex',
+			flexFlow: 'row nowrap',
+			position: 'absolute',
+			top: '3em',
+			left: '5em',
+		},
+		cloudActionsBottom: {
+			backgroundColor: theme.palette.primary.light,
+			display: 'flex',
+			flexFlow: 'row nowrap',
+			position: 'absolute',
+			bottom: '2em',
+			left: '5em',
 		},
 	};
 });
 
 const SongDetail = (props) => {
 	const classes = useStyles();
-	const { song, fetchSongDetails, isSongDetailLoading, isWordCloudLoading } = props;
+	const { song, fetchSongDetails, isSongDetailLoading, isWordCloudLoading, width } = props;
 	const { songId } = useParams();
 	const [ lyricsExpanded, setLyricsExpanded ] = React.useState(null);
 	const toggleLyricsExpanded = () => setLyricsExpanded(!lyricsExpanded);
@@ -125,6 +154,37 @@ const SongDetail = (props) => {
 	const { full_title, path, writer_artists, primary_artist, lyrics, encodedCloud } = song;
 	const artists = writer_artists ? [ ...writer_artists ] : primary_artist ? [ primary_artist ] : [];
 	const [ briefedTitle, restOfTitle ] = full_title.split('by');
+	const renderCloudActions = (place) => {
+		const conditionsPassed = place === 'bottom' ? width === 'xs' : width !== 'xs';
+		return (
+			<Paper
+				elevation={12}
+				id="cloudActions"
+				className={conditionsPassed ? classes.cloudActionsTop : classes.cloudActionsBottom}
+			>
+				{/* <Avatar src={}/> */}
+				<IconButton id="downloadBtn" size="medium" className={classes.headerAction}>
+					<a
+						className={classes.headerActionLink}
+						href={`data:image/png;base64, ${encodedCloud}`}
+						download={`${briefedTitle} Rap Cloud.png`}
+					>
+						<DownloadIcon />
+					</a>
+				</IconButton>
+				<IconButton id="openInNewTab" size="medium" className={classes.headerAction}>
+					<a
+						className={classes.headerActionLink}
+						href={`data:image/png;base64, ${encodedCloud}`}
+						target="_blank"
+					>
+						<ShareIcon />
+					</a>
+				</IconButton>
+			</Paper>
+		);
+	};
+
 	return (
 		<Grid className={classes.songDetailContainer}>
 			<AppBar color="inherit" position="static">
@@ -169,6 +229,7 @@ const SongDetail = (props) => {
 						<Typography variant="h3" classes={{ root: classes.sectionHeader }}>
 							Cloud
 						</Typography>
+						{renderCloudActions()}
 						<img
 							src={
 								encodedCloud ? (
@@ -209,4 +270,4 @@ const mapState = (state) => ({
 	isWordCloudLoading: selectors.isWordCloudLoading(state),
 });
 
-export default connect(mapState, { fetchSongDetails })(SongDetail);
+export default connect(mapState, { fetchSongDetails })(withWidth()(SongDetail));
