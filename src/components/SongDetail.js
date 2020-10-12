@@ -4,7 +4,9 @@ import { Typography, AppBar, Toolbar, Grid, Avatar, Tooltip, Paper, IconButton, 
 import AddIcon from '@material-ui/icons/Add';
 import DownloadIcon from '@material-ui/icons/CloudDownload';
 import NewTabIcon from '@material-ui/icons/AddToPhotos';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import FacebookIcon from '@material-ui/icons/Facebook';
+import InstagramIcon from '@material-ui/icons/Instagram';
+import TwitterIcon from '@material-ui/icons/Twitter';
 import { makeStyles } from '@material-ui/core/styles';
 import * as selectors from '../redux/selectors';
 import { fetchSongDetails } from '../redux/actions';
@@ -71,7 +73,7 @@ const useStyles = makeStyles((theme) => {
 		wordCloudPaper: {
 			padding: '1em',
 			margin: '1em',
-			position: 'relative',
+			// position: 'relative',
 			paddingBottom: '3em',
 			backgroundColor: theme.palette.primary.main,
 		},
@@ -88,8 +90,9 @@ const useStyles = makeStyles((theme) => {
 		headerAction: {
 			backgroundColor: theme.palette.primary.dark,
 			color: theme.palette.secondary.light,
-			marginLeft: '.5em',
 			margin: '.5em',
+			width: '2em',
+			height: '2em',
 			'& a': {
 				textDecoration: 'none',
 				color: theme.palette.secondary.light,
@@ -107,18 +110,23 @@ const useStyles = makeStyles((theme) => {
 		},
 		headerActionLink: { borderRadius: '50%' },
 		cloudActions: {
-			backgroundColor: theme.palette.primary.light,
+			backgroundColor: theme.palette.primary.main,
 			display: 'flex',
 			flexFlow: 'row nowrap',
-			position: 'absolute',
+			// position: 'absolute',
+			alignItems: 'center',
+			justifyContent: 'space-around',
+			overflowX: 'scroll',
+			width: '100%',
+			padding: '.5em',
 		},
 		cloudActionsTop: {
-			top: '3em',
-			left: '5em',
+			// top: '3em',
+			// left: '5em',
 		},
 		cloudActionsBottom: {
-			bottom: '2em',
-			left: '5em',
+			// bottom: '2em',
+			// left: '5em',
 		},
 	};
 });
@@ -148,7 +156,7 @@ const SongDetail = (props) => {
 		const conditionsPassed = place === 'bottom' ? width === 'xs' : width !== 'xs';
 		return (
 			<Paper
-				elevation={12}
+				elevation={0}
 				id="cloudActions"
 				className={` ${classes.cloudActions} ${conditionsPassed
 					? classes.cloudActionsTop
@@ -178,17 +186,17 @@ const SongDetail = (props) => {
 				</Tooltip>
 				<Tooltip placement="bottom" title="Share on Instagram">
 					<IconButton id="shareOnIG" size="medium" className={classes.headerAction} onClick={null}>
-						I
+						<InstagramIcon />
 					</IconButton>
 				</Tooltip>
 				<Tooltip placement="bottom" title="Share on Facebook">
 					<IconButton id="shareOnFB" size="medium" className={classes.headerAction} onClick={null}>
-						F
+						<FacebookIcon />
 					</IconButton>
 				</Tooltip>
 				<Tooltip placement="bottom" title="Share on Twitter">
 					<IconButton id="shareOnTwitter" size="medium" className={classes.headerAction} onClick={null}>
-						T
+						<TwitterIcon />
 					</IconButton>
 				</Tooltip>
 			</Paper>
@@ -234,11 +242,11 @@ const SongDetail = (props) => {
 					</div>
 				</Grid>
 				<Grid item sm={12} md={6} classes={{ root: classes.mainContentChild }}>
-					<Paper className={classes.wordCloudPaper}>
+					<Paper elevation={9} className={classes.wordCloudPaper}>
 						<LoadingBar loading={isWordCloudLoading} />
-						<Typography variant="h3" classes={{ root: classes.sectionHeader }}>
+						{/* <Typography variant="h3" classes={{ root: classes.sectionHeader }}>
 							Cloud
-						</Typography>
+						</Typography> */}
 						{renderCloudActions()}
 						<img
 							src={
