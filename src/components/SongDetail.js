@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Redirect, useParams, Link } from 'react-router-dom';
 import { Typography, AppBar, Toolbar, Grid, Avatar, Tooltip, Paper, IconButton, withWidth } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
+import MinusIcon from '@material-ui/icons/Remove';
 import DownloadIcon from '@material-ui/icons/CloudDownload';
 import NewTabIcon from '@material-ui/icons/AddToPhotos';
 import FacebookIcon from '@material-ui/icons/Facebook';
@@ -54,6 +55,7 @@ const useStyles = makeStyles((theme) => {
 		wordCloud: {
 			width: '100%',
 			margin: 'auto',
+			marginBottom: '3em',
 		},
 		songHeader: {
 			display: 'flex',
@@ -73,13 +75,14 @@ const useStyles = makeStyles((theme) => {
 		wordCloudPaper: {
 			padding: '1em',
 			margin: '1em',
-			// position: 'relative',
-			paddingBottom: '3em',
+			position: 'relative',
+			// paddingBottom: '3em',
 			backgroundColor: theme.palette.primary.main,
 		},
 		lyricsPaper: {
 			padding: '1em',
 			margin: '1em',
+			position: 'relative',
 			backgroundColor: theme.palette.primary.main,
 		},
 		sectionHeader: {
@@ -108,6 +111,30 @@ const useStyles = makeStyles((theme) => {
 				},
 			},
 		},
+		sectionCollapser: {
+			backgroundColor: theme.palette.secondary.light,
+			color: theme.palette.primary.dark,
+			margin: '.5em',
+			width: '2em',
+			height: '2em',
+			position: 'absolute',
+			top: '-1em',
+			left: '-1em',
+			'& a': {
+				textDecoration: 'none',
+				color: theme.palette.primary.dark,
+				backgroundColor: theme.palette.secondary.light,
+			},
+			'&:hover': {
+				backgroundColor: theme.palette.primary.dark,
+				color: theme.palette.secondary.light,
+				'& a': {
+					textDecoration: 'none',
+					backgroundColor: theme.palette.primary.dark,
+					color: theme.palette.secondary.light,
+				},
+			},
+		},
 		headerActionLink: { borderRadius: '50%' },
 		cloudActions: {
 			backgroundColor: theme.palette.primary.main,
@@ -119,6 +146,7 @@ const useStyles = makeStyles((theme) => {
 			overflowX: 'scroll',
 			width: '100%',
 			padding: '.5em',
+			paddingLeft: '3em',
 		},
 		cloudActionsTop: {
 			// top: '3em',
@@ -135,8 +163,10 @@ const SongDetail = (props) => {
 	const classes = useStyles();
 	const { song, fetchSongDetails, isSongDetailLoading, isWordCloudLoading, width } = props;
 	const { songId } = useParams();
-	const [ lyricsExpanded, setLyricsExpanded ] = React.useState(null);
+	const [ lyricsExpanded, setLyricsExpanded ] = React.useState(false);
+	const [ cloudExpanded, setCloudExpanded ] = React.useState(true);
 	const toggleLyricsExpanded = () => setLyricsExpanded(!lyricsExpanded);
+	const toggleCloudExpanded = () => setCloudExpanded(!cloudExpanded);
 	useEffect(
 		() => {
 			if (songId) {
@@ -243,36 +273,39 @@ const SongDetail = (props) => {
 				</Grid>
 				<Grid item sm={12} md={6} classes={{ root: classes.mainContentChild }}>
 					<Paper elevation={9} className={classes.wordCloudPaper}>
+						<IconButton className={classes.sectionCollapser} onClick={toggleCloudExpanded}>
+							{cloudExpanded ? <MinusIcon /> : <AddIcon />}
+						</IconButton>
 						<LoadingBar loading={isWordCloudLoading} />
-						{/* <Typography variant="h3" classes={{ root: classes.sectionHeader }}>
+						<Typography variant="h3" classes={{ root: classes.sectionHeader }}>
 							Cloud
-						</Typography> */}
-						{renderCloudActions()}
-						<img
-							src={
-								encodedCloud ? (
-									`data:image/png;base64, ${encodedCloud}`
-								) : (
-									`${process.env.PUBLIC_URL}/rapClouds.png`
-								)
-							}
-							alt={'Rap Cloud'}
-							className={classes.wordCloud}
-						/>
+						</Typography>
+						{cloudExpanded && (
+							<React.Fragment>
+								{renderCloudActions()}
+								<img
+									src={
+										encodedCloud ? (
+											`data:image/png;base64, ${encodedCloud}`
+										) : (
+											`${process.env.PUBLIC_URL}/rapClouds.png`
+										)
+									}
+									alt={'Rap Cloud'}
+									className={classes.wordCloud}
+								/>
+							</React.Fragment>
+						)}
 					</Paper>
 				</Grid>
 				<Grid item sm={12} md={6} classes={{ root: classes.mainContentChild }}>
 					<Paper className={classes.lyricsPaper}>
+						<IconButton className={classes.sectionCollapser} onClick={toggleLyricsExpanded}>
+							{lyricsExpanded ? <MinusIcon /> : <AddIcon />}
+						</IconButton>
 						<LoadingBar loading={false} /> {/* For spacing */}
-						<Typography
-							onClick={toggleLyricsExpanded}
-							variant="h3"
-							classes={{ root: classes.sectionHeader }}
-						>
+						<Typography variant="h3" classes={{ root: classes.sectionHeader }}>
 							Lyrics
-							<IconButton className={classes.headerAction}>
-								<AddIcon />
-							</IconButton>
 						</Typography>
 						{lyricsExpanded && (
 							<Typography variant="body1" classes={{ root: classes.lyrics }}>
