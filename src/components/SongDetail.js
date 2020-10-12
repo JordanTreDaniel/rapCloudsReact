@@ -120,6 +120,7 @@ const useStyles = makeStyles((theme) => {
 			position: 'absolute',
 			top: '-1em',
 			left: '-1em',
+			zIndex: 2,
 			'& a': {
 				textDecoration: 'none',
 				color: theme.palette.primary.dark,
@@ -299,7 +300,7 @@ const SongDetail = (props) => {
 					</Paper>
 				</Grid>
 				<Grid item sm={12} md={6} classes={{ root: classes.mainContentChild }}>
-					<Paper className={classes.lyricsPaper}>
+					<Paper className={classes.lyricsPaper} elevation={9}>
 						<IconButton className={classes.appAction} onClick={toggleLyricsExpanded}>
 							{lyricsExpanded ? <MinusIcon /> : <AddIcon />}
 						</IconButton>
