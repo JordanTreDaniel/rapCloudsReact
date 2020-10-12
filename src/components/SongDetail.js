@@ -111,7 +111,7 @@ const useStyles = makeStyles((theme) => {
 				},
 			},
 		},
-		sectionCollapser: {
+		appAction: {
 			backgroundColor: theme.palette.secondary.light,
 			color: theme.palette.primary.dark,
 			margin: '.5em',
@@ -273,7 +273,7 @@ const SongDetail = (props) => {
 				</Grid>
 				<Grid item sm={12} md={6} classes={{ root: classes.mainContentChild }}>
 					<Paper elevation={9} className={classes.wordCloudPaper}>
-						<IconButton className={classes.sectionCollapser} onClick={toggleCloudExpanded}>
+						<IconButton className={classes.appAction} onClick={toggleCloudExpanded}>
 							{cloudExpanded ? <MinusIcon /> : <AddIcon />}
 						</IconButton>
 						<LoadingBar loading={isWordCloudLoading} />
@@ -300,7 +300,7 @@ const SongDetail = (props) => {
 				</Grid>
 				<Grid item sm={12} md={6} classes={{ root: classes.mainContentChild }}>
 					<Paper className={classes.lyricsPaper}>
-						<IconButton className={classes.sectionCollapser} onClick={toggleLyricsExpanded}>
+						<IconButton className={classes.appAction} onClick={toggleLyricsExpanded}>
 							{lyricsExpanded ? <MinusIcon /> : <AddIcon />}
 						</IconButton>
 						<LoadingBar loading={false} /> {/* For spacing */}

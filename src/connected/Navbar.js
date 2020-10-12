@@ -16,7 +16,7 @@ import {
 	Drawer, //TO-DO: Use swipeable drawer instead
 	IconButton,
 	Divider,
-	DialogContent
+	DialogContent,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { history } from '../redux/store';
@@ -32,47 +32,68 @@ import MenuIcon from '@material-ui/icons/Menu';
 const useStyles = makeStyles((theme) => {
 	return {
 		buttonBox: {
-			display: 'flex'
+			display: 'flex',
 		},
 		toolBar: {
 			display: 'flex',
 			justifyContent: 'space-between',
 			backgroundColor: theme.palette.primary.main,
-			height: '9vh'
+			height: '9vh',
 		},
 		whiteLink: {
 			textDecoration: 'none',
-			color: 'white'
+			color: 'white',
 		},
 		logOutDialog: {
 			textAlign: 'center',
-			color: theme.palette.secondary.contrastText
+			color: theme.palette.secondary.contrastText,
 		},
 		logOutDialogPaper: {
-			backgroundColor: theme.palette.secondary.main
+			backgroundColor: theme.palette.secondary.main,
 		},
 		logOutBtn: {
 			backgroundColor: theme.palette.error.main,
 			color: theme.palette.error.contrastText,
-			textAlign: 'center'
+			textAlign: 'center',
 		},
 		cancelBtn: {
 			backgroundColor: theme.palette.primary.light,
 			color: theme.palette.primary.contrastText,
-			textAlign: 'center'
+			textAlign: 'center',
 		},
 		drawer: {
 			backgroundColor: theme.palette.primary.main,
-			color: theme.palette.primary.contrastText
+			color: theme.palette.primary.contrastText,
 		},
 		thumbnailImg: {
-			width: '5em'
+			width: '5em',
 		},
 		navList: {
 			padding: 0,
 			backgroundColor: theme.palette.primary.main,
-			color: theme.palette.primary.contrastText
-		}
+			color: theme.palette.primary.contrastText,
+		},
+		appAction: {
+			backgroundColor: theme.palette.secondary.light,
+			color: theme.palette.primary.dark,
+			margin: '.5em',
+			width: '2em',
+			height: '2em',
+			'& a': {
+				textDecoration: 'none',
+				color: theme.palette.primary.dark,
+				backgroundColor: theme.palette.secondary.light,
+			},
+			'&:hover': {
+				backgroundColor: theme.palette.primary.dark,
+				color: theme.palette.secondary.light,
+				'& a': {
+					textDecoration: 'none',
+					backgroundColor: theme.palette.primary.dark,
+					color: theme.palette.secondary.light,
+				},
+			},
+		},
 	};
 });
 
@@ -93,7 +114,7 @@ const Navbar = (props) => {
 						/>
 					</Link>
 					<Box className={classes.buttonBox}>
-						<IconButton onClick={() => toggleDrawer(true)}>
+						<IconButton onClick={() => toggleDrawer(true)} className={classes.appAction}>
 							<MenuIcon />
 						</IconButton>
 					</Box>
@@ -170,7 +191,7 @@ const Navbar = (props) => {
 const mapState = (state) => ({
 	userImgURL: selectors.getUserImg(state, 'small'),
 	userName: selectors.getUserName(state),
-	appIsHydrated: selectors.isAppRehydrated(state)
+	appIsHydrated: selectors.isAppRehydrated(state),
 });
 
 export default connect(mapState, null)(Navbar);
