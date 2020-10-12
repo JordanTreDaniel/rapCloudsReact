@@ -36,7 +36,7 @@ const SongList = (props) => {
 	return (
 		<div className={classes.songListContainer}>
 			<LoadingBar loading={loading} />
-			<GridList cellHeight={160} component="div" classes={{ root: classes.gridList }} cols={3}>
+			<GridList cellHeight={'auto'} component="div" classes={{ root: classes.gridList }} cols={3}>
 				{songs.map((song, idx) => {
 					const artist = song.primary_artist;
 					const { name: artistName = 'Unknown' } = artist || {};
