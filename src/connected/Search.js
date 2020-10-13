@@ -53,7 +53,7 @@ const Search = (props) => {
 					value={searchTerm}
 					disableUnderline
 					fullWidth
-					placeholder="Search Songs..."
+					placeholder="Search..."
 					inputProps={{ className: classes.mainSearchInput }}
 					rowsMax={1}
 					autoFocus
