@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Paper, Typography } from '@material-ui/core';
+import { Paper, Typography, Grid } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { classNames } from '../utils';
 
@@ -14,14 +14,16 @@ const useStyles = makeStyles((theme) => {
 		fullSection: {
 			minWidth: '100%',
 			// minHeight: '100%',//Why doesn't 100% work?
-			minHeight: '91vh',
-			maxHeight: '100vh',
+			height: '100vh',
 		},
 		centeredChildren: {
 			display: 'flex',
 			flexFlow: 'column wrap',
 			justifyContent: 'center',
 			alignItems: 'stretch',
+		},
+		whatIsAWordCloud: {
+			height: '91vh',
 		},
 		questionSection: {
 			backgroundColor: theme.palette.secondary.light,
@@ -59,7 +61,14 @@ const LandingPage = (props) => {
 	const classes = useStyles();
 	return (
 		<Paper classes={{ root: classes.aboutPageContainer }} elevation={0}>
-			<div className={classNames(classes.questionSection, classes.fullSection, classes.centeredChildren)}>
+			<div
+				className={classNames(
+					classes.questionSection,
+					classes.fullSection,
+					classes.centeredChildren,
+					classes.whatIsAWordCloud,
+				)}
+			>
 				<div>
 					<Typography variant="h1">What are</Typography>
 					<Typography variant="h1">
@@ -79,18 +88,18 @@ const LandingPage = (props) => {
 					</Typography>
 				</div>
 			</div>
-			<div
+			<Grid
 				id="aWordCloudIs"
-				className={classNames(
-					classes.fullSection,
-					classes.answerSection,
-					classes.centeredChildren,
-					classes.aWordCloudIs,
-				)}
+				container
+				className={classNames(classes.fullSection, classes.answerSection, classes.aWordCloudIs)}
 			>
-				<div
+				<Grid
+					item
+					xs={12}
+					sm={6}
 					style={{
 						flexGrow: 1,
+						padding: '1em',
 					}}
 					className={classNames(classes.centeredChildren)}
 				>
@@ -98,15 +107,18 @@ const LandingPage = (props) => {
 						A word cloud is a way to visualize which words appear most often in any given text.
 					</Typography>
 					<br />
-					<Typography variant="h6">The words that appear the most times will appear the largest.</Typography>
-				</div>
-				<div
+					<Typography variant="h6">The words that appear most often will appear the largest.</Typography>
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					sm={6}
 					style={{
 						flexGrow: 1,
 					}}
 					className={classNames(classes.exampleCloud)}
 				/>
-			</div>
+			</Grid>
 		</Paper>
 	);
 };
