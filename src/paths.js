@@ -3,6 +3,6 @@ export default {
 	signIn: '/signin',
 	search: '/search',
 	songPage: '/clouds/:songId',
-	artistPage: '/cloudMakers/:artistId',
-	about: '/about'
+	artistPage: '/cloudmakers/:artistId',
+	about: '/about',
 };
