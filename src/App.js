@@ -15,7 +15,7 @@ import { Paper } from '@material-ui/core';
 import paths from './paths.js';
 import ReactGA from 'react-ga';
 import { history } from './redux/store';
-import SplashScreen from './components/SplashScreen';
+import Footer from './components/Footer';
 
 function initializeReactGA() {
 	console.log('Initializing analytics');
@@ -68,19 +68,7 @@ const App = (props) => {
 					<Route render={() => <Redirect to={paths.search} />} />
 				</Switch>
 			</Paper>
-			<Paper
-				square
-				elevation={0}
-				style={{
-					height: '33vh',
-					width: '100vw',
-					overflow: 'visible',
-					backgroundColor: '#64c1ff',
-					display: 'block',
-				}}
-			>
-				<h1>Footer</h1>
-			</Paper>
+			<Footer />
 			<Paper
 				id="copyright"
 				square
