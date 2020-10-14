@@ -7,7 +7,7 @@ import LoadingBar from './LoadingBar';
 const useStyles = makeStyles((theme) => {
 	return {
 		songListContainer: {
-			width: '93vw',
+			width: '100%',
 			height: '80vh',
 			margin: 'auto',
 			textAlign: 'left',
@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => {
 			minWidth: '20em',
 		},
 		gridList: {
-			width: '93vw',
+			width: '100%',
 			maxHeight: '100%',
 			flexGrow: '2',
 			overflowX: 'hidden',
