@@ -16,6 +16,7 @@ import paths from './paths.js';
 import ReactGA from 'react-ga';
 import { history } from './redux/store';
 import Footer from './components/Footer';
+import LandingPage from './components/LandingPage';
 
 function initializeReactGA() {
 	console.log('Initializing analytics');
@@ -41,6 +42,12 @@ const App = (props) => {
 			<Navbar />
 			<Paper style={{ minHeight: '91vh', minWidth: '100vw', overflow: 'hidden' }} square elevation={0}>
 				<Switch>
+					<Route path={paths.root} exact component={LandingPage} />
+					<Route
+						path={paths.signIn}
+						exact
+						render={(routerProps) => <SignIn history={routerProps.history} />}
+					/>
 					<Route
 						path={paths.signIn}
 						exact
