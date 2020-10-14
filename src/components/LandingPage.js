@@ -15,17 +15,23 @@ const useStyles = makeStyles((theme) => {
 			minWidth: '100%',
 			// minHeight: '100%',//Why doesn't 100% work?
 			minHeight: '91vh',
-			padding: '1em',
+			maxHeight: '100vh',
+		},
+		centeredChildren: {
 			display: 'flex',
-			alignItems: 'center',
+			flexFlow: 'column wrap',
+			justifyContent: 'center',
+			alignItems: 'stretch',
 		},
 		questionSection: {
 			backgroundColor: theme.palette.secondary.light,
 			color: theme.palette.primary.contrastText,
+			padding: '1em',
 		},
 		answerSection: {
 			marginTop: '2em',
 			marginBottom: '2em',
+			padding: '1em',
 		},
 		blueText: {
 			color: theme.palette.secondary.light,
@@ -36,6 +42,15 @@ const useStyles = makeStyles((theme) => {
 		bold: {
 			fontWeight: theme.typography.fontWeightBold,
 		},
+		aWordCloudIs: {
+			backgroundColor: theme.palette.primary.main,
+		},
+		exampleCloud: {
+			backgroundImage: `url(\"${process.env.PUBLIC_URL}/rapClouds.png\")`,
+			backgroundRepeat: 'no-repeat',
+			backgroundPosition: 'center center',
+			backgroundSize: 'contain',
+		},
 	};
 });
 
@@ -44,7 +59,7 @@ const LandingPage = (props) => {
 	const classes = useStyles();
 	return (
 		<Paper classes={{ root: classes.aboutPageContainer }} elevation={0}>
-			<div className={classNames(classes.questionSection, classes.fullSection)}>
+			<div className={classNames(classes.questionSection, classes.fullSection, classes.centeredChildren)}>
 				<div>
 					<Typography variant="h1">What are</Typography>
 					<Typography variant="h1">
@@ -52,7 +67,7 @@ const LandingPage = (props) => {
 					</Typography>
 				</div>
 			</div>
-			<div className={classNames(classes.fullSection, classes.answerSection)}>
+			<div className={classNames(classes.fullSection, classes.answerSection, classes.centeredChildren)}>
 				<div>
 					<Typography variant="h3">
 						They're the <span className={classes.blueText}>lyrics</span> to your{' '}
@@ -63,6 +78,34 @@ const LandingPage = (props) => {
 						...in a <span className={classes.blueText}>word cloud</span>.
 					</Typography>
 				</div>
+			</div>
+			<div
+				id="aWordCloudIs"
+				className={classNames(
+					classes.fullSection,
+					classes.answerSection,
+					classes.centeredChildren,
+					classes.aWordCloudIs,
+				)}
+			>
+				<div
+					style={{
+						flexGrow: 1,
+					}}
+					className={classNames(classes.centeredChildren)}
+				>
+					<Typography variant="h4" className={classes.blueText}>
+						A word cloud is a way to visualize which words appear most often in any given text.
+					</Typography>
+					<br />
+					<Typography variant="h6">The words that appear the most times will appear the largest.</Typography>
+				</div>
+				<div
+					style={{
+						flexGrow: 1,
+					}}
+					className={classNames(classes.exampleCloud)}
+				/>
 			</div>
 		</Paper>
 	);
