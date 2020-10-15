@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { GridList, GridListTile, GridListTileBar, LinearProgress } from '@material-ui/core';
+import { GridList, GridListTile, GridListTileBar, LinearProgress, Paper } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import LoadingBar from './LoadingBar';
 
@@ -16,15 +16,22 @@ const useStyles = makeStyles((theme) => {
 			display: 'flex',
 			flexFlow: 'row wrap',
 			justifyContent: 'space-around',
-			backgroundColor: theme.palette.background.paper,
+			backgroundColor: theme.palette.primary.dark,
 			maxWidth: '100vw',
 			minWidth: '20em',
+		},
+		gridListContainer: {
+			marginLeft: '1em',
+			marginRight: '1em',
+			flexGrow: '2',
+			overflowX: 'hidden',
+			maxHeight: '100%',
+			border: `3px solid ${theme.palette.secondary.light}`,
 		},
 		gridList: {
 			width: '100%',
 			maxHeight: '100%',
-			flexGrow: '2',
-			overflowX: 'hidden',
+			backgroundColor: theme.palette.primary.dark,
 		},
 	};
 });
@@ -36,24 +43,26 @@ const SongList = (props) => {
 	return (
 		<div className={classes.songListContainer}>
 			<LoadingBar loading={loading} />
-			<GridList cellHeight={'auto'} component="div" classes={{ root: classes.gridList }} cols={3}>
-				{songs.map((song, idx) => {
-					const artist = song.primary_artist;
-					const { name: artistName = 'Unknown' } = artist || {};
-					const item = (
-						<GridListTile key={idx} cols={cols} component={Link} to={`/clouds/${song.id}`}>
-							<img src={song.header_image_thumbnail_url} alt={song.full_title} />
-							<GridListTileBar title={song.full_title} subtitle={<span>by: {artistName}</span>} />
-						</GridListTile>
-					);
-					if (cols === 3) {
-						cols = 1;
-					} else {
-						cols++;
-					}
-					return item;
-				})}
-			</GridList>
+			<Paper className={classes.gridListContainer} elevation={0}>
+				<GridList cellHeight={'333'} component="div" classes={{ root: classes.gridList }} cols={3}>
+					{songs.map((song, idx) => {
+						const artist = song.primary_artist;
+						const { name: artistName = 'Unknown' } = artist || {};
+						const item = (
+							<GridListTile key={idx} cols={cols} component={Link} to={`/clouds/${song.id}`}>
+								<img src={song.header_image_thumbnail_url} alt={song.full_title} />
+								<GridListTileBar title={song.full_title} subtitle={<span>by: {artistName}</span>} />
+							</GridListTile>
+						);
+						if (cols === 3) {
+							cols = 1;
+						} else {
+							cols++;
+						}
+						return item;
+					})}
+				</GridList>
+			</Paper>
 		</div>
 	);
 };
