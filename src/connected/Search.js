@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
 		color: theme.palette.secondary.light,
 	},
 	masterBox: {
-		backgroundColor: theme.palette.primary.light,
+		backgroundColor: theme.palette.primary.dark,
 	},
 	searchBar: {},
 	searchIcon: {
