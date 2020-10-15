@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import io from 'socket.io-client';
 import { connect } from 'react-redux';
-import { makeStyles, Button, Grid, IconButton, Typography } from '@material-ui/core';
+import { makeStyles, Button, Grid, IconButton, Typography, Avatar } from '@material-ui/core';
 // import "./SignIn.css"; //Don't think we need this
 import { setUser, addSongs } from '../redux/actions';
 import { classNames } from '../utils';
@@ -20,6 +20,12 @@ const useStyles = makeStyles((theme) => {
 		fullSection: {
 			height: '100vh',
 		},
+		halfSection: {
+			height: '50vh',
+		},
+		whiteLetters: {
+			color: theme.palette.secondary.contrastText,
+		},
 		firstFullSection: {
 			height: '91vh',
 		},
@@ -36,7 +42,6 @@ const useStyles = makeStyles((theme) => {
 			backgroundColor: theme.palette.secondary.main,
 		},
 		step: {
-			color: theme.palette.secondary.contrastText,
 			fontWeight: theme.typography.fontWeightBold,
 			position: 'relative',
 		},
@@ -44,7 +49,6 @@ const useStyles = makeStyles((theme) => {
 			width: '2.4em',
 			height: '2.4em',
 			margin: '.5em',
-			color: theme.palette.secondary.contrastText,
 			fontWeight: theme.typography.fontWeightBold,
 			opacity: '.8',
 			position: 'absolute',
@@ -53,6 +57,27 @@ const useStyles = makeStyles((theme) => {
 		stepExplanation: {
 			textAlign: 'center',
 			padding: '.5em',
+		},
+		signInSignUpSection: {
+			maxHeight: '25vh',
+		},
+		partnerAvatar: {
+			width: '9em',
+			height: '9em',
+		},
+		rapCloudsAvatar: {
+			marginLeft: '-1em',
+			zIndex: '2',
+		},
+		geniusAvatar: {
+			marginRight: '-1em',
+		},
+		signInBtn: {
+			marginBottom: '2em',
+			marginTop: '2em',
+
+			fontSize: '1.5em',
+			fontWeight: theme.typography.fontWeightBold,
 		},
 	};
 });
@@ -116,7 +141,8 @@ const SignIn = (props) => {
 					item
 					container
 					xs={12}
-					className={classNames(classes.step, classes.primaryDarkBacking)}
+					wrap="nowrap"
+					className={classNames(classes.step, classes.whiteLetters, classes.primaryDarkBacking)}
 					alignContent="stretch"
 					alignItems="center"
 					justify="center"
@@ -125,7 +151,11 @@ const SignIn = (props) => {
 					<Grid item xs={2}>
 						<IconButton
 							size="medium"
-							className={classNames(classes.stepNumber, classes.secondaryMainBacking)}
+							className={classNames(
+								classes.stepNumber,
+								classes.whiteLetters,
+								classes.secondaryMainBacking,
+							)}
 						>
 							1
 						</IconButton>
@@ -140,7 +170,8 @@ const SignIn = (props) => {
 					item
 					container
 					xs={12}
-					className={classNames(classes.step, classes.primaryLightBacking)}
+					wrap="nowrap"
+					className={classNames(classes.step, classes.whiteLetters, classes.primaryLightBacking)}
 					alignContent="stretch"
 					alignItems="center"
 					justify="center"
@@ -149,7 +180,7 @@ const SignIn = (props) => {
 					<Grid item xs={2}>
 						<IconButton
 							size="medium"
-							className={classNames(classes.stepNumber, classes.primaryMainBacking)}
+							className={classNames(classes.stepNumber, classes.whiteLetters, classes.primaryMainBacking)}
 						>
 							2
 						</IconButton>
@@ -164,7 +195,8 @@ const SignIn = (props) => {
 					item
 					container
 					xs={12}
-					className={classNames(classes.step, classes.secondaryMainBacking)}
+					wrap="nowrap"
+					className={classNames(classes.step, classes.whiteLetters, classes.secondaryMainBacking)}
 					alignContent="stretch"
 					alignItems="center"
 					justify="center"
@@ -173,7 +205,7 @@ const SignIn = (props) => {
 					<Grid item xs={2}>
 						<IconButton
 							size="medium"
-							className={classNames(classes.stepNumber, classes.primaryDarkBacking)}
+							className={classNames(classes.stepNumber, classes.whiteLetters, classes.primaryDarkBacking)}
 						>
 							3
 						</IconButton>
@@ -187,7 +219,8 @@ const SignIn = (props) => {
 					item
 					container
 					xs={12}
-					className={classNames(classes.step, classes.primaryDarkBacking)}
+					wrap="nowrap"
+					className={classNames(classes.step, classes.whiteLetters, classes.primaryDarkBacking)}
 					alignContent="stretch"
 					alignItems="center"
 					justify="center"
@@ -196,7 +229,11 @@ const SignIn = (props) => {
 					<Grid item xs={2}>
 						<IconButton
 							size="medium"
-							className={classNames(classes.stepNumber, classes.secondaryMainBacking)}
+							className={classNames(
+								classes.stepNumber,
+								classes.whiteLetters,
+								classes.secondaryMainBacking,
+							)}
 						>
 							4
 						</IconButton>
@@ -208,12 +245,73 @@ const SignIn = (props) => {
 					</Grid>
 				</Grid>
 			</Grid>
-			<Grid item xs={12} className={classNames(classes.fullSection)} />
-			<div className={'button'}>
-				<Button onClick={startAuth} className={`twitter ${popUpOpen && 'disabled'}`}>
-					Sign In
-				</Button>
-			</div>
+			<Grid
+				item
+				xs={12}
+				container
+				className={classNames(classes.fullSection, classes.primaryLightBacking)}
+				wrap="nowrap"
+				justify="center"
+				alignContent="center"
+				alignItems="center"
+				direction="column"
+			>
+				<Grid
+					item
+					container
+					justify="center"
+					alignContent="center"
+					alignItems="center"
+					direction="row"
+					wrap="wrap"
+				>
+					<Avatar
+						item
+						alt="Genius Logo"
+						xs={6}
+						src={`${process.env.PUBLIC_URL}/rapClouds.png`}
+						className={classNames(classes.primaryMainBacking, classes.partnerAvatar, classes.geniusAvatar)}
+					/>
+					<Avatar
+						item
+						alt="RapClouds Logo"
+						xs={6}
+						src={`${process.env.PUBLIC_URL}/rapClouds.png`}
+						className={classNames(
+							classes.primaryMainBacking,
+							classes.partnerAvatar,
+							classes.rapCloudsAvatar,
+						)}
+					/>
+				</Grid>
+				<Grid item>
+					<Button
+						onClick={startAuth}
+						className={`twitter ${popUpOpen &&
+							'disabled'} ${classes.secondaryMainBacking} ${classes.whiteLetters} ${classes.signInBtn}`}
+					>
+						Sign In / Sign Up
+					</Button>
+				</Grid>
+				<Grid
+					item
+					xs={6}
+					className={classNames(classes.signInSignUpSection)}
+					direction="column"
+					justify="center"
+					alignContent="center"
+					alignItems="center"
+					direction="column"
+				>
+					<Typography textAlign="center" variant="h5">
+						Why do I have to sign into Genius to use Rap Clouds?
+					</Typography>
+					<Typography textAlign="center" variant="body1" className={classNames(classes.whiteLetters)}>
+						Genius makes this project possible with the amazing set of data they have collected! To use that
+						data, we must have you sign in for now!
+					</Typography>
+				</Grid>
+			</Grid>
 		</Grid>
 	);
 };
