@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import io from 'socket.io-client';
 import { connect } from 'react-redux';
 import { makeStyles, Button, Grid, IconButton, Typography, Avatar } from '@material-ui/core';
+import ArrowIcon from '@material-ui/icons/ArrowForward';
 // import "./SignIn.css"; //Don't think we need this
 import { setUser, addSongs } from '../redux/actions';
 import { classNames } from '../utils';
@@ -50,6 +51,8 @@ const useStyles = makeStyles((theme) => {
 			height: '2.4em',
 			margin: '.5em',
 			fontWeight: theme.typography.fontWeightBold,
+		},
+		floater: {
 			opacity: '.8',
 			position: 'absolute',
 			top: '.3em',
@@ -58,9 +61,7 @@ const useStyles = makeStyles((theme) => {
 			textAlign: 'center',
 			padding: '.5em',
 		},
-		signInSignUpSection: {
-			maxHeight: '25vh',
-		},
+		signInSignUpSection: {},
 		partnerAvatar: {
 			width: '9em',
 			height: '9em',
@@ -78,6 +79,9 @@ const useStyles = makeStyles((theme) => {
 
 			fontSize: '1.5em',
 			fontWeight: theme.typography.fontWeightBold,
+		},
+		signUpExplanation: {
+			maxHeight: '25vh',
 		},
 	};
 });
@@ -153,6 +157,7 @@ const SignIn = (props) => {
 							size="medium"
 							className={classNames(
 								classes.stepNumber,
+								classes.floater,
 								classes.whiteLetters,
 								classes.secondaryMainBacking,
 							)}
@@ -161,9 +166,23 @@ const SignIn = (props) => {
 						</IconButton>
 					</Grid>
 
-					<Grid item xs={10} className={classNames(classes.stepExplanation)}>
+					<Grid item xs={7} className={classNames(classes.stepExplanation)}>
 						<Typography variant="h4">Go to Genius</Typography>
 						<Typography variant="body2">(1.5 sec) </Typography>
+					</Grid>
+
+					<Grid item xs={3} justify="center" alignItems="center">
+						<IconButton
+							item
+							onClick={startAuth}
+							className={classNames(
+								classes.stepNumber,
+								classes.whiteLetters,
+								classes.secondaryMainBacking,
+							)}
+						>
+							<ArrowIcon />
+						</IconButton>
 					</Grid>
 				</Grid>
 				<Grid
@@ -180,7 +199,12 @@ const SignIn = (props) => {
 					<Grid item xs={2}>
 						<IconButton
 							size="medium"
-							className={classNames(classes.stepNumber, classes.whiteLetters, classes.primaryMainBacking)}
+							className={classNames(
+								classes.stepNumber,
+								classes.floater,
+								classes.whiteLetters,
+								classes.primaryMainBacking,
+							)}
 						>
 							2
 						</IconButton>
@@ -205,7 +229,12 @@ const SignIn = (props) => {
 					<Grid item xs={2}>
 						<IconButton
 							size="medium"
-							className={classNames(classes.stepNumber, classes.whiteLetters, classes.primaryDarkBacking)}
+							className={classNames(
+								classes.stepNumber,
+								classes.floater,
+								classes.whiteLetters,
+								classes.primaryDarkBacking,
+							)}
 						>
 							3
 						</IconButton>
@@ -231,6 +260,7 @@ const SignIn = (props) => {
 							size="medium"
 							className={classNames(
 								classes.stepNumber,
+								classes.floater,
 								classes.whiteLetters,
 								classes.secondaryMainBacking,
 							)}
@@ -249,7 +279,7 @@ const SignIn = (props) => {
 				item
 				xs={12}
 				container
-				className={classNames(classes.fullSection, classes.primaryLightBacking)}
+				className={classNames(classes.fullSection, classes.primaryLightBacking, classes.signInSignUpSection)}
 				wrap="nowrap"
 				justify="center"
 				alignContent="center"
@@ -259,6 +289,7 @@ const SignIn = (props) => {
 				<Grid
 					item
 					container
+					onClick={startAuth}
 					justify="center"
 					alignContent="center"
 					alignItems="center"
@@ -296,7 +327,7 @@ const SignIn = (props) => {
 				<Grid
 					item
 					xs={6}
-					className={classNames(classes.signInSignUpSection)}
+					className={classNames(classes.signUpExplanation)}
 					direction="column"
 					justify="center"
 					alignContent="center"
