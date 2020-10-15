@@ -251,7 +251,7 @@ const SongDetail = (props) => {
 						{artists.map((artist, idx) => {
 							return (
 								<Tooltip placement="bottom" title={`See ${artist.name}`} key={idx}>
-									<Link to={`/cloudMakers/${artist.id}`}>
+									<Link to={`/cloudmakers/${artist.id}`}>
 										<Avatar src={artist.header_image_url} alt={`Link to ${artist.name}'s page`} />
 									</Link>
 								</Tooltip>
