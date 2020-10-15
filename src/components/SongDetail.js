@@ -62,6 +62,7 @@ const useStyles = makeStyles((theme) => {
 			flexFlow: 'column wrap',
 			alignContent: 'center',
 			textAlign: 'center',
+			marginTop: '1em',
 		},
 		mainContent: {
 			width: '100%',
@@ -78,12 +79,14 @@ const useStyles = makeStyles((theme) => {
 			position: 'relative',
 			// paddingBottom: '3em',
 			backgroundColor: theme.palette.primary.main,
+			border: `1px solid ${theme.palette.primary.light}`,
 		},
 		lyricsPaper: {
 			padding: '1em',
 			margin: '1em',
 			position: 'relative',
 			backgroundColor: theme.palette.primary.main,
+			border: `1px solid ${theme.palette.primary.light}`,
 		},
 		sectionHeader: {
 			textAlign: 'center',
@@ -182,7 +185,7 @@ const SongDetail = (props) => {
 
 	const { full_title, path, writer_artists, primary_artist, lyrics, encodedCloud } = song;
 	const artists = writer_artists ? [ ...writer_artists ] : primary_artist ? [ primary_artist ] : [];
-	const [ briefedTitle, restOfTitle ] = full_title.split('by');
+	const [ briefedTitle, restOfTitle ] = full_title.split(/\sby\s/g);
 	const renderCloudActions = (place) => {
 		const conditionsPassed = place === 'bottom' ? width === 'xs' : width !== 'xs';
 		return (
@@ -273,7 +276,7 @@ const SongDetail = (props) => {
 					</div>
 				</Grid>
 				<Grid item sm={12} md={6} classes={{ root: classes.mainContentChild }}>
-					<Paper elevation={9} className={classes.wordCloudPaper}>
+					<Paper className={classes.wordCloudPaper} elevation={0}>
 						<IconButton className={classes.appAction} onClick={toggleCloudExpanded}>
 							{cloudExpanded ? <MinusIcon /> : <AddIcon />}
 						</IconButton>
@@ -300,7 +303,7 @@ const SongDetail = (props) => {
 					</Paper>
 				</Grid>
 				<Grid item sm={12} md={6} classes={{ root: classes.mainContentChild }}>
-					<Paper className={classes.lyricsPaper} elevation={9}>
+					<Paper className={classes.lyricsPaper} elevation={0}>
 						<IconButton className={classes.appAction} onClick={toggleLyricsExpanded}>
 							{lyricsExpanded ? <MinusIcon /> : <AddIcon />}
 						</IconButton>

@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => {
 			flexGrow: '2',
 			overflowX: 'hidden',
 			maxHeight: '100%',
-			border: `3px solid ${theme.palette.secondary.light}`,
+			border: `3px solid ${theme.palette.primary.light}`,
 		},
 		gridList: {
 			width: '100%',

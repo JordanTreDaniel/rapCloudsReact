@@ -75,6 +75,7 @@ const useStyles = makeStyles((theme) => {
 			flexFlow: 'column wrap',
 			alignContent: 'center',
 			textAlign: 'center',
+			marginTop: '1em',
 		},
 		mainContent: {
 			width: '100%',
@@ -91,12 +92,14 @@ const useStyles = makeStyles((theme) => {
 			position: 'relative',
 			// paddingBottom: '3em',
 			backgroundColor: theme.palette.primary.main,
+			border: `1px solid ${theme.palette.primary.light}`,
 		},
 		songsPaper: {
 			padding: '1em',
 			margin: '1em',
 			position: 'relative',
 			backgroundColor: theme.palette.primary.main,
+			border: `1px solid ${theme.palette.primary.light}`,
 		},
 		sectionHeader: {
 			textAlign: 'center',
@@ -264,7 +267,7 @@ const ArtistPage = (props) => {
 					</div>
 				</Grid>
 				<Grid item sm={12} md={6} classes={{ root: classes.mainContentChild }}>
-					<Paper elevation={9} className={classes.wordCloudPaper}>
+					<Paper elevation={0} className={classes.wordCloudPaper}>
 						<IconButton className={classes.appAction} onClick={toggleCloudExpanded}>
 							{cloudExpanded ? <MinusIcon /> : <AddIcon />}
 						</IconButton>
@@ -291,7 +294,7 @@ const ArtistPage = (props) => {
 					</Paper>
 				</Grid>
 				<Grid item sm={12} md={6} classes={{ root: classes.mainContentChild }}>
-					<Paper elevation={9} className={classes.songsPaper}>
+					<Paper elevation={0} className={classes.songsPaper}>
 						<IconButton className={classes.appAction} onClick={toggleSongsExpanded}>
 							{songsExpanded ? <MinusIcon /> : <AddIcon />}
 						</IconButton>
