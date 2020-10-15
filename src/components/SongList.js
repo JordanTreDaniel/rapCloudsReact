@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { GridList, GridListTile, GridListTileBar, LinearProgress, Paper } from '@material-ui/core';
+import { withWidth, GridList, GridListTile, GridListTileBar, Paper } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import LoadingBar from './LoadingBar';
 
@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => {
 			flexGrow: 5,
 			overflow: 'hidden',
 			display: 'flex',
-			flexFlow: 'row wrap',
+			flexFlow: 'column nowrap',
 			justifyContent: 'space-around',
 			backgroundColor: theme.palette.primary.dark,
 			maxWidth: '100vw',
@@ -23,6 +23,7 @@ const useStyles = makeStyles((theme) => {
 		gridListContainer: {
 			marginLeft: '1em',
 			marginRight: '1em',
+			flexBasis: '2',
 			flexGrow: '2',
 			overflowX: 'hidden',
 			maxHeight: '100%',
@@ -37,27 +38,29 @@ const useStyles = makeStyles((theme) => {
 });
 
 const SongList = (props) => {
-	const { songs, loading } = props;
+	const { songs, loading, width } = props;
 	const classes = useStyles();
-	let cols = 1;
+	const colsSequence = width === 'xs' ? [ 4, 2, 2 ] : [ 4, 1, 2, 1 ];
+	let colsIdx = 0;
 	return (
 		<div className={classes.songListContainer}>
 			<LoadingBar loading={loading} />
 			<Paper className={classes.gridListContainer} elevation={0}>
-				<GridList cellHeight={'333'} component="div" classes={{ root: classes.gridList }} cols={3}>
+				<GridList cellHeight={'333'} component="div" classes={{ root: classes.gridList }} cols={4}>
 					{songs.map((song, idx) => {
 						const artist = song.primary_artist;
 						const { name: artistName = 'Unknown' } = artist || {};
+						const cols = colsSequence[colsIdx];
 						const item = (
 							<GridListTile key={idx} cols={cols} component={Link} to={`/clouds/${song.id}`}>
 								<img src={song.header_image_thumbnail_url} alt={song.full_title} />
 								<GridListTileBar title={song.full_title} subtitle={<span>by: {artistName}</span>} />
 							</GridListTile>
 						);
-						if (cols === 3) {
-							cols = 1;
+						if (colsIdx === colsSequence.length - 1) {
+							colsIdx = 0;
 						} else {
-							cols++;
+							colsIdx++;
 						}
 						return item;
 					})}
@@ -71,4 +74,4 @@ SongList.defaultProps = {
 	songs: [],
 };
 
-export default SongList;
+export default withWidth()(SongList);
