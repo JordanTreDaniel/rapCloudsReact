@@ -1,6 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Paper, Typography, Grid } from '@material-ui/core';
+import {
+	withWidth,
+	Paper,
+	Typography,
+	Grid,
+	DialogContent,
+	Dialog,
+	DialogTitle,
+	DialogActions,
+	Button,
+} from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { classNames } from '../utils';
 
@@ -46,19 +56,29 @@ const useStyles = makeStyles((theme) => {
 		},
 		aWordCloudIs: {
 			backgroundColor: theme.palette.primary.main,
+			overflowY: 'fit-content',
+			height: 'fit-content',
 		},
 		exampleCloud: {
-			backgroundImage: `url(\"${process.env.PUBLIC_URL}/rapClouds.png\")`,
+			backgroundImage: `url(\"${process.env.PUBLIC_URL}/Heaven Rap Cloud.png\")`,
 			backgroundRepeat: 'no-repeat',
 			backgroundPosition: 'center center',
 			backgroundSize: 'contain',
+		},
+		fullScreenExample: { backgroundColor: theme.palette.primary.main },
+		lyricQuote: {
+			paddingLeft: '3em',
+			paddingRight: '3em',
+			marginTop: '3em',
+			marginBottom: '3em',
 		},
 	};
 });
 
 const LandingPage = (props) => {
-	const {} = props;
+	const { width } = props;
 	const classes = useStyles();
+	const [ imgZoomOpen, toggleImgZoom ] = useState(false);
 	return (
 		<Paper classes={{ root: classes.aboutPageContainer }} elevation={0}>
 			<div
@@ -108,6 +128,12 @@ const LandingPage = (props) => {
 					</Typography>
 					<br />
 					<Typography variant="h6">The words that appear most often will appear the largest.</Typography>
+					<Typography variant="body1" className={classNames(classes.blueText)} style={{ paddingTop: '3em' }}>
+						This is a RapCloud made from Mary Mary's wonderful song, "Heaven".
+					</Typography>
+					<Typography component={Link} to={`/clouds/1376209`}>
+						Go here for the full lyrics
+					</Typography>
 				</Grid>
 				<Grid
 					item
@@ -116,8 +142,50 @@ const LandingPage = (props) => {
 					style={{
 						flexGrow: 1,
 					}}
-					className={classNames(classes.exampleCloud)}
-				/>
+					// className={classNames(classes.exampleCloud)}
+					onClick={() => toggleImgZoom(true)}
+				>
+					<img
+						alt="Heaven Rap Cloud"
+						src={`${process.env.PUBLIC_URL}/Heaven Rap Cloud.png`}
+						style={{ width: '100%' }}
+					/>
+				</Grid>
+				{imgZoomOpen && (
+					<Dialog open={imgZoomOpen} onClose={() => toggleImgZoom(false)} fullScreen={width === 'xs'}>
+						<DialogTitle>
+							<Typography variant="body1" className={classNames(classes.blueText)}>
+								This is a RapCloud made from Mary Mary's wonderful song, "Heaven". The chorus goes like
+								this..
+							</Typography>
+						</DialogTitle>
+						<DialogContent className={classes.fullScreenExample}>
+							<Grid>
+								<div>
+									<div className={classes.lyricQuote}>
+										<Typography variant="caption">
+											{`\"I gotta get myself together, cuz I got someplace to go \n And I'm praying when I
+										get there, I see everyone I know \n I wanna go to heaven, \n I wanna go to heaven \n Said
+										I wanna go to heaven, \n I wanna go to heaven \n Do you wanna go?\"`}
+											<Link to={`/clouds/1376209`} style={{ color: 'white' }}>
+												Go here for the full lyrics
+											</Link>
+										</Typography>
+									</div>
+								</div>
+
+								<img
+									alt="Heaven Rap Cloud"
+									src={`${process.env.PUBLIC_URL}/Heaven Rap Cloud.png`}
+									style={{ width: '100%' }}
+								/>
+							</Grid>
+						</DialogContent>
+						<DialogActions>
+							<Button onClick={() => toggleImgZoom(false)}>Close</Button>
+						</DialogActions>
+					</Dialog>
+				)}
 			</Grid>
 		</Paper>
 	);
@@ -127,4 +195,4 @@ LandingPage.defaultProps = {
 	songs: [],
 };
 
-export default LandingPage;
+export default withWidth()(LandingPage);
