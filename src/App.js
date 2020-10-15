@@ -33,7 +33,7 @@ const App = (props) => {
 	useEffect(() => {
 		initializeReactGA();
 	}, []);
-	if (!user && appIsHydrated && location.pathname !== paths.signIn) {
+	if (!user && appIsHydrated && ![ paths.signIn, paths.about, paths.root ].includes(location.pathname)) {
 		console.log('APP rendered w/ no user after hydration, redirecting.');
 		return <Redirect to={paths.signIn} />;
 	}
@@ -42,7 +42,7 @@ const App = (props) => {
 			<Navbar />
 			<Paper style={{ minHeight: '91vh', minWidth: '100vw', overflow: 'hidden' }} square elevation={0}>
 				<Switch>
-					<Route path={paths.root} exact component={LandingPage} />
+					<Route path={paths.about} exact component={LandingPage} />
 					<Route
 						path={paths.signIn}
 						exact
@@ -72,7 +72,7 @@ const App = (props) => {
 					/>
 					{/* <Route path={'/loadingCloud'} exact render={(routerProps) => <LoadingCloud />} /> */}
 					{/* <Route path={'/splash'} exact render={(routerProps) => <SplashScreen />} /> */}
-					<Route render={() => <Redirect to={paths.search} />} />
+					<Route render={() => <Redirect to={user ? paths.search : paths.about} />} />
 				</Switch>
 			</Paper>
 			<Footer />
