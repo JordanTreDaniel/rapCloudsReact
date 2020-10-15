@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import io from 'socket.io-client';
 import { connect } from 'react-redux';
-import { makeStyles, Button, Paper } from '@material-ui/core';
+import { makeStyles, Button, Grid, IconButton } from '@material-ui/core';
 // import "./SignIn.css"; //Don't think we need this
 import { setUser, addSongs } from '../redux/actions';
 import { classNames } from '../utils';
@@ -15,6 +15,37 @@ const useStyles = makeStyles((theme) => {
 		signInWrapper: {
 			backgroundColor: theme.palette.primary.dark,
 			color: theme.palette.secondary.light,
+			minHeight: '91vh',
+		},
+		fullSection: {
+			height: '100vh',
+		},
+		firstFullSection: {
+			height: '91vh',
+		},
+		primaryDarkBacking: {
+			backgroundColor: theme.palette.primary.dark,
+		},
+		primaryMainBacking: {
+			backgroundColor: theme.palette.primary.main,
+		},
+		primaryLightBacking: {
+			backgroundColor: theme.palette.primary.light,
+		},
+		secondaryMainBacking: {
+			backgroundColor: theme.palette.secondary.main,
+		},
+		step: {
+			color: theme.palette.secondary.contrastText,
+			fontWeight: theme.typography.fontWeightBold,
+		},
+		stepNumber: {
+			width: '3em',
+			height: '3em',
+			margin: '1em',
+			color: theme.palette.secondary.contrastText,
+			fontWeight: theme.typography.fontWeightBold,
+			opacity: '.8',
 		},
 	};
 });
@@ -23,6 +54,7 @@ const SignIn = (props) => {
 	let popup = null;
 	const [ popUpOpen, togglePopUp ] = useState(false);
 	const classes = useStyles();
+	console.log('classes', classes);
 	// Routinely checks the popup to re-enable the login button
 	// if the user closes the popup without authenticating.
 	const checkPopup = () => {
@@ -71,13 +103,31 @@ const SignIn = (props) => {
 	};
 
 	return (
-		<Paper className={classNames(classes.signInWrapper)}>
+		<Grid className={classNames(classes.signInWrapper)} container>
+			<Grid item container xs={12} className={classNames(classes.fullSection, classes.firstFullSection)}>
+				<Grid item xs={12} className={classNames(classes.step, classes.primaryDarkBacking)}>
+					<IconButton size="medium" className={classNames(classes.stepNumber, classes.secondaryMainBacking)}>
+						1
+					</IconButton>
+				</Grid>
+				<Grid item xs={12} className={classNames(classes.step, classes.primaryLightBacking)}>
+					<IconButton size="medium" className={classNames(classes.stepNumber, classes.primaryMainBacking)}>
+						2
+					</IconButton>
+				</Grid>
+				<Grid item xs={12} className={classNames(classes.step, classes.secondaryMainBacking)}>
+					<IconButton size="medium" className={classNames(classes.stepNumber, classes.primaryDarkBacking)}>
+						3
+					</IconButton>
+				</Grid>
+			</Grid>
+			<Grid item xs={12} className={classNames(classes.fullSection)} />
 			<div className={'button'}>
 				<Button onClick={startAuth} className={`twitter ${popUpOpen && 'disabled'}`}>
 					Sign In
 				</Button>
 			</div>
-		</Paper>
+		</Grid>
 	);
 };
 
