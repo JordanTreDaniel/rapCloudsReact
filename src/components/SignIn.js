@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import io from 'socket.io-client';
 import { connect } from 'react-redux';
-import { makeStyles, Button, Grid, IconButton } from '@material-ui/core';
+import { makeStyles, Button, Grid, IconButton, Typography } from '@material-ui/core';
 // import "./SignIn.css"; //Don't think we need this
 import { setUser, addSongs } from '../redux/actions';
 import { classNames } from '../utils';
@@ -38,14 +38,21 @@ const useStyles = makeStyles((theme) => {
 		step: {
 			color: theme.palette.secondary.contrastText,
 			fontWeight: theme.typography.fontWeightBold,
+			position: 'relative',
 		},
 		stepNumber: {
-			width: '3em',
-			height: '3em',
-			margin: '1em',
+			width: '2.4em',
+			height: '2.4em',
+			margin: '.5em',
 			color: theme.palette.secondary.contrastText,
 			fontWeight: theme.typography.fontWeightBold,
 			opacity: '.8',
+			position: 'absolute',
+			top: '.3em',
+		},
+		stepExplanation: {
+			textAlign: 'center',
+			padding: '.5em',
 		},
 	};
 });
@@ -105,20 +112,100 @@ const SignIn = (props) => {
 	return (
 		<Grid className={classNames(classes.signInWrapper)} container>
 			<Grid item container xs={12} className={classNames(classes.fullSection, classes.firstFullSection)}>
-				<Grid item xs={12} className={classNames(classes.step, classes.primaryDarkBacking)}>
-					<IconButton size="medium" className={classNames(classes.stepNumber, classes.secondaryMainBacking)}>
-						1
-					</IconButton>
+				<Grid
+					item
+					container
+					xs={12}
+					className={classNames(classes.step, classes.primaryDarkBacking)}
+					alignContent="stretch"
+					alignItems="center"
+					justify="center"
+					direction="row"
+				>
+					<Grid item xs={2}>
+						<IconButton
+							size="medium"
+							className={classNames(classes.stepNumber, classes.secondaryMainBacking)}
+						>
+							1
+						</IconButton>
+					</Grid>
+
+					<Grid item xs={10} className={classNames(classes.stepExplanation)}>
+						<Typography variant="h4">Go to Genius</Typography>
+						<Typography variant="body2">(1.5 sec) </Typography>
+					</Grid>
 				</Grid>
-				<Grid item xs={12} className={classNames(classes.step, classes.primaryLightBacking)}>
-					<IconButton size="medium" className={classNames(classes.stepNumber, classes.primaryMainBacking)}>
-						2
-					</IconButton>
+				<Grid
+					item
+					container
+					xs={12}
+					className={classNames(classes.step, classes.primaryLightBacking)}
+					alignContent="stretch"
+					alignItems="center"
+					justify="center"
+					direction="row"
+				>
+					<Grid item xs={2}>
+						<IconButton
+							size="medium"
+							className={classNames(classes.stepNumber, classes.primaryMainBacking)}
+						>
+							2
+						</IconButton>
+					</Grid>
+
+					<Grid item xs={10} className={classNames(classes.stepExplanation)}>
+						<Typography variant="h4">Sign in with Facebook, Google, Twitter, Email</Typography>
+						<Typography variant="body2">(2.4 sec) </Typography>
+					</Grid>
 				</Grid>
-				<Grid item xs={12} className={classNames(classes.step, classes.secondaryMainBacking)}>
-					<IconButton size="medium" className={classNames(classes.stepNumber, classes.primaryDarkBacking)}>
-						3
-					</IconButton>
+				<Grid
+					item
+					container
+					xs={12}
+					className={classNames(classes.step, classes.secondaryMainBacking)}
+					alignContent="stretch"
+					alignItems="center"
+					justify="center"
+					direction="row"
+				>
+					<Grid item xs={2}>
+						<IconButton
+							size="medium"
+							className={classNames(classes.stepNumber, classes.primaryDarkBacking)}
+						>
+							3
+						</IconButton>
+					</Grid>
+					<Grid item xs={10} className={classNames(classes.stepExplanation)}>
+						<Typography variant="h4">Authorize us to use your Genius account</Typography>
+						<Typography variant="body2">(1.2 sec) </Typography>
+					</Grid>
+				</Grid>
+				<Grid
+					item
+					container
+					xs={12}
+					className={classNames(classes.step, classes.primaryDarkBacking)}
+					alignContent="stretch"
+					alignItems="center"
+					justify="center"
+					direction="row"
+				>
+					<Grid item xs={2}>
+						<IconButton
+							size="medium"
+							className={classNames(classes.stepNumber, classes.secondaryMainBacking)}
+						>
+							4
+						</IconButton>
+					</Grid>
+
+					<Grid item xs={10} className={classNames(classes.stepExplanation)}>
+						<Typography variant="h4">Enjoy making Rap Clouds!</Typography>
+						<Typography variant="body2">(forever) </Typography>
+					</Grid>
 				</Grid>
 			</Grid>
 			<Grid item xs={12} className={classNames(classes.fullSection)} />
