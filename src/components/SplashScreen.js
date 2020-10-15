@@ -2,8 +2,8 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Paper } from '@material-ui/core';
 
-const useStyles = makeStyles({
-	outerLoading: {
+const useStyles = makeStyles((theme) => ({
+	logoDiv: {
 		margin: 'auto',
 		backgroundImage: `url(\"${process.env.PUBLIC_URL}/rapClouds.png\")`,
 		backgroundRepeat: 'no-repeat',
@@ -11,16 +11,25 @@ const useStyles = makeStyles({
 		backgroundSize: 'cover',
 		display: 'flex',
 	},
+	wrapper: {
+		minHeight: '100vh',
+		minWidth: '100vw',
+		backgroundColor: theme.palette.primary.light,
+		display: 'flex',
+		alignContent: 'center',
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
 	innerLoading: { margin: 'auto', color: 'white', width: 'fit-content' },
-});
+}));
 
 const SplashScreen = (props) => {
 	const classes = useStyles();
 	const { width = '42vh', height = '27vh' } = props;
 	return (
-		<Paper style={{ minHeight: '100vh', minWidth: '100vw' }}>
+		<Paper className={classes.wrapper}>
 			<div
-				className={classes.outerLoading}
+				className={classes.logoDiv}
 				style={{
 					width,
 					height,
