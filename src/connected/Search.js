@@ -16,7 +16,8 @@ const useStyles = makeStyles((theme) => ({
 		fontWeight: 560,
 		marginRight: '3vw',
 		marginLeft: '9vw',
-		color: theme.palette.secondary.light,
+		color: theme.palette.secondary.main,
+		opacity: '.5',
 	},
 	masterBox: {
 		backgroundColor: theme.palette.primary.dark,
@@ -24,7 +25,8 @@ const useStyles = makeStyles((theme) => ({
 	searchBar: {},
 	searchIcon: {
 		color: theme.palette.secondary.contrastText,
-		backgroundColor: theme.palette.secondary.light,
+		backgroundColor: theme.palette.secondary.main,
+		opacity: '.5',
 		marginRight: '9vw',
 		'&:hover': {
 			color: theme.palette.secondary.contrastText,
