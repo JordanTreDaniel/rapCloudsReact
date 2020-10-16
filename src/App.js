@@ -42,7 +42,7 @@ const App = (props) => {
 			<Navbar />
 			<Paper style={{ minHeight: '91vh', minWidth: '100vw', overflow: 'hidden' }} square elevation={0}>
 				<Switch>
-					<Route path={paths.about} exact component={LandingPage} />
+					<Route path={paths.about} exact render={() => <LandingPage user={user} />} />
 					<Route
 						path={paths.signIn}
 						exact

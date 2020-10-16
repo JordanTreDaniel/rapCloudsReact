@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import RightArrow from '@material-ui/icons/ArrowForward';
 import {
 	withWidth,
 	Paper,
@@ -21,16 +22,54 @@ const useStyles = makeStyles((theme) => {
 			minHeight: '91vh',
 			maxWidth: '100vw',
 		},
+		demoButtons: {
+			position: 'fixed',
+			bottom: '1em',
+			right: '1em',
+			minWidth: '20em',
+			padding: '1.5em',
+			textAlign: 'right',
+		},
+		demoButton: {
+			// fontSize: '1.2em',
+			whiteSpace: 'nowrap',
+			margin: '1em',
+			marginRight: '.5em',
+			marginLeft: '.5em',
+			backgroundColor: 'rgb(109, 171, 260, 0.5)',
+			'& a': {
+				backgroundColor: 'rgb(109, 171, 260, 1)',
+			},
+		},
+		tryItButton: {
+			backgroundColor: 'rgb(66, 66, 66, 0.5)',
+			'&:hover': {
+				backgroundColor: theme.palette.secondary.main,
+				color: theme.palette.secondary.contrastText,
+			},
+		},
+		whatIsAButton: {
+			'&:hover': {
+				backgroundColor: theme.palette.primary.main,
+				color: theme.palette.primary.contrastText,
+			},
+		},
 		fullSection: {
 			minWidth: '100%',
 			// minHeight: '100%',//Why doesn't 100% work?
 			height: '100vh',
 		},
-		centeredChildren: {
+		centeredColumn: {
 			display: 'flex',
 			flexFlow: 'column wrap',
 			justifyContent: 'center',
 			alignItems: 'stretch',
+		},
+		centeredRow: {
+			display: 'flex',
+			flexFlow: 'row wrap',
+			justifyContent: 'center',
+			alignItems: 'center',
 		},
 		whatIsAWordCloud: {
 			height: '91vh',
@@ -76,16 +115,48 @@ const useStyles = makeStyles((theme) => {
 });
 
 const LandingPage = (props) => {
-	const { width } = props;
+	const { width, user } = props;
 	const classes = useStyles();
 	const [ imgZoomOpen, toggleImgZoom ] = useState(false);
 	return (
-		<Paper classes={{ root: classes.aboutPageContainer }} elevation={0}>
+		<Grid container classes={{ root: classes.aboutPageContainer }} elevation={0}>
+			<Grid
+				item
+				container
+				direction="row"
+				wrap="nowrap"
+				justify="flex-end"
+				className={classNames(classes.demoButtons)}
+			>
+				<Button
+					component={'a'}
+					item
+					href={'#aWordCloudIs'}
+					variant="outlined"
+					color="primary"
+					disableElevation
+					className={classNames(classes.demoButton, classes.whatIsAButton)}
+				>
+					What is a wordCloud?
+				</Button>
+				<Button
+					variant="contained"
+					item
+					component={Link}
+					to={user ? '/signin' : '/search'}
+					color="secondary"
+					disableElevation
+					endIcon={<RightArrow />}
+					className={classNames(classes.demoButton, classes.tryItButton)}
+				>
+					Make Your Own
+				</Button>
+			</Grid>
 			<div
 				className={classNames(
 					classes.questionSection,
 					classes.fullSection,
-					classes.centeredChildren,
+					classes.centeredColumn,
 					classes.whatIsAWordCloud,
 				)}
 			>
@@ -96,7 +167,7 @@ const LandingPage = (props) => {
 					</Typography>
 				</div>
 			</div>
-			<div className={classNames(classes.fullSection, classes.answerSection, classes.centeredChildren)}>
+			<div className={classNames(classes.fullSection, classes.answerSection, classes.centeredColumn)}>
 				<div>
 					<Typography variant="h3">
 						They're the <span className={classes.blueText}>lyrics</span> to your{' '}
@@ -121,7 +192,7 @@ const LandingPage = (props) => {
 						flexGrow: 1,
 						padding: '1em',
 					}}
-					className={classNames(classes.centeredChildren)}
+					className={classNames(classes.centeredColumn)}
 				>
 					<Typography variant="h4" className={classes.blueText}>
 						A word cloud is a way to visualize which words appear most often in any given text.
@@ -187,7 +258,7 @@ const LandingPage = (props) => {
 					</Dialog>
 				)}
 			</Grid>
-		</Paper>
+		</Grid>
 	);
 };
 
