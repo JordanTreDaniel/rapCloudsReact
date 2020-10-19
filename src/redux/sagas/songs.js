@@ -9,7 +9,7 @@ import {
 	FETCH_SONG_LYRICS,
 	SIGN_OUT,
 	FETCH_SONG_CLOUD,
-	CANCEL_SONG_DETAIL_CALL
+	CANCEL_SONG_DETAIL_CALL,
 } from '../actionTypes';
 import { fetchWordCloud } from './index';
 import { getAccessToken, getSearchTerm, getSongFromId } from '../selectors';
@@ -28,11 +28,11 @@ const apiSearchSongs = async (searchTerm, accessToken) => {
 		method: 'get',
 		url: `${REACT_APP_SERVER_ROOT}/search`,
 		params: {
-			q: searchTerm
+			q: searchTerm,
 		},
 		headers: {
-			Authorization: accessToken
-		}
+			Authorization: accessToken,
+		},
 	});
 	const { status, statusText, data } = res;
 	const { songs } = data;
@@ -44,7 +44,7 @@ const apiSearchSongs = async (searchTerm, accessToken) => {
 };
 
 export function* searchSongs(action) {
-	const searchTerm = yield select(getSearchTerm);
+	const searchTerm = action.searchTerm ? action.searchTerm : yield select(getSearchTerm);
 	const accessToken = yield select(getAccessToken);
 	if (!accessToken || !searchTerm.length) {
 		yield put({ type: SEARCH_SONGS_FAILURE });
@@ -69,8 +69,8 @@ const apiFetchSongDetails = async (songId, accessToken) => {
 		method: 'get',
 		url: `${REACT_APP_SERVER_ROOT}/getSongDetails/${songId}`,
 		headers: {
-			Authorization: accessToken
-		}
+			Authorization: accessToken,
+		},
 	});
 	const { status, statusText, data } = res;
 	const { song } = data;
@@ -90,12 +90,12 @@ const apiFetchSongLyrics = async (songPath, songId) => {
 		method: 'post',
 		url: `${REACT_APP_SERVER_ROOT}/getSongLyrics`,
 		headers: {
-			'Content-Type': 'application/json'
+			'Content-Type': 'application/json',
 		},
 		data: {
 			songPath,
-			songId
-		}
+			songId,
+		},
 	});
 	const { status, statusText, data } = res;
 	const { lyrics } = data;

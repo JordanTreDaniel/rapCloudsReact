@@ -17,8 +17,8 @@ export const addSongs = (songs = [ { name: 'We finally made it.' } ]) => {
 	return { type: ADD_SONGS, songs };
 };
 
-export const searchSongs = () => {
-	return { type: SEARCH_SONGS };
+export const searchSongs = (searchTerm = null) => {
+	return { type: SEARCH_SONGS, searchTerm };
 };
 
 export const setSongSearchTerm = (searchTerm = '') => {

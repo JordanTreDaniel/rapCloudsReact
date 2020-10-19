@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import LoadingCloud from '../components/LoadingCloud';
 import { Input, IconButton } from '@material-ui/core';
@@ -36,11 +36,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Search = (props) => {
-	const { setSongSearchTerm, searchTerm, songSearchLoading, searchSongs } = props;
+	const { setSongSearchTerm, searchTerm, songSearchLoading, searchSongs, songs } = props;
 	const search = () => {
-		const { searchTerm } = props;
 		searchSongs(searchTerm);
 	};
+	useEffect(() => {
+		if (!songs.length && !searchTerm.length) {
+			searchSongs('drake');
+		}
+	}, []);
 	const classes = useStyles();
 	return (
 		<div className={classes.masterBox}>
@@ -72,7 +76,7 @@ const Search = (props) => {
 				/>
 			</div>
 
-			<SearchSongList songs={props.songs} loading={songSearchLoading} />
+			<SearchSongList songs={songs} loading={songSearchLoading} />
 		</div>
 	);
 };
