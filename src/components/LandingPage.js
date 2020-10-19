@@ -151,7 +151,7 @@ const LandingPage = (props) => {
 					variant="contained"
 					item
 					component={Link}
-					to={user ? '/signin' : '/search'}
+					to={user ? '/search' : '/signin'}
 					color="secondary"
 					disableElevation
 					endIcon={<RightArrow />}
