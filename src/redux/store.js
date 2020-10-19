@@ -20,23 +20,28 @@ const migrations = {
 				searchTerm: '',
 				searchLoading: false,
 				songDetailLoading: false,
-				wordCloudLoading: false
+				wordCloudLoading: false,
+			},
+			artists: {
+				...state.artists,
+				artistLoading: false,
+				artistCloudLoading: false,
 			},
 			userInfo: {
 				...state.userInfo,
-				hydrated: false
-			}
+				hydrated: false,
+			},
 		};
-	}
+	},
 };
 
 const persistConfig = {
 	key: 'authType',
 	storage: localforage,
 	version: 0,
-	whitelist: [ 'songs', 'userInfo', 'artist' ],
+	whitelist: [ 'songs', 'userInfo', 'artists' ],
 	blacklist: [], //don't store
-	migration: createMigrate(migrations, { debug: process.env.NODE_ENV === 'development' })
+	migration: createMigrate(migrations, { debug: process.env.NODE_ENV === 'development' }),
 };
 const rootReducer = createRootReducer(history);
 const pReducer = persistReducer(persistConfig, rootReducer);
@@ -55,7 +60,7 @@ axios.interceptors.response.use(
 			store.dispatch({ type: SIGN_OUT });
 		}
 		return Promise.reject(error);
-	}
+	},
 );
 
 sagas.forEach((saga) => sagaMiddleware.run(saga));

@@ -4,8 +4,6 @@ import { Typography } from '@material-ui/core';
 
 const useStyles = makeStyles({
 	outerLoading: {
-		width: '51vw',
-		height: '51vw',
 		margin: 'auto',
 		backgroundImage: 'url("https://media.giphy.com/media/1uLQUtPLbJMQ0/giphy.gif")',
 		backgroundRepeat: 'no-repeat',
@@ -18,9 +16,9 @@ const useStyles = makeStyles({
 
 const Loading = (props) => {
 	const classes = useStyles();
-
+	const { width = '45vh', height = '45vh' } = props;
 	return (
-		<div className={classes.outerLoading}>
+		<div className={classes.outerLoading} style={{ width, height, marginTop: '18vh' }}>
 			<div className={classes.innerLoading}>
 				<Typography variant="h3">Loading...</Typography>
 			</div>

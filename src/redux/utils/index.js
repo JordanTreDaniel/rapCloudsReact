@@ -13,27 +13,40 @@ export const replaceDiacritics = (str) => {
 // whichPath - Takes the current location path, and matches it to a route pattern
 // NOTE - I'm positive this algorithm could be improved
 export const whichPath = (path) => {
-	const splitPath = path.split('/');
+	const splitPath = path.split('/').filter((s) => s.length);
 	const routePatterns = Object.values(paths);
 	const results = {};
 	routePatterns.forEach((pattern) => {
-		const splitPattern = pattern.split('/');
+		const paramSlots = (pattern.match(/:/g) || []).length;
+		const splitPattern = pattern.split('/').filter((s) => s.length);
+		let variations = 0;
+		//A variation is when the path contains a string the pattern does not.
+		//We can only allow this as many times as there are variables within the pattern.
+		splitPath.forEach((pieceOfPath) => {
+			const m = pattern.match(pieceOfPath);
+			if (!m) {
+				variations++;
+			}
+		});
 		results[pattern] = {
 			intersection: intersection(splitPath, splitPattern).length,
-			lengthDiffSquared: Math.pow(splitPath.length - splitPattern.length, 2)
+			lengthDifference: Math.abs(splitPath.length - splitPattern.length),
+			tooManyVariations: variations > paramSlots,
 		};
 	});
-
 	let chosenOne = {
 		path: '',
 		intersection: 0,
-		lengthDiffSquared: 0
+		lengthDifference: 0,
 	};
 	Object.entries(results).forEach(([ pattern, counts ]) => {
-		if (counts.intersection > chosenOne.intersection || counts.lengthDiffSquared < chosenOne.lengthDiffSquared) {
+		if (
+			(!counts.tooManyVariations && counts.intersection > chosenOne.intersection) ||
+			counts.lengthDifference < chosenOne.lengthDifference
+		) {
 			chosenOne = {
 				path: pattern,
-				...counts
+				...counts,
 			};
 		}
 	});

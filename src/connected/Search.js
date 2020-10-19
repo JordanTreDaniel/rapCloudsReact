@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import LoadingCloud from '../components/LoadingCloud';
 import { Input, IconButton } from '@material-ui/core';
@@ -10,32 +10,45 @@ import SearchIcon from '@material-ui/icons/Search';
 import DebouncedInput from '../components/DebouncedInput';
 const DebouncedTextField = DebouncedInput(Input, { timeout: 639 });
 
-const useStyles = makeStyles({
-	outerLoading: {
-		width: '51vw',
-		height: '51vw',
-		margin: 'auto',
-		backgroundImage: 'url("https://media.giphy.com/media/1uLQUtPLbJMQ0/giphy.gif")',
-		backgroundRepeat: 'no-repeat',
-		backgroundSize: 'cover',
-		borderRadius: '50%',
-		display: 'flex'
+const useStyles = makeStyles((theme) => ({
+	mainSearchInput: {
+		fontSize: '3em',
+		fontWeight: 560,
+		marginRight: '3vw',
+		marginLeft: '9vw',
+		color: theme.palette.secondary.main,
+		opacity: '.5',
 	},
-	innerLoading: { margin: 'auto', color: 'white', width: 'fit-content' },
-	songListContainer: { width: '80vw', margin: 'auto', textAlign: 'left' },
-	mainSearchInput: { fontSize: '3em', marginRight: '2em', marginLeft: '2em' }
-});
+	masterBox: {
+		backgroundColor: theme.palette.primary.dark,
+	},
+	searchBar: {},
+	searchIcon: {
+		color: theme.palette.secondary.contrastText,
+		backgroundColor: theme.palette.secondary.main,
+		opacity: '.5',
+		marginRight: '9vw',
+		'&:hover': {
+			color: theme.palette.secondary.contrastText,
+			backgroundColor: theme.palette.secondary.main,
+		},
+	},
+}));
 
 const Search = (props) => {
-	const { setSongSearchTerm, searchTerm, loading, searchSongs } = props;
+	const { setSongSearchTerm, searchTerm, songSearchLoading, searchSongs, songs } = props;
 	const search = () => {
-		const { searchTerm } = props;
 		searchSongs(searchTerm);
 	};
+	useEffect(() => {
+		if (!songs.length && !searchTerm.length) {
+			searchSongs('drake');
+		}
+	}, []);
 	const classes = useStyles();
 	return (
-		<div className={'masterBox'}>
-			<div className={'searchBar'}>
+		<div className={classes.masterBox}>
+			<div className={classes.searchBar}>
 				<DebouncedTextField
 					type="text"
 					onChange={(e) => {
@@ -46,22 +59,24 @@ const Search = (props) => {
 					value={searchTerm}
 					disableUnderline
 					fullWidth
-					placeholder="Search Songs..."
+					placeholder="Search..."
 					inputProps={{ className: classes.mainSearchInput }}
 					rowsMax={1}
 					autoFocus
 					endAdornment={
-						<IconButton aria-label="search-icon" component="span" onClick={search}>
+						<IconButton
+							className={classes.searchIcon}
+							aria-label="search-icon"
+							component="span"
+							onClick={search}
+						>
 							<SearchIcon />
 						</IconButton>
 					}
 				/>
 			</div>
 
-			<div className={classes.songListContainer}>
-				{loading && <LoadingCloud />}
-				<SearchSongList songs={props.songs} />
-			</div>
+			<SearchSongList songs={songs} loading={songSearchLoading} />
 		</div>
 	);
 };
@@ -69,13 +84,13 @@ const Search = (props) => {
 const mapState = (state) => ({
 	songs: selectors.getSongsList(state),
 	searchTerm: selectors.getSearchTerm(state),
-	loading: selectors.isSongSearchLoading(state)
+	songSearchLoading: selectors.isSongSearchLoading(state),
 });
 
 Search.defaultProps = {
 	searchSongs: () => console.log('No function set for searchSongs'),
 	setSongSearchTerm: () => console.log('No function set for setSongSearchTerm'),
 	songs: [],
-	searchTerm: 'No search term provided.'
+	searchTerm: 'No search term provided.',
 };
 export default connect(mapState, { searchSongs, setSongSearchTerm })(Search);
