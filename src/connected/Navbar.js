@@ -212,7 +212,7 @@ const Navbar = (props) => {
 						className={classNames(classes.whiteLink, classes.drawerItem)}
 					>
 						{userImgURL ? (
-							<Avatar alt="User Profile Pic" src={userImgURL} />
+							<Avatar alt="User Profile Pic" src={userImgURL} className={classes.drawerItemButton} />
 						) : (
 							<IconButton className={classes.drawerItemButton}>
 								<UserIcon />
