@@ -63,10 +63,11 @@ const useStyles = makeStyles((theme) => {
 			minHeight: '91vh',
 		},
 		pleaseSignInMsg: {},
-		partnerShipAvatars: { margin: '.5em' },
+		partnerShipAvatars: { margin: '1.5em' },
 		partnerAvatar: {
 			width: '9em',
 			height: '9em',
+			border: `3px solid ${theme.palette.secondary.main}`,
 		},
 		rapCloudsAvatar: {
 			marginLeft: '-1em',
@@ -76,9 +77,8 @@ const useStyles = makeStyles((theme) => {
 			marginRight: '-1em',
 		},
 		signInBtn: {
-			marginBottom: '2em',
-			marginTop: '2em',
-
+			marginBottom: '1em',
+			marginTop: '1em',
 			fontSize: '1.5em',
 			fontWeight: theme.typography.fontWeightBold,
 		},
