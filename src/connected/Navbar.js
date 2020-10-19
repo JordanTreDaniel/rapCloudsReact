@@ -9,14 +9,11 @@ import {
 	Dialog,
 	DialogActions,
 	DialogTitle,
-	List,
-	ListItemText,
-	ListItemIcon,
-	ListItem,
 	Drawer, //TO-DO: Use swipeable drawer instead
 	IconButton,
 	Divider,
 	DialogContent,
+	Grid,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { history } from '../redux/store';
@@ -27,6 +24,7 @@ import paths from '../paths';
 import localForage from 'localforage';
 import { classNames } from '../utils';
 import SearchIcon from '@material-ui/icons/SearchOutlined';
+import UserIcon from '@material-ui/icons/PersonOutline';
 import MenuIcon from '@material-ui/icons/Menu';
 
 const useStyles = makeStyles((theme) => {
@@ -64,6 +62,15 @@ const useStyles = makeStyles((theme) => {
 		drawer: {
 			backgroundColor: theme.palette.primary.main,
 			color: theme.palette.primary.contrastText,
+		},
+		drawerItem: {
+			fontSize: '2em',
+			padding: '1em',
+			whiteSpace: 'nowrap',
+		},
+		drawerItemButton: {
+			backgroundColor: theme.palette.secondary.light,
+			color: theme.palette.secondary.contrastText,
 		},
 		thumbnailImg: {
 			width: '5em',
@@ -151,38 +158,70 @@ const Navbar = (props) => {
 				)}
 			</AppBar>
 			<Drawer anchor={'top'} open={drawerOpen} onClose={() => toggleDrawer(false)} className={classes.drawer}>
-				<List
-					component="nav"
+				<Grid
+					container
+					direction="column"
+					wrap="nowrap"
 					aria-label="main mailbox folders"
 					onClick={() => toggleDrawer(false)}
 					className={classes.navList}
 				>
-					<ListItem button onClick={() => toggleLogOutDialog(true)}>
-						<ListItemText primary="Sign Out" />
-						<ListItemIcon>
-							{userImgURL ? (
-								<Avatar alt="User Profile Pic" src={userImgURL} />
-							) : (
-								<Button href={paths.signIn}>Sign In</Button>
-							)}
-						</ListItemIcon>
-					</ListItem>
-					<Divider />
-					<ListItem component={Link} to={paths.search} className={classNames(classes.whiteLink)}>
-						<ListItemText primary={'Search'} />
-						<ListItemIcon>
+					<Grid
+						item
+						container
+						direction="row"
+						wrap="nowrap"
+						justify="space-between"
+						component={Link}
+						to={paths.search}
+						className={classNames(classes.whiteLink, classes.drawerItem)}
+					>
+						<IconButton className={classes.drawerItemButton}>
 							<SearchIcon />
-						</ListItemIcon>
-					</ListItem>
+						</IconButton>
+						<Typography variant="h4">Search</Typography>
+					</Grid>
 					<Divider />
-					<ListItem component={Link} to={paths.about} className={classNames(classes.whiteLink)}>
-						<ListItemText primary="About" />
-						<ListItemIcon>
-							<Avatar alt="Rap Clouds Logo" src={process.env.PUBLIC_URL + '/rapClouds.png'} />
-						</ListItemIcon>
-					</ListItem>
+					<Grid
+						item
+						container
+						direction="row"
+						wrap="nowrap"
+						justify="space-between"
+						component={Link}
+						to={paths.about}
+						className={classNames(classes.whiteLink, classes.drawerItem)}
+					>
+						<Avatar
+							className={classes.drawerItemButton}
+							alt="Rap Clouds Logo"
+							src={process.env.PUBLIC_URL + '/rapClouds.png'}
+						/>
+						<Typography variant="h4">About</Typography>
+					</Grid>
 					<Divider />
-				</List>
+					<Grid
+						item
+						container
+						direction="row"
+						wrap="nowrap"
+						justify="space-between"
+						button
+						onClick={userName ? () => toggleLogOutDialog(true) : null}
+						href={userName ? null : paths.signIn}
+						className={classNames(classes.whiteLink, classes.drawerItem)}
+					>
+						{userImgURL ? (
+							<Avatar alt="User Profile Pic" src={userImgURL} />
+						) : (
+							<IconButton className={classes.drawerItemButton}>
+								<UserIcon />
+							</IconButton>
+						)}
+						<Typography variant="h4">{userName ? `Sign Out` : `Sign In`}</Typography>
+					</Grid>
+					<Divider />
+				</Grid>
 			</Drawer>
 		</React.Fragment>
 	);
