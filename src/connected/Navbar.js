@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
 	Typography,
 	AppBar,
@@ -17,11 +17,11 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { history } from '../redux/store';
+import { signOut } from '../redux/actions';
 import * as selectors from '../redux/selectors';
 import { connect } from 'react-redux';
 import { Avatar } from '@material-ui/core';
 import paths from '../paths';
-import localForage from 'localforage';
 import { classNames } from '../utils';
 import SearchIcon from '@material-ui/icons/SearchOutlined';
 import UserIcon from '@material-ui/icons/PersonOutline';
@@ -108,14 +108,14 @@ const useStyles = makeStyles((theme) => {
 
 const Navbar = (props) => {
 	const classes = useStyles();
-	const { userImgURL, userName } = props;
+	const { userImgURL, userName, signOut } = props;
 	const [ logOutDialogOpen, toggleLogOutDialog ] = useState(false);
 	const [ drawerOpen, toggleDrawer ] = useState(false);
 	return (
 		<React.Fragment>
 			<AppBar color="inherit" position="static">
 				<Toolbar className={classes.toolBar}>
-					<Link className={classNames(classes.whiteLink)} to={paths.search}>
+					<Link className={classNames(classes.whiteLink)} to={userName ? paths.search : paths.signIn}>
 						<img
 							alt="Rap Clouds Logo"
 							src={process.env.PUBLIC_URL + '/rapClouds.png'}
@@ -221,7 +221,7 @@ const Navbar = (props) => {
 							className={classes.logOutBtn}
 							autoFocus
 							onClick={async () => {
-								await localForage.clear();
+								signOut();
 								toggleLogOutDialog(false);
 								history.push('/signin');
 							}}
@@ -244,4 +244,4 @@ const mapState = (state) => ({
 	appIsHydrated: selectors.isAppRehydrated(state),
 });
 
-export default connect(mapState, null)(Navbar);
+export default connect(mapState, { signOut })(Navbar);
