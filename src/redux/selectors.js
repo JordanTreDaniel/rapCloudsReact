@@ -19,7 +19,7 @@ export const getMatchParams = createSelector(
 		const routePattern = whichPath(currentPath);
 		const match = createMatchSelector(routePattern)(state);
 		return (match && match.params) || {};
-	}
+	},
 );
 
 //User
@@ -32,11 +32,11 @@ export const getUserImg = createSelector(
 	(user, size) => {
 		const { avatar = {} } = user || {};
 		return avatar[size] && avatar[size]['url'];
-	}
+	},
 );
 
 export const getUserName = createSelector(getUser, (user) => {
-	const { name = 'Our Favorite User' } = user || {};
+	const { name = null } = user || {};
 	return name;
 });
 
@@ -61,7 +61,7 @@ export const getSongFromId = createSelector(
 	(songsById, songId) => {
 		const song = songsById[songId];
 		return song ? { ...song } : null;
-	}
+	},
 );
 
 export const getSongsList = createSelector(getSongsById, (songsById) => {
@@ -98,7 +98,7 @@ export const getSearchedSongsList = createSelector(
 			return matchingSongs;
 		}, []);
 		return sortBy(matchingSongs, (song) => song.searchRank).reverse();
-	}
+	},
 );
 
 export const getCurrentSong = createSelector(getSongsById, getCurrentSongId, (songsById, songId) => {
@@ -136,7 +136,7 @@ export const getArtistsById = (state) => state.artists.byId;
 export const getArtistFromId = createSelector(
 	getArtistsById,
 	(_, artistId) => artistId,
-	(artistsById, artistId) => artistsById[artistId]
+	(artistsById, artistId) => artistsById[artistId],
 );
 export const getCurrentArtist = createSelector(getMatchParams, getArtistsById, (matchParams, artistsById) => {
 	const { artistId } = matchParams;

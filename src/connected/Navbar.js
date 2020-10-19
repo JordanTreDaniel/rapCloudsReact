@@ -44,10 +44,12 @@ const useStyles = makeStyles((theme) => {
 		},
 		logOutDialog: {
 			textAlign: 'center',
+			backgroundColor: theme.palette.primary.dark,
 			color: theme.palette.secondary.contrastText,
+			boxShadow: 'none',
 		},
-		logOutDialogPaper: {
-			backgroundColor: theme.palette.secondary.main,
+		logOutDialogTitle: {
+			backgroundColor: theme.palette.primary.dark,
 		},
 		logOutBtn: {
 			backgroundColor: theme.palette.error.main,
@@ -126,103 +128,112 @@ const Navbar = (props) => {
 						</IconButton>
 					</Box>
 				</Toolbar>
-				{logOutDialogOpen && (
-					<Dialog
-						className={classes.logOutDialog}
-						onClose={() => toggleLogOutDialog(false)}
-						aria-label="logOutModal"
-						open={logOutDialogOpen}
-						PaperProps={{ className: classes.logOutDialogPaper }}
-					>
-						<DialogTitle>{`Signed in as ${userName}`}</DialogTitle>
-						<DialogContent>
-							<Typography variant="h6">Log Out?</Typography>
-						</DialogContent>
-						<DialogActions>
-							<Button
-								className={classes.logOutBtn}
-								autoFocus
-								onClick={() => {
-									localForage.clear();
-									toggleLogOutDialog(false);
-									history.push('/signin');
-								}}
-							>
-								Log Out
-							</Button>
-							<Button className={classes.cancelBtn} autoFocus onClick={() => toggleLogOutDialog(false)}>
-								Cancel
-							</Button>
-						</DialogActions>
-					</Dialog>
-				)}
 			</AppBar>
-			<Drawer anchor={'top'} open={drawerOpen} onClose={() => toggleDrawer(false)} className={classes.drawer}>
-				<Grid
-					container
-					direction="column"
-					wrap="nowrap"
-					aria-label="main mailbox folders"
-					onClick={() => toggleDrawer(false)}
-					className={classes.navList}
-				>
+			{drawerOpen && (
+				<Drawer anchor={'top'} open={drawerOpen} onClose={() => toggleDrawer(false)} className={classes.drawer}>
 					<Grid
-						item
 						container
-						direction="row"
+						direction="column"
 						wrap="nowrap"
-						justify="space-between"
-						component={Link}
-						to={paths.search}
-						className={classNames(classes.whiteLink, classes.drawerItem)}
+						aria-label="main mailbox folders"
+						onClick={() => toggleDrawer(false)}
+						className={classes.navList}
 					>
-						<IconButton className={classes.drawerItemButton}>
-							<SearchIcon />
-						</IconButton>
-						<Typography variant="h4">Search</Typography>
-					</Grid>
-					<Divider />
-					<Grid
-						item
-						container
-						direction="row"
-						wrap="nowrap"
-						justify="space-between"
-						component={Link}
-						to={paths.about}
-						className={classNames(classes.whiteLink, classes.drawerItem)}
-					>
-						<Avatar
-							className={classes.drawerItemButton}
-							alt="Rap Clouds Logo"
-							src={process.env.PUBLIC_URL + '/rapClouds.png'}
-						/>
-						<Typography variant="h4">About</Typography>
-					</Grid>
-					<Divider />
-					<Grid
-						item
-						container
-						direction="row"
-						wrap="nowrap"
-						justify="space-between"
-						button
-						onClick={userName ? () => toggleLogOutDialog(true) : null}
-						href={userName ? null : paths.signIn}
-						className={classNames(classes.whiteLink, classes.drawerItem)}
-					>
-						{userImgURL ? (
-							<Avatar alt="User Profile Pic" src={userImgURL} className={classes.drawerItemButton} />
-						) : (
-							<IconButton className={classes.drawerItemButton}>
-								<UserIcon />
-							</IconButton>
+						{userName && (
+							<React.Fragment>
+								<Grid
+									item
+									container
+									direction="row"
+									wrap="nowrap"
+									justify="space-between"
+									component={Link}
+									to={paths.search}
+									className={classNames(classes.whiteLink, classes.drawerItem)}
+								>
+									<IconButton className={classes.drawerItemButton}>
+										<SearchIcon />
+									</IconButton>
+									<Typography variant="h4">Search</Typography>
+								</Grid>
+								<Divider />
+							</React.Fragment>
 						)}
-						<Typography variant="h4">{userName ? `Sign Out` : `Sign In`}</Typography>
+
+						<Grid
+							item
+							container
+							direction="row"
+							wrap="nowrap"
+							justify="space-between"
+							component={Link}
+							to={paths.about}
+							className={classNames(classes.whiteLink, classes.drawerItem)}
+						>
+							<Avatar
+								className={classes.drawerItemButton}
+								alt="Rap Clouds Logo"
+								src={process.env.PUBLIC_URL + '/rapClouds.png'}
+							/>
+							<Typography variant="h4">About</Typography>
+						</Grid>
+						<Divider />
+						<Grid
+							item
+							container
+							component={userName ? 'div' : Link}
+							direction="row"
+							wrap="nowrap"
+							justify="space-between"
+							button
+							onClick={userName ? () => toggleLogOutDialog(true) : null}
+							to={userName ? null : paths.signIn}
+							className={classNames(classes.whiteLink, classes.drawerItem)}
+						>
+							{userImgURL ? (
+								<Avatar alt="User Profile Pic" src={userImgURL} className={classes.drawerItemButton} />
+							) : (
+								<IconButton className={classes.drawerItemButton}>
+									<UserIcon />
+								</IconButton>
+							)}
+							<Typography variant="h4">{userName ? `Sign Out` : `Sign In`}</Typography>
+						</Grid>
+						<Divider />
 					</Grid>
-					<Divider />
-				</Grid>
-			</Drawer>
+				</Drawer>
+			)}
+			{logOutDialogOpen && (
+				<Dialog
+					className={classes.logOutDialog}
+					onClose={() => toggleLogOutDialog(false)}
+					aria-label="logOutModal"
+					open={logOutDialogOpen}
+				>
+					<DialogTitle
+						className={classNames(classes.logOutDialogTitle)}
+					>{`Signed in as ${userName}`}</DialogTitle>
+					<DialogContent>
+						<Typography variant="h6">Log Out?</Typography>
+					</DialogContent>
+					<DialogActions>
+						<Button
+							className={classes.logOutBtn}
+							autoFocus
+							onClick={async () => {
+								await localForage.clear();
+								toggleLogOutDialog(false);
+								history.push('/signin');
+							}}
+						>
+							Log Out
+						</Button>
+						<Button className={classes.cancelBtn} autoFocus onClick={() => toggleLogOutDialog(false)}>
+							Cancel
+						</Button>
+					</DialogActions>
+				</Dialog>
+			)}
 		</React.Fragment>
 	);
 };
