@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
 		minHeight: '33vh',
 		width: '100vw',
 		overflow: 'visible',
-		backgroundColor: '#64c1ff',
+		backgroundColor: theme.palette.secondary.main,
 		padding: '.5em',
 	},
 	footerSection: {},

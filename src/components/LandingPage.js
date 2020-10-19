@@ -21,6 +21,7 @@ const useStyles = makeStyles((theme) => {
 			minWidth: '100%',
 			minHeight: '91vh',
 			maxWidth: '100vw',
+			backgroundColor: theme.palette.primary.main,
 		},
 		demoButtons: {
 			position: 'fixed',
@@ -79,7 +80,7 @@ const useStyles = makeStyles((theme) => {
 			height: '91vh',
 		},
 		questionSection: {
-			backgroundColor: theme.palette.secondary.light,
+			backgroundColor: theme.palette.secondary.main,
 			color: theme.palette.primary.contrastText,
 			padding: '1em',
 		},

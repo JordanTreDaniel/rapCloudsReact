@@ -11,12 +11,13 @@ import { setUser } from './redux/actions';
 import { Redirect } from 'react-router-dom';
 import * as selectors from './redux/selectors';
 import { connect } from 'react-redux';
-import { Paper } from '@material-ui/core';
+import { Paper, makeStyles } from '@material-ui/core';
 import paths from './paths.js';
 import ReactGA from 'react-ga';
 import { history } from './redux/store';
 import Footer from './components/Footer';
 import LandingPage from './components/LandingPage';
+import { classNames } from './utils';
 
 function initializeReactGA() {
 	console.log('Initializing analytics');
@@ -28,8 +29,24 @@ function initializeReactGA() {
 	});
 }
 
+const useStyles = makeStyles((theme) => {
+	return {
+		appContainer: {
+			minHeight: '100vh',
+			minWidth: '100vw',
+			backgroundColor: theme.palette.primary.dark,
+		},
+		pagesContainer: {
+			minHeight: '91vh',
+			minWidth: '100vw',
+			overflow: 'hidden',
+			backgroundColor: theme.palette.primary.dark,
+		},
+	};
+});
 const App = (props) => {
 	const { user, appIsHydrated, location } = props;
+	const classes = useStyles();
 	useEffect(() => {
 		initializeReactGA();
 	}, []);
@@ -38,9 +55,9 @@ const App = (props) => {
 		return <Redirect to={paths.signIn} />;
 	}
 	return appIsHydrated ? (
-		<Paper style={{ minHeight: '100vh', minWidth: '100vw' }} square elevation={0}>
+		<Paper className={classNames(classes.appContainer)} square elevation={0}>
 			<Navbar />
-			<Paper style={{ minHeight: '91vh', minWidth: '100vw', overflow: 'hidden' }} square elevation={0}>
+			<Paper className={classNames(classes.pagesContainer)} square elevation={0}>
 				<Switch>
 					<Route path={paths.about} exact render={() => <LandingPage user={user} />} />
 					<Route
