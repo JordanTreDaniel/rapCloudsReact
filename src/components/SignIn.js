@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => {
 		whiteLetters: {
 			color: theme.palette.secondary.contrastText,
 		},
-		firstFullSection: {
+		stepsSection: {
 			height: '91vh',
 		},
 		primaryDarkBacking: {
@@ -62,6 +62,7 @@ const useStyles = makeStyles((theme) => {
 			padding: '.5em',
 		},
 		signInSignUpSection: {},
+		pleaseSignInMsg: {},
 		partnerAvatar: {
 			width: '9em',
 			height: '9em',
@@ -140,7 +141,121 @@ const SignIn = (props) => {
 
 	return (
 		<Grid className={classNames(classes.signInWrapper)} container>
-			<Grid item container xs={12} className={classNames(classes.fullSection, classes.firstFullSection)}>
+			<Grid
+				id="signInSignUpSection"
+				item
+				xs={12}
+				container
+				className={classNames(classes.fullSection, classes.primaryLightBacking, classes.signInSignUpSection)}
+				wrap="nowrap"
+				justify="space-between"
+				alignContent="center"
+				alignItems="center"
+				direction="column"
+			>
+				<Grid
+					id="pleaseSignInMsg"
+					item
+					container
+					justify="center"
+					alignContent="center"
+					alignItems="center"
+					direction="column"
+					wrap="wrap"
+				>
+					<Typography
+						className={classNames(classes.pleaseSignInMsg)}
+						color="primary"
+						align="center"
+						variant="h4"
+					>
+						Welcome to Rap Clouds!
+					</Typography>
+					<Typography
+						className={classNames(classes.pleaseSignInMsg)}
+						color="primary"
+						align="center"
+						variant="h4"
+					>
+						Please Sign In
+					</Typography>
+					<Typography
+						className={classNames(classes.pleaseSignInMsg)}
+						component={'a'}
+						// to="#stepsSection"
+						href={'#stepsSection'}
+						align="center"
+						color="primary"
+						variant="small"
+					>
+						(for free. in 5 seconds)
+					</Typography>
+				</Grid>
+				<Grid
+					id="partnerShipAvatars"
+					item
+					container
+					onClick={startAuth}
+					justify="center"
+					alignContent="center"
+					alignItems="center"
+					direction="row"
+					wrap="wrap"
+				>
+					<Avatar
+						item
+						alt="Genius Logo"
+						xs={6}
+						src={`${process.env.PUBLIC_URL}/rapClouds.png`}
+						className={classNames(classes.primaryMainBacking, classes.partnerAvatar, classes.geniusAvatar)}
+					/>
+					<Avatar
+						item
+						alt="RapClouds Logo"
+						xs={6}
+						src={`${process.env.PUBLIC_URL}/rapClouds.png`}
+						className={classNames(
+							classes.primaryMainBacking,
+							classes.partnerAvatar,
+							classes.rapCloudsAvatar,
+						)}
+					/>
+				</Grid>
+				<Grid item>
+					<Button
+						onClick={startAuth}
+						className={`twitter ${popUpOpen &&
+							'disabled'} ${classes.secondaryMainBacking} ${classes.whiteLetters} ${classes.signInBtn}`}
+					>
+						Sign In / Sign Up
+					</Button>
+				</Grid>
+				<Grid
+					item
+					xs={6}
+					className={classNames(classes.signUpExplanation)}
+					direction="column"
+					justify="center"
+					alignContent="center"
+					alignItems="center"
+					direction="column"
+				>
+					<Typography textAlign="center" variant="h5">
+						Why do I have to sign into Genius to use Rap Clouds?
+					</Typography>
+					<Typography textAlign="center" variant="body1" className={classNames(classes.whiteLetters)}>
+						Genius makes this project possible with the amazing set of data they have collected! To use that
+						data, we must have you sign in for now!
+					</Typography>
+				</Grid>
+			</Grid>
+			<Grid
+				id="stepsSection"
+				item
+				container
+				xs={12}
+				className={classNames(classes.fullSection, classes.stepsSection)}
+			>
 				<Grid
 					item
 					container
@@ -273,74 +388,6 @@ const SignIn = (props) => {
 						<Typography variant="h4">Enjoy making Rap Clouds!</Typography>
 						<Typography variant="body2">(forever) </Typography>
 					</Grid>
-				</Grid>
-			</Grid>
-			<Grid
-				item
-				xs={12}
-				container
-				className={classNames(classes.fullSection, classes.primaryLightBacking, classes.signInSignUpSection)}
-				wrap="nowrap"
-				justify="center"
-				alignContent="center"
-				alignItems="center"
-				direction="column"
-			>
-				<Grid
-					item
-					container
-					onClick={startAuth}
-					justify="center"
-					alignContent="center"
-					alignItems="center"
-					direction="row"
-					wrap="wrap"
-				>
-					<Avatar
-						item
-						alt="Genius Logo"
-						xs={6}
-						src={`${process.env.PUBLIC_URL}/rapClouds.png`}
-						className={classNames(classes.primaryMainBacking, classes.partnerAvatar, classes.geniusAvatar)}
-					/>
-					<Avatar
-						item
-						alt="RapClouds Logo"
-						xs={6}
-						src={`${process.env.PUBLIC_URL}/rapClouds.png`}
-						className={classNames(
-							classes.primaryMainBacking,
-							classes.partnerAvatar,
-							classes.rapCloudsAvatar,
-						)}
-					/>
-				</Grid>
-				<Grid item>
-					<Button
-						onClick={startAuth}
-						className={`twitter ${popUpOpen &&
-							'disabled'} ${classes.secondaryMainBacking} ${classes.whiteLetters} ${classes.signInBtn}`}
-					>
-						Sign In / Sign Up
-					</Button>
-				</Grid>
-				<Grid
-					item
-					xs={6}
-					className={classNames(classes.signUpExplanation)}
-					direction="column"
-					justify="center"
-					alignContent="center"
-					alignItems="center"
-					direction="column"
-				>
-					<Typography textAlign="center" variant="h5">
-						Why do I have to sign into Genius to use Rap Clouds?
-					</Typography>
-					<Typography textAlign="center" variant="body1" className={classNames(classes.whiteLetters)}>
-						Genius makes this project possible with the amazing set of data they have collected! To use that
-						data, we must have you sign in for now!
-					</Typography>
 				</Grid>
 			</Grid>
 		</Grid>
