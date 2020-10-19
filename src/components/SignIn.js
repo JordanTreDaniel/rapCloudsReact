@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => {
 			minHeight: '91vh',
 		},
 		fullSection: {
-			height: '100vh',
+			minHeight: '100vh',
 		},
 		halfSection: {
 			height: '50vh',
@@ -27,9 +27,7 @@ const useStyles = makeStyles((theme) => {
 		whiteLetters: {
 			color: theme.palette.secondary.contrastText,
 		},
-		stepsSection: {
-			height: '91vh',
-		},
+		stepsSection: {},
 		primaryDarkBacking: {
 			backgroundColor: theme.palette.primary.dark,
 		},
@@ -61,8 +59,11 @@ const useStyles = makeStyles((theme) => {
 			textAlign: 'center',
 			padding: '.5em',
 		},
-		signInSignUpSection: {},
+		signInSignUpSection: {
+			minHeight: '91vh',
+		},
 		pleaseSignInMsg: {},
+		partnerShipAvatars: { margin: '.5em' },
 		partnerAvatar: {
 			width: '9em',
 			height: '9em',
@@ -82,7 +83,7 @@ const useStyles = makeStyles((theme) => {
 			fontWeight: theme.typography.fontWeightBold,
 		},
 		signUpExplanation: {
-			maxHeight: '25vh',
+			// maxHeight: '25vh',
 		},
 	};
 });
@@ -148,7 +149,7 @@ const SignIn = (props) => {
 				container
 				className={classNames(classes.fullSection, classes.primaryLightBacking, classes.signInSignUpSection)}
 				wrap="nowrap"
-				justify="space-between"
+				justify="space-evenly"
 				alignContent="center"
 				alignItems="center"
 				direction="column"
@@ -182,17 +183,17 @@ const SignIn = (props) => {
 					<Typography
 						className={classNames(classes.pleaseSignInMsg)}
 						component={'a'}
-						// to="#stepsSection"
 						href={'#stepsSection'}
 						align="center"
 						color="primary"
 						variant="small"
 					>
-						(for free. in 5 seconds)
+						(for free, in only 5 seconds!)
 					</Typography>
 				</Grid>
 				<Grid
 					id="partnerShipAvatars"
+					className={classNames(classes.partnerShipAvatars)}
 					item
 					container
 					onClick={startAuth}
@@ -206,7 +207,7 @@ const SignIn = (props) => {
 						item
 						alt="Genius Logo"
 						xs={6}
-						src={`${process.env.PUBLIC_URL}/rapClouds.png`}
+						src={`${process.env.PUBLIC_URL}/geniusLogo.jpg`}
 						className={classNames(classes.primaryMainBacking, classes.partnerAvatar, classes.geniusAvatar)}
 					/>
 					<Avatar
