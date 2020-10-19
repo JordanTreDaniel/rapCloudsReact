@@ -24,11 +24,19 @@ const useStyles = makeStyles((theme) => {
 		},
 		demoButtons: {
 			position: 'fixed',
-			bottom: '1em',
-			right: '1em',
 			minWidth: '20em',
 			padding: '1.5em',
 			textAlign: 'right',
+		},
+		demoButtonsDesktop: {
+			padding: '1.5em',
+			bottom: '1em',
+			right: '1em',
+		},
+		demoButtonsMobile: {
+			padding: '0',
+			bottom: '0',
+			right: '0',
 		},
 		demoButton: {
 			// fontSize: '1.2em',
@@ -36,22 +44,18 @@ const useStyles = makeStyles((theme) => {
 			margin: '1em',
 			marginRight: '.5em',
 			marginLeft: '.5em',
-			backgroundColor: 'rgb(109, 171, 260, 0.5)',
-			'& a': {
-				backgroundColor: 'rgb(109, 171, 260, 1)',
-			},
 		},
 		tryItButton: {
 			backgroundColor: 'rgb(66, 66, 66, 0.5)',
 			'&:hover': {
-				backgroundColor: theme.palette.secondary.main,
-				color: theme.palette.secondary.contrastText,
+				backgroundColor: theme.palette.primary.main,
+				color: theme.palette.primary.contrastText,
 			},
 		},
 		whatIsAButton: {
 			'&:hover': {
-				backgroundColor: theme.palette.primary.main,
-				color: theme.palette.primary.contrastText,
+				backgroundColor: theme.palette.secondary.main,
+				color: theme.palette.secondary.contrastText,
 			},
 		},
 		fullSection: {
@@ -126,7 +130,10 @@ const LandingPage = (props) => {
 				direction="row"
 				wrap="nowrap"
 				justify="flex-end"
-				className={classNames(classes.demoButtons)}
+				className={classNames(
+					classes.demoButtons,
+					width === 'xs' ? classes.demoButtonsMobile : classes.demoButtonsDesktop,
+				)}
 			>
 				<Button
 					component={'a'}
