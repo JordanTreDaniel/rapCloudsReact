@@ -7,6 +7,7 @@ import {
 	SET_SONG_SEARCH_TERM,
 	FETCH_ARTIST,
 	SIGN_OUT,
+	FETCH_ARTIST_CLOUD,
 } from './actionTypes';
 
 export const setUser = (user = { name: 'Tupac' }) => {
@@ -39,4 +40,8 @@ export const addSongDetails = (song) => {
 
 export const signOut = () => {
 	return { type: SIGN_OUT };
+};
+
+export const fetchArtistCloud = () => {
+	return { type: FETCH_ARTIST_CLOUD.start, forceFetch: true };
 };
