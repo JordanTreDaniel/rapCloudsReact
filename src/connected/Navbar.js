@@ -219,7 +219,6 @@ const Navbar = (props) => {
 					<DialogActions>
 						<Button
 							className={classes.logOutBtn}
-							autoFocus
 							onClick={async () => {
 								signOut();
 								toggleLogOutDialog(false);
