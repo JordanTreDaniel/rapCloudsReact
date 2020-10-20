@@ -2,7 +2,7 @@ import { put, takeEvery, call, select, cancel, all } from 'redux-saga/effects';
 import { FETCH_ARTIST, ADD_SONGS, SIGN_OUT, FETCH_SONG_LYRICS, FETCH_ARTIST_CLOUD } from '../actionTypes';
 import { getAccessToken, getArtistFromId } from '../selectors';
 import { fetchSongLyrics } from './songs';
-import { fetchWordCloud } from './index';
+import { fetchWordCloud } from './clouds';
 import axios from 'axios';
 import normalizeLyrics from '../utils/normalizeLyrics';
 
@@ -14,8 +14,8 @@ const apiFetchArtist = async (artistId, accessToken) => {
 		method: 'get',
 		url: `${REACT_APP_SERVER_ROOT}/getArtistDetails/${artistId}`,
 		headers: {
-			Authorization: accessToken
-		}
+			Authorization: accessToken,
+		},
 	});
 	const { status, statusText, data } = res;
 	const { artist } = data;
@@ -60,7 +60,7 @@ export function* fetchArtist(action) {
 			yield put({
 				type: FETCH_ARTIST_CLOUD.start,
 				songs: songs.map((song) => ({ id: song.id, path: song.path })),
-				artistId
+				artistId,
 			});
 		}
 	}
@@ -79,11 +79,11 @@ export function* fetchArtistCloud(action) {
 			songs.map((song) => {
 				const { id: songId, path: songPath } = song;
 				return fetchSongLyrics({ type: FETCH_SONG_LYRICS.start, songId, songPath, fetchWordCloud: false });
-			})
+			}),
 		);
 		const normalizedLyricsJumble = allLyrics.reduce(
 			(acc, songLyrics) => acc + ' ' + normalizeLyrics(songLyrics),
-			''
+			'',
 		);
 		const { encodedCloud, error } = yield call(fetchWordCloud, { lyricString: normalizedLyricsJumble });
 		if (error) {
