@@ -3,20 +3,14 @@ import { Redirect, useParams, Link } from 'react-router-dom';
 import { Typography, AppBar, Toolbar, Grid, Avatar, Tooltip, Paper, IconButton, withWidth } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import MinusIcon from '@material-ui/icons/Remove';
-import DownloadIcon from '@material-ui/icons/CloudDownload';
-import NewTabIcon from '@material-ui/icons/AddToPhotos';
-import FacebookIcon from '@material-ui/icons/Facebook';
-import InstagramIcon from '@material-ui/icons/Instagram';
-import TwitterIcon from '@material-ui/icons/Twitter';
 import { makeStyles } from '@material-ui/core/styles';
 import * as selectors from '../redux/selectors';
-import { fetchSongDetails } from '../redux/actions';
+import { fetchSongDetails, fetchSongCloud } from '../redux/actions';
 import { connect } from 'react-redux';
 import paths from '../paths';
-import { base64InNewTab } from '../utils';
 import BackButton from './BackButton';
 import LoadingBar from './LoadingBar';
-
+import RapCloud from '../connected/RapCloud';
 const useStyles = makeStyles((theme) => {
 	return {
 		songDetailContainer: {
@@ -186,56 +180,6 @@ const SongDetail = (props) => {
 	const { full_title, path, writer_artists, primary_artist, lyrics, encodedCloud } = song;
 	const artists = writer_artists ? [ ...writer_artists ] : primary_artist ? [ primary_artist ] : [];
 	const [ briefedTitle, restOfTitle ] = full_title.split(/\sby\s/g);
-	const renderCloudActions = (place) => {
-		const conditionsPassed = place === 'bottom' ? width === 'xs' : width !== 'xs';
-		return (
-			<Paper
-				elevation={0}
-				id="cloudActions"
-				className={` ${classes.cloudActions} ${conditionsPassed
-					? classes.cloudActionsTop
-					: classes.cloudActionsBottom}`}
-			>
-				{/* <Avatar src={}/> */}
-				<Tooltip placement="bottom" title="Download Your RapCloud!">
-					<IconButton id="downloadBtn" size="medium" className={classes.headerAction}>
-						<a
-							className={classes.headerActionLink}
-							href={`data:image/png;base64, ${encodedCloud}`}
-							download={`${briefedTitle} Rap Cloud.png`}
-						>
-							<DownloadIcon />
-						</a>
-					</IconButton>
-				</Tooltip>
-				<Tooltip placement="bottom" title="Open Your RapCloud in New Tab">
-					<IconButton
-						id="openInNewTab"
-						size="medium"
-						className={classes.headerAction}
-						onClick={() => base64InNewTab(`data:image/png;base64, ${encodedCloud}`)}
-					>
-						<NewTabIcon />
-					</IconButton>
-				</Tooltip>
-				<Tooltip placement="bottom" title="Share on Instagram">
-					<IconButton id="shareOnIG" size="medium" className={classes.headerAction} onClick={null}>
-						<InstagramIcon />
-					</IconButton>
-				</Tooltip>
-				<Tooltip placement="bottom" title="Share on Facebook">
-					<IconButton id="shareOnFB" size="medium" className={classes.headerAction} onClick={null}>
-						<FacebookIcon />
-					</IconButton>
-				</Tooltip>
-				<Tooltip placement="bottom" title="Share on Twitter">
-					<IconButton id="shareOnTwitter" size="medium" className={classes.headerAction} onClick={null}>
-						<TwitterIcon />
-					</IconButton>
-				</Tooltip>
-			</Paper>
-		);
-	};
 
 	return (
 		<Grid className={classes.songDetailContainer}>
@@ -285,20 +229,11 @@ const SongDetail = (props) => {
 							Cloud
 						</Typography>
 						{cloudExpanded && (
-							<React.Fragment>
-								{renderCloudActions()}
-								<img
-									src={
-										encodedCloud ? (
-											`data:image/png;base64, ${encodedCloud}`
-										) : (
-											`${process.env.PUBLIC_URL}/rapClouds.png`
-										)
-									}
-									alt={'Rap Cloud'}
-									className={classes.wordCloud}
-								/>
-							</React.Fragment>
+							<RapCloud
+								fetchCloud={fetchSongCloud}
+								cloudName={briefedTitle}
+								encodedCloud={encodedCloud}
+							/>
 						)}
 					</Paper>
 				</Grid>
@@ -329,4 +264,4 @@ const mapState = (state) => ({
 	isWordCloudLoading: selectors.isWordCloudLoading(state),
 });
 
-export default connect(mapState, { fetchSongDetails })(withWidth()(SongDetail));
+export default connect(mapState, { fetchSongDetails, fetchSongCloud })(withWidth()(SongDetail));
