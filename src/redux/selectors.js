@@ -150,3 +150,7 @@ export const getCurrentArtist = createSelector(getMatchParams, getArtistsById, (
 
 export const isArtistLoading = (state) => state.artists.artistLoading;
 export const isArtistCloudLoading = (state) => state.artists.artistCloudLoading;
+
+//Clouds
+/********************************************************************* */
+export const getCloudSettings = (state) => state.clouds.settings;
