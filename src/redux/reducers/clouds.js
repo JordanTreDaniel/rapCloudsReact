@@ -10,10 +10,10 @@ const initialState = {
 		maskId: null,
 		contour: false,
 		contourWidth: 0,
-		contourColor: 'black',
+		contourColor: '#000000',
 		stopWords: [ 'and', 'but', 'the', 'to', 'if', 'it', 'of', 'at' ],
-		showBackground: true,
-		backgroundColor: 'black',
+		background: true,
+		backgroundColor: '#000000',
 		colors: [ '#64c1ff', '#0091ea', '#0064b7', '#f5f5f5', '#6d6d6d' ], //this defaults to 'viridis' colormap i believe. Aka, empty color arr means use their default
 		repeat: false,
 		collocations: true,

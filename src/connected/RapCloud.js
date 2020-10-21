@@ -347,7 +347,56 @@ const RapCloud = (props) => {
 											}}
 											title={'Choose a contour color'}
 											initialColor="#000000"
-											label="Contour Color"
+											label={`Contour Color: ${cloudSettings.contourColor}`}
+										/>
+									</Grid>
+								</React.Fragment>
+							)}
+						</Grid>
+						<Grid container className={classNames(classes.formSection)} direction="column">
+							<Grid
+								item
+								container
+								direction="row"
+								justify="space-between"
+								wrap="nowrap"
+								alignItems="center"
+							>
+								<Typography variant="h6" align="left">
+									Background
+								</Typography>
+								<Switch
+									checked={cloudSettings.background}
+									onChange={(e) => {
+										updateCloudSettings(e.target.name, e.target.checked);
+									}}
+									color="secondary"
+									name="background"
+									inputProps={{ 'aria-label': 'primary checkbox' }}
+								/>
+							</Grid>
+							{cloudSettings.background && (
+								<React.Fragment>
+									<Grid
+										item
+										container
+										direction="row"
+										wrap="wrap"
+										justify="flex-start"
+										alignContent="center"
+										align="center"
+									>
+										<ColorPicker
+											anchorStyles={{
+												backgroundColor: cloudSettings.backgroundColor,
+												color: '#f5f5f5',
+											}}
+											chooseColor={(hex) => {
+												updateCloudSettings('backgroundColor', hex);
+											}}
+											title={'Choose a background color'}
+											initialColor="#000000"
+											label={`Background Color: ${cloudSettings.backgroundColor}`}
 										/>
 									</Grid>
 								</React.Fragment>
