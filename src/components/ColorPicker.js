@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => {
 			backgroundColor: theme.palette.secondary.light,
 			color: theme.palette.primary.dark,
 		},
-		addColorChip: {
+		anchorChip: {
 			marginRight: '.3em',
 			marginTop: '.3em',
 			border: `1px solid ${theme.palette.primary.dark}`,
@@ -53,16 +53,17 @@ const useStyles = makeStyles((theme) => {
 
 const ColorPicker = (props) => {
 	const classes = useStyles();
-	const { chooseColor, width } = props;
+	const { chooseColor, width, title, anchorStyles = {}, initialColor, label } = props;
 	const [ dialogOpen, toggleDialog ] = useState(false);
-	const [ newColor, changeNewColor ] = useState(false);
+	const [ newColor, changeNewColor ] = useState(initialColor || false);
 
 	return (
 		<React.Fragment>
-			<Tooltip title="Add a Color" placement="top">
+			<Tooltip title={title || 'Add a Color'} placement="top">
 				<Chip
-					className={classNames(classes.addColorChip)}
-					label={<AddIcon />}
+					style={{ ...anchorStyles }}
+					className={classNames(classes.anchorChip)}
+					label={label || <AddIcon />}
 					onClick={() => toggleDialog(true)}
 				/>
 			</Tooltip>
@@ -77,7 +78,13 @@ const ColorPicker = (props) => {
 					<DialogTitle className={classNames(classes.dialogTitle)}>Choose a color</DialogTitle>
 					<DialogContent>
 						<Grid container justify="center" alignItems="center">
-							<SketchPicker item color={newColor} onChange={(color) => changeNewColor(color.hex)} />
+							<SketchPicker
+								item
+								color={newColor}
+								onChange={(color) => {
+									changeNewColor(color.hex);
+								}}
+							/>
 						</Grid>
 					</DialogContent>
 					<DialogActions>
@@ -85,15 +92,17 @@ const ColorPicker = (props) => {
 							Cancel
 						</Button>
 						<Button
+							disabled={!newColor}
 							className={classes.chooseColorBtn}
-							style={{ backgroundColor: newColor }}
+							style={{ backgroundColor: newColor ? newColor : '#6d6d6d' }}
 							autoFocus
+							variant={newColor ? 'contained' : 'outlined'}
 							onClick={() => {
 								chooseColor(newColor);
 								toggleDialog(false);
 							}}
 						>
-							Choose This Color
+							{newColor ? 'Choose This Color' : 'Choose a Color'}
 						</Button>
 					</DialogActions>
 				</Dialog>
