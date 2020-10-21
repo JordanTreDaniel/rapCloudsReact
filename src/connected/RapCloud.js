@@ -411,7 +411,7 @@ const RapCloud = (props) => {
 							variant="contained"
 							autoFocus
 							onClick={() => {
-								fetchCloud(cloudSettings);
+								fetchCloud();
 							}}
 						>
 							Generate Cloud!

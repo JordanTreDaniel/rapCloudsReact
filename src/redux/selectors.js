@@ -154,3 +154,18 @@ export const isArtistCloudLoading = (state) => state.artists.artistCloudLoading;
 //Clouds
 /********************************************************************* */
 export const getCloudSettings = (state) => state.clouds.settings;
+export const getCloudSettingsForFlight = createSelector(getCloudSettings, (settings) => {
+	return {
+		width: settings.width,
+		height: settings.height,
+		maskId: null,
+		contourWidth: settings.contour ? settings.contourWidth : 0,
+		contourColor: settings.contourColor,
+		stopWords: settings.stopWords,
+		background: settings.background,
+		backgroundColor: settings.backgroundColor,
+		colors: settings.colors,
+		repeat: false,
+		collocations: true,
+	};
+});

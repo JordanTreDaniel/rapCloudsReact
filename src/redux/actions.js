@@ -11,6 +11,7 @@ import {
 	FETCH_SONG_CLOUD,
 	UPDATE_CLOUD_SETTINGS,
 } from './actionTypes';
+import normalizeLyrics from './utils/normalizeLyrics';
 
 export const setUser = (user = { name: 'Tupac' }) => {
 	return { type: SET_USER, user };
@@ -48,8 +49,9 @@ export const fetchArtistCloud = () => {
 	return { type: FETCH_ARTIST_CLOUD.start, forceFetch: true };
 };
 
-export const fetchSongCloud = () => {
-	return { type: FETCH_SONG_CLOUD.start, forceFetch: true };
+export const fetchSongCloud = (songId, songLyrics) => {
+	const normalizedLyrics = normalizeLyrics(songLyrics);
+	return { type: FETCH_SONG_CLOUD.start, lyricString: normalizedLyrics, songId, forceFetch: true };
 };
 export const updateCloudSettings = (key, val) => {
 	return { type: UPDATE_CLOUD_SETTINGS, forceFetch: true, key, val };

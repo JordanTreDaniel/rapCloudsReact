@@ -1,8 +1,9 @@
-import { call } from 'redux-saga/effects';
+import { call, select } from 'redux-saga/effects';
 import axios from 'axios';
+import { getCloudSettingsForFlight } from '../selectors';
 const REACT_APP_SERVER_ROOT =
 	process.env.NODE_ENV === 'development' ? 'http://localhost:3333' : 'https://rap-clouds-server.herokuapp.com';
-const apiFetchWordCloud = async (lyricString) => {
+const apiFetchWordCloud = async (lyricString, cloudSettings) => {
 	const res = await axios({
 		method: 'post',
 		url: `${REACT_APP_SERVER_ROOT}/makeWordCloud`,
@@ -14,9 +15,8 @@ const apiFetchWordCloud = async (lyricString) => {
 			// Accept: 'application/json'
 		},
 		data: {
-			lyricJSON: {
-				lyricString,
-			},
+			lyricString,
+			cloudSettings,
 		},
 	});
 
@@ -31,9 +31,11 @@ const apiFetchWordCloud = async (lyricString) => {
 
 export function* fetchWordCloud(action) {
 	try {
+		const cloudSettings = yield select(getCloudSettingsForFlight);
 		const { lyricString } = action;
+		// console.log('Fetch cloud', { cloudSettings, lyricString });
 		if (!lyricString || !lyricString.length) return { error: { message: 'Must include lyrics to get a cloud' } };
-		const { data, error } = yield call(apiFetchWordCloud, lyricString);
+		const { data, error } = yield call(apiFetchWordCloud, lyricString, cloudSettings);
 		const { encodedCloud } = data;
 		if (error) {
 			console.log('Something went wrong in fetchWordCloud', error);

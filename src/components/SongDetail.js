@@ -159,7 +159,7 @@ const useStyles = makeStyles((theme) => {
 
 const SongDetail = (props) => {
 	const classes = useStyles();
-	const { song, fetchSongDetails, isSongDetailLoading, isWordCloudLoading, width } = props;
+	const { song, fetchSongDetails, isSongDetailLoading, isWordCloudLoading, width, fetchSongCloud } = props;
 	const { songId } = useParams();
 	const [ lyricsExpanded, setLyricsExpanded ] = React.useState(false);
 	const [ cloudExpanded, setCloudExpanded ] = React.useState(true);
@@ -230,7 +230,7 @@ const SongDetail = (props) => {
 						</Typography>
 						{cloudExpanded && (
 							<RapCloud
-								fetchCloud={fetchSongCloud}
+								fetchCloud={() => fetchSongCloud(songId, lyrics)}
 								cloudName={briefedTitle}
 								encodedCloud={encodedCloud}
 							/>
