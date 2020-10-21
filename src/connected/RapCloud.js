@@ -87,8 +87,6 @@ const useStyles = makeStyles((theme) => {
 			backgroundColor: theme.palette.primary.dark,
 		},
 		fetchCloudBtn: {
-			backgroundColor: theme.palette.error.main,
-			color: theme.palette.error.contrastText,
 			textAlign: 'center',
 		},
 		cancelBtn: {
@@ -409,12 +407,14 @@ const RapCloud = (props) => {
 						</Button>
 						<Button
 							className={classes.fetchCloudBtn}
+							color="primary"
+							variant="contained"
 							autoFocus
 							onClick={() => {
 								fetchCloud(cloudSettings);
 							}}
 						>
-							Log Out
+							Generate Cloud!
 						</Button>
 					</DialogActions>
 				</Dialog>
