@@ -86,6 +86,7 @@ const ColorPicker = (props) => {
 						</Button>
 						<Button
 							className={classes.chooseColorBtn}
+							style={{ backgroundColor: newColor }}
 							autoFocus
 							onClick={() => {
 								chooseColor(newColor);
