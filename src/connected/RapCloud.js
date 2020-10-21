@@ -13,6 +13,7 @@ import {
 	TextField,
 	Typography,
 	Chip,
+	Switch,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import * as selectors from '../redux/selectors';
@@ -115,6 +116,11 @@ const useStyles = makeStyles((theme) => {
 			border: `1px solid ${theme.palette.primary.dark}`,
 			borderRadius: '6px',
 		},
+		exampleBorder: {
+			width: '100%',
+			borderRadius: '6px',
+			margin: '.5em',
+		},
 	};
 });
 
@@ -133,7 +139,6 @@ const RapCloud = (props) => {
 		updateCloudSettings,
 	} = props;
 	const [ dialogOpen, toggleDialog ] = useState(false);
-	const [ newColor, changeNewColor ] = useState(false);
 	const renderCloudActions = (place) => {
 		const conditionsPassed = place === 'bottom' ? width === 'xs' : width !== 'xs';
 		return (
@@ -240,7 +245,7 @@ const RapCloud = (props) => {
 									className={classNames(classes.oneEmMarginRight)}
 									onChange={(e) => updateCloudSettings('height', e.target.value)}
 									label="Cloud Height"
-									id="cloudWidth"
+									id="cloudHeight"
 									value={cloudSettings.height}
 									type="number"
 									autoComplete={false}
@@ -278,6 +283,75 @@ const RapCloud = (props) => {
 									/>
 								))}
 							</Grid>
+						</Grid>
+						<Grid container className={classNames(classes.formSection)} direction="column">
+							<Grid
+								item
+								container
+								direction="row"
+								justify="space-between"
+								wrap="nowrap"
+								alignItems="center"
+							>
+								<Typography variant="h6" align="left">
+									Contour
+								</Typography>
+								<Switch
+									checked={cloudSettings.contour}
+									onChange={(e) => {
+										updateCloudSettings(e.target.name, e.target.checked);
+										if (parseInt(cloudSettings.contourWidth) == 0) {
+											updateCloudSettings('contourWidth', 3);
+										}
+									}}
+									color="secondary"
+									name="contour"
+									inputProps={{ 'aria-label': 'primary checkbox' }}
+								/>
+							</Grid>
+							{cloudSettings.contour && (
+								<React.Fragment>
+									<div
+										className={classNames(classes.exampleBorder)}
+										style={{
+											height: `${cloudSettings.contourWidth}px`,
+											backgroundColor: cloudSettings.contourColor,
+										}}
+									/>
+									<Grid
+										item
+										container
+										direction="row"
+										wrap="wrap"
+										justify="flex-start"
+										alignContent="center"
+										align="center"
+									>
+										<TextField
+											item
+											className={classNames(classes.oneEmMarginRight)}
+											onChange={(e) => updateCloudSettings('contourWidth', e.target.value)}
+											label="Contour Thickness"
+											id="contourWidth"
+											value={cloudSettings.contourWidth}
+											type="number"
+											autoComplete={false}
+										/>
+										<ColorPicker
+											anchorStyles={{
+												backgroundColor: cloudSettings.contourColor,
+												color: '#f5f5f5',
+											}}
+											chooseColor={(hex) => {
+												updateCloudSettings('contourColor', hex);
+											}}
+											title={'Choose a contour color'}
+											initialColor="#000000"
+											label="Contour Color"
+										/>
+									</Grid>
+								</React.Fragment>
+							)}
 						</Grid>
 					</DialogContent>
 					<DialogActions>

@@ -8,6 +8,7 @@ const initialState = {
 		width: '400',
 		height: '200',
 		maskId: null,
+		contour: false,
 		contourWidth: 0,
 		contourColor: 'black',
 		stopWords: [ 'and', 'but', 'the', 'to', 'if', 'it', 'of', 'at' ],
