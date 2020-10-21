@@ -10,10 +10,16 @@ import {
 	withWidth,
 	Tooltip,
 	Paper,
+	TextField,
+	Typography,
+	Chip,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import * as selectors from '../redux/selectors';
+import { updateCloudSettings } from '../redux/actions';
+import ColorPicker from '../components/ColorPicker';
 import { connect } from 'react-redux';
+import uniq from 'lodash/uniq';
 import { classNames } from '../utils';
 import SettingsIcon from '@material-ui/icons/Settings';
 import DownloadIcon from '@material-ui/icons/CloudDownload';
@@ -22,7 +28,6 @@ import FacebookIcon from '@material-ui/icons/Facebook';
 import InstagramIcon from '@material-ui/icons/Instagram';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import { base64InNewTab } from '../utils';
-
 const useStyles = makeStyles((theme) => {
 	return {
 		wordCloud: {
@@ -95,6 +100,21 @@ const useStyles = makeStyles((theme) => {
 			backgroundColor: theme.palette.secondary.light,
 			color: theme.palette.primary.dark,
 		},
+		colorChip: {
+			marginRight: '.3em',
+			marginTop: '.3em',
+			border: `1px solid ${theme.palette.primary.dark}`,
+		},
+		oneEmMarginRight: {
+			marginRight: '1em',
+		},
+		formSection: {
+			marginBottom: '1.5em',
+			padding: '1em',
+			paddingTop: '.3em',
+			border: `1px solid ${theme.palette.primary.dark}`,
+			borderRadius: '6px',
+		},
 	};
 });
 
@@ -110,8 +130,10 @@ const RapCloud = (props) => {
 		bottom,
 		left = '-0.75em',
 		right,
+		updateCloudSettings,
 	} = props;
 	const [ dialogOpen, toggleDialog ] = useState(false);
+	const [ newColor, changeNewColor ] = useState(false);
 	const renderCloudActions = (place) => {
 		const conditionsPassed = place === 'bottom' ? width === 'xs' : width !== 'xs';
 		return (
@@ -188,34 +210,92 @@ const RapCloud = (props) => {
 						<SettingsIcon />
 					</IconButton>
 				</Tooltip>
-				{dialogOpen && (
-					<Dialog
-						className={classes.dialog}
-						onClose={() => toggleDialog(false)}
-						aria-label="cloud-settings-dialog"
-						open={dialogOpen}
-					>
-						<DialogTitle className={classNames(classes.dialogTitle)}>
-							Cloud Customization Settings
-						</DialogTitle>
-						<DialogContent>Form Goes Here</DialogContent>
-						<DialogActions>
-							<Button className={classes.cancelBtn} onClick={() => toggleDialog(false)}>
-								Cancel
-							</Button>
-							<Button
-								className={classes.fetchCloudBtn}
-								autoFocus
-								onClick={() => {
-									fetchCloud(cloudSettings);
-								}}
-							>
-								Log Out
-							</Button>
-						</DialogActions>
-					</Dialog>
-				)}
 			</Grid>
+			{dialogOpen && (
+				<Dialog
+					className={classes.dialog}
+					onClose={() => toggleDialog(false)}
+					aria-label="cloud-settings-dialog"
+					open={dialogOpen}
+				>
+					<DialogTitle className={classNames(classes.dialogTitle)}>Cloud Customization Settings</DialogTitle>
+					<DialogContent>
+						<Grid container className={classNames(classes.formSection)} direction="column">
+							<Typography variant="h6" align="left">
+								General
+							</Typography>
+							<Grid item container direction="row">
+								<TextField
+									item
+									className={classNames(classes.oneEmMarginRight)}
+									onChange={(e) => updateCloudSettings('width', e.target.value)}
+									label="Cloud Width"
+									id="cloudWidth"
+									value={cloudSettings.width}
+									type="number"
+									autoComplete={false}
+								/>
+								<TextField
+									item
+									className={classNames(classes.oneEmMarginRight)}
+									onChange={(e) => updateCloudSettings('height', e.target.value)}
+									label="Cloud Height"
+									id="cloudWidth"
+									value={cloudSettings.height}
+									type="number"
+									autoComplete={false}
+								/>
+							</Grid>
+						</Grid>
+						<Grid container className={classNames(classes.formSection)} direction="column">
+							<Typography variant="h6" align="left">
+								Colors
+							</Typography>
+							<Grid
+								item
+								container
+								direction="row"
+								wrap="wrap"
+								justify="flex-start"
+								alignContent="center"
+								align="center"
+							>
+								<ColorPicker
+									chooseColor={(hex) =>
+										updateCloudSettings('colors', uniq([ hex, ...cloudSettings.colors ]))}
+								/>
+
+								{cloudSettings.colors.map((hex, idx) => (
+									<Chip
+										label={hex}
+										className={classNames(classes.colorChip)}
+										style={{ backgroundColor: hex }}
+										onDelete={() => {
+											const newColors = [ ...cloudSettings.colors ];
+											newColors.splice(idx, 1);
+											updateCloudSettings('colors', newColors);
+										}}
+									/>
+								))}
+							</Grid>
+						</Grid>
+					</DialogContent>
+					<DialogActions>
+						<Button className={classes.cancelBtn} onClick={() => toggleDialog(false)}>
+							Cancel
+						</Button>
+						<Button
+							className={classes.fetchCloudBtn}
+							autoFocus
+							onClick={() => {
+								fetchCloud(cloudSettings);
+							}}
+						>
+							Log Out
+						</Button>
+					</DialogActions>
+				</Dialog>
+			)}
 		</Grid>
 	);
 };
@@ -224,4 +304,4 @@ const mapState = (state) => ({
 	cloudSettings: selectors.getCloudSettings(state),
 });
 
-export default connect(mapState, null)(withWidth()(RapCloud));
+export default connect(mapState, { updateCloudSettings })(withWidth()(RapCloud));

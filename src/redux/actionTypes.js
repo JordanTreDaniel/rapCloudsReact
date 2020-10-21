@@ -3,7 +3,7 @@ const actionNamesForProcess = (baseName) => {
 		failure: `${baseName}_FAILURE`,
 		success: `${baseName}_SUCCESS`,
 		start: `${baseName}_START`,
-		cancellation: `${baseName}_CANCELLATION`
+		cancellation: `${baseName}_CANCELLATION`,
 	};
 };
 export const SET_USER = 'SET_USER';
@@ -22,3 +22,4 @@ export const FETCH_ARTIST = actionNamesForProcess('FETCH_ARTIST');
 export const FETCH_SONG_LYRICS = actionNamesForProcess('FETCH_SONG_LYRICS');
 export const SIGN_OUT = 'SIGN_OUT';
 export const DO_NOTHING = 'DO_NOTHING';
+export const UPDATE_CLOUD_SETTINGS = 'UPDATE_CLOUD_SETTINGS';

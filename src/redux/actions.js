@@ -9,6 +9,7 @@ import {
 	SIGN_OUT,
 	FETCH_ARTIST_CLOUD,
 	FETCH_SONG_CLOUD,
+	UPDATE_CLOUD_SETTINGS,
 } from './actionTypes';
 
 export const setUser = (user = { name: 'Tupac' }) => {
@@ -49,4 +50,7 @@ export const fetchArtistCloud = () => {
 
 export const fetchSongCloud = () => {
 	return { type: FETCH_SONG_CLOUD.start, forceFetch: true };
+};
+export const updateCloudSettings = (key, val) => {
+	return { type: UPDATE_CLOUD_SETTINGS, forceFetch: true, key, val };
 };
