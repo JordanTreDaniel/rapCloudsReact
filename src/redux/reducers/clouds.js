@@ -1,6 +1,6 @@
 // import { FETCHCLOUD } from '../actionTypes';
 
-import { UPDATE_CLOUD_SETTINGS } from '../actionTypes';
+import { UPDATE_CLOUD_SETTINGS, FETCH_MASKS } from '../actionTypes';
 
 const initialState = {
 	byId: {},
@@ -18,6 +18,18 @@ const initialState = {
 		repeat: false,
 		collocations: true,
 	},
+	masksById: {},
+	masksLoading: false,
+};
+
+const loadingMap = {};
+Object.values(FETCH_MASKS).forEach((actionType) => (loadingMap[actionType] = 'masksLoading'));
+
+const setLoading = (state, action) => {
+	const { type } = action;
+	const value = type.match('_START') ? true : false;
+	const loadingProperty = loadingMap[type];
+	return { ...state, [loadingProperty]: value };
 };
 
 // const addCloud = (state, action) => {
@@ -35,10 +47,26 @@ const updateCloudSettings = (state, action) => {
 	return { ...state, settings: { ...state.settings, [key]: val } };
 };
 
-const handlers = {};
+const addMasks = (state, action) => {
+	console.log({ action });
+	const { masks } = action;
+	if (!masks || !masks.length) return state;
+	return {
+		...state,
+		masksById: masks.reduce((masksById, mask) => {
+			const { id } = mask;
+			masksById[id] = mask;
+			return masksById;
+		}, {}),
+		masksLoading: false,
+	};
+};
 
+const handlers = {};
+Object.values(FETCH_MASKS).forEach((actionType) => (handlers[actionType] = setLoading));
 // handlers[FETCHCLOUD.success] = addCloud;
 handlers[UPDATE_CLOUD_SETTINGS] = updateCloudSettings;
+handlers[FETCH_MASKS.success] = addMasks;
 
 export default (state = initialState, action) => {
 	const handle = handlers[action.type];

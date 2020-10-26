@@ -1,10 +1,11 @@
-import { call, select, takeLatest } from 'redux-saga/effects';
+import { call, select, takeLatest, put } from 'redux-saga/effects';
 import axios from 'axios';
 import { getCloudSettingsForFlight } from '../selectors';
 import { FETCH_MASKS } from '../actionTypes';
 
 const REACT_APP_SERVER_ROOT =
 	process.env.NODE_ENV === 'development' ? 'http://localhost:3333' : 'https://rap-clouds-server.herokuapp.com';
+
 const apiFetchWordCloud = async (lyricString, cloudSettings) => {
 	const res = await axios({
 		method: 'post',
@@ -63,8 +64,8 @@ const apiFetchMasks = async () => {
 			// Accept: 'application/json'
 		},
 	});
-
-	const { status, statusText, masks } = res;
+	const { status, statusText, data } = res;
+	const { masks } = data;
 	if (status === 200) {
 		return { masks, status, statusText };
 	}
@@ -74,16 +75,17 @@ const apiFetchMasks = async () => {
 
 export function* fetchMasks(action) {
 	try {
-		const { data, error } = yield call(apiFetchMasks);
-		const { masks } = data;
+		const { masks, error } = yield call(apiFetchMasks);
 		if (error) {
 			console.log('Something went wrong in fetchMasks', error);
 			return { error };
 		} else {
+			yield put({ type: FETCH_MASKS.success, masks });
 			return { masks };
 		}
 	} catch (err) {
 		console.log('Something went wrong', err);
+		yield put({ type: FETCH_MASKS.failure, err });
 		return { error: err };
 	}
 }
