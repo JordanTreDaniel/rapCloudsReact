@@ -7,6 +7,7 @@ const initialState = {
 	settings: {
 		width: '400',
 		height: '200',
+		maskDesired: true,
 		maskId: null,
 		contour: false,
 		contourWidth: 0,

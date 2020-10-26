@@ -119,6 +119,25 @@ const useStyles = makeStyles((theme) => {
 			borderRadius: '6px',
 			margin: '.5em',
 		},
+		maskThumbnail: {
+			height: '3em',
+			margin: '0 1em 0 0',
+		},
+		choseMaskThumbnailContainer: {
+			marginBottom: '1em',
+			borderRadius: '6px',
+			padding: '.5em',
+			backgroundColor: theme.palette.primary.main,
+		},
+		choseMaskThumbnail: {
+			border: `3px solid ${theme.palette.secondary.main}`,
+		},
+		fullScreenMaskContainer: {
+			textAlign: 'center',
+		},
+		fullScreenMask: {
+			width: '93%',
+		},
 	};
 });
 
@@ -136,12 +155,15 @@ const RapCloud = (props) => {
 		right,
 		updateCloudSettings,
 		fetchMasks,
+		masks,
+		masksLoading,
 	} = props;
 	useEffect(() => {
 		fetchMasks();
 	}, []);
 
 	const [ dialogOpen, toggleDialog ] = useState(false);
+	const [ fullScreenMask, toggleFullScreenMask ] = useState(false);
 	const renderCloudActions = (place) => {
 		const conditionsPassed = place === 'bottom' ? width === 'xs' : width !== 'xs';
 		return (
@@ -254,6 +276,105 @@ const RapCloud = (props) => {
 									autoComplete={false}
 								/>
 							</Grid>
+						</Grid>
+						<Grid container className={classNames(classes.formSection)} direction="column">
+							<Grid
+								item
+								container
+								direction="row"
+								justify="space-between"
+								wrap="nowrap"
+								alignItems="center"
+							>
+								<Typography variant="h6" align="left">
+									Mask
+								</Typography>
+								<Switch
+									checked={cloudSettings.maskDesired}
+									onChange={(e) => {
+										updateCloudSettings(e.target.name, e.target.checked);
+									}}
+									color="secondary"
+									name="maskDesired"
+									inputProps={{ 'aria-label': 'toggle mask use' }}
+								/>
+							</Grid>
+							{cloudSettings.maskDesired ? (
+								<Grid
+									item
+									container
+									direction="row"
+									wrap="wrap"
+									justify="flex-start"
+									alignContent="center"
+									align="center"
+								>
+									{cloudSettings.maskId && (
+										<Grid
+											item
+											container
+											direction="column"
+											justify="center"
+											alignItems="center"
+											id="chosenMask"
+											className={classNames(
+												classes.choseMaskThumbnailContainer,
+												classes.choseMaskThumbnail,
+											)}
+											onClick={() => toggleFullScreenMask(!fullScreenMask)}
+										>
+											<img
+												item
+												className={classNames(classes.maskThumbnail)}
+												src={`data:image/png;base64, ${masks[cloudSettings.maskId].base64Img}`}
+												alt={masks[cloudSettings.maskId].name}
+											/>
+										</Grid>
+									)}
+									<Grid
+										item
+										container
+										direction="row"
+										wrap="wrap"
+										justify="flex-start"
+										alignContent="center"
+										align="center"
+									>
+										{Object.values(masks).map((mask) => {
+											const chosen = mask.id === cloudSettings.maskId;
+											return (
+												<img
+													item
+													className={classNames(
+														classes.maskThumbnail,
+														chosen && classes.choseMaskThumbnail,
+													)}
+													elevation={chosen ? 20 : 0}
+													src={`data:image/png;base64, ${mask.base64Img}`}
+													alt={mask.name}
+													onClick={() =>
+														updateCloudSettings('maskId', chosen ? null : mask.id)}
+												/>
+											);
+										})}
+									</Grid>
+								</Grid>
+							) : null}
+							{fullScreenMask && (
+								<Dialog open={fullScreenMask} onClose={() => toggleFullScreenMask(false)}>
+									<DialogContent className={classes.fullScreenMaskContainer}>
+										<img
+											item
+											className={classNames(classes.fullScreenMask)}
+											src={`data:image/png;base64, ${masks[cloudSettings.maskId].base64Img}`}
+											alt={masks[cloudSettings.maskId].name}
+										/>
+									</DialogContent>
+									<DialogActions>
+										<Button onClick={() => toggleFullScreenMask(false)}>Close</Button>
+									</DialogActions>
+								</Dialog>
+							)}
 						</Grid>
 						<Grid container className={classNames(classes.formSection)} direction="column">
 							<Typography variant="h6" align="left">
@@ -430,6 +551,8 @@ const RapCloud = (props) => {
 
 const mapState = (state) => ({
 	cloudSettings: selectors.getCloudSettings(state),
+	masks: selectors.getMasks(state),
+	masksLoading: selectors.areMasksLoading(state),
 });
 
 export default connect(mapState, { updateCloudSettings, fetchMasks })(withWidth()(RapCloud));
