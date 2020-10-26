@@ -158,7 +158,7 @@ export const getCloudSettingsForFlight = createSelector(getCloudSettings, (setti
 	return {
 		width: settings.width,
 		height: settings.height,
-		maskId: null,
+		maskId: settings.maskDesired && settings.maskId ? settings.maskId : null,
 		contourWidth: settings.contour ? settings.contourWidth : 0,
 		contourColor: settings.contourColor,
 		stopWords: settings.stopWords,
