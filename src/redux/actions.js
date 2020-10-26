@@ -10,6 +10,7 @@ import {
 	FETCH_ARTIST_CLOUD,
 	FETCH_SONG_CLOUD,
 	UPDATE_CLOUD_SETTINGS,
+	FETCH_MASKS,
 } from './actionTypes';
 import normalizeLyrics from './utils/normalizeLyrics';
 
@@ -55,4 +56,8 @@ export const fetchSongCloud = (songId, songLyrics) => {
 };
 export const updateCloudSettings = (key, val) => {
 	return { type: UPDATE_CLOUD_SETTINGS, forceFetch: true, key, val };
+};
+
+export const fetchMasks = () => {
+	return { type: FETCH_MASKS.start };
 };

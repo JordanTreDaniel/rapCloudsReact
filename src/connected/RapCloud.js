@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
 	Button,
 	Dialog,
@@ -17,7 +17,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import * as selectors from '../redux/selectors';
-import { updateCloudSettings } from '../redux/actions';
+import { updateCloudSettings, fetchMasks } from '../redux/actions';
 import ColorPicker from '../components/ColorPicker';
 import { connect } from 'react-redux';
 import uniq from 'lodash/uniq';
@@ -135,7 +135,12 @@ const RapCloud = (props) => {
 		left = '-0.75em',
 		right,
 		updateCloudSettings,
+		fetchMasks,
 	} = props;
+	useEffect(() => {
+		fetchMasks();
+	}, []);
+
 	const [ dialogOpen, toggleDialog ] = useState(false);
 	const renderCloudActions = (place) => {
 		const conditionsPassed = place === 'bottom' ? width === 'xs' : width !== 'xs';
@@ -427,4 +432,4 @@ const mapState = (state) => ({
 	cloudSettings: selectors.getCloudSettings(state),
 });
 
-export default connect(mapState, { updateCloudSettings })(withWidth()(RapCloud));
+export default connect(mapState, { updateCloudSettings, fetchMasks })(withWidth()(RapCloud));
