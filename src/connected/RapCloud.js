@@ -36,14 +36,15 @@ import { base64InNewTab } from '../utils';
 const useStyles = makeStyles((theme) => {
 	return {
 		wordCloud: {
-			width: '100%',
 			margin: 'auto',
+			width: '100%',
 		},
 		wordCloudWrapper: {
 			width: '100%',
 			margin: 'auto',
 			marginBottom: '3em',
 			position: 'relative',
+			textAlign: 'center',
 		},
 		cloudActions: {
 			backgroundColor: theme.palette.primary.main,
@@ -140,7 +141,7 @@ const useStyles = makeStyles((theme) => {
 		maskSelections: {
 			paddingTop: '.5em',
 			paddingBottom: '.5em',
-			height: '4em',
+			height: '5em',
 			overflowX: 'scroll',
 			overflowY: 'hidden',
 		},
@@ -305,6 +306,34 @@ const RapCloud = (props) => {
 									value={cloudSettings.height}
 									type="number"
 									autoComplete={false}
+								/>
+								<FormControlLabel
+									control={
+										<Switch
+											checked={cloudSettings.collocations}
+											onChange={(e) => {
+												updateCloudSettings(e.target.name, e.target.checked);
+											}}
+											color="secondary"
+											name="collocations"
+											inputProps={{ 'aria-label': 'toggle include numbers' }}
+										/>
+									}
+									label="Collocations"
+								/>
+								<FormControlLabel
+									control={
+										<Switch
+											checked={cloudSettings.repeat}
+											onChange={(e) => {
+												updateCloudSettings(e.target.name, e.target.checked);
+											}}
+											color="secondary"
+											name="repeat"
+											inputProps={{ 'aria-label': 'toggle include numbers' }}
+										/>
+									}
+									label="Repeat Words to Fill Picture"
 								/>
 								<FormControlLabel
 									control={
