@@ -14,6 +14,9 @@ import {
 	Typography,
 	Chip,
 	Switch,
+	FormControlLabel,
+	FormGroup,
+	Box,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import * as selectors from '../redux/selectors';
@@ -28,6 +31,7 @@ import NewTabIcon from '@material-ui/icons/AddToPhotos';
 import FacebookIcon from '@material-ui/icons/Facebook';
 import InstagramIcon from '@material-ui/icons/Instagram';
 import TwitterIcon from '@material-ui/icons/Twitter';
+import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import { base64InNewTab } from '../utils';
 const useStyles = makeStyles((theme) => {
 	return {
@@ -114,6 +118,10 @@ const useStyles = makeStyles((theme) => {
 			border: `1px solid ${theme.palette.primary.dark}`,
 			borderRadius: '6px',
 		},
+		nestedFormSection: {
+			marginBottom: '.5em',
+			marginTop: '.5em',
+		},
 		exampleBorder: {
 			width: '100%',
 			borderRadius: '6px',
@@ -123,13 +131,36 @@ const useStyles = makeStyles((theme) => {
 			height: '3em',
 			margin: '0 1em 0 0',
 		},
-		choseMaskThumbnailContainer: {
+		choseMaskSection: {
 			marginBottom: '1em',
 			borderRadius: '6px',
 			padding: '.5em',
 			backgroundColor: theme.palette.primary.main,
 		},
-		choseMaskThumbnail: {
+		maskSelections: {
+			paddingTop: '.5em',
+			paddingBottom: '.5em',
+			height: '4em',
+			overflowX: 'scroll',
+			overflowY: 'hidden',
+		},
+		choseMaskThumbnailBox: {
+			position: 'relative',
+			margin: '.5em',
+		},
+		chosenMaskThumbnail: {
+			border: `1px solid ${theme.palette.primary.light}`,
+			margin: 0,
+		},
+		expandChosenMaskIcon: {
+			width: '1em',
+			height: '1em',
+			top: '-.5em',
+			right: '-.5em',
+			position: 'absolute',
+			opacity: '.6',
+		},
+		blueBorder: {
 			border: `3px solid ${theme.palette.secondary.main}`,
 		},
 		fullScreenMaskContainer: {
@@ -275,6 +306,20 @@ const RapCloud = (props) => {
 									type="number"
 									autoComplete={false}
 								/>
+								<FormControlLabel
+									control={
+										<Switch
+											checked={cloudSettings.includeNumbers}
+											onChange={(e) => {
+												updateCloudSettings(e.target.name, e.target.checked);
+											}}
+											color="secondary"
+											name="includeNumbers"
+											inputProps={{ 'aria-label': 'toggle include numbers' }}
+										/>
+									}
+									label="Include Numbers"
+								/>
 							</Grid>
 						</Grid>
 						<Grid container className={classNames(classes.formSection)} direction="column">
@@ -303,40 +348,19 @@ const RapCloud = (props) => {
 								<Grid
 									item
 									container
-									direction="row"
+									direction="column"
 									wrap="wrap"
 									justify="flex-start"
 									alignContent="center"
 									align="center"
 								>
-									{cloudSettings.maskId && (
-										<Grid
-											item
-											container
-											direction="column"
-											justify="center"
-											alignItems="center"
-											id="chosenMask"
-											className={classNames(
-												classes.choseMaskThumbnailContainer,
-												classes.choseMaskThumbnail,
-											)}
-											onClick={() => toggleFullScreenMask(!fullScreenMask)}
-										>
-											<img
-												item
-												className={classNames(classes.maskThumbnail)}
-												src={`data:image/png;base64, ${masks[cloudSettings.maskId].base64Img}`}
-												alt={masks[cloudSettings.maskId].name}
-											/>
-										</Grid>
-									)}
 									<Grid
 										item
 										container
+										className={classNames(classes.maskSelections)}
 										direction="row"
-										wrap="wrap"
-										justify="flex-start"
+										wrap="nowrap"
+										justify="space-between"
 										alignContent="center"
 										align="center"
 									>
@@ -347,7 +371,7 @@ const RapCloud = (props) => {
 													item
 													className={classNames(
 														classes.maskThumbnail,
-														chosen && classes.choseMaskThumbnail,
+														chosen && classes.blueBorder,
 													)}
 													elevation={chosen ? 20 : 0}
 													src={`data:image/png;base64, ${mask.base64Img}`}
@@ -358,6 +382,175 @@ const RapCloud = (props) => {
 											);
 										})}
 									</Grid>
+									{cloudSettings.maskId && (
+										<Grid
+											item
+											container
+											direction="column"
+											justify="center"
+											alignItems="center"
+											id="chosenMask"
+											className={classNames(
+												classes.choseMaskSection,
+												classes.blueBorder,
+												classes.nestedFormSection,
+											)}
+										>
+											<Grid
+												item
+												container
+												direction="row"
+												wrap="wrap"
+												justify="space-evenly"
+												alignItems="center"
+											>
+												<Tooltip item title="Show Fullscreen View" placement="right">
+													<Box
+														className={classNames(classes.choseMaskThumbnailBox)}
+														onClick={() => toggleFullScreenMask(!fullScreenMask)}
+													>
+														<IconButton
+															className={classNames(classes.expandChosenMaskIcon)}
+															color="secondary"
+															disableFocusRipple
+															disableRipple
+														>
+															<FullscreenIcon />
+														</IconButton>
+														<img
+															className={classNames(
+																classes.maskThumbnail,
+																classes.chosenMaskThumbnail,
+															)}
+															src={`data:image/png;base64, ${masks[cloudSettings.maskId]
+																.base64Img}`}
+															alt={masks[cloudSettings.maskId].name}
+														/>
+													</Box>
+												</Tooltip>
+												<FormGroup item column>
+													<TextField
+														className={classNames(classes.oneEmMarginRight)}
+														onChange={(e) =>
+															updateCloudSettings('downSample', e.target.value)}
+														label="Down Sample"
+														id="downSample"
+														value={cloudSettings.downSample}
+														type="number"
+														autoComplete={false}
+													/>
+													<FormControlLabel
+														control={
+															<Switch
+																checked={cloudSettings.detectEdges}
+																onChange={(e) => {
+																	updateCloudSettings(
+																		e.target.name,
+																		e.target.checked,
+																	);
+																}}
+																color="secondary"
+																name="detectEdges"
+																inputProps={{ 'aria-label': 'toggle detect edges' }}
+															/>
+														}
+														label="Detect Edges"
+													/>
+													<FormControlLabel
+														control={
+															<Switch
+																checked={cloudSettings.colorFromMask}
+																onChange={(e) => {
+																	const { checked } = e.target;
+																	updateCloudSettings(e.target.name, checked);
+																}}
+																color="secondary"
+																name="colorFromMask"
+																inputProps={{ 'aria-label': 'toggle color from mask' }}
+															/>
+														}
+														label="Use Mask Colors"
+													/>
+												</FormGroup>
+											</Grid>
+
+											<Grid
+												item
+												container
+												className={classNames(classes.formSection, classes.nestedFormSection)}
+												direction="column"
+											>
+												<Grid
+													item
+													container
+													direction="row"
+													justify="space-between"
+													wrap="nowrap"
+													alignItems="center"
+												>
+													<Typography variant="h6" align="left">
+														Contour
+													</Typography>
+													<Switch
+														checked={cloudSettings.contour}
+														onChange={(e) => {
+															updateCloudSettings(e.target.name, e.target.checked);
+															if (parseInt(cloudSettings.contourWidth) == 0) {
+																updateCloudSettings('contourWidth', 3);
+															}
+														}}
+														color="secondary"
+														name="contour"
+														inputProps={{ 'aria-label': 'primary checkbox' }}
+													/>
+												</Grid>
+												{cloudSettings.contour && (
+													<React.Fragment>
+														<div
+															className={classNames(classes.exampleBorder)}
+															style={{
+																height: `${cloudSettings.contourWidth}px`,
+																backgroundColor: cloudSettings.contourColor,
+															}}
+														/>
+														<Grid
+															item
+															container
+															direction="row"
+															wrap="wrap"
+															justify="flex-start"
+															alignContent="center"
+															align="center"
+														>
+															<TextField
+																item
+																className={classNames(classes.oneEmMarginRight)}
+																onChange={(e) =>
+																	updateCloudSettings('contourWidth', e.target.value)}
+																label="Contour Thickness"
+																id="contourWidth"
+																value={cloudSettings.contourWidth}
+																type="number"
+																autoComplete={false}
+															/>
+															<ColorPicker
+																anchorStyles={{
+																	backgroundColor: cloudSettings.contourColor,
+																	color: '#f5f5f5',
+																}}
+																chooseColor={(hex) => {
+																	updateCloudSettings('contourColor', hex);
+																}}
+																title={'Choose a contour color'}
+																initialColor="#000000"
+																label={`Contour Color: ${cloudSettings.contourColor}`}
+															/>
+														</Grid>
+													</React.Fragment>
+												)}
+											</Grid>
+										</Grid>
+									)}
 								</Grid>
 							) : null}
 							{fullScreenMask && (
@@ -407,75 +600,6 @@ const RapCloud = (props) => {
 									/>
 								))}
 							</Grid>
-						</Grid>
-						<Grid container className={classNames(classes.formSection)} direction="column">
-							<Grid
-								item
-								container
-								direction="row"
-								justify="space-between"
-								wrap="nowrap"
-								alignItems="center"
-							>
-								<Typography variant="h6" align="left">
-									Contour
-								</Typography>
-								<Switch
-									checked={cloudSettings.contour}
-									onChange={(e) => {
-										updateCloudSettings(e.target.name, e.target.checked);
-										if (parseInt(cloudSettings.contourWidth) == 0) {
-											updateCloudSettings('contourWidth', 3);
-										}
-									}}
-									color="secondary"
-									name="contour"
-									inputProps={{ 'aria-label': 'primary checkbox' }}
-								/>
-							</Grid>
-							{cloudSettings.contour && (
-								<React.Fragment>
-									<div
-										className={classNames(classes.exampleBorder)}
-										style={{
-											height: `${cloudSettings.contourWidth}px`,
-											backgroundColor: cloudSettings.contourColor,
-										}}
-									/>
-									<Grid
-										item
-										container
-										direction="row"
-										wrap="wrap"
-										justify="flex-start"
-										alignContent="center"
-										align="center"
-									>
-										<TextField
-											item
-											className={classNames(classes.oneEmMarginRight)}
-											onChange={(e) => updateCloudSettings('contourWidth', e.target.value)}
-											label="Contour Thickness"
-											id="contourWidth"
-											value={cloudSettings.contourWidth}
-											type="number"
-											autoComplete={false}
-										/>
-										<ColorPicker
-											anchorStyles={{
-												backgroundColor: cloudSettings.contourColor,
-												color: '#f5f5f5',
-											}}
-											chooseColor={(hex) => {
-												updateCloudSettings('contourColor', hex);
-											}}
-											title={'Choose a contour color'}
-											initialColor="#000000"
-											label={`Contour Color: ${cloudSettings.contourColor}`}
-										/>
-									</Grid>
-								</React.Fragment>
-							)}
 						</Grid>
 						<Grid container className={classNames(classes.formSection)} direction="column">
 							<Grid
