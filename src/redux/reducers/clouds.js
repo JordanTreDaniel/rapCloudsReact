@@ -18,6 +18,10 @@ const initialState = {
 		colors: [ '#64c1ff', '#0091ea', '#0064b7', '#f5f5f5', '#6d6d6d' ], //this defaults to 'viridis' colormap i believe. Aka, empty color arr means use their default
 		repeat: false,
 		collocations: true,
+		includeNumbers: true,
+		detectEdges: true,
+		colorFromMask: true,
+		downSample: 0,
 	},
 	masksById: {},
 	masksLoading: false,
