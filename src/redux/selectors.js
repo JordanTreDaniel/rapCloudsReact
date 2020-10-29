@@ -40,6 +40,11 @@ export const getUserName = createSelector(getUser, (user) => {
 	return name;
 });
 
+export const getUserMongoId = createSelector(getUser, (user) => {
+	const { _id = null } = user || {};
+	return _id;
+});
+
 //Songs
 /********************************************************************* */
 export const getSearchTerm = (state) => state.songs.searchTerm;

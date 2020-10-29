@@ -20,7 +20,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import * as selectors from '../redux/selectors';
-import { updateCloudSettings, fetchMasks } from '../redux/actions';
+import { updateCloudSettings, fetchMasks, addCustomMask } from '../redux/actions';
 import ColorPicker from '../components/ColorPicker';
 import { connect } from 'react-redux';
 import uniq from 'lodash/uniq';
@@ -33,6 +33,8 @@ import InstagramIcon from '@material-ui/icons/Instagram';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import { base64InNewTab } from '../utils';
+import ImageUploader from 'react-images-upload';
+
 const useStyles = makeStyles((theme) => {
 	return {
 		wordCloud: {
@@ -187,8 +189,10 @@ const RapCloud = (props) => {
 		right,
 		updateCloudSettings,
 		fetchMasks,
+		addCustomMask,
 		masks,
 		masksLoading,
+		mongoUserId,
 	} = props;
 	useEffect(() => {
 		fetchMasks();
@@ -383,34 +387,87 @@ const RapCloud = (props) => {
 									alignContent="center"
 									align="center"
 								>
-									<Grid
-										item
-										container
-										className={classNames(classes.maskSelections)}
-										direction="row"
-										wrap="nowrap"
-										justify="space-between"
-										alignContent="center"
-										align="center"
-									>
-										{Object.values(masks).map((mask) => {
-											const chosen = mask.id === cloudSettings.maskId;
-											return (
-												<img
-													item
-													className={classNames(
-														classes.maskThumbnail,
-														chosen && classes.blueBorder,
-													)}
-													elevation={chosen ? 20 : 0}
-													src={`data:image/png;base64, ${mask.base64Img}`}
-													alt={mask.name}
-													onClick={() =>
-														updateCloudSettings('maskId', chosen ? null : mask.id)}
-												/>
-											);
-										})}
-									</Grid>
+									<FormControlLabel
+										control={
+											<Switch
+												checked={cloudSettings.useCustomMask}
+												onChange={(e) => {
+													updateCloudSettings(e.target.name, e.target.checked);
+												}}
+												color="secondary"
+												name="useCustomMask"
+												inputProps={{ 'aria-label': 'toggle detect edges' }}
+											/>
+										}
+										label="Upload Custom Mask"
+									/>
+									{cloudSettings.useCustomMask ? (
+										<Grid item container direction="row">
+											<ImageUploader
+												withIcon={true}
+												buttonText="Choose image"
+												onChange={([ pic ]) => {
+													console.log('pic', pic);
+													const reader = new FileReader();
+													let { name, type } = pic;
+													name = name.split('.')[0];
+													reader.addEventListener(
+														'load',
+														function() {
+															const { result } = reader;
+															const dataDeclarationRegEx = new RegExp(
+																`data:${pic.type};base64,`,
+															);
+															const splitResult = result.split(dataDeclarationRegEx);
+															const base64Img = splitResult[1];
+															const mask = {
+																name,
+																base64Img,
+																userId: mongoUserId,
+																type,
+															};
+															addCustomMask(mask);
+														},
+														false,
+													);
+													reader.readAsDataURL(pic);
+												}}
+												imgExtension={[ '.jpeg', '.jpg', '.png' ]}
+												maxFileSize={5242880}
+												singleImage
+												// withPreview
+											/>
+										</Grid>
+									) : (
+										<Grid
+											item
+											container
+											className={classNames(classes.maskSelections)}
+											direction="row"
+											wrap="nowrap"
+											justify="space-between"
+											alignContent="center"
+											align="center"
+										>
+											{Object.values(masks).map((mask) => {
+												const chosen = mask.id === cloudSettings.maskId;
+												return (
+													<img
+														item
+														className={classNames(
+															classes.maskThumbnail,
+															chosen && classes.blueBorder,
+														)}
+														elevation={chosen ? 20 : 0}
+														src={`data:image/png;base64, ${mask.base64Img}`}
+														alt={mask.name}
+														onClick={() =>
+															updateCloudSettings('maskId', chosen ? null : mask.id)}
+													/>
+												);
+											})}
+										</Grid>
+									)}
 									{cloudSettings.maskId && (
 										<Grid
 											item
@@ -706,6 +763,7 @@ const mapState = (state) => ({
 	cloudSettings: selectors.getCloudSettings(state),
 	masks: selectors.getMasks(state),
 	masksLoading: selectors.areMasksLoading(state),
+	mongoUserId: selectors.getUserMongoId(state),
 });
 
-export default connect(mapState, { updateCloudSettings, fetchMasks })(withWidth()(RapCloud));
+export default connect(mapState, { updateCloudSettings, fetchMasks, addCustomMask })(withWidth()(RapCloud));

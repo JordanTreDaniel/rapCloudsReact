@@ -21,6 +21,7 @@ export const SET_HYDRATION_TRUE = 'SET_HYDRATION_TRUE';
 export const FETCH_ARTIST = actionNamesForProcess('FETCH_ARTIST');
 export const FETCH_SONG_LYRICS = actionNamesForProcess('FETCH_SONG_LYRICS');
 export const FETCH_MASKS = actionNamesForProcess('FETCH_MASKS');
+export const ADD_CUSTOM_MASK = actionNamesForProcess('ADD_CUSTOM_MASK');
 export const SIGN_OUT = 'SIGN_OUT';
 export const DO_NOTHING = 'DO_NOTHING';
 export const UPDATE_CLOUD_SETTINGS = 'UPDATE_CLOUD_SETTINGS';

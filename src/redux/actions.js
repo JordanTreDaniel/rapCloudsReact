@@ -11,6 +11,7 @@ import {
 	FETCH_SONG_CLOUD,
 	UPDATE_CLOUD_SETTINGS,
 	FETCH_MASKS,
+	ADD_CUSTOM_MASK,
 } from './actionTypes';
 import normalizeLyrics from './utils/normalizeLyrics';
 
@@ -60,4 +61,8 @@ export const updateCloudSettings = (key, val) => {
 
 export const fetchMasks = () => {
 	return { type: FETCH_MASKS.start };
+};
+
+export const addCustomMask = (newMask) => {
+	return { type: ADD_CUSTOM_MASK.start, newMask };
 };
