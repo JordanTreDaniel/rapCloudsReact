@@ -46,11 +46,6 @@ const useStyles = makeStyles((theme) => {
 			color: theme.palette.primary.contrastText,
 			textAlign: 'center',
 		},
-		settingsBtn: {
-			position: 'absolute',
-			backgroundColor: theme.palette.secondary.light,
-			color: theme.palette.primary.dark,
-		},
 		colorChip: {
 			marginRight: '.3em',
 			marginTop: '.3em',
