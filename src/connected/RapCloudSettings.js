@@ -584,6 +584,7 @@ const RapCloudSettings = (props) => {
 					autoFocus
 					onClick={() => {
 						fetchCloud();
+						toggleDialog(false);
 					}}
 				>
 					Generate Cloud!
