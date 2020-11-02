@@ -12,6 +12,7 @@ import {
 	UPDATE_CLOUD_SETTINGS,
 	FETCH_MASKS,
 	ADD_CUSTOM_MASK,
+	RESET_CLOUD_DEFAULTS,
 } from './actionTypes';
 import normalizeLyrics from './utils/normalizeLyrics';
 
@@ -65,4 +66,8 @@ export const fetchMasks = () => {
 
 export const addCustomMask = (newMask) => {
 	return { type: ADD_CUSTOM_MASK.start, newMask };
+};
+
+export const resetCloudDefaults = () => {
+	return { type: RESET_CLOUD_DEFAULTS };
 };

@@ -19,7 +19,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import * as selectors from '../redux/selectors';
-import { updateCloudSettings, fetchMasks, addCustomMask } from '../redux/actions';
+import { updateCloudSettings, fetchMasks, addCustomMask, resetCloudDefaults } from '../redux/actions';
 import ColorPicker from '../components/ColorPicker';
 import { connect } from 'react-redux';
 import uniq from 'lodash/uniq';
@@ -41,12 +41,14 @@ const useStyles = makeStyles((theme) => {
 		},
 		fetchCloudBtn: {
 			textAlign: 'center',
+			backgroundColor: theme.palette.secondary.main,
 		},
 		cancelBtn: {
 			backgroundColor: theme.palette.primary.light,
 			color: theme.palette.primary.contrastText,
 			textAlign: 'center',
 		},
+		resetDefaultsBtn: {},
 		colorChip: {
 			marginRight: '.3em',
 			marginTop: '.3em',
@@ -154,6 +156,7 @@ const RapCloudSettings = (props) => {
 		dialogOpen,
 		toggleDialog,
 		fetchCloud,
+		resetCloudDefaults,
 	} = props;
 	useEffect(() => {
 		fetchMasks();
@@ -690,10 +693,18 @@ const RapCloudSettings = (props) => {
 					Cancel
 				</Button>
 				<Button
+					className={classes.resetDefaultsBtn}
+					color="primary"
+					variant="contained"
+					onClick={resetCloudDefaults}
+				>
+					Reset Defaults
+				</Button>
+				<Button
 					className={classes.fetchCloudBtn}
 					color="primary"
 					variant="contained"
-					autoFocus
+					autoFocus={true}
 					onClick={() => {
 						fetchCloud();
 						toggleDialog(false);
@@ -713,4 +724,6 @@ const mapState = (state) => ({
 	mongoUserId: selectors.getUserMongoId(state),
 });
 
-export default connect(mapState, { updateCloudSettings, fetchMasks, addCustomMask })(withWidth()(RapCloudSettings));
+export default connect(mapState, { updateCloudSettings, fetchMasks, addCustomMask, resetCloudDefaults })(
+	withWidth()(RapCloudSettings),
+);

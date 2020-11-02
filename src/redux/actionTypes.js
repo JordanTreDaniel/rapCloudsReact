@@ -25,3 +25,4 @@ export const ADD_CUSTOM_MASK = actionNamesForProcess('ADD_CUSTOM_MASK');
 export const SIGN_OUT = 'SIGN_OUT';
 export const DO_NOTHING = 'DO_NOTHING';
 export const UPDATE_CLOUD_SETTINGS = 'UPDATE_CLOUD_SETTINGS';
+export const RESET_CLOUD_DEFAULTS = 'RESET_CLOUD_DEFAULTS';
