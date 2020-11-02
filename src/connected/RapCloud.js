@@ -104,7 +104,7 @@ const RapCloud = (props) => {
 						<NewTabIcon />
 					</IconButton>
 				</Tooltip>
-				<Tooltip placement="bottom" title="Share on Instagram">
+				{/* <Tooltip placement="bottom" title="Share on Instagram">
 					<IconButton id="shareOnIG" size="medium" className={classes.headerAction} onClick={null}>
 						<InstagramIcon />
 					</IconButton>
@@ -118,7 +118,7 @@ const RapCloud = (props) => {
 					<IconButton id="shareOnTwitter" size="medium" className={classes.headerAction} onClick={null}>
 						<TwitterIcon />
 					</IconButton>
-				</Tooltip>
+				</Tooltip> */}
 			</Paper>
 		);
 	};
