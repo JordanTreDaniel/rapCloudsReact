@@ -12,6 +12,8 @@ import { SIGN_OUT } from './actionTypes';
 
 export const history = createBrowserHistory();
 const migrations = {
+	// This version 0 is actually an attempt to reset loading properties.
+	//TO-DO: Actually reset loading properties
 	0: (state) => {
 		return {
 			...state,
@@ -33,6 +35,7 @@ const migrations = {
 			},
 		};
 	},
+	1: {},
 };
 
 const persistConfig = {
