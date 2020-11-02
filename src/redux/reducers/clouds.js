@@ -21,7 +21,7 @@ export const initialState = {
 		includeNumbers: true,
 		detectEdges: true,
 		colorFromMask: false,
-		downSample: '0',
+		downSample: '2',
 		whiteThreshold: '240',
 	},
 	masksById: {},
