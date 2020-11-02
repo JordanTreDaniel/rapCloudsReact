@@ -25,6 +25,7 @@ import { connect } from 'react-redux';
 import uniq from 'lodash/uniq';
 import { classNames } from '../utils';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
+import AddIcon from '@material-ui/icons/Add';
 import ImageUploader from 'react-images-upload';
 
 const useStyles = makeStyles((theme) => {
@@ -112,6 +113,31 @@ const useStyles = makeStyles((theme) => {
 		fullScreenMask: {
 			width: '93%',
 		},
+		maskExplHeader: {
+			marginBottom: '1em',
+			marginTop: '1em',
+			fontWeight: theme.typography.fontWeightBold,
+		},
+		blueIconBtn: {
+			backgroundColor: theme.palette.secondary.main,
+			color: theme.palette.secondary.contrastText,
+			width: '2em',
+			height: '2em',
+			'& a': {
+				textDecoration: 'none',
+				color: theme.palette.secondary.contrastText,
+				backgroundColor: theme.palette.secondary.main,
+			},
+			'&:hover': {
+				backgroundColor: theme.palette.secondary.light,
+				color: theme.palette.primary.dark,
+				'& a': {
+					textDecoration: 'none',
+					backgroundColor: theme.palette.secondary.light,
+					color: theme.palette.primary.dark,
+				},
+			},
+		},
 	};
 });
 
@@ -134,6 +160,7 @@ const RapCloudSettings = (props) => {
 	}, []);
 
 	const [ fullScreenMask, toggleFullScreenMask ] = useState(false);
+	const [ uploadingCustomMask, toggleUploadDialog ] = useState(false);
 
 	return dialogOpen ? (
 		<Dialog
@@ -238,84 +265,143 @@ const RapCloudSettings = (props) => {
 							alignContent="center"
 							align="center"
 						>
-							<FormControlLabel
-								control={
-									<Switch
-										checked={cloudSettings.useCustomMask}
-										onChange={(e) => {
-											updateCloudSettings(e.target.name, e.target.checked);
-										}}
-										color="secondary"
-										name="useCustomMask"
-										inputProps={{ 'aria-label': 'toggle detect edges' }}
-									/>
-								}
-								label="Upload Custom Mask"
-							/>
-							{cloudSettings.useCustomMask ? (
-								<Grid item container direction="row">
-									<ImageUploader
-										withIcon={true}
-										buttonText="Choose image"
-										onChange={([ pic ]) => {
-											console.log('pic', pic);
-											const reader = new FileReader();
-											let { name, type } = pic;
-											name = name.split('.')[0];
-											reader.addEventListener(
-												'load',
-												function() {
-													const { result } = reader;
-													const dataDeclarationRegEx = new RegExp(`data:${pic.type};base64,`);
-													const splitResult = result.split(dataDeclarationRegEx);
-													const base64Img = splitResult[1];
-													const mask = {
-														name,
-														base64Img,
-														userId: mongoUserId,
-														type,
-													};
-													addCustomMask(mask);
-												},
-												false,
-											);
-											reader.readAsDataURL(pic);
-										}}
-										imgExtension={[ '.jpeg', '.jpg', '.png' ]}
-										maxFileSize={5242880}
-										singleImage
-										// withPreview
-									/>
-								</Grid>
-							) : (
+							<Grid
+								item
+								container
+								className={classNames(classes.maskSelections)}
+								direction="row"
+								wrap="nowrap"
+								justify="space-between"
+								alignContent="center"
+								align="center"
+							>
 								<Grid
-									item
 									container
-									className={classNames(classes.maskSelections)}
-									direction="row"
-									wrap="nowrap"
-									justify="space-between"
+									justify="center"
 									alignContent="center"
-									align="center"
+									className={classNames(classes.maskThumbnail)}
+									onClick={() => toggleUploadDialog(true)}
 								>
-									{Object.values(masks).map((mask) => {
-										const chosen = mask.id === cloudSettings.maskId;
-										return (
-											<img
-												item
-												className={classNames(
-													classes.maskThumbnail,
-													chosen && classes.blueBorder,
-												)}
-												elevation={chosen ? 20 : 0}
-												src={`data:image/png;base64, ${mask.base64Img}`}
-												alt={mask.name}
-												onClick={() => updateCloudSettings('maskId', chosen ? null : mask.id)}
-											/>
-										);
-									})}
+									<Tooltip title="Upload Your Own Mask" placement="top-start">
+										<IconButton item className={classes.blueIconBtn}>
+											<AddIcon />
+										</IconButton>
+									</Tooltip>
+									{uploadingCustomMask && (
+										<Dialog onClose={() => toggleUploadDialog(false)} open={uploadingCustomMask}>
+											<DialogContent style={{ textAlign: 'center' }}>
+												<Typography
+													variant="h5"
+													color="primary"
+													className={classes.maskExplHeader}
+												>
+													A mask is a picture that you can use to shape and/or color your
+													RapCloud!
+												</Typography>
+												<ImageUploader
+													withIcon={true}
+													buttonText="Choose image"
+													onChange={([ pic ]) => {
+														console.log('pic', pic);
+														const reader = new FileReader();
+														let { name, type } = pic;
+														name = name.split('.')[0];
+														reader.addEventListener(
+															'load',
+															function() {
+																const { result } = reader;
+																const dataDeclarationRegEx = new RegExp(
+																	`data:${pic.type};base64,`,
+																);
+																const splitResult = result.split(dataDeclarationRegEx);
+																const base64Img = splitResult[1];
+																const mask = {
+																	name,
+																	base64Img,
+																	userId: mongoUserId,
+																	type,
+																};
+																addCustomMask(mask);
+																toggleUploadDialog(false);
+															},
+															false,
+														);
+														reader.readAsDataURL(pic);
+													}}
+													imgExtension={[ '.jpeg', '.jpg', '.png' ]}
+													maxFileSize={5242880}
+													singleImage
+													// withPreview
+												/>
+												<Typography
+													color="primary"
+													variant="h5"
+													className={classes.maskExplHeader}
+												>
+													How does it work?
+												</Typography>
+												<img
+													alt="Example Alice Word Cloud"
+													src={`${process.env.PUBLIC_URL}/aliceMaskExample.png`}
+													style={{ width: '100%' }}
+												/>
+												<Typography
+													variant="h6"
+													color="secondary"
+													className={classes.maskExplHeader}
+												>
+													Taking shape
+												</Typography>
+												<Typography variant="body1">
+													In the example above, the we take the white portion of the image and
+													consider it "masked out", which means no words will be drawn on the
+													white background of the image, only Alice!
+												</Typography>
+												<Typography
+													variant="body2"
+													color="secondary"
+													className={classes.maskExplHeader}
+												>
+													A note on transparency
+												</Typography>
+												<Typography variant="body1">
+													If the image has a transparent (see-through) background, the
+													transparent parts of the image will be ignored, instead of the
+													white.
+												</Typography>
+												<Typography
+													variant="h6"
+													color="secondary"
+													className={classes.maskExplHeader}
+												>
+													Taking color
+												</Typography>
+												<Typography variant="body1">
+													After the RapCloud is generated, it can be re-colored to match the
+													mask. Not every mask is a good candidate for this. It generally
+													helps to use simple images, and many words.
+												</Typography>
+											</DialogContent>
+											<DialogActions>
+												<Button onClick={() => toggleUploadDialog(false)}>Cancel</Button>
+											</DialogActions>
+										</Dialog>
+									)}
 								</Grid>
-							)}
+								{Object.values(masks).map((mask) => {
+									const chosen = mask.id === cloudSettings.maskId;
+									return (
+										<img
+											item
+											className={classNames(classes.maskThumbnail, chosen && classes.blueBorder)}
+											elevation={chosen ? 20 : 0}
+											src={`data:image/png;base64, ${mask.base64Img}`}
+											alt={mask.name}
+											onClick={() => updateCloudSettings('maskId', chosen ? null : mask.id)}
+										/>
+									);
+								})}
+							</Grid>
 							{cloudSettings.maskId && (
 								<Grid
 									item
