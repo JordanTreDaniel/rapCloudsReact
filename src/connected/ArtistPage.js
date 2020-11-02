@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Redirect, useParams, Link } from 'react-router-dom';
+import { Redirect, useParams } from 'react-router-dom';
 import {
 	Typography,
 	AppBar,
@@ -14,20 +14,16 @@ import {
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import MinusIcon from '@material-ui/icons/Remove';
-import DownloadIcon from '@material-ui/icons/CloudDownload';
-import NewTabIcon from '@material-ui/icons/AddToPhotos';
-import FacebookIcon from '@material-ui/icons/Facebook';
-import InstagramIcon from '@material-ui/icons/Instagram';
-import TwitterIcon from '@material-ui/icons/Twitter';
+
 import { makeStyles } from '@material-ui/core/styles';
 import ArtistSongList from './ArtistSongList';
 import BackButton from '../components/BackButton';
-import LoadingCloud from '../components/LoadingCloud';
+import RapCloud from './RapCloud';
 import * as selectors from '../redux/selectors';
-import { fetchArtist } from '../redux/actions';
+import { fetchArtist, fetchArtistCloud } from '../redux/actions';
 import { connect } from 'react-redux';
 import paths from '../paths';
-import { base64InNewTab } from '../utils';
+import { classNames } from '../utils';
 import LoadingBar from '../components/LoadingBar';
 
 const useStyles = makeStyles((theme) => {
@@ -64,11 +60,6 @@ const useStyles = makeStyles((theme) => {
 				marginTop: theme.spacing(2),
 			},
 			marginTop: '40%',
-		},
-		wordCloud: {
-			width: '100%',
-			margin: 'auto',
-			marginBottom: '3em',
 		},
 		headerBox: {
 			display: 'flex',
@@ -174,8 +165,8 @@ const ArtistPage = (props) => {
 	const classes = useStyles();
 	const { artist, fetchArtist, isArtistLoading, isArtistCloudLoading, width } = props;
 	const { artistId } = useParams();
-	const [ cloudExpanded, setCloudExpanded ] = React.useState(true);
-	const [ songsExpanded, setSongsExpanded ] = React.useState(true);
+	const [ cloudExpanded, setCloudExpanded ] = useState(true);
+	const [ songsExpanded, setSongsExpanded ] = useState(true);
 	const toggleCloudExpanded = () => setCloudExpanded(!cloudExpanded);
 	const toggleSongsExpanded = () => setSongsExpanded(!songsExpanded);
 	useEffect(
@@ -191,57 +182,6 @@ const ArtistPage = (props) => {
 	if (!artist && !isArtistLoading) return null;
 
 	const { name, encodedCloud, path } = artist || {};
-
-	const renderCloudActions = (place) => {
-		const conditionsPassed = place === 'bottom' ? width === 'xs' : width !== 'xs';
-		return (
-			<Paper
-				elevation={0}
-				id="cloudActions"
-				className={` ${classes.cloudActions} ${conditionsPassed
-					? classes.cloudActionsTop
-					: classes.cloudActionsBottom}`}
-			>
-				{/* <Avatar src={}/> */}
-				<Tooltip placement="bottom" title="Download Your RapCloud!">
-					<IconButton id="downloadBtn" size="medium" className={classes.headerAction}>
-						<a
-							className={classes.headerActionLink}
-							href={`data:image/png;base64, ${encodedCloud}`}
-							download={`${name} Rap Cloud.png`}
-						>
-							<DownloadIcon />
-						</a>
-					</IconButton>
-				</Tooltip>
-				<Tooltip placement="bottom" title="Open Your RapCloud in New Tab">
-					<IconButton
-						id="openInNewTab"
-						size="medium"
-						className={classes.headerAction}
-						onClick={() => base64InNewTab(`data:image/png;base64, ${encodedCloud}`)}
-					>
-						<NewTabIcon />
-					</IconButton>
-				</Tooltip>
-				<Tooltip placement="bottom" title="Share on Instagram">
-					<IconButton id="shareOnIG" size="medium" className={classes.headerAction} onClick={null}>
-						<InstagramIcon />
-					</IconButton>
-				</Tooltip>
-				<Tooltip placement="bottom" title="Share on Facebook">
-					<IconButton id="shareOnFB" size="medium" className={classes.headerAction} onClick={null}>
-						<FacebookIcon />
-					</IconButton>
-				</Tooltip>
-				<Tooltip placement="bottom" title="Share on Twitter">
-					<IconButton id="shareOnTwitter" size="medium" className={classes.headerAction} onClick={null}>
-						<TwitterIcon />
-					</IconButton>
-				</Tooltip>
-			</Paper>
-		);
-	};
 
 	return (
 		<Grid className={classes.artistPage}>
@@ -271,25 +211,16 @@ const ArtistPage = (props) => {
 						<IconButton className={classes.appAction} onClick={toggleCloudExpanded}>
 							{cloudExpanded ? <MinusIcon /> : <AddIcon />}
 						</IconButton>
-						<LoadingBar loading={isArtistCloudLoading} />
 						<Typography variant="h3" classes={{ root: classes.sectionHeader }}>
 							Cloud
 						</Typography>
 						{cloudExpanded && (
-							<React.Fragment>
-								{renderCloudActions()}
-								<img
-									src={
-										encodedCloud ? (
-											`data:image/png;base64, ${encodedCloud}`
-										) : (
-											`${process.env.PUBLIC_URL}/rapClouds.png`
-										)
-									}
-									alt={'Rap Cloud'}
-									className={classes.wordCloud}
-								/>
-							</React.Fragment>
+							<RapCloud
+								fetchCloud={fetchArtistCloud}
+								cloudName={name}
+								encodedCloud={encodedCloud}
+								isLoading={isArtistCloudLoading}
+							/>
 						)}
 					</Paper>
 				</Grid>
@@ -298,7 +229,6 @@ const ArtistPage = (props) => {
 						<IconButton className={classes.appAction} onClick={toggleSongsExpanded}>
 							{songsExpanded ? <MinusIcon /> : <AddIcon />}
 						</IconButton>
-						<LoadingBar loading={false} /> {/* For spacing */}
 						<Typography variant="h3" classes={{ root: classes.sectionHeader }}>
 							Songs
 						</Typography>
@@ -316,4 +246,4 @@ const mapState = (state) => ({
 	isArtistCloudLoading: selectors.isArtistCloudLoading(state),
 });
 
-export default connect(mapState, { fetchArtist })(withWidth()(ArtistPage));
+export default connect(mapState, { fetchArtist, fetchArtistCloud })(withWidth()(ArtistPage));

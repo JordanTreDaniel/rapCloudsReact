@@ -18,7 +18,8 @@ const normalizeLyrics = (songLyrics) => {
 		const rawSectionWords = section.split(whiteSpaceRegEx); // Markers undetectable after this point.
 
 		const filteredSectionWords = rawSectionWords.filter((word) => {
-			const unwantedWords = [ 'and', 'but', 'the', 'to', 'if', 'it', 'of', 'at', '' ];
+			// const unwantedWords = [ 'and', 'but', 'the', 'to', 'if', 'it', 'of', 'at', '' ];
+			const unwantedWords = []; //Going to let the library handle getting rid of words
 			if (unwantedWords.includes(word)) return false;
 			return true;
 		});

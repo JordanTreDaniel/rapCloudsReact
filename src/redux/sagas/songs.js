@@ -11,7 +11,7 @@ import {
 	FETCH_SONG_CLOUD,
 	CANCEL_SONG_DETAIL_CALL,
 } from '../actionTypes';
-import { fetchWordCloud } from './index';
+import { fetchWordCloud } from './clouds';
 import { getAccessToken, getSearchTerm, getSongFromId } from '../selectors';
 import normalizeLyrics from '../utils/normalizeLyrics';
 import axios from 'axios';

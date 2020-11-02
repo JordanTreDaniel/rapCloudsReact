@@ -49,16 +49,16 @@ const theme = createMuiTheme({
 			secondary: '#0091ea',
 		},
 	},
-	shadows: defaultShadows.map((shadowString) => {
-		if (shadowString === 'none') return shadowString;
-		const pxStrMatcher = /(-?\d{1,}px\s-?\d{1,}px\s-?\d{1,}px\s-?\d{1,}px\s)/g;
-		const matches = shadowString.match(pxStrMatcher);
-		const rgbVals = [ 'rgb(109, 171, 280)', 'rgb(109, 171, 260)', 'rgb(109, 171, 270)' ];
-		const result = matches.map((pxMatch, i) => {
-			return `${pxMatch} ${rgbVals[i]}`;
-		});
-		return result.join(',');
-	}),
+	// shadows: defaultShadows.map((shadowString) => {
+	// 	if (shadowString === 'none') return shadowString;
+	// 	const pxStrMatcher = /(-?\d{1,}px\s-?\d{1,}px\s-?\d{1,}px\s-?\d{1,}px\s)/g;
+	// 	const matches = shadowString.match(pxStrMatcher);
+	// 	const rgbVals = [ 'rgb(109, 171, 280)', 'rgb(109, 171, 260)', 'rgb(109, 171, 270)' ];
+	// 	const result = matches.map((pxMatch, i) => {
+	// 		return `${pxMatch} ${rgbVals[i]}`;
+	// 	});
+	// 	return result.join(',');
+	// }),
 	type: 'dark',
 });
 

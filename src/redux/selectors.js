@@ -2,7 +2,8 @@ import { createSelector } from 'reselect';
 import { normalizeLyrics, whichPath, replaceDiacritics } from './utils';
 import { createMatchSelector } from 'connected-react-router';
 import sortBy from 'lodash/sortBy';
-
+import { initialState as cloudInitialState } from './reducers/clouds';
+const { settings: initialCloudSettings } = cloudInitialState;
 //General
 /********************************************************************* */
 export const isAppRehydrated = (state) => state.userInfo.hydrated; //TO-DO: Move hydration detection to 'general' reducer
@@ -38,6 +39,11 @@ export const getUserImg = createSelector(
 export const getUserName = createSelector(getUser, (user) => {
 	const { name = null } = user || {};
 	return name;
+});
+
+export const getUserMongoId = createSelector(getUser, (user) => {
+	const { _id = null } = user || {};
+	return _id;
 });
 
 //Songs
@@ -150,3 +156,23 @@ export const getCurrentArtist = createSelector(getMatchParams, getArtistsById, (
 
 export const isArtistLoading = (state) => state.artists.artistLoading;
 export const isArtistCloudLoading = (state) => state.artists.artistCloudLoading;
+
+//Clouds
+/********************************************************************* */
+export const getCloudSettings = (state) => state.clouds.settings;
+export const getCloudSettingsForFlight = createSelector(getCloudSettings, (settings) => {
+	console.log({ initialCloudSettings });
+	return {
+		...settings,
+		maskId: settings.maskDesired && settings.maskId ? settings.maskId : null,
+		contourWidth: settings.contour ? settings.contourWidth : 0,
+		width: String(settings.width).length ? settings.width : initialCloudSettings.width,
+		height: String(settings.height).length ? settings.height : initialCloudSettings.height,
+		whiteThreshold: String(settings.whiteThreshold).length
+			? settings.whiteThreshold
+			: initialCloudSettings.whiteThreshold,
+		downSample: String(settings.downSample).length ? settings.downSample : initialCloudSettings.downSample,
+	};
+});
+export const getMasks = (state) => state.clouds.masksById;
+export const areMasksLoading = (state) => state.clouds.masksLoading;

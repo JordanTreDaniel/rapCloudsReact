@@ -12,6 +12,8 @@ import { SIGN_OUT } from './actionTypes';
 
 export const history = createBrowserHistory();
 const migrations = {
+	// This version 0 is actually an attempt to reset loading properties.
+	//TO-DO: Actually reset loading properties
 	0: (state) => {
 		return {
 			...state,
@@ -33,13 +35,14 @@ const migrations = {
 			},
 		};
 	},
+	1: {},
 };
 
 const persistConfig = {
 	key: 'authType',
 	storage: localforage,
 	version: 0,
-	whitelist: [ 'songs', 'userInfo', 'artists' ],
+	whitelist: [ 'songs', 'userInfo', 'artists', 'clouds' ],
 	blacklist: [], //don't store
 	migration: createMigrate(migrations, { debug: process.env.NODE_ENV === 'development' }),
 };
