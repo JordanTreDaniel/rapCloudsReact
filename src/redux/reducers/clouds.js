@@ -2,7 +2,7 @@
 
 import { UPDATE_CLOUD_SETTINGS, FETCH_MASKS, ADD_CUSTOM_MASK } from '../actionTypes';
 
-const initialState = {
+export const initialState = {
 	byId: {},
 	settings: {
 		width: '400',
@@ -10,7 +10,7 @@ const initialState = {
 		maskDesired: true,
 		maskId: null,
 		contour: false,
-		contourWidth: 0,
+		contourWidth: '0',
 		contourColor: '#ffffff',
 		stopWords: [ 'and', 'but', 'the', 'to', 'if', 'it', 'of', 'at' ],
 		background: true,
@@ -21,7 +21,8 @@ const initialState = {
 		includeNumbers: true,
 		detectEdges: true,
 		colorFromMask: false,
-		downSample: 0,
+		downSample: '0',
+		whiteThreshold: '240',
 	},
 	masksById: {},
 	masksLoading: false,
