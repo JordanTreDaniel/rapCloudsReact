@@ -175,11 +175,15 @@ const RapCloudSettings = (props) => {
 					<Typography variant="h6" align="left">
 						General
 					</Typography>
-					<Grid item container direction="row">
+					<Grid item container direction="column">
 						<TextField
 							item
 							className={classNames(classes.oneEmMarginRight)}
-							onChange={(e) => updateCloudSettings('width', e.target.value)}
+							onChange={(e) => {
+								let val = e.target.value;
+								if (val > 2000) val = 2000;
+								updateCloudSettings('width', val);
+							}}
 							label="Cloud Width"
 							id="cloudWidth"
 							value={cloudSettings.width}
@@ -189,10 +193,28 @@ const RapCloudSettings = (props) => {
 						<TextField
 							item
 							className={classNames(classes.oneEmMarginRight)}
-							onChange={(e) => updateCloudSettings('height', e.target.value)}
+							onChange={(e) => {
+								let val = e.target.value;
+								if (val > 2000) val = 2000;
+								updateCloudSettings('height', val);
+							}}
 							label="Cloud Height"
 							id="cloudHeight"
 							value={cloudSettings.height}
+							type="number"
+							autoComplete={false}
+						/>
+						<TextField
+							item
+							className={classNames(classes.oneEmMarginRight)}
+							onChange={(e) => {
+								let val = e.target.value;
+								if (val > 255) val = 255;
+								updateCloudSettings('whiteThreshold', val);
+							}}
+							label="White Detection Threshold"
+							id="whiteThreshold"
+							value={cloudSettings.whiteThreshold}
 							type="number"
 							autoComplete={false}
 						/>
@@ -451,7 +473,11 @@ const RapCloudSettings = (props) => {
 										<FormGroup item column>
 											<TextField
 												className={classNames(classes.oneEmMarginRight)}
-												onChange={(e) => updateCloudSettings('downSample', e.target.value)}
+												onChange={(e) => {
+													let val = e.target.value;
+													if (val > 3) val = 3;
+													updateCloudSettings('downSample', val);
+												}}
 												label="Down Sample"
 												id="downSample"
 												value={cloudSettings.downSample}
