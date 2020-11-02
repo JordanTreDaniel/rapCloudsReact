@@ -1,6 +1,6 @@
 import { call, select, takeLatest, put } from 'redux-saga/effects';
 import axios from 'axios';
-import { getCloudSettingsForFlight } from '../selectors';
+import { getCloudSettingsForFlight, getUserMongoId } from '../selectors';
 import { FETCH_MASKS, ADD_CUSTOM_MASK } from '../actionTypes';
 
 const REACT_APP_SERVER_ROOT =
@@ -52,10 +52,10 @@ export function* fetchWordCloud(action) {
 	}
 }
 
-const apiFetchMasks = async () => {
+const apiFetchMasks = async (userId) => {
 	const res = await axios({
 		method: 'get',
-		url: `${REACT_APP_SERVER_ROOT}/masks`,
+		url: `${REACT_APP_SERVER_ROOT}/masks/${userId}`,
 		headers: {
 			'Content-Type': 'application/json',
 			// 'Accept-Encoding': 'gzip',
@@ -75,7 +75,8 @@ const apiFetchMasks = async () => {
 
 export function* fetchMasks(action) {
 	try {
-		const { masks, error } = yield call(apiFetchMasks);
+		const userId = yield select(getUserMongoId);
+		const { masks, error } = yield call(apiFetchMasks, userId);
 		if (error) {
 			console.log('Something went wrong in fetchMasks', error);
 			return { error };
