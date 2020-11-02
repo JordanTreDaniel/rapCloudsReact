@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { IconButton, Grid, withWidth, Tooltip, Paper } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import RapCloudSettings from './RapCloudSettings';
+import LoadingBar from '../components/LoadingBar';
 import { classNames } from '../utils';
 import SettingsIcon from '@material-ui/icons/Settings';
 import DownloadIcon from '@material-ui/icons/CloudDownload';
 import NewTabIcon from '@material-ui/icons/AddToPhotos';
-import FacebookIcon from '@material-ui/icons/Facebook';
-import InstagramIcon from '@material-ui/icons/Instagram';
-import TwitterIcon from '@material-ui/icons/Twitter';
+// import FacebookIcon from '@material-ui/icons/Facebook';
+// import InstagramIcon from '@material-ui/icons/Instagram';
+// import TwitterIcon from '@material-ui/icons/Twitter';
 import { base64InNewTab } from '../utils';
 
 const useStyles = makeStyles((theme) => {
@@ -70,7 +71,17 @@ const useStyles = makeStyles((theme) => {
 
 const RapCloud = (props) => {
 	const classes = useStyles();
-	const { cloudName, width, encodedCloud, top = '-1em', bottom, left = '-0.75em', right, fetchCloud } = props;
+	const {
+		cloudName,
+		width,
+		encodedCloud,
+		top = '-1em',
+		bottom,
+		left = '-0.75em',
+		right,
+		fetchCloud,
+		isLoading,
+	} = props;
 
 	const [ dialogOpen, toggleDialog ] = useState(false);
 	const renderCloudActions = (place) => {
@@ -127,6 +138,7 @@ const RapCloud = (props) => {
 		<Grid>
 			{renderCloudActions()}
 			<Grid className={classNames(classes.wordCloudWrapper)}>
+				<LoadingBar loading={isLoading} />
 				<img
 					src={
 						encodedCloud ? (
@@ -138,7 +150,6 @@ const RapCloud = (props) => {
 					alt={'Rap Cloud'}
 					className={classes.wordCloud}
 				/>
-
 				<Tooltip placement="bottom-start" title="Customize this Rap Cloud!">
 					<IconButton
 						onClick={() => toggleDialog(true)}

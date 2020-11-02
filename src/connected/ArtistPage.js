@@ -211,12 +211,16 @@ const ArtistPage = (props) => {
 						<IconButton className={classes.appAction} onClick={toggleCloudExpanded}>
 							{cloudExpanded ? <MinusIcon /> : <AddIcon />}
 						</IconButton>
-						<LoadingBar loading={isArtistCloudLoading} />
 						<Typography variant="h3" classes={{ root: classes.sectionHeader }}>
 							Cloud
 						</Typography>
 						{cloudExpanded && (
-							<RapCloud fetchCloud={fetchArtistCloud} cloudName={name} encodedCloud={encodedCloud} />
+							<RapCloud
+								fetchCloud={fetchArtistCloud}
+								cloudName={name}
+								encodedCloud={encodedCloud}
+								isLoading={isArtistCloudLoading}
+							/>
 						)}
 					</Paper>
 				</Grid>
@@ -225,7 +229,6 @@ const ArtistPage = (props) => {
 						<IconButton className={classes.appAction} onClick={toggleSongsExpanded}>
 							{songsExpanded ? <MinusIcon /> : <AddIcon />}
 						</IconButton>
-						<LoadingBar loading={false} /> {/* For spacing */}
 						<Typography variant="h3" classes={{ root: classes.sectionHeader }}>
 							Songs
 						</Typography>

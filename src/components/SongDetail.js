@@ -224,7 +224,6 @@ const SongDetail = (props) => {
 						<IconButton className={classes.appAction} onClick={toggleCloudExpanded}>
 							{cloudExpanded ? <MinusIcon /> : <AddIcon />}
 						</IconButton>
-						<LoadingBar loading={isWordCloudLoading} />
 						<Typography variant="h3" classes={{ root: classes.sectionHeader }}>
 							Cloud
 						</Typography>
@@ -233,6 +232,7 @@ const SongDetail = (props) => {
 								fetchCloud={() => fetchSongCloud(songId, lyrics)}
 								cloudName={briefedTitle}
 								encodedCloud={encodedCloud}
+								isLoading={isWordCloudLoading}
 							/>
 						)}
 					</Paper>
@@ -242,7 +242,6 @@ const SongDetail = (props) => {
 						<IconButton className={classes.appAction} onClick={toggleLyricsExpanded}>
 							{lyricsExpanded ? <MinusIcon /> : <AddIcon />}
 						</IconButton>
-						<LoadingBar loading={false} /> {/* For spacing */}
 						<Typography variant="h3" classes={{ root: classes.sectionHeader }}>
 							Lyrics
 						</Typography>
