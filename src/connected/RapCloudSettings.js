@@ -21,6 +21,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import * as selectors from '../redux/selectors';
 import { updateCloudSettings, fetchMasks, addCustomMask, resetCloudDefaults } from '../redux/actions';
 import ColorPicker from '../components/ColorPicker';
+import LoadingBar from '../components/LoadingBar';
 import { connect } from 'react-redux';
 import uniq from 'lodash/uniq';
 import { classNames } from '../utils';
@@ -290,6 +291,7 @@ const RapCloudSettings = (props) => {
 							alignContent="center"
 							align="center"
 						>
+							<LoadingBar loading={masksLoading} />
 							<Grid
 								item
 								container
@@ -427,7 +429,7 @@ const RapCloudSettings = (props) => {
 									);
 								})}
 							</Grid>
-							{cloudSettings.maskId && (
+							{masks[cloudSettings.maskId] && (
 								<Grid
 									item
 									container
