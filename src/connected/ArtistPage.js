@@ -163,7 +163,7 @@ const useStyles = makeStyles((theme) => {
 
 const ArtistPage = (props) => {
 	const classes = useStyles();
-	const { artist, fetchArtist, isArtistLoading, isArtistCloudLoading, width } = props;
+	const { artist, fetchArtist, isArtistLoading, isArtistCloudLoading, width, areSongLyricsLoading } = props;
 	const { artistId } = useParams();
 	const [ cloudExpanded, setCloudExpanded ] = useState(true);
 	const [ songsExpanded, setSongsExpanded ] = useState(true);
@@ -219,7 +219,7 @@ const ArtistPage = (props) => {
 								fetchCloud={fetchArtistCloud}
 								cloudName={name}
 								encodedCloud={encodedCloud}
-								isLoading={isArtistCloudLoading}
+								isLoading={isArtistCloudLoading || isArtistLoading || areSongLyricsLoading}
 							/>
 						)}
 					</Paper>
@@ -232,6 +232,7 @@ const ArtistPage = (props) => {
 						<Typography variant="h3" classes={{ root: classes.sectionHeader }}>
 							Songs
 						</Typography>
+						<LoadingBar loading={isArtistLoading} />
 						{songsExpanded && !isArtistLoading && <ArtistSongList artistId={artistId} />}
 					</Paper>
 				</Grid>
@@ -244,6 +245,7 @@ const mapState = (state) => ({
 	artist: selectors.getCurrentArtist(state),
 	isArtistLoading: selectors.isArtistLoading(state),
 	isArtistCloudLoading: selectors.isArtistCloudLoading(state),
+	areSongLyricsLoading: selectors.areSongLyricsLoading(state),
 });
 
 export default connect(mapState, { fetchArtist, fetchArtistCloud })(withWidth()(ArtistPage));

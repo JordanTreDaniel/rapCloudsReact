@@ -159,7 +159,7 @@ const useStyles = makeStyles((theme) => {
 
 const SongDetail = (props) => {
 	const classes = useStyles();
-	const { song, fetchSongDetails, isSongDetailLoading, isWordCloudLoading, width, fetchSongCloud } = props;
+	const { song, fetchSongDetails, isSongDetailLoading, isWordCloudLoading, width, fetchSongCloud, areSongLyricsLoading } = props;
 	const { songId } = useParams();
 	const [ lyricsExpanded, setLyricsExpanded ] = React.useState(false);
 	const [ cloudExpanded, setCloudExpanded ] = React.useState(true);
@@ -232,7 +232,7 @@ const SongDetail = (props) => {
 								fetchCloud={() => fetchSongCloud(songId, lyrics)}
 								cloudName={briefedTitle}
 								encodedCloud={encodedCloud}
-								isLoading={isWordCloudLoading}
+								isLoading={isWordCloudLoading || isSongDetailLoading || areSongLyricsLoading}
 							/>
 						)}
 					</Paper>
@@ -245,6 +245,7 @@ const SongDetail = (props) => {
 						<Typography variant="h3" classes={{ root: classes.sectionHeader }}>
 							Lyrics
 						</Typography>
+						<LoadingBar loading={areSongLyricsLoading} />
 						{lyricsExpanded && (
 							<Typography variant="body1" classes={{ root: classes.lyrics }}>
 								{lyrics}
@@ -261,6 +262,7 @@ const mapState = (state) => ({
 	song: selectors.getCurrentSong(state),
 	isSongDetailLoading: selectors.isSongDetailLoading(state),
 	isWordCloudLoading: selectors.isWordCloudLoading(state),
+	areSongLyricsLoading: selectors.areSongLyricsLoading(state),
 });
 
 export default connect(mapState, { fetchSongDetails, fetchSongCloud })(withWidth()(SongDetail));

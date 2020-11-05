@@ -53,6 +53,7 @@ export const areSongsLoading = (state) => state.songs.loading;
 export const isSongSearchLoading = (state) => state.songs.searchLoading;
 export const isSongDetailLoading = (state) => state.songs.songDetailLoading;
 export const isWordCloudLoading = (state) => state.songs.wordCloudLoading;
+export const areSongLyricsLoading = (state) => state.songs.lyricsLoading;
 
 export const getCurrentSongId = createSelector(getMatchParams, (matchParams) => matchParams.songId);
 
