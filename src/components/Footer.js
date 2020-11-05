@@ -5,6 +5,7 @@ import { Grid, Typography, ListItem, List, IconButton, Box } from '@material-ui/
 import FacebookIcon from '@material-ui/icons/Facebook';
 import InstagramIcon from '@material-ui/icons/Instagram';
 import TwitterIcon from '@material-ui/icons/Twitter';
+import PinterestIcon from '@material-ui/icons/Pinterest';
 import { classNames } from '../utils';
 const useStyles = makeStyles((theme) => ({
 	footer: {
@@ -63,19 +64,24 @@ const Footer = (props) => {
 				</List>
 				{/* <Typography variant="h4">Social Media:</Typography> */}
 				<Box className={classes.socialLinksBox}>
-					<a href="#" target="_blank">
+					<a href="https://www.instagram.com/therealrapclouds/" target="_blank">
 						<IconButton id="connectOnIG" size="medium" className={classes.socialLink} onClick={null}>
 							<InstagramIcon />
 						</IconButton>
 					</a>
-					<a href="#" target="_blank">
+					<a href="https://www.facebook.com/rap.clouds.7" target="_blank">
 						<IconButton id="connectOnFB" size="medium" className={classes.socialLink} onClick={null}>
 							<FacebookIcon />
 						</IconButton>
 					</a>
-					<a href="#" target="_blank">
+					<a href="https://twitter.com/RapClouds" target="_blank">
 						<IconButton id="connectOnTwitter" size="medium" className={classes.socialLink} onClick={null}>
 							<TwitterIcon />
+						</IconButton>
+					</a>
+					<a href="https://www.pinterest.com/rapclouds" target="_blank">
+						<IconButton id="connectOnTwitter" size="medium" className={classes.socialLink} onClick={null}>
+							<PinterestIcon />
 						</IconButton>
 					</a>
 				</Box>
