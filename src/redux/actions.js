@@ -3,7 +3,6 @@ import {
 	ADD_SONGS,
 	SEARCH_SONGS,
 	FETCH_SONG_DETAILS,
-	ADD_SONG_DETAILS,
 	SET_SONG_SEARCH_TERM,
 	FETCH_ARTIST,
 	SIGN_OUT,
@@ -25,7 +24,7 @@ export const addSongs = (songs = [ { name: 'We finally made it.' } ]) => {
 };
 
 export const searchSongs = (searchTerm = null) => {
-	return { type: SEARCH_SONGS, searchTerm };
+	return { type: SEARCH_SONGS.start, searchTerm };
 };
 
 export const setSongSearchTerm = (searchTerm = '') => {
@@ -33,16 +32,13 @@ export const setSongSearchTerm = (searchTerm = '') => {
 };
 
 export const fetchSongDetails = (songId) => {
-	return { type: FETCH_SONG_DETAILS, songId };
+	return { type: FETCH_SONG_DETAILS.start, songId };
 };
 
 export const fetchArtist = (artistId) => {
 	return { type: FETCH_ARTIST.start, artistId };
 };
 
-export const addSongDetails = (song) => {
-	return { type: ADD_SONG_DETAILS, song };
-};
 
 export const signOut = () => {
 	return { type: SIGN_OUT };

@@ -1,15 +1,11 @@
 import { put, takeEvery, call, select, cancel, delay } from 'redux-saga/effects';
 import {
 	SEARCH_SONGS,
-	SEARCH_SONGS_FAILURE,
 	ADD_SONGS,
 	FETCH_SONG_DETAILS,
-	ADD_SONG_DETAILS,
-	FETCH_SONG_DETAILS_FAILURE,
 	FETCH_SONG_LYRICS,
 	SIGN_OUT,
 	FETCH_SONG_CLOUD,
-	CANCEL_SONG_DETAIL_CALL,
 } from '../actionTypes';
 import { fetchWordCloud } from './clouds';
 import { getAccessToken, getSearchTerm, getSongFromId } from '../selectors';
@@ -47,14 +43,14 @@ export function* searchSongs(action) {
 	const searchTerm = action.searchTerm ? action.searchTerm : yield select(getSearchTerm);
 	const accessToken = yield select(getAccessToken);
 	if (!accessToken || !searchTerm.length) {
-		yield put({ type: SEARCH_SONGS_FAILURE });
+		yield put({ type: SEARCH_SONGS.cancellation });
 		if (!accessToken) yield put({ type: SIGN_OUT });
 		yield cancel();
 	}
 	const { songs, error } = yield call(apiSearchSongs, searchTerm, accessToken);
 	if (error) {
 		console.log('Something went wrong', error);
-		yield put({ type: SEARCH_SONGS_FAILURE });
+		yield put({ type: SEARCH_SONGS.failure });
 	} else {
 		yield put({ type: ADD_SONGS, songs });
 	}
@@ -111,16 +107,16 @@ export function* fetchSongDetails(action) {
 	const { songId, fetchLyrics = true, fetchWordCloud = true } = action;
 	const existingSong = yield select(getSongFromId, songId);
 	if (existingSong && existingSong.normalizedLyrics && existingSong.encodedCloud) {
-		yield put({ type: CANCEL_SONG_DETAIL_CALL });
+		yield put({ type: FETCH_SONG_DETAILS.cancellation });
 		yield cancel();
 	}
 	const { song, error } = yield call(apiFetchSongDetails, songId, accessToken);
 	if (error) {
-		yield put({ type: FETCH_SONG_DETAILS_FAILURE });
+		yield put({ type: FETCH_SONG_DETAILS.failure });
 		console.error('Something went wrong', error);
 	} else {
 		const { path: songPath } = song;
-		yield put({ type: ADD_SONG_DETAILS, song });
+		yield put({ type: FETCH_SONG_DETAILS.success, song });
 		if (fetchLyrics) {
 			yield delay(500);
 			yield put({ type: FETCH_SONG_LYRICS.start, songId, songPath, fetchWordCloud });
@@ -180,11 +176,11 @@ export function* fetchSongCloud(action) {
 }
 
 function* watchSearchSongs() {
-	yield takeEvery(SEARCH_SONGS, searchSongs);
+	yield takeEvery(SEARCH_SONGS.start, searchSongs);
 }
 
 function* watchFetchSongDetails() {
-	yield takeEvery(FETCH_SONG_DETAILS, fetchSongDetails);
+	yield takeEvery(FETCH_SONG_DETAILS.start, fetchSongDetails);
 }
 
 function* watchFetchSongCloud() {
