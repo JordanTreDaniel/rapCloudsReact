@@ -68,6 +68,7 @@ const useStyles = makeStyles((theme) => {
 		drawer: {
 			backgroundColor: theme.palette.primary.main,
 			color: theme.palette.primary.contrastText,
+			cursor: 'pointer'
 		},
 		drawerItem: {
 			fontSize: '2em',
