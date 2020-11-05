@@ -61,12 +61,17 @@ const theme = createMuiTheme({
 	// }),
 	type: 'dark',
 });
-
+history.listen((event, method) => {
+	const appContainer = document.getElementById("appContainer");
+	if (appContainer) {
+		appContainer.scrollTop = 0;
+	}
+})
 ReactDOM.render(
 	<React.StrictMode>
 		<Provider store={store}>
 			<ThemeProvider theme={theme}>
-				<Paper style={{ minHeight: '100vh', minWidth: '100vw' }} square elevation={0}>
+				<Paper id={"appContainer"} style={{ minHeight: '100vh', minWidth: '100vw' }} square elevation={0}>
 					<PersistGate loading={<SplashScreen />} onBeforeLift={onBeforeLift} persistor={persistor}>
 						<ConnectedRouter history={history}>
 							<Switch>
