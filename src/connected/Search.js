@@ -12,10 +12,9 @@ const DebouncedTextField = DebouncedInput(Input, { timeout: 639 });
 
 const useStyles = makeStyles((theme) => ({
 	mainSearchInput: {
-		fontSize: '3em',
+		fontSize: '4em',
 		fontWeight: 560,
-		marginRight: '3vw',
-		marginLeft: '9vw',
+		margin: '.12em 3vw .12em 9vw',
 		color: theme.palette.secondary.main,
 		opacity: '.72',
 	},
