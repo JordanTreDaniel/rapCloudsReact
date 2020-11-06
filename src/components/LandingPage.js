@@ -13,6 +13,7 @@ import {
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { classNames } from '../utils';
+import { Instagram } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => {
 	return {
@@ -61,10 +62,12 @@ const useStyles = makeStyles((theme) => {
 			backgroundColor: theme.palette.primary.main,
 			color: theme.palette.primary.contrastText,
 			border: `1px solid ${theme.palette.primary.contrastText}`,
+			opacity: '.8',
 			'&:hover': {
 				backgroundColor: theme.palette.primary.light,
 				color: theme.palette.primary.contrastText,
 			},
+
 		},
 		fullSection: {
 			// minWidth: '100%',
@@ -149,7 +152,7 @@ const LandingPage = (props) => {
 				item
 				container
 				xs={12}
-				sm={7}
+				sm={9}
 				direction="row"
 				wrap="wrap-reverse"
 				justify="flex-end"
@@ -168,6 +171,19 @@ const LandingPage = (props) => {
 					className={classNames(classes.demoButton, classes.whatIsAButton)}
 				>
 					What is a wordCloud?
+				</Button>
+				<Button
+					variant="contained"
+					item
+					component={"a"}
+					target="_blank"
+					href={"https://www.instagram.com/therealrapclouds/"}
+					color="secondary"
+					disableElevation
+					endIcon={<Instagram />}
+					className={classNames(classes.demoButton, classes.whatIsAButton)}
+				>
+					Examples
 				</Button>
 				<Button
 					variant="contained"
