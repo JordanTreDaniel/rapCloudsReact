@@ -87,9 +87,9 @@ const useStyles = makeStyles((theme) => {
 			backgroundColor: theme.palette.primary.main,
 			color: theme.palette.primary.contrastText,
 		},
-		appAction: {
-			backgroundColor: theme.palette.secondary.main,
-			color: theme.palette.primary.contrastText,
+		drawerToggler: {
+			backgroundColor: theme.palette.primary.dark,
+			color: theme.palette.primary.light,
 			margin: '.5em',
 			width: '2em',
 			height: '2em',
@@ -134,7 +134,7 @@ const Navbar = (props) => {
 						/>
 					</Link>
 					<Box className={classes.buttonBox}>
-						<IconButton onClick={() => toggleDrawer(true)} className={classes.appAction}>
+						<IconButton onClick={() => toggleDrawer(true)} className={classes.drawerToggler}>
 							<MenuIcon />
 						</IconButton>
 					</Box>

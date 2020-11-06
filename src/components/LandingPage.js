@@ -48,11 +48,13 @@ const useStyles = makeStyles((theme) => {
 			marginRight: '.5em',
 			marginLeft: '.5em',
 			boxShadow: 'none',
+			border: `1px solid ${theme.palette.primary.dark}`,
+
 		},
 		tryItButton: {
 			backgroundColor: theme.palette.secondary.main,
 			color: theme.palette.secondary.contrastText,
-			border: `1px solid ${theme.palette.secondary.contrastText}`,
+			border: `1px solid ${theme.palette.primary.contrastText}`,
 			'&:hover': {
 				backgroundColor: theme.palette.secondary.light,
 				color: theme.palette.secondary.contrastText,
@@ -61,7 +63,6 @@ const useStyles = makeStyles((theme) => {
 		whatIsAButton: {
 			backgroundColor: theme.palette.primary.main,
 			color: theme.palette.primary.contrastText,
-			border: `1px solid ${theme.palette.primary.contrastText}`,
 			opacity: '.8',
 			'&:hover': {
 				backgroundColor: theme.palette.primary.light,
