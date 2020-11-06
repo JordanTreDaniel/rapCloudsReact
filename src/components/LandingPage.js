@@ -3,7 +3,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import RightArrow from '@material-ui/icons/ArrowForward';
 import {
 	withWidth,
-	Paper,
 	Typography,
 	Grid,
 	DialogContent,
@@ -25,13 +24,14 @@ const useStyles = makeStyles((theme) => {
 		},
 		demoButtons: {
 			position: 'fixed',
-			minWidth: '20em',
-			padding: '1.5em',
-			textAlign: 'right',
+			padding: '1em',
+			textAlign: 'center',
+			borderRadius: '6px',
+			// backgroundColor: 'rgb(66, 66, 66, 0.5)',
 		},
 		demoButtonsDesktop: {
-			padding: '1.5em',
-			bottom: '1em',
+			padding: '1em',
+			bottom: '.6em',
 			right: '1em',
 		},
 		demoButtonsMobile: {
@@ -40,29 +40,36 @@ const useStyles = makeStyles((theme) => {
 			right: '0',
 		},
 		demoButton: {
-			// fontSize: '1.2em',
+			fontSize: '1.2em',
+			fontWeight: theme.typography.fontWeightBold,
 			whiteSpace: 'nowrap',
-			margin: '1em',
+			margin: '.5em',
 			marginRight: '.5em',
 			marginLeft: '.5em',
+			boxShadow: 'none',
 		},
 		tryItButton: {
-			backgroundColor: 'rgb(66, 66, 66, 0.5)',
+			backgroundColor: theme.palette.secondary.main,
+			color: theme.palette.secondary.contrastText,
+			border: `1px solid ${theme.palette.secondary.contrastText}`,
 			'&:hover': {
-				backgroundColor: theme.palette.primary.main,
-				color: theme.palette.primary.contrastText,
-			},
-		},
-		whatIsAButton: {
-			'&:hover': {
-				backgroundColor: theme.palette.secondary.main,
+				backgroundColor: theme.palette.secondary.light,
 				color: theme.palette.secondary.contrastText,
 			},
 		},
+		whatIsAButton: {
+			backgroundColor: theme.palette.primary.main,
+			color: theme.palette.primary.contrastText,
+			border: `1px solid ${theme.palette.primary.contrastText}`,
+			'&:hover': {
+				backgroundColor: theme.palette.primary.light,
+				color: theme.palette.primary.contrastText,
+			},
+		},
 		fullSection: {
-			minWidth: '100%',
+			// minWidth: '100%',
 			// minHeight: '100%',//Why doesn't 100% work?
-			height: '100vh',
+			// height: '100vh',
 		},
 		centeredColumn: {
 			display: 'flex',
@@ -88,6 +95,14 @@ const useStyles = makeStyles((theme) => {
 			marginTop: '2em',
 			marginBottom: '2em',
 			padding: '1em',
+			minHeight: '72vh',
+			lineHeight: '5em',
+		},
+		explanationSection: {
+			marginTop: '2em',
+			marginBottom: '2em',
+			padding: '1em',
+			minHeight: '72vh', 
 		},
 		blueText: {
 			color: theme.palette.secondary.light,
@@ -116,6 +131,10 @@ const useStyles = makeStyles((theme) => {
 			marginTop: '3em',
 			marginBottom: '3em',
 		},
+		plainLink: {
+			color: theme.palette.primary.contrastText,
+			cursor: 'pointer',
+		},
 	};
 });
 
@@ -124,12 +143,15 @@ const LandingPage = (props) => {
 	const classes = useStyles();
 	const [ imgZoomOpen, toggleImgZoom ] = useState(false);
 	return (
-		<Grid container classes={{ root: classes.aboutPageContainer }} elevation={0}>
+		<Grid id="aboutPageContainer" container classes={{ root: classes.aboutPageContainer }} elevation={0}>
 			<Grid
+				id="demoButtonsBox"
 				item
 				container
+				xs={12}
+				sm={7}
 				direction="row"
-				wrap="nowrap"
+				wrap="wrap-reverse"
 				justify="flex-end"
 				className={classNames(
 					classes.demoButtons,
@@ -157,10 +179,15 @@ const LandingPage = (props) => {
 					endIcon={<RightArrow />}
 					className={classNames(classes.demoButton, classes.tryItButton)}
 				>
-					Make Your Own
+					Try It
 				</Button>
 			</Grid>
-			<div
+			<Grid
+				id="questionSection"
+				item
+				// container
+				xs={12}
+				sm={6}
 				className={classNames(
 					classes.questionSection,
 					classes.fullSection,
@@ -168,29 +195,40 @@ const LandingPage = (props) => {
 					classes.whatIsAWordCloud,
 				)}
 			>
-				<div>
+				<Grid item id="questionContainer">
 					<Typography variant="h1">What are</Typography>
 					<Typography variant="h1">
 						<span className={classNames(classes.greyText, classes.bold)}>Rap Clouds</span>?
 					</Typography>
-				</div>
-			</div>
-			<div className={classNames(classes.fullSection, classes.answerSection, classes.centeredColumn)}>
-				<div>
+				</Grid>
+			</Grid>
+			<Grid
+				id="answerSection"
+				item
+				xs={12}
+				sm={6}
+				className={classNames(classes.fullSection, classes.answerSection, classes.centeredColumn)}
+			>
+				<Grid>
 					<Typography variant="h3">
 						They're the <span className={classes.blueText}>lyrics</span> to your{' '}
+					</Typography>
+					<Typography variant="h3">
 						<span className={classes.blueText}>favorite song</span>...
 					</Typography>
 					<br />
 					<Typography variant="h3">
-						...in a <span className={classes.blueText}>word cloud</span>.
+						...in a <span className={classes.blueText}>word cloud</span>,
 					</Typography>
-				</div>
-			</div>
+					<Typography variant="h3">
+						with your <span className={classes.blueText}>favorite picture</span>.
+					</Typography>
+				</Grid>
+			</Grid>
 			<Grid
 				id="aWordCloudIs"
 				container
-				className={classNames(classes.fullSection, classes.answerSection, classes.aWordCloudIs)}
+				className={classNames(classes.fullSection, classes.explanationSection, classes.aWordCloudIs)}
 			>
 				<Grid
 					item
@@ -202,7 +240,7 @@ const LandingPage = (props) => {
 					}}
 					className={classNames(classes.centeredColumn)}
 				>
-					<Typography variant="h4" className={classes.blueText}>
+					<Typography variant="h4">
 						A word cloud is a way to visualize which words appear most often in any given text.
 					</Typography>
 					<br />
@@ -210,9 +248,13 @@ const LandingPage = (props) => {
 					<Typography variant="body1" className={classNames(classes.blueText)} style={{ paddingTop: '3em' }}>
 						This is a RapCloud made from Mary Mary's wonderful song, "Heaven".
 					</Typography>
-					<Typography component={Link} to={`/clouds/1376209`}>
-						Go here for the full lyrics
-					</Typography>
+					<br />
+					<Grid container alignItems="center">
+						<Typography item component={Link} to={`/clouds/1376209`} className={classes.plainLink}>
+							Go here for the full lyrics
+						</Typography>
+						<RightArrow item />
+					</Grid>
 				</Grid>
 				<Grid
 					item
@@ -246,10 +288,19 @@ const LandingPage = (props) => {
 											{`\"I gotta get myself together, cuz I got someplace to go \n And I'm praying when I
 										get there, I see everyone I know \n I wanna go to heaven, \n I wanna go to heaven \n Said
 										I wanna go to heaven, \n I wanna go to heaven \n Do you wanna go?\"`}
-											<Link to={`/clouds/1376209`} style={{ color: 'white' }}>
-												Go here for the full lyrics
-											</Link>
 										</Typography>
+										<br></br>
+										<Grid container alignItems="center">
+											<Typography
+												item
+												component={Link}
+												to={`/clouds/1376209`}
+												className={classes.plainLink}
+											>
+												Go here for the full lyrics
+											</Typography>
+											<RightArrow item />
+										</Grid>
 									</div>
 								</div>
 
