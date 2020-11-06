@@ -178,7 +178,7 @@ const LandingPage = (props) => {
 					component={"a"}
 					target="_blank"
 					href={"https://www.instagram.com/therealrapclouds/"}
-					color="secondary"
+					color="primary"
 					disableElevation
 					endIcon={<Instagram />}
 					className={classNames(classes.demoButton, classes.whatIsAButton)}
