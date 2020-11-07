@@ -22,17 +22,18 @@ const useStyles = makeStyles((theme) => {
 			display: 'flex',
 		},
 		toolBar: {
-			display: 'flex',
-			justifyContent: 'space-between',
 			backgroundColor: theme.palette.primary.light,
 		},
 		artistBubbles: {
-			display: 'flex',
-			justifyContent: 'space-evenly',
+		},
+		artistBubble: {
+			marginLeft: '1em'
+		},
+		artistBubbleSpacer: {
+			width: '1em',
+			height: '1em'
 		},
 		leftBubbles: {
-			display: 'flex',
-			justifyContent: 'space-evenly',
 		},
 		lyrics: {
 			whiteSpace: 'pre-line',
@@ -185,26 +186,30 @@ const SongDetail = (props) => {
 		<Grid className={classes.songDetailContainer}>
 			<AppBar color="inherit" position="static">
 				<Toolbar className={classes.toolBar}>
-					<div className={classes.leftBubbles}>
-						<BackButton />
-						<Tooltip placement="bottom" title={`See ${briefedTitle} on Genius`}>
-							<a href={`https://genius.com${path}`} alt={`${briefedTitle} on Genius`} target="_blank">
-								<Avatar src="https://pbs.twimg.com/profile_images/885222003174551552/cv3KtGVS_400x400.jpg" />
-							</a>
-						</Tooltip>
-					</div>
+					<Grid id="bubbleContainer" container direction="row" wrap="nowrap" >
+						<Grid id="leftBubbles" xs={4} item container direction="row" wrap="nowrap" alignItems="center" className={classes.leftBubbles}>
+							<BackButton />
+							<Tooltip  placement="bottom" title={`See ${briefedTitle} on Genius`}>
+								<a href={`https://genius.com${path}`} alt={`${briefedTitle} on Genius`} target="_blank">
+									<Avatar   src="https://pbs.twimg.com/profile_images/885222003174551552/cv3KtGVS_400x400.jpg" />
+								</a>
+							</Tooltip>
+						</Grid>
+						<Grid item xs={1}>
 
-					<div className={classes.artistBubbles}>
-						{artists.map((artist, idx) => {
-							return (
-								<Tooltip placement="bottom" title={`See ${artist.name}`} key={idx}>
-									<Link to={`/cloudmakers/${artist.id}`}>
-										<Avatar src={artist.header_image_url} alt={`Link to ${artist.name}'s page`} />
-									</Link>
-								</Tooltip>
-							);
-						})}
-					</div>
+						</Grid>
+						<Grid id="artistBubbles" xs={7} item container direction="row" wrap="nowrap" alignItems="center" className={classes.artistBubbles}>
+							{artists.map((artist, idx) => {
+								return (
+									<Tooltip placement="bottom" title={`See ${artist.name}`} key={idx}>
+										<Link to={`/cloudmakers/${artist.id}`}>
+											<Avatar item className={classes.artistBubble} src={artist.header_image_url} alt={`Link to ${artist.name}'s page`} />
+										</Link>
+									</Tooltip>
+								);
+							})}
+						</Grid>
+					</Grid>
 				</Toolbar>
 			</AppBar>
 			<Grid className={classes.mainContent} container>
