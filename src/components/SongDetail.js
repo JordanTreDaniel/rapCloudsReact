@@ -25,13 +25,10 @@ const useStyles = makeStyles((theme) => {
 			backgroundColor: theme.palette.primary.light,
 		},
 		artistBubbles: {
+			overflowX: "hidden"
 		},
 		artistBubble: {
-			marginLeft: '1em'
-		},
-		artistBubbleSpacer: {
-			width: '1em',
-			height: '1em'
+			marginLeft: '.333em'
 		},
 		leftBubbles: {
 		},
@@ -195,10 +192,7 @@ const SongDetail = (props) => {
 								</a>
 							</Tooltip>
 						</Grid>
-						<Grid item xs={1}>
-
-						</Grid>
-						<Grid id="artistBubbles" xs={7} item container direction="row" wrap="nowrap" alignItems="center" className={classes.artistBubbles}>
+						<Grid id="artistBubbles" xs={8} item container direction="row" wrap="nowrap" alignItems="center" justify="flex-end"className={classes.artistBubbles}>
 							{artists.map((artist, idx) => {
 								return (
 									<Tooltip placement="bottom" title={`See ${artist.name}`} key={idx}>
