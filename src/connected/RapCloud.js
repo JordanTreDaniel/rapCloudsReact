@@ -1,5 +1,15 @@
 import React, { useState } from 'react';
-import { IconButton, Grid, withWidth, Tooltip, Paper } from '@material-ui/core';
+import {
+	IconButton,
+	Grid,
+	withWidth,
+	Tooltip,
+	Paper,
+	Dialog,
+	DialogContent,
+	DialogActions,
+	Button,
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import RapCloudSettings from './RapCloudSettings';
 import LoadingBar from '../components/LoadingBar';
@@ -7,6 +17,7 @@ import { classNames } from '../utils';
 import SettingsIcon from '@material-ui/icons/Settings';
 import DownloadIcon from '@material-ui/icons/CloudDownload';
 import NewTabIcon from '@material-ui/icons/AddToPhotos';
+import XIcon from '@material-ui/icons/Cancel';
 // import FacebookIcon from '@material-ui/icons/Facebook';
 // import InstagramIcon from '@material-ui/icons/Instagram';
 // import TwitterIcon from '@material-ui/icons/Twitter';
@@ -63,7 +74,7 @@ const useStyles = makeStyles((theme) => {
 			height: '2.51em',
 			border: `1px solid ${theme.palette.secondary.light}`,
 			'& *': {
-				fontSize: '1.5em'
+				fontSize: '1.5em',
 			},
 		},
 		cloudAction: {
@@ -72,6 +83,17 @@ const useStyles = makeStyles((theme) => {
 			height: '2em',
 		},
 		headerActionLink: { borderRadius: '50%' },
+		darkBacking: {
+			backgroundColor: theme.palette.primary.dark,
+		},
+		closeFullCloud: {
+			position: 'absolute',
+			top: '-0.5em',
+			right: '-0.5em',
+			width: '3em',
+			height: '3em',
+			color: theme.palette.secondary.main,
+		},
 	};
 });
 
@@ -89,7 +111,8 @@ const RapCloud = (props) => {
 		isLoading,
 	} = props;
 
-	const [ dialogOpen, toggleDialog ] = useState(false);
+	const [ settingsOpen, toggleSettings ] = useState(false);
+	const [ fullScreenCloud, toggleFullScreenCloud ] = useState(false);
 	const renderCloudActions = (place) => {
 		const conditionsPassed = place === 'bottom' ? width === 'xs' : width !== 'xs';
 		return (
@@ -101,7 +124,7 @@ const RapCloud = (props) => {
 					: classes.cloudActionsBottom}`}
 			>
 				<Tooltip placement="bottom" title="Download Your RapCloud!">
-					<IconButton id="downloadBtn" size="medium" className={classNames(classes.cloudAction, classes.attnGrabber)}>
+					<IconButton id="downloadBtn" className={classNames(classes.cloudAction, classes.attnGrabber)}>
 						<a
 							className={classes.headerActionLink}
 							href={`data:image/png;base64, ${encodedCloud}`}
@@ -155,10 +178,11 @@ const RapCloud = (props) => {
 					}
 					alt={'Rap Cloud'}
 					className={classes.wordCloud}
+					onClick={() => toggleFullScreenCloud(true)}
 				/>
 				<Tooltip placement="bottom-start" title="Customize this Rap Cloud!">
 					<IconButton
-						onClick={() => toggleDialog(true)}
+						onClick={() => toggleSettings(true)}
 						className={classNames(classes.settingsBtn, classes.attnGrabber)}
 						style={{ top, bottom, left, right }}
 					>
@@ -166,8 +190,38 @@ const RapCloud = (props) => {
 					</IconButton>
 				</Tooltip>
 			</Grid>
-			{dialogOpen && (
-				<RapCloudSettings dialogOpen={dialogOpen} toggleDialog={toggleDialog} fetchCloud={fetchCloud} />
+			{settingsOpen && (
+				<RapCloudSettings dialogOpen={settingsOpen} toggleDialog={toggleSettings} fetchCloud={fetchCloud} />
+			)}
+			{fullScreenCloud && (
+				<Dialog fullScreen open={true}>
+					<DialogContent classes={{ root: classes.darkBacking }}>
+						<Grid
+							container
+							direction="row"
+							justify="center"
+							alignItems="center"
+							wrap="nowrap"
+							style={{ height: '100%', position: 'relative' }}
+						>
+							<XIcon className={classes.closeFullCloud} onClick={() => toggleFullScreenCloud(false)} />
+							<Grid item xs={12} style={{ textAlign: 'center' }}>
+								<img
+									item
+									src={
+										encodedCloud ? (
+											`data:image/png;base64, ${encodedCloud}`
+										) : (
+											`${process.env.PUBLIC_URL}/rapClouds.png`
+										)
+									}
+									alt={'Rap Cloud'}
+									style={{ width: '90%' }}
+								/>
+							</Grid>
+						</Grid>
+					</DialogContent>
+				</Dialog>
 			)}
 		</Grid>
 	);
