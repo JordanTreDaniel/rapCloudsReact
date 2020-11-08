@@ -39,23 +39,9 @@ const useStyles = makeStyles((theme) => {
 		},
 		cloudActionsTop: {},
 		cloudActionsBottom: {},
-		settingsBtn: {
-			position: 'absolute',
+		attnGrabber: {
 			backgroundColor: theme.palette.primary.dark,
 			color: theme.palette.secondary.light,
-			border: `1px solid ${theme.palette.secondary.light}`,
-			width: '2.51em',
-			height: '2.51em',
-			'& *': {
-				fontSize: '1.5em'
-			}
-		},
-		headerAction: {
-			backgroundColor: theme.palette.primary.dark,
-			color: theme.palette.secondary.light,
-			margin: '.5em',
-			width: '2em',
-			height: '2em',
 			'& a': {
 				textDecoration: 'none',
 				color: theme.palette.secondary.light,
@@ -71,6 +57,20 @@ const useStyles = makeStyles((theme) => {
 				},
 			},
 		},
+		settingsBtn: {
+			position: 'absolute',
+			width: '2.51em',
+			height: '2.51em',
+			border: `1px solid ${theme.palette.secondary.light}`,
+			'& *': {
+				fontSize: '1.5em'
+			},
+		},
+		cloudAction: {
+			margin: '.5em',
+			width: '2em',
+			height: '2em',
+		},
 		headerActionLink: { borderRadius: '50%' },
 	};
 });
@@ -83,7 +83,7 @@ const RapCloud = (props) => {
 		encodedCloud,
 		top = '-1em',
 		bottom,
-		left = '-0.75em',
+		left = '-0.51em',
 		right,
 		fetchCloud,
 		isLoading,
@@ -101,7 +101,7 @@ const RapCloud = (props) => {
 					: classes.cloudActionsBottom}`}
 			>
 				<Tooltip placement="bottom" title="Download Your RapCloud!">
-					<IconButton id="downloadBtn" size="medium" className={classes.headerAction}>
+					<IconButton id="downloadBtn" size="medium" className={classNames(classes.cloudAction, classes.attnGrabber)}>
 						<a
 							className={classes.headerActionLink}
 							href={`data:image/png;base64, ${encodedCloud}`}
@@ -115,24 +115,24 @@ const RapCloud = (props) => {
 					<IconButton
 						id="openInNewTab"
 						size="medium"
-						className={classes.headerAction}
+						className={classNames(classes.cloudAction, classes.attnGrabber)}
 						onClick={() => base64InNewTab(`data:image/png;base64, ${encodedCloud}`)}
 					>
 						<NewTabIcon />
 					</IconButton>
 				</Tooltip>
 				{/* <Tooltip placement="bottom" title="Share on Instagram">
-					<IconButton id="shareOnIG" size="medium" className={classes.headerAction} onClick={null}>
+					<IconButton id="shareOnIG" size="medium" className={classNames(classes.cloudAction, classes.attnGrabber)} onClick={null}>
 						<InstagramIcon />
 					</IconButton>
 				</Tooltip>
 				<Tooltip placement="bottom" title="Share on Facebook">
-					<IconButton id="shareOnFB" size="medium" className={classes.headerAction} onClick={null}>
+					<IconButton id="shareOnFB" size="medium" className={classNames(classes.cloudAction, classes.attnGrabber)} onClick={null}>
 						<FacebookIcon />
 					</IconButton>
 				</Tooltip>
 				<Tooltip placement="bottom" title="Share on Twitter">
-					<IconButton id="shareOnTwitter" size="medium" className={classes.headerAction} onClick={null}>
+					<IconButton id="shareOnTwitter" size="medium" className={classNames(classes.cloudAction, classes.attnGrabber)} onClick={null}>
 						<TwitterIcon />
 					</IconButton>
 				</Tooltip> */}
@@ -159,7 +159,7 @@ const RapCloud = (props) => {
 				<Tooltip placement="bottom-start" title="Customize this Rap Cloud!">
 					<IconButton
 						onClick={() => toggleDialog(true)}
-						className={classNames(classes.settingsBtn)}
+						className={classNames(classes.settingsBtn, classes.attnGrabber)}
 						style={{ top, bottom, left, right }}
 					>
 						<SettingsIcon />

@@ -77,21 +77,15 @@ const useStyles = makeStyles((theme) => {
 			color: theme.palette.primary.dark,
 			fontWeight: 600,
 		},
-		wordCloudPaper: {
-			padding: '1em',
-			margin: '1em',
-			position: 'relative',
-			// paddingBottom: '3em',
-			backgroundColor: theme.palette.primary.main,
-			border: `1px solid ${theme.palette.secondary.light}`,
-		},
-		songsPaper: {
+		sectionPaper: {
 			padding: '1em',
 			margin: '1em',
 			position: 'relative',
 			backgroundColor: theme.palette.primary.main,
-			border: `1px solid ${theme.palette.secondary.light}`,
+			border: `1px solid ${theme.palette.primary.light}`,
 		},
+		wordCloudPaper: {},
+		songsPaper: {},
 		sectionHeader: {
 			textAlign: 'center',
 			fontWeight: 600,
@@ -108,8 +102,8 @@ const useStyles = makeStyles((theme) => {
 			left: '-1em',
 			zIndex: 2,
 			'&:hover': {
-				backgroundColor: theme.palette.primary.dark,
-				color: theme.palette.secondary.light,
+				backgroundColor: theme.palette.primary.light,
+				color: theme.palette.primary.dark,
 			},
 		},
 		headerActionLink: { borderRadius: '50%' },
@@ -175,8 +169,8 @@ const ArtistPage = (props) => {
 						</Typography>
 					</div>
 				</Grid>
-				<Grid item sm={12} md={6} classes={{ root: classes.mainContentChild }}>
-					<Paper elevation={0} className={classes.wordCloudPaper}>
+				<Grid item xs={12} sm={6} classes={{ root: classes.mainContentChild }}>
+					<Paper elevation={0} className={classNames(classes.wordCloudPaper, classes.sectionPaper)}>
 						<IconButton className={classes.sectionToggleBtn} onClick={toggleCloudExpanded}>
 							{cloudExpanded ? <MinusIcon /> : <AddIcon />}
 						</IconButton>
@@ -193,8 +187,8 @@ const ArtistPage = (props) => {
 						)}
 					</Paper>
 				</Grid>
-				<Grid item sm={12} md={6} classes={{ root: classes.mainContentChild }}>
-					<Paper elevation={0} className={classes.songsPaper}>
+				<Grid item xs={12} sm={6} classes={{ root: classes.mainContentChild }}>
+					<Paper elevation={0} className={classNames(classes.songsPaper, classes.sectionPaper)}>
 						<IconButton className={classes.sectionToggleBtn} onClick={toggleSongsExpanded}>
 							{songsExpanded ? <MinusIcon /> : <AddIcon />}
 						</IconButton>

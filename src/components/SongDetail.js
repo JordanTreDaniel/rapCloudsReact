@@ -11,6 +11,7 @@ import paths from '../paths';
 import BackButton from './BackButton';
 import LoadingBar from './LoadingBar';
 import RapCloud from '../connected/RapCloud';
+import { classNames } from '../utils';
 const useStyles = makeStyles((theme) => {
 	return {
 		songDetailContainer: {
@@ -65,21 +66,15 @@ const useStyles = makeStyles((theme) => {
 			color: theme.palette.primary.dark,
 			fontWeight: 600,
 		},
-		wordCloudPaper: {
-			padding: '1em',
-			margin: '1em',
-			position: 'relative',
-			// paddingBottom: '3em',
-			backgroundColor: theme.palette.primary.main,
-			border: `1px solid ${theme.palette.secondary.light}`,
-		},
-		lyricsPaper: {
+		sectionPaper: {
 			padding: '1em',
 			margin: '1em',
 			position: 'relative',
 			backgroundColor: theme.palette.primary.main,
-			border: `1px solid ${theme.palette.secondary.light}`,
+			border: `1px solid ${theme.palette.primary.light}`,
 		},
+		wordCloudPaper: {},
+		lyricsPaper: {},
 		sectionHeader: {
 			textAlign: 'center',
 			fontWeight: 600,
@@ -96,7 +91,7 @@ const useStyles = makeStyles((theme) => {
 			left: '-1em',
 			zIndex: 2,
 			'&:hover': {
-				backgroundColor: theme.palette.secondary.light,
+				backgroundColor: theme.palette.primary.light,
 				color: theme.palette.primary.dark,
 			},
 		},
@@ -187,8 +182,8 @@ const SongDetail = (props) => {
 						</Typography>
 					</div>
 				</Grid>
-				<Grid item sm={12} md={6} classes={{ root: classes.mainContentChild }}>
-					<Paper className={classes.wordCloudPaper} elevation={0}>
+				<Grid item xs={12} sm={6} classes={{ root: classes.mainContentChild }}>
+					<Paper className={classNames(classes.sectionPaper, classes.wordCloudPaper)} elevation={0}>
 						<IconButton className={classes.sectionToggleBtn} onClick={toggleCloudExpanded}>
 							{cloudExpanded ? <MinusIcon /> : <AddIcon />}
 						</IconButton>
@@ -205,8 +200,8 @@ const SongDetail = (props) => {
 						)}
 					</Paper>
 				</Grid>
-				<Grid item sm={12} md={6} classes={{ root: classes.mainContentChild }}>
-					<Paper className={classes.lyricsPaper} elevation={0}>
+				<Grid item xs={12} sm={6} classes={{ root: classes.mainContentChild }}>
+					<Paper className={classNames(classes.sectionPaper, classes.lyricsPaper)} elevation={0}>
 						<IconButton className={classes.sectionToggleBtn} onClick={toggleLyricsExpanded}>
 							{lyricsExpanded ? <MinusIcon /> : <AddIcon />}
 						</IconButton>

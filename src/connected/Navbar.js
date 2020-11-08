@@ -89,23 +89,13 @@ const useStyles = makeStyles((theme) => {
 		},
 		drawerToggler: {
 			backgroundColor: theme.palette.primary.dark,
-			color: theme.palette.primary.light,
+			color: theme.palette.secondary.light,
 			margin: '.5em',
 			width: '2em',
 			height: '2em',
-			'& a': {
-				textDecoration: 'none',
-				color: theme.palette.primary.contrastText,
-				backgroundColor: theme.palette.secondary.main,
-			},
 			'&:hover': {
-				backgroundColor: theme.palette.primary.dark,
-				color: theme.palette.secondary.main,
-				'& a': {
-					textDecoration: 'none',
-					backgroundColor: theme.palette.primary.dark,
-					color: theme.palette.secondary.main,
-				},
+				backgroundColor: theme.palette.secondary.main,
+				color: theme.palette.primary.dark,
 			},
 		},
 		socialLink: {
