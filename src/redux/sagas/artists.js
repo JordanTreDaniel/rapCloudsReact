@@ -1,4 +1,4 @@
-import { put, takeEvery, call, select, cancel, all } from 'redux-saga/effects';
+import { put, takeEvery, takeLatest, call, select, cancel, all } from 'redux-saga/effects';
 import { FETCH_ARTIST, ADD_SONGS, SIGN_OUT, FETCH_SONG_LYRICS, FETCH_ARTIST_CLOUD } from '../actionTypes';
 import { getAccessToken, getArtistFromId } from '../selectors';
 import { fetchSongLyrics } from './songs';
@@ -104,6 +104,6 @@ function* watchFetchArtist() {
 }
 
 function* watchFetchArtistCloud() {
-	yield takeEvery(FETCH_ARTIST_CLOUD.start, fetchArtistCloud);
+	yield takeLatest(FETCH_ARTIST_CLOUD.start, fetchArtistCloud);
 }
 export default [ watchFetchArtist, watchFetchArtistCloud ];

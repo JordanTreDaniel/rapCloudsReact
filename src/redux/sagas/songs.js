@@ -1,4 +1,4 @@
-import { put, takeEvery, call, select, cancel, delay } from 'redux-saga/effects';
+import { put, takeEvery, call, select, cancel, delay, takeLatest } from 'redux-saga/effects';
 import {
 	SEARCH_SONGS,
 	ADD_SONGS,
@@ -176,7 +176,7 @@ export function* fetchSongCloud(action) {
 }
 
 function* watchSearchSongs() {
-	yield takeEvery(SEARCH_SONGS.start, searchSongs);
+	yield takeLatest(SEARCH_SONGS.start, searchSongs);
 }
 
 function* watchFetchSongDetails() {
@@ -184,7 +184,7 @@ function* watchFetchSongDetails() {
 }
 
 function* watchFetchSongCloud() {
-	yield takeEvery(FETCH_SONG_CLOUD.start, fetchSongCloud);
+	yield takeLatest(FETCH_SONG_CLOUD.start, fetchSongCloud);
 }
 
 function* watchFetchSongLyrics() {

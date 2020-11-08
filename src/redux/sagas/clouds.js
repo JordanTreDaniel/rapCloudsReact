@@ -1,4 +1,4 @@
-import { call, select, takeLatest, put } from 'redux-saga/effects';
+import { call, select, takeLatest, put, takeEvery } from 'redux-saga/effects';
 import axios from 'axios';
 import { getCloudSettingsForFlight, getUserMongoId } from '../selectors';
 import { FETCH_MASKS, ADD_CUSTOM_MASK } from '../actionTypes';
@@ -143,6 +143,6 @@ export function* addCustomMask(action) {
 }
 
 function* watchAddCustomMask() {
-	yield takeLatest(ADD_CUSTOM_MASK.start, addCustomMask);
+	yield takeEvery(ADD_CUSTOM_MASK.start, addCustomMask);
 }
 export default [ watchFetchMasks, watchAddCustomMask ];
