@@ -41,8 +41,14 @@ const useStyles = makeStyles((theme) => {
 		cloudActionsBottom: {},
 		settingsBtn: {
 			position: 'absolute',
-			backgroundColor: theme.palette.secondary.light,
-			color: theme.palette.primary.dark,
+			backgroundColor: theme.palette.primary.dark,
+			color: theme.palette.secondary.light,
+			border: `1px solid ${theme.palette.secondary.light}`,
+			width: '2.51em',
+			height: '2.51em',
+			'& *': {
+				fontSize: '1.5em'
+			}
 		},
 		headerAction: {
 			backgroundColor: theme.palette.primary.dark,

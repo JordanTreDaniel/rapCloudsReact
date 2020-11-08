@@ -62,7 +62,7 @@ const useStyles = makeStyles((theme) => {
 			paddingBottom: '6em',
 		},
 		header: {
-			color: theme.palette.secondary.light,
+			color: theme.palette.primary.dark,
 			fontWeight: 600,
 		},
 		wordCloudPaper: {
@@ -71,44 +71,23 @@ const useStyles = makeStyles((theme) => {
 			position: 'relative',
 			// paddingBottom: '3em',
 			backgroundColor: theme.palette.primary.main,
-			border: `1px solid ${theme.palette.primary.light}`,
+			border: `1px solid ${theme.palette.secondary.light}`,
 		},
 		lyricsPaper: {
 			padding: '1em',
 			margin: '1em',
 			position: 'relative',
 			backgroundColor: theme.palette.primary.main,
-			border: `1px solid ${theme.palette.primary.light}`,
+			border: `1px solid ${theme.palette.secondary.light}`,
 		},
 		sectionHeader: {
 			textAlign: 'center',
 			fontWeight: 600,
-			color: theme.palette.secondary.light,
+			color: theme.palette.primary.dark,
 		},
-		headerAction: {
+		sectionToggleBtn: {
 			backgroundColor: theme.palette.primary.dark,
 			color: theme.palette.secondary.light,
-			margin: '.5em',
-			width: '2em',
-			height: '2em',
-			'& a': {
-				textDecoration: 'none',
-				color: theme.palette.secondary.light,
-				backgroundColor: theme.palette.primary.dark,
-			},
-			'&:hover': {
-				backgroundColor: theme.palette.secondary.light,
-				color: theme.palette.primary.dark,
-				'& a': {
-					textDecoration: 'none',
-					backgroundColor: theme.palette.secondary.light,
-					color: theme.palette.primary.dark,
-				},
-			},
-		},
-		appAction: {
-			backgroundColor: theme.palette.secondary.light,
-			color: theme.palette.primary.dark,
 			margin: '.5em',
 			width: '2em',
 			height: '2em',
@@ -116,19 +95,9 @@ const useStyles = makeStyles((theme) => {
 			top: '-1em',
 			left: '-1em',
 			zIndex: 2,
-			'& a': {
-				textDecoration: 'none',
-				color: theme.palette.primary.dark,
-				backgroundColor: theme.palette.secondary.light,
-			},
 			'&:hover': {
-				backgroundColor: theme.palette.primary.dark,
-				color: theme.palette.secondary.light,
-				'& a': {
-					textDecoration: 'none',
-					backgroundColor: theme.palette.primary.dark,
-					color: theme.palette.secondary.light,
-				},
+				backgroundColor: theme.palette.secondary.light,
+				color: theme.palette.primary.dark,
 			},
 		},
 		headerActionLink: { borderRadius: '50%' },
@@ -220,7 +189,7 @@ const SongDetail = (props) => {
 				</Grid>
 				<Grid item sm={12} md={6} classes={{ root: classes.mainContentChild }}>
 					<Paper className={classes.wordCloudPaper} elevation={0}>
-						<IconButton className={classes.appAction} onClick={toggleCloudExpanded}>
+						<IconButton className={classes.sectionToggleBtn} onClick={toggleCloudExpanded}>
 							{cloudExpanded ? <MinusIcon /> : <AddIcon />}
 						</IconButton>
 						<Typography variant="h3" classes={{ root: classes.sectionHeader }}>
@@ -238,7 +207,7 @@ const SongDetail = (props) => {
 				</Grid>
 				<Grid item sm={12} md={6} classes={{ root: classes.mainContentChild }}>
 					<Paper className={classes.lyricsPaper} elevation={0}>
-						<IconButton className={classes.appAction} onClick={toggleLyricsExpanded}>
+						<IconButton className={classes.sectionToggleBtn} onClick={toggleLyricsExpanded}>
 							{lyricsExpanded ? <MinusIcon /> : <AddIcon />}
 						</IconButton>
 						<Typography variant="h3" classes={{ root: classes.sectionHeader }}>
