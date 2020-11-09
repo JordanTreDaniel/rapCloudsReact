@@ -18,9 +18,9 @@ const apiFetchArtist = async (artistId, accessToken) => {
 		},
 	});
 	const { status, statusText, data } = res;
-	const { artist } = data;
+	const { artist, songs, nextPage } = data;
 	if (status === 200) {
-		return { artist };
+		return { artist, songs, nextPage };
 	}
 
 	return { error: { status, statusText } };
@@ -47,13 +47,12 @@ export function* fetchArtist(action) {
 		return;
 	}
 
-	const { artist, error } = yield call(apiFetchArtist, artistId, accessToken);
+	const { artist, songs = [], nextPage, error } = yield call(apiFetchArtist, artistId, accessToken);
 	if (error) {
 		yield put({ type: FETCH_ARTIST.failure, artistId });
 	} else {
-		const { songs = [] } = artist;
-		delete artist.songs;
-		yield put({ type: ADD_SONGS, songs });
+		artist.nextPage = nextPage;
+		if (songs.length) yield put({ type: ADD_SONGS, songs });
 		yield put({ type: FETCH_ARTIST.success, artist });
 
 		if (fetchCloudToo) {
