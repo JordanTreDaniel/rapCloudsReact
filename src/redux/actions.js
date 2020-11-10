@@ -13,6 +13,7 @@ import {
 	ADD_CUSTOM_MASK,
 	RESET_CLOUD_DEFAULTS,
 	DELETE_MASK,
+	FETCH_SONG_LYRICS,
 } from './actionTypes';
 import normalizeLyrics from './utils/normalizeLyrics';
 
@@ -26,6 +27,10 @@ export const addSongs = (songs = [ { name: 'We finally made it.' } ]) => {
 
 export const searchSongs = (searchTerm = null) => {
 	return { type: SEARCH_SONGS.start, searchTerm };
+};
+
+export const fetchSongLyrics = (songId, songPath) => {
+	return { type: FETCH_SONG_LYRICS.start, songId, songPath, forceFetch: true };
 };
 
 export const setSongSearchTerm = (searchTerm = '') => {

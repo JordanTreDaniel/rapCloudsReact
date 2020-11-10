@@ -125,11 +125,11 @@ export function* fetchSongDetails(action) {
 }
 
 export function* fetchSongLyrics(action) {
-	const { songPath, songId, fetchWordCloud = true } = action;
+	const { songPath, songId, fetchWordCloud = true, forceFetch = false } = action;
 	const song = yield select(getSongFromId, songId);
 	let lyrics = song.lyrics;
 	try {
-		if (song.lyrics) {
+		if (song.lyrics && !forceFetch) {
 			yield put({ type: FETCH_SONG_LYRICS.cancellation });
 			return song.lyrics;
 		}

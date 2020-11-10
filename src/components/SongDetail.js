@@ -5,13 +5,14 @@ import AddIcon from '@material-ui/icons/Add';
 import MinusIcon from '@material-ui/icons/Remove';
 import { makeStyles } from '@material-ui/core/styles';
 import * as selectors from '../redux/selectors';
-import { fetchSongDetails, fetchSongCloud } from '../redux/actions';
+import { fetchSongDetails, fetchSongCloud, fetchSongLyrics } from '../redux/actions';
 import { connect } from 'react-redux';
 import paths from '../paths';
 import BackButton from './BackButton';
 import LoadingBar from './LoadingBar';
 import RapCloud from '../connected/RapCloud';
 import { classNames } from '../utils';
+import { Refresh } from '@material-ui/icons';
 const useStyles = makeStyles((theme) => {
 	return {
 		songDetailContainer: {
@@ -26,13 +27,12 @@ const useStyles = makeStyles((theme) => {
 			backgroundColor: theme.palette.primary.light,
 		},
 		artistBubbles: {
-			overflowX: "hidden"
+			overflowX: 'hidden',
 		},
 		artistBubble: {
-			marginLeft: '.333em'
+			marginLeft: '.333em',
 		},
-		leftBubbles: {
-		},
+		leftBubbles: {},
 		lyrics: {
 			whiteSpace: 'pre-line',
 			textAlign: 'center',
@@ -80,20 +80,26 @@ const useStyles = makeStyles((theme) => {
 			fontWeight: 600,
 			color: theme.palette.primary.dark,
 		},
-		sectionToggleBtn: {
+		sectionActionBtn: {
 			backgroundColor: theme.palette.primary.dark,
 			color: theme.palette.secondary.light,
 			margin: '.5em',
 			width: '2em',
 			height: '2em',
 			position: 'absolute',
-			top: '-1em',
-			left: '-1em',
 			zIndex: 2,
 			'&:hover': {
 				backgroundColor: theme.palette.primary.light,
 				color: theme.palette.primary.dark,
 			},
+		},
+		sectionToggleBtn: {
+			top: '-1em',
+			left: '-1em',
+		},
+		lyricRefreshBtn: {
+			top: '3em',
+			left: '-1em',
 		},
 		headerActionLink: { borderRadius: '50%' },
 		cloudActions: {
@@ -121,7 +127,16 @@ const useStyles = makeStyles((theme) => {
 
 const SongDetail = (props) => {
 	const classes = useStyles();
-	const { song, fetchSongDetails, isSongDetailLoading, isWordCloudLoading, width, fetchSongCloud, areSongLyricsLoading } = props;
+	const {
+		song,
+		fetchSongDetails,
+		isSongDetailLoading,
+		isWordCloudLoading,
+		width,
+		fetchSongCloud,
+		fetchSongLyrics,
+		areSongLyricsLoading,
+	} = props;
 	const { songId } = useParams();
 	const [ lyricsExpanded, setLyricsExpanded ] = React.useState(false);
 	const [ cloudExpanded, setCloudExpanded ] = React.useState(true);
@@ -147,21 +162,45 @@ const SongDetail = (props) => {
 		<Grid className={classes.songDetailContainer}>
 			<AppBar color="inherit" position="static">
 				<Toolbar className={classes.toolBar}>
-					<Grid id="bubbleContainer" container direction="row" wrap="nowrap" >
-						<Grid id="leftBubbles" xs={4} item container direction="row" wrap="nowrap" alignItems="center" className={classes.leftBubbles}>
+					<Grid id="bubbleContainer" container direction="row" wrap="nowrap">
+						<Grid
+							id="leftBubbles"
+							xs={4}
+							item
+							container
+							direction="row"
+							wrap="nowrap"
+							alignItems="center"
+							className={classes.leftBubbles}
+						>
 							<BackButton />
-							<Tooltip  placement="bottom" title={`See ${briefedTitle} on Genius`}>
+							<Tooltip placement="bottom" title={`See ${briefedTitle} on Genius`}>
 								<a href={`https://genius.com${path}`} alt={`${briefedTitle} on Genius`} target="_blank">
-									<Avatar   src="https://pbs.twimg.com/profile_images/885222003174551552/cv3KtGVS_400x400.jpg" />
+									<Avatar src="https://pbs.twimg.com/profile_images/885222003174551552/cv3KtGVS_400x400.jpg" />
 								</a>
 							</Tooltip>
 						</Grid>
-						<Grid id="artistBubbles" xs={8} item container direction="row" wrap="nowrap" alignItems="center" justify="flex-end"className={classes.artistBubbles}>
+						<Grid
+							id="artistBubbles"
+							xs={8}
+							item
+							container
+							direction="row"
+							wrap="nowrap"
+							alignItems="center"
+							justify="flex-end"
+							className={classes.artistBubbles}
+						>
 							{artists.map((artist, idx) => {
 								return (
 									<Tooltip placement="bottom" title={`See ${artist.name}`} key={idx}>
 										<Link to={`/cloudmakers/${artist.id}`}>
-											<Avatar item className={classes.artistBubble} src={artist.header_image_url} alt={`Link to ${artist.name}'s page`} />
+											<Avatar
+												item
+												className={classes.artistBubble}
+												src={artist.header_image_url}
+												alt={`Link to ${artist.name}'s page`}
+											/>
 										</Link>
 									</Tooltip>
 								);
@@ -184,7 +223,10 @@ const SongDetail = (props) => {
 				</Grid>
 				<Grid item xs={12} sm={6} classes={{ root: classes.mainContentChild }}>
 					<Paper className={classNames(classes.sectionPaper, classes.wordCloudPaper)} elevation={0}>
-						<IconButton className={classes.sectionToggleBtn} onClick={toggleCloudExpanded}>
+						<IconButton
+							className={classNames(classes.sectionToggleBtn, classes.sectionActionBtn)}
+							onClick={toggleCloudExpanded}
+						>
 							{cloudExpanded ? <MinusIcon /> : <AddIcon />}
 						</IconButton>
 						<Typography variant="h3" classes={{ root: classes.sectionHeader }}>
@@ -202,9 +244,21 @@ const SongDetail = (props) => {
 				</Grid>
 				<Grid item xs={12} sm={6} classes={{ root: classes.mainContentChild }}>
 					<Paper className={classNames(classes.sectionPaper, classes.lyricsPaper)} elevation={0}>
-						<IconButton className={classes.sectionToggleBtn} onClick={toggleLyricsExpanded}>
+						<IconButton
+							className={classNames(classes.sectionToggleBtn, classes.sectionActionBtn)}
+							onClick={toggleLyricsExpanded}
+						>
 							{lyricsExpanded ? <MinusIcon /> : <AddIcon />}
 						</IconButton>
+						{lyricsExpanded && (
+							<IconButton
+								className={classNames(classes.lyricRefreshBtn, classes.sectionActionBtn)}
+								onClick={() => fetchSongLyrics(songId, path)}
+							>
+								<Refresh />
+							</IconButton>
+						)}
+
 						<Typography variant="h3" classes={{ root: classes.sectionHeader }}>
 							Lyrics
 						</Typography>
@@ -228,4 +282,4 @@ const mapState = (state) => ({
 	areSongLyricsLoading: selectors.areSongLyricsLoading(state),
 });
 
-export default connect(mapState, { fetchSongDetails, fetchSongCloud })(withWidth()(SongDetail));
+export default connect(mapState, { fetchSongDetails, fetchSongCloud, fetchSongLyrics })(withWidth()(SongDetail));
