@@ -55,7 +55,9 @@ export const isSongDetailLoading = (state) => state.songs.songDetailLoading;
 export const isWordCloudLoading = (state) => state.songs.wordCloudLoading;
 export const areSongLyricsLoading = (state) => state.songs.lyricsLoading;
 
-export const getCurrentSongId = createSelector(getMatchParams, (matchParams) => matchParams.songId);
+export const getCurrentSongId = createSelector(getMatchParams, (matchParams) => {
+	return matchParams.songId;
+});
 
 export const getSongsById = (state) => {
 	const { byId } = state.songs;
@@ -123,23 +125,33 @@ export const getCurrentSong = createSelector(getSongsById, getCurrentSongId, (so
 
 //Artist
 /********************************************************************* */
-export const getArtistsSongs = createSelector(getSongsList, getMatchParams, (songsList, matchParams) => {
-	const { artistId } = matchParams;
-	if (!artistId) {
-		console.warn(`The "getArtistsSongs" selector has been called with no artistId detected in match params`);
-		return [];
-	}
-	const artistsSongs = songsList.filter((song) => String(song.primary_artist.id) === String(artistId));
-	return artistsSongs;
-});
-
-export const getArtistCloud = createSelector();
-//get their songs
-//result fn
-//pattern-match the other cloud selector
-
 export const getArtistsById = (state) => state.artists.byId;
+export const isArtistLoading = (state) => state.artists.artistLoading;
+export const isArtistCloudLoading = (state) => state.artists.artistCloudLoading;
 
+export const getArtistsSongs = createSelector(
+	getSongsList,
+	getMatchParams,
+	getArtistsById,
+	(songsList, matchParams, artistsById) => {
+		const { artistId } = matchParams;
+		if (!artistId) {
+			console.warn(`The "getArtistsSongs" selector has been called with no artistId detected in match params`);
+			return [];
+		}
+		const artist = artistsById[artistId];
+		const { name } = artist;
+		const artistsSongs = songsList.filter((song) => {
+			return (
+				String(song.primary_artist.id) === String(artistId) ||
+				(song.featured_artists &&
+					song.featured_artists.some((artist) => String(artist.id) === String(artistId))) ||
+				song.full_title.toLowerCase().match(name.toLowerCase())
+			);
+		});
+		return artistsSongs;
+	},
+);
 export const getArtistFromId = createSelector(
 	getArtistsById,
 	(_, artistId) => artistId,
@@ -154,9 +166,6 @@ export const getCurrentArtist = createSelector(getMatchParams, getArtistsById, (
 	const currentArtist = artistsById[artistId];
 	return currentArtist;
 });
-
-export const isArtistLoading = (state) => state.artists.artistLoading;
-export const isArtistCloudLoading = (state) => state.artists.artistCloudLoading;
 
 //Clouds
 /********************************************************************* */
