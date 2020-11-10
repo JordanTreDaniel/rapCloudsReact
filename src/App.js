@@ -22,7 +22,7 @@ import { classNames } from './utils';
 function initializeReactGA() {
 	console.log('Initializing analytics');
 	ReactGA.initialize('UA-166594032-2');
-	ReactGA.pageview('/home');
+	// ReactGA.pageview('/home');
 	history.listen((location) => {
 		ReactGA.set({ page: location.pathname });
 		ReactGA.pageview(location.pathname);
@@ -60,11 +60,6 @@ const App = (props) => {
 			<Paper className={classNames(classes.pagesContainer)} square elevation={0}>
 				<Switch>
 					<Route path={paths.about} exact render={() => <LandingPage user={user} />} />
-					<Route
-						path={paths.signIn}
-						exact
-						render={(routerProps) => <SignIn history={routerProps.history} />}
-					/>
 					<Route
 						path={paths.signIn}
 						exact
