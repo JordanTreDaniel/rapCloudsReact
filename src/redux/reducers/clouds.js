@@ -77,6 +77,7 @@ const addCustomMask = (state, action) => {
 		...state,
 		masksById: { ...state.masksById, [mask.id]: mask },
 		settings: { ...state.settings, maskId: mask.id },
+		masksLoading: false,
 	};
 };
 
