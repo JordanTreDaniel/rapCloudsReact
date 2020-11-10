@@ -159,9 +159,10 @@ const RapCloudSettings = (props) => {
 		toggleDialog,
 		fetchCloud,
 		resetCloudDefaults,
+		currentMask,
 	} = props;
 	useEffect(() => {
-		if (!masksLoading && !masks.length) fetchMasks();
+		if (!masks.length) fetchMasks();
 	}, []);
 
 	const [ fullScreenMask, toggleFullScreenMask ] = useState(false);
@@ -419,7 +420,7 @@ const RapCloudSettings = (props) => {
 										</Dialog>
 									)}
 								</Grid>
-								{Object.values(masks).map((mask) => {
+								{masks.map((mask) => {
 									const chosen = mask.id === cloudSettings.maskId;
 									return (
 										<img
@@ -433,7 +434,7 @@ const RapCloudSettings = (props) => {
 									);
 								})}
 							</Grid>
-							{masks[cloudSettings.maskId] && (
+							{currentMask && (
 								<Grid
 									item
 									container
@@ -473,9 +474,8 @@ const RapCloudSettings = (props) => {
 														classes.maskThumbnail,
 														classes.chosenMaskThumbnail,
 													)}
-													src={`data:image/png;base64, ${masks[cloudSettings.maskId]
-														.base64Img}`}
-													alt={masks[cloudSettings.maskId].name}
+													src={`data:image/png;base64, ${currentMask.base64Img}`}
+													alt={currentMask.name}
 												/>
 											</Box>
 										</Tooltip>
@@ -610,8 +610,8 @@ const RapCloudSettings = (props) => {
 								<img
 									item
 									className={classNames(classes.fullScreenMask)}
-									src={`data:image/png;base64, ${masks[cloudSettings.maskId].base64Img}`}
-									alt={masks[cloudSettings.maskId].name}
+									src={`data:image/png;base64, ${currentMask.base64Img}`}
+									alt={currentMask.name}
 								/>
 							</DialogContent>
 							<DialogActions>
@@ -726,6 +726,7 @@ const RapCloudSettings = (props) => {
 const mapState = (state) => ({
 	cloudSettings: selectors.getCloudSettings(state),
 	masks: selectors.getMasks(state),
+	currentMask: selectors.getCurrentMask(state),
 	masksLoading: selectors.areMasksLoading(state),
 	mongoUserId: selectors.getUserMongoId(state),
 });
