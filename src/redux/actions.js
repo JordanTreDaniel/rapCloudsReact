@@ -12,6 +12,7 @@ import {
 	FETCH_MASKS,
 	ADD_CUSTOM_MASK,
 	RESET_CLOUD_DEFAULTS,
+	DELETE_MASK,
 } from './actionTypes';
 import normalizeLyrics from './utils/normalizeLyrics';
 
@@ -39,7 +40,6 @@ export const fetchArtist = (artistId) => {
 	return { type: FETCH_ARTIST.start, artistId };
 };
 
-
 export const signOut = () => {
 	return { type: SIGN_OUT };
 };
@@ -62,6 +62,10 @@ export const fetchMasks = () => {
 
 export const addCustomMask = (newMask) => {
 	return { type: ADD_CUSTOM_MASK.start, newMask };
+};
+
+export const deleteMask = (maskId) => {
+	return { type: DELETE_MASK.start, maskId };
 };
 
 export const resetCloudDefaults = () => {

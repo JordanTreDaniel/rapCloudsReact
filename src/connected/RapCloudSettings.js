@@ -19,7 +19,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import * as selectors from '../redux/selectors';
-import { updateCloudSettings, fetchMasks, addCustomMask, resetCloudDefaults } from '../redux/actions';
+import { updateCloudSettings, fetchMasks, addCustomMask, deleteMask, resetCloudDefaults } from '../redux/actions';
 import ColorPicker from '../components/ColorPicker';
 import LoadingBar from '../components/LoadingBar';
 import { connect } from 'react-redux';
@@ -28,6 +28,7 @@ import { classNames } from '../utils';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import Refresh from '@material-ui/icons/Refresh';
 import AddIcon from '@material-ui/icons/Add';
+import XIcon from '@material-ui/icons/Cancel';
 import ImageUploader from 'react-images-upload';
 
 const useStyles = makeStyles((theme) => {
@@ -77,7 +78,6 @@ const useStyles = makeStyles((theme) => {
 		},
 		maskThumbnail: {
 			height: '3em',
-			margin: '0 1em 0 0',
 		},
 		chosenMaskSection: {
 			marginBottom: '1em',
@@ -93,20 +93,26 @@ const useStyles = makeStyles((theme) => {
 			overflowY: 'hidden',
 		},
 		choseMaskThumbnailBox: {
-			position: 'relative',
 			margin: '.5em',
+		},
+		maskThumbnailBox: {
+			position: 'relative',
+			marginRight: '1em',
 		},
 		chosenMaskThumbnail: {
 			border: `1px solid ${theme.palette.primary.light}`,
 			margin: 0,
 		},
-		expandChosenMaskIcon: {
+		maskAction: {
 			width: '1em',
 			height: '1em',
 			top: '-.5em',
 			right: '-.5em',
 			position: 'absolute',
 			opacity: '.6',
+		},
+		whiteText: {
+			color: theme.palette.primary.contrastText,
 		},
 		blueBorder: {
 			border: `3px solid ${theme.palette.secondary.main}`,
@@ -127,6 +133,7 @@ const useStyles = makeStyles((theme) => {
 			color: theme.palette.secondary.contrastText,
 			width: '2em',
 			height: '2em',
+			marginRight: '1em',
 			'& a': {
 				textDecoration: 'none',
 				color: theme.palette.secondary.contrastText,
@@ -152,6 +159,7 @@ const RapCloudSettings = (props) => {
 		updateCloudSettings,
 		fetchMasks,
 		addCustomMask,
+		deleteMask,
 		masks,
 		masksLoading,
 		mongoUserId,
@@ -423,14 +431,29 @@ const RapCloudSettings = (props) => {
 								{masks.map((mask) => {
 									const chosen = mask.id === cloudSettings.maskId;
 									return (
-										<img
-											item
-											className={classNames(classes.maskThumbnail, chosen && classes.blueBorder)}
-											elevation={chosen ? 20 : 0}
-											src={`data:image/png;base64, ${mask.base64Img}`}
-											alt={mask.name}
-											onClick={() => updateCloudSettings('maskId', chosen ? null : mask.id)}
-										/>
+										<Box className={classNames(classes.maskThumbnailBox)}>
+											{mask.userId === mongoUserId && (
+												<IconButton
+													className={classNames(classes.maskAction, classes.whiteText)}
+													disableFocusRipple
+													disableRipple
+													onClick={() => deleteMask(mask.id)}
+												>
+													<XIcon />
+												</IconButton>
+											)}
+											<img
+												item
+												className={classNames(
+													classes.maskThumbnail,
+													chosen && classes.blueBorder,
+												)}
+												elevation={chosen ? 20 : 0}
+												src={`data:image/png;base64, ${mask.base64Img}`}
+												alt={mask.name}
+												onClick={() => updateCloudSettings('maskId', chosen ? null : mask.id)}
+											/>
+										</Box>
 									);
 								})}
 							</Grid>
@@ -458,11 +481,14 @@ const RapCloudSettings = (props) => {
 									>
 										<Tooltip item title="Show Fullscreen View" placement="right">
 											<Box
-												className={classNames(classes.choseMaskThumbnailBox)}
+												className={classNames(
+													classes.choseMaskThumbnailBox,
+													classes.maskThumbnailBox,
+												)}
 												onClick={() => toggleFullScreenMask(!fullScreenMask)}
 											>
 												<IconButton
-													className={classNames(classes.expandChosenMaskIcon)}
+													className={classNames(classes.maskAction)}
 													color="secondary"
 													disableFocusRipple
 													disableRipple
@@ -715,6 +741,7 @@ const RapCloudSettings = (props) => {
 						fetchCloud();
 						toggleDialog(false);
 					}}
+					disabled={masksLoading}
 				>
 					Generate Cloud!
 				</Button>
@@ -731,6 +758,6 @@ const mapState = (state) => ({
 	mongoUserId: selectors.getUserMongoId(state),
 });
 
-export default connect(mapState, { updateCloudSettings, fetchMasks, addCustomMask, resetCloudDefaults })(
+export default connect(mapState, { updateCloudSettings, fetchMasks, addCustomMask, deleteMask, resetCloudDefaults })(
 	withWidth()(RapCloudSettings),
 );
