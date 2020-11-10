@@ -60,7 +60,11 @@ const deleteMask = (state, action) => {
 	if (!maskId) return state;
 	const { masksById } = state;
 	delete masksById[maskId];
-	return { ...state, ...masksById };
+	return {
+		...state,
+		masksById: { ...masksById },
+		settings: { ...state.settings, maskId: maskId === state.settings.maskId ? null : state.settings.maskId },
+	};
 };
 
 const addMasks = (state, action) => {
