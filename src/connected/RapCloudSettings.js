@@ -26,6 +26,7 @@ import { connect } from 'react-redux';
 import uniq from 'lodash/uniq';
 import { classNames } from '../utils';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
+import Refresh from '@material-ui/icons/Refresh';
 import AddIcon from '@material-ui/icons/Add';
 import ImageUploader from 'react-images-upload';
 
@@ -160,7 +161,7 @@ const RapCloudSettings = (props) => {
 		resetCloudDefaults,
 	} = props;
 	useEffect(() => {
-		fetchMasks();
+		if (!masksLoading && !masks.length) fetchMasks();
 	}, []);
 
 	const [ fullScreenMask, toggleFullScreenMask ] = useState(false);
@@ -271,6 +272,9 @@ const RapCloudSettings = (props) => {
 						<Typography variant="h6" align="left">
 							Mask
 						</Typography>
+						<IconButton onClick={fetchMasks} color="secondary">
+							<Refresh />
+						</IconButton>
 						<Switch
 							checked={cloudSettings.maskDesired}
 							onChange={(e) => {
