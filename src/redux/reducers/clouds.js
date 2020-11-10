@@ -56,14 +56,16 @@ const updateCloudSettings = (state, action) => {
 
 const addMasks = (state, action) => {
 	const { masks } = action;
-	if (!masks || !masks.length) return state;
 	return {
 		...state,
-		masksById: masks.reduce((masksById, mask) => {
-			const { id } = mask;
-			masksById[id] = mask;
-			return masksById;
-		}, {}),
+		masksById:
+			masks && masks.length
+				? masks.reduce((masksById, mask) => {
+						const { id } = mask;
+						masksById[id] = mask;
+						return masksById;
+					}, {})
+				: state.masksById,
 		masksLoading: false,
 	};
 };
