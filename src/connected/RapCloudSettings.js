@@ -128,12 +128,12 @@ const useStyles = makeStyles((theme) => {
 			marginTop: '1em',
 			fontWeight: theme.typography.fontWeightBold,
 		},
-		blueIconBtn: {
+		addMaskBtn: {
 			backgroundColor: theme.palette.secondary.main,
 			color: theme.palette.secondary.contrastText,
 			width: '2em',
 			height: '2em',
-			marginRight: '1em',
+			marginRight: '.51em',
 			'& a': {
 				textDecoration: 'none',
 				color: theme.palette.secondary.contrastText,
@@ -323,7 +323,7 @@ const RapCloudSettings = (props) => {
 									onClick={() => toggleUploadDialog(true)}
 								>
 									<Tooltip title="Upload Your Own Mask" placement="top-start">
-										<IconButton item className={classes.blueIconBtn}>
+										<IconButton item className={classes.addMaskBtn}>
 											<AddIcon />
 										</IconButton>
 									</Tooltip>
