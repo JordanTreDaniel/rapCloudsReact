@@ -23,6 +23,7 @@ export const initialState = {
 		colorFromMask: false,
 		downSample: '2',
 		whiteThreshold: '240',
+		overlay: false,
 	},
 	masksById: {},
 	masksLoading: false,

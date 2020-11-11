@@ -548,6 +548,20 @@ const RapCloudSettings = (props) => {
 												}
 												label="Use Mask Colors"
 											/>
+											<FormControlLabel
+												control={
+													<Switch
+														checked={cloudSettings.overlay}
+														onChange={(e) => {
+															updateCloudSettings(e.target.name, e.target.checked);
+														}}
+														color="secondary"
+														name="overlay"
+														inputProps={{ 'aria-label': 'Toggle Use Mask as Background' }}
+													/>
+												}
+												label="Use Mask as Background"
+											/>
 										</FormGroup>
 									</Grid>
 
@@ -694,6 +708,20 @@ const RapCloudSettings = (props) => {
 					</Grid>
 					{cloudSettings.background && (
 						<React.Fragment>
+							<FormControlLabel
+								control={
+									<Switch
+										checked={cloudSettings.overlay}
+										onChange={(e) => {
+											updateCloudSettings(e.target.name, e.target.checked);
+										}}
+										color="secondary"
+										name="overlay"
+										inputProps={{ 'aria-label': 'Toggle Use Mask as Background' }}
+									/>
+								}
+								label="Use Mask as Background"
+							/>
 							<Grid
 								item
 								container
