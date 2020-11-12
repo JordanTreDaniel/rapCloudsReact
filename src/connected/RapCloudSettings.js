@@ -312,12 +312,13 @@ const RapCloudSettings = (props) => {
 								item
 								control={
 									<Switch
-										checked={cloudSettings.overlay}
+										checked={cloudSettings.maskAsBackground}
 										onChange={(e) => {
 											updateCloudSettings(e.target.name, e.target.checked);
 										}}
+										disabled={!cloudSettings.maskId}
 										color="secondary"
-										name="overlay"
+										name="maskAsBackground"
 										inputProps={{ 'aria-label': 'Toggle Use Mask as Background' }}
 									/>
 								}
@@ -614,12 +615,12 @@ const RapCloudSettings = (props) => {
 											<FormControlLabel
 												control={
 													<Switch
-														checked={cloudSettings.overlay}
+														checked={cloudSettings.maskAsBackground}
 														onChange={(e) => {
 															updateCloudSettings(e.target.name, e.target.checked);
 														}}
 														color="secondary"
-														name="overlay"
+														name="maskAsBackground"
 														inputProps={{ 'aria-label': 'Toggle Use Mask as Background' }}
 													/>
 												}
@@ -645,7 +646,7 @@ const RapCloudSettings = (props) => {
 											alignItems="center"
 										>
 											<Typography variant="h6" align="left">
-												Contour
+												Mask Contour
 											</Typography>
 											<Switch
 												checked={cloudSettings.contour}
@@ -655,6 +656,7 @@ const RapCloudSettings = (props) => {
 														updateCloudSettings('contourWidth', 3);
 													}
 												}}
+												disabled={!cloudSettings.maskId || !cloudSettings.coloredBackground}
 												color="secondary"
 												name="contour"
 												inputProps={{ 'aria-label': 'primary checkbox' }}

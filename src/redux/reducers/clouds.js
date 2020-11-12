@@ -13,8 +13,10 @@ export const initialState = {
 		contourWidth: '1',
 		contourColor: '#ffffff',
 		stopWords: [ 'and', 'but', 'the', 'to', 'if', 'it', 'of', 'at' ],
-		background: true,
 		backgroundColor: '#000000',
+		coloredBackground: true,
+		transparentBackground: false,
+		maskAsBackground: false,
 		colors: [], //this defaults to 'viridis' colormap i believe. Aka, empty color arr means use their default
 		repeat: true,
 		collocations: true,
@@ -23,7 +25,6 @@ export const initialState = {
 		colorFromMask: false,
 		downSample: '1',
 		whiteThreshold: '240',
-		overlay: false,
 	},
 	masksById: {},
 	masksLoading: false,
@@ -52,8 +53,22 @@ const setLoading = (state, action) => {
 // };
 
 const updateCloudSettings = (state, action) => {
+	const mutallyExclPropSets = [ [ 'coloredBackground', 'transparentBackground', 'maskAsBackground' ] ];
 	const { key, val } = action;
-	return { ...state, settings: { ...state.settings, [key]: val } };
+	const newSettings = { ...state.settings, [key]: val };
+	mutallyExclPropSets.forEach((mutallyExclProps) => {
+		const propIdx = mutallyExclProps.indexOf(key);
+		if (propIdx === -1) return;
+		mutallyExclProps.forEach((prop, idx) => {
+			if (idx == propIdx) return;
+			newSettings[prop] = val ? false : state.settings[prop];
+		});
+	});
+	newSettings['contour'] = newSettings.contour && newSettings.coloredBackground && newSettings.maskId;
+	newSettings['maskAsBackground'] = newSettings.maskAsBackground && newSettings.maskId;
+	newSettings['transparentBackground'] =
+		newSettings.transparentBackground || (!newSettings.coloredBackground && !newSettings.maskAsBackground);
+	return { ...state, settings: newSettings };
 };
 
 const deleteMask = (state, action) => {
