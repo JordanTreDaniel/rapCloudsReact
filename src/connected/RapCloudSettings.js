@@ -185,99 +185,108 @@ const RapCloudSettings = (props) => {
 		>
 			<DialogTitle className={classNames(classes.dialogTitle)}>Cloud Customization Settings</DialogTitle>
 			<DialogContent>
-				<Grid id="genSettingsSection" container className={classNames(classes.formSection)} direction="column">
-					<Grid id="genSettingsSectionHead">
+				<Grid id="colorsSection" container className={classNames(classes.formSection)} direction="column">
+					<Grid id="colorsSectionHead">
 						<Typography variant="h6" align="left">
-							General
+							Colors
 						</Typography>
 					</Grid>
-					<Grid item container direction="column">
-						<TextField
-							item
-							className={classNames(classes.oneEmMarginRight)}
-							onChange={(e) => {
-								let val = e.target.value;
-								if (val > 2000) val = 2000;
-								updateCloudSettings('width', val);
-							}}
-							label="Cloud Width"
-							id="cloudWidth"
-							value={cloudSettings.width}
-							type="number"
-							autoComplete={false}
+					<Grid
+						id="colorsSectionBody"
+						item
+						container
+						direction="row"
+						wrap="wrap"
+						justify="flex-start"
+						alignContent="center"
+						align="center"
+					>
+						<ColorPicker
+							chooseColor={(hex) => updateCloudSettings('colors', uniq([ hex, ...cloudSettings.colors ]))}
 						/>
-						<TextField
-							item
-							className={classNames(classes.oneEmMarginRight)}
-							onChange={(e) => {
-								let val = e.target.value;
-								if (val > 2000) val = 2000;
-								updateCloudSettings('height', val);
-							}}
-							label="Cloud Height"
-							id="cloudHeight"
-							value={cloudSettings.height}
-							type="number"
-							autoComplete={false}
-						/>
-						<TextField
-							item
-							className={classNames(classes.oneEmMarginRight)}
-							onChange={(e) => {
-								let val = e.target.value;
-								if (val > 255) val = 255;
-								updateCloudSettings('whiteThreshold', val);
-							}}
-							label="White Detection Threshold"
-							id="whiteThreshold"
-							value={cloudSettings.whiteThreshold}
-							type="number"
-							autoComplete={false}
-						/>
-						<FormControlLabel
-							control={
-								<Switch
-									checked={cloudSettings.collocations}
-									onChange={(e) => {
-										updateCloudSettings(e.target.name, e.target.checked);
-									}}
-									color="secondary"
-									name="collocations"
-									inputProps={{ 'aria-label': 'toggle include numbers' }}
-								/>
-							}
-							label="Collocations"
-						/>
-						<FormControlLabel
-							control={
-								<Switch
-									checked={cloudSettings.repeat}
-									onChange={(e) => {
-										updateCloudSettings(e.target.name, e.target.checked);
-									}}
-									color="secondary"
-									name="repeat"
-									inputProps={{ 'aria-label': 'toggle include numbers' }}
-								/>
-							}
-							label="Repeat Words to Fill Picture"
-						/>
-						<FormControlLabel
-							control={
-								<Switch
-									checked={cloudSettings.includeNumbers}
-									onChange={(e) => {
-										updateCloudSettings(e.target.name, e.target.checked);
-									}}
-									color="secondary"
-									name="includeNumbers"
-									inputProps={{ 'aria-label': 'toggle include numbers' }}
-								/>
-							}
-							label="Include Numbers"
-						/>
+
+						{cloudSettings.colors.map((hex, idx) => (
+							<Chip
+								label={hex}
+								className={classNames(classes.colorChip)}
+								style={{ backgroundColor: hex }}
+								onDelete={() => {
+									const newColors = [ ...cloudSettings.colors ];
+									newColors.splice(idx, 1);
+									updateCloudSettings('colors', newColors);
+								}}
+							/>
+						))}
 					</Grid>
 				</Grid>
+				<Grid id="backgroundSection" container className={classNames(classes.formSection)} direction="column">
+					<Grid
+						id="backgroundSectionHead"
+						item
+						container
+						direction="row"
+						justify="space-between"
+						wrap="nowrap"
+						alignItems="center"
+					>
+						<Typography variant="h6" align="left">
+							Background
+						</Typography>
+						<Switch
+							checked={cloudSettings.background}
+							onChange={(e) => {
+								updateCloudSettings(e.target.name, e.target.checked);
+							}}
+							color="secondary"
+							name="background"
+							inputProps={{ 'aria-label': 'primary checkbox' }}
+						/>
+					</Grid>
+					{cloudSettings.background && (
+						<Grid id="backgroundSectionBody">
+							<FormControlLabel
+								control={
+									<Switch
+										checked={cloudSettings.overlay}
+										onChange={(e) => {
+											updateCloudSettings(e.target.name, e.target.checked);
+										}}
+										color="secondary"
+										name="overlay"
+										inputProps={{ 'aria-label': 'Toggle Use Mask as Background' }}
+									/>
+								}
+								label="Use Mask as Background"
+							/>
+							{!cloudSettings.overlay && (
+								<Grid
+									item
+									container
+									direction="row"
+									wrap="wrap"
+									justify="flex-start"
+									alignContent="center"
+									align="center"
+									order={1}
+								>
+									<ColorPicker
+										anchorStyles={{
+											backgroundColor: cloudSettings.backgroundColor,
+											color: '#f5f5f5',
+										}}
+										chooseColor={(hex) => {
+											updateCloudSettings('backgroundColor', hex);
+										}}
+										title={'Choose a background color'}
+										initialColor="#000000"
+										label={`Background Color: ${cloudSettings.backgroundColor}`}
+									/>
+								</Grid>
+							)}
+						</Grid>
+					)}
+				</Grid>
+
 				<Grid id="maskSection" container className={classNames(classes.formSection)} direction="column">
 					<Grid
 						id="maskSectionHead"
@@ -676,106 +685,98 @@ const RapCloudSettings = (props) => {
 						</Dialog>
 					)}
 				</Grid>
-				<Grid id="colorsSection" container className={classNames(classes.formSection)} direction="column">
-					<Grid id="colorsSectionHead">
+				<Grid id="genSettingsSection" container className={classNames(classes.formSection)} direction="column">
+					<Grid id="genSettingsSectionHead">
 						<Typography variant="h6" align="left">
-							Colors
+							General
 						</Typography>
 					</Grid>
-					<Grid
-						id="colorsSectionBody"
-						item
-						container
-						direction="row"
-						wrap="wrap"
-						justify="flex-start"
-						alignContent="center"
-						align="center"
-					>
-						<ColorPicker
-							chooseColor={(hex) => updateCloudSettings('colors', uniq([ hex, ...cloudSettings.colors ]))}
-						/>
-
-						{cloudSettings.colors.map((hex, idx) => (
-							<Chip
-								label={hex}
-								className={classNames(classes.colorChip)}
-								style={{ backgroundColor: hex }}
-								onDelete={() => {
-									const newColors = [ ...cloudSettings.colors ];
-									newColors.splice(idx, 1);
-									updateCloudSettings('colors', newColors);
-								}}
-							/>
-						))}
-					</Grid>
-				</Grid>
-				<Grid id="backgroundSection" container className={classNames(classes.formSection)} direction="column">
-					<Grid
-						id="backgroundSectionHead"
-						item
-						container
-						direction="row"
-						justify="space-between"
-						wrap="nowrap"
-						alignItems="center"
-					>
-						<Typography variant="h6" align="left">
-							Background
-						</Typography>
-						<Switch
-							checked={cloudSettings.background}
+					<Grid item container direction="column">
+						<TextField
+							item
+							className={classNames(classes.oneEmMarginRight)}
 							onChange={(e) => {
-								updateCloudSettings(e.target.name, e.target.checked);
+								let val = e.target.value;
+								if (val > 2000) val = 2000;
+								updateCloudSettings('width', val);
 							}}
-							color="secondary"
-							name="background"
-							inputProps={{ 'aria-label': 'primary checkbox' }}
+							label="Cloud Width"
+							id="cloudWidth"
+							value={cloudSettings.width}
+							type="number"
+							autoComplete={false}
+						/>
+						<TextField
+							item
+							className={classNames(classes.oneEmMarginRight)}
+							onChange={(e) => {
+								let val = e.target.value;
+								if (val > 2000) val = 2000;
+								updateCloudSettings('height', val);
+							}}
+							label="Cloud Height"
+							id="cloudHeight"
+							value={cloudSettings.height}
+							type="number"
+							autoComplete={false}
+						/>
+						<TextField
+							item
+							className={classNames(classes.oneEmMarginRight)}
+							onChange={(e) => {
+								let val = e.target.value;
+								if (val > 255) val = 255;
+								updateCloudSettings('whiteThreshold', val);
+							}}
+							label="White Detection Threshold"
+							id="whiteThreshold"
+							value={cloudSettings.whiteThreshold}
+							type="number"
+							autoComplete={false}
+						/>
+						<FormControlLabel
+							control={
+								<Switch
+									checked={cloudSettings.collocations}
+									onChange={(e) => {
+										updateCloudSettings(e.target.name, e.target.checked);
+									}}
+									color="secondary"
+									name="collocations"
+									inputProps={{ 'aria-label': 'toggle include numbers' }}
+								/>
+							}
+							label="Collocations"
+						/>
+						<FormControlLabel
+							control={
+								<Switch
+									checked={cloudSettings.repeat}
+									onChange={(e) => {
+										updateCloudSettings(e.target.name, e.target.checked);
+									}}
+									color="secondary"
+									name="repeat"
+									inputProps={{ 'aria-label': 'toggle include numbers' }}
+								/>
+							}
+							label="Repeat Words to Fill Picture"
+						/>
+						<FormControlLabel
+							control={
+								<Switch
+									checked={cloudSettings.includeNumbers}
+									onChange={(e) => {
+										updateCloudSettings(e.target.name, e.target.checked);
+									}}
+									color="secondary"
+									name="includeNumbers"
+									inputProps={{ 'aria-label': 'toggle include numbers' }}
+								/>
+							}
+							label="Include Numbers"
 						/>
 					</Grid>
-					{cloudSettings.background && (
-						<Grid id="backgroundSectionBody">
-							<FormControlLabel
-								control={
-									<Switch
-										checked={cloudSettings.overlay}
-										onChange={(e) => {
-											updateCloudSettings(e.target.name, e.target.checked);
-										}}
-										color="secondary"
-										name="overlay"
-										inputProps={{ 'aria-label': 'Toggle Use Mask as Background' }}
-									/>
-								}
-								label="Use Mask as Background"
-							/>
-							{!cloudSettings.overlay && (
-								<Grid
-									item
-									container
-									direction="row"
-									wrap="wrap"
-									justify="flex-start"
-									alignContent="center"
-									align="center"
-									order={1}
-								>
-									<ColorPicker
-										anchorStyles={{
-											backgroundColor: cloudSettings.backgroundColor,
-											color: '#f5f5f5',
-										}}
-										chooseColor={(hex) => {
-											updateCloudSettings('backgroundColor', hex);
-										}}
-										title={'Choose a background color'}
-										initialColor="#000000"
-										label={`Background Color: ${cloudSettings.backgroundColor}`}
-									/>
-								</Grid>
-							)}
-						</Grid>
-					)}
 				</Grid>
 			</DialogContent>
 			<DialogActions>
