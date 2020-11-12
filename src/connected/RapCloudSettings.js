@@ -199,7 +199,7 @@ const RapCloudSettings = (props) => {
 						wrap="wrap"
 						justify="flex-start"
 						alignContent="center"
-						align="center"
+						alignItems="center"
 					>
 						<ColorPicker
 							chooseColor={(hex) => updateCloudSettings('colors', uniq([ hex, ...cloudSettings.colors ]))}
@@ -232,19 +232,84 @@ const RapCloudSettings = (props) => {
 						<Typography variant="h6" align="left">
 							Background
 						</Typography>
-						<Switch
-							checked={cloudSettings.background}
-							onChange={(e) => {
-								updateCloudSettings(e.target.name, e.target.checked);
-							}}
-							color="secondary"
-							name="background"
-							inputProps={{ 'aria-label': 'primary checkbox' }}
-						/>
 					</Grid>
-					{cloudSettings.background && (
-						<Grid id="backgroundSectionBody">
+					<Grid id="backgroundSectionBody" item container direction="column" justify="space-evenly">
+						<Grid
+							item
+							container
+							direction="row"
+							wrap="nowrap"
+							justify="flex-start"
+							alignContent="center"
+							alignItems="center"
+						>
 							<FormControlLabel
+								item
+								control={
+									<Switch
+										checked={cloudSettings.coloredBackground}
+										onChange={(e) => {
+											updateCloudSettings(e.target.name, e.target.checked);
+										}}
+										color="secondary"
+										name="coloredBackground"
+										inputProps={{ 'aria-label': 'Toggle Colored Background' }}
+									/>
+								}
+								label="Colored"
+							/>
+							<ColorPicker
+								item
+								disabled={!cloudSettings.coloredBackground}
+								anchorStyles={{
+									backgroundColor: cloudSettings.backgroundColor,
+									color: '#f5f5f5',
+								}}
+								chooseColor={(hex) => {
+									updateCloudSettings('backgroundColor', hex);
+								}}
+								title={'Choose a background color'}
+								initialColor="#000000"
+								label={cloudSettings.backgroundColor}
+							/>
+						</Grid>
+
+						<Grid
+							item
+							container
+							direction="row"
+							wrap="wrap"
+							justify="flex-start"
+							alignContent="center"
+							alignItems="center"
+						>
+							<FormControlLabel
+								item
+								control={
+									<Switch
+										checked={cloudSettings.transparentBackground}
+										onChange={(e) => {
+											updateCloudSettings(e.target.name, e.target.checked);
+										}}
+										color="secondary"
+										name="transparentBackground"
+										inputProps={{ 'aria-label': 'Toggle Transparent Background' }}
+									/>
+								}
+								label="Transparent"
+							/>
+						</Grid>
+						<Grid
+							item
+							container
+							direction="row"
+							wrap="wrap"
+							justify="flex-start"
+							alignContent="center"
+							alignItems="center"
+						>
+							<FormControlLabel
+								item
 								control={
 									<Switch
 										checked={cloudSettings.overlay}
@@ -256,35 +321,10 @@ const RapCloudSettings = (props) => {
 										inputProps={{ 'aria-label': 'Toggle Use Mask as Background' }}
 									/>
 								}
-								label="Use Mask as Background"
+								label="Mask as Background"
 							/>
-							{!cloudSettings.overlay && (
-								<Grid
-									item
-									container
-									direction="row"
-									wrap="wrap"
-									justify="flex-start"
-									alignContent="center"
-									align="center"
-									order={1}
-								>
-									<ColorPicker
-										anchorStyles={{
-											backgroundColor: cloudSettings.backgroundColor,
-											color: '#f5f5f5',
-										}}
-										chooseColor={(hex) => {
-											updateCloudSettings('backgroundColor', hex);
-										}}
-										title={'Choose a background color'}
-										initialColor="#000000"
-										label={`Background Color: ${cloudSettings.backgroundColor}`}
-									/>
-								</Grid>
-							)}
 						</Grid>
-					)}
+					</Grid>
 				</Grid>
 
 				<Grid id="maskSection" container className={classNames(classes.formSection)} direction="column">
@@ -322,7 +362,7 @@ const RapCloudSettings = (props) => {
 							wrap="wrap"
 							justify="flex-start"
 							alignContent="center"
-							align="center"
+							alignItems="center"
 						>
 							<LoadingBar loading={masksLoading} />
 							<Grid
@@ -334,7 +374,7 @@ const RapCloudSettings = (props) => {
 								wrap="nowrap"
 								justify="space-between"
 								alignContent="center"
-								align="center"
+								alignItems="center"
 							>
 								<Grid
 									container
@@ -636,7 +676,7 @@ const RapCloudSettings = (props) => {
 													wrap="wrap"
 													justify="flex-start"
 													alignContent="center"
-													align="center"
+													alignItems="center"
 												>
 													<TextField
 														item

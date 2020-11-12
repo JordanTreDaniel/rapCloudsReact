@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => {
 
 const ColorPicker = (props) => {
 	const classes = useStyles();
-	const { chooseColor, width, title, anchorStyles = {}, initialColor, label } = props;
+	const { chooseColor, width, title, anchorStyles = {}, initialColor, label, disabled = false, ...rest } = props;
 	const [ dialogOpen, toggleDialog ] = useState(false);
 	const [ newColor, changeNewColor ] = useState(initialColor || false);
 
@@ -61,6 +61,8 @@ const ColorPicker = (props) => {
 		<React.Fragment>
 			<Tooltip title={title || 'Add a Color'} placement="top">
 				<Chip
+					{...rest}
+					disabled={disabled}
 					style={{ ...anchorStyles }}
 					className={classNames(classes.anchorChip)}
 					label={label || <AddIcon />}
