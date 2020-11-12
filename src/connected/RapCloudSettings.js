@@ -185,10 +185,12 @@ const RapCloudSettings = (props) => {
 		>
 			<DialogTitle className={classNames(classes.dialogTitle)}>Cloud Customization Settings</DialogTitle>
 			<DialogContent>
-				<Grid container className={classNames(classes.formSection)} direction="column">
-					<Typography variant="h6" align="left">
-						General
-					</Typography>
+				<Grid id="genSettingsSection" container className={classNames(classes.formSection)} direction="column">
+					<Grid id="genSettingsSectionHead">
+						<Typography variant="h6" align="left">
+							General
+						</Typography>
+					</Grid>
 					<Grid item container direction="column">
 						<TextField
 							item
@@ -276,8 +278,16 @@ const RapCloudSettings = (props) => {
 						/>
 					</Grid>
 				</Grid>
-				<Grid container className={classNames(classes.formSection)} direction="column">
-					<Grid item container direction="row" justify="space-between" wrap="nowrap" alignItems="center">
+				<Grid id="maskSection" container className={classNames(classes.formSection)} direction="column">
+					<Grid
+						id="maskSectionHead"
+						item
+						container
+						direction="row"
+						justify="space-between"
+						wrap="nowrap"
+						alignItems="center"
+					>
 						<Typography variant="h6" align="left">
 							Mask
 						</Typography>
@@ -296,6 +306,7 @@ const RapCloudSettings = (props) => {
 					</Grid>
 					{cloudSettings.maskDesired ? (
 						<Grid
+							id="maskSectionBody"
 							item
 							container
 							direction="column"
@@ -306,6 +317,7 @@ const RapCloudSettings = (props) => {
 						>
 							<LoadingBar loading={masksLoading} />
 							<Grid
+								id="maskSelections"
 								item
 								container
 								className={classNames(classes.maskSelections)}
@@ -459,6 +471,7 @@ const RapCloudSettings = (props) => {
 							</Grid>
 							{currentMask && (
 								<Grid
+									id="chosenMaskSettings"
 									item
 									container
 									direction="column"
@@ -472,6 +485,7 @@ const RapCloudSettings = (props) => {
 									)}
 								>
 									<Grid
+										id="chosenMaskQuickSettings"
 										item
 										container
 										direction="row"
@@ -566,12 +580,14 @@ const RapCloudSettings = (props) => {
 									</Grid>
 
 									<Grid
+										id="contourSettings"
 										item
 										container
 										className={classNames(classes.formSection, classes.nestedFormSection)}
 										direction="column"
 									>
 										<Grid
+											id="contourSettingsHead"
 											item
 											container
 											direction="row"
@@ -596,7 +612,7 @@ const RapCloudSettings = (props) => {
 											/>
 										</Grid>
 										{cloudSettings.contour && (
-											<React.Fragment>
+											<Grid id="contourSettingsBody">
 												<div
 													className={classNames(classes.exampleBorder)}
 													style={{
@@ -637,7 +653,7 @@ const RapCloudSettings = (props) => {
 														label={`Contour Color: ${cloudSettings.contourColor}`}
 													/>
 												</Grid>
-											</React.Fragment>
+											</Grid>
 										)}
 									</Grid>
 								</Grid>
@@ -660,11 +676,14 @@ const RapCloudSettings = (props) => {
 						</Dialog>
 					)}
 				</Grid>
-				<Grid container className={classNames(classes.formSection)} direction="column">
-					<Typography variant="h6" align="left">
-						Colors
-					</Typography>
+				<Grid id="colorsSection" container className={classNames(classes.formSection)} direction="column">
+					<Grid id="colorsSectionHead">
+						<Typography variant="h6" align="left">
+							Colors
+						</Typography>
+					</Grid>
 					<Grid
+						id="colorsSectionBody"
 						item
 						container
 						direction="row"
@@ -691,8 +710,16 @@ const RapCloudSettings = (props) => {
 						))}
 					</Grid>
 				</Grid>
-				<Grid container className={classNames(classes.formSection)} direction="column">
-					<Grid item container direction="row" justify="space-between" wrap="nowrap" alignItems="center">
+				<Grid id="backgroundSection" container className={classNames(classes.formSection)} direction="column">
+					<Grid
+						id="backgroundSectionHead"
+						item
+						container
+						direction="row"
+						justify="space-between"
+						wrap="nowrap"
+						alignItems="center"
+					>
 						<Typography variant="h6" align="left">
 							Background
 						</Typography>
@@ -707,7 +734,7 @@ const RapCloudSettings = (props) => {
 						/>
 					</Grid>
 					{cloudSettings.background && (
-						<React.Fragment>
+						<Grid id="backgroundSectionBody">
 							<FormControlLabel
 								control={
 									<Switch
@@ -722,29 +749,32 @@ const RapCloudSettings = (props) => {
 								}
 								label="Use Mask as Background"
 							/>
-							<Grid
-								item
-								container
-								direction="row"
-								wrap="wrap"
-								justify="flex-start"
-								alignContent="center"
-								align="center"
-							>
-								<ColorPicker
-									anchorStyles={{
-										backgroundColor: cloudSettings.backgroundColor,
-										color: '#f5f5f5',
-									}}
-									chooseColor={(hex) => {
-										updateCloudSettings('backgroundColor', hex);
-									}}
-									title={'Choose a background color'}
-									initialColor="#000000"
-									label={`Background Color: ${cloudSettings.backgroundColor}`}
-								/>
-							</Grid>
-						</React.Fragment>
+							{!cloudSettings.overlay && (
+								<Grid
+									item
+									container
+									direction="row"
+									wrap="wrap"
+									justify="flex-start"
+									alignContent="center"
+									align="center"
+									order={1}
+								>
+									<ColorPicker
+										anchorStyles={{
+											backgroundColor: cloudSettings.backgroundColor,
+											color: '#f5f5f5',
+										}}
+										chooseColor={(hex) => {
+											updateCloudSettings('backgroundColor', hex);
+										}}
+										title={'Choose a background color'}
+										initialColor="#000000"
+										label={`Background Color: ${cloudSettings.backgroundColor}`}
+									/>
+								</Grid>
+							)}
+						</Grid>
 					)}
 				</Grid>
 			</DialogContent>
