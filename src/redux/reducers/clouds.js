@@ -64,8 +64,9 @@ const updateCloudSettings = (state, action) => {
 			newSettings[prop] = val ? false : state.settings[prop];
 		});
 	});
-	newSettings['contour'] = newSettings.contour && newSettings.coloredBackground && newSettings.maskId;
-	newSettings['maskAsBackground'] = newSettings.maskAsBackground && newSettings.maskId;
+	newSettings['contour'] =
+		newSettings.contour && newSettings.coloredBackground && newSettings.maskId && newSettings.maskDesired;
+	newSettings['maskAsBackground'] = newSettings.maskAsBackground && newSettings.maskId && newSettings.maskDesired;
 	newSettings['transparentBackground'] =
 		newSettings.transparentBackground || (!newSettings.coloredBackground && !newSettings.maskAsBackground);
 	return { ...state, settings: newSettings };
