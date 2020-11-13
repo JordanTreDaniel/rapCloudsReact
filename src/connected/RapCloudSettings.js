@@ -338,21 +338,24 @@ const RapCloudSettings = (props) => {
 						wrap="nowrap"
 						alignItems="center"
 					>
-						<Typography variant="h6" align="left">
-							Mask
-						</Typography>
+						<FormControlLabel
+							item
+							control={
+								<Switch
+									checked={cloudSettings.maskDesired}
+									onChange={(e) => {
+										updateCloudSettings(e.target.name, e.target.checked);
+									}}
+									color="secondary"
+									name="maskDesired"
+									inputProps={{ 'aria-label': 'Toggle Use of Mask' }}
+								/>
+							}
+							label="Mask"
+						/>
 						<IconButton onClick={fetchMasks} color="secondary">
 							<Refresh />
 						</IconButton>
-						<Switch
-							checked={cloudSettings.maskDesired}
-							onChange={(e) => {
-								updateCloudSettings(e.target.name, e.target.checked);
-							}}
-							color="secondary"
-							name="maskDesired"
-							inputProps={{ 'aria-label': 'toggle mask use' }}
-						/>
 					</Grid>
 					{cloudSettings.maskDesired ? (
 						<Grid
@@ -621,14 +624,13 @@ const RapCloudSettings = (props) => {
 														}}
 														color="secondary"
 														name="maskAsBackground"
-														inputProps={{ 'aria-label': 'Toggle Use Mask as Background' }}
+														inputProps={{ 'aria-label': 'Toggle Mask as Background' }}
 													/>
 												}
-												label="Use Mask as Background"
+												label="Mask as Background"
 											/>
 										</FormGroup>
 									</Grid>
-
 									<Grid
 										id="contourSettings"
 										item
@@ -645,21 +647,26 @@ const RapCloudSettings = (props) => {
 											wrap="nowrap"
 											alignItems="center"
 										>
-											<Typography variant="h6" align="left">
-												Mask Contour
-											</Typography>
-											<Switch
-												checked={cloudSettings.contour}
-												onChange={(e) => {
-													updateCloudSettings(e.target.name, e.target.checked);
-													if (parseInt(cloudSettings.contourWidth) == 0) {
-														updateCloudSettings('contourWidth', 3);
-													}
-												}}
-												disabled={!cloudSettings.maskId || !cloudSettings.coloredBackground}
-												color="secondary"
-												name="contour"
-												inputProps={{ 'aria-label': 'primary checkbox' }}
+											<FormControlLabel
+												item
+												control={
+													<Switch
+														checked={cloudSettings.contour}
+														onChange={(e) => {
+															updateCloudSettings(e.target.name, e.target.checked);
+															if (parseInt(cloudSettings.contourWidth) == 0) {
+																updateCloudSettings('contourWidth', 3);
+															}
+														}}
+														disabled={
+															!cloudSettings.maskId || !cloudSettings.coloredBackground
+														}
+														color="secondary"
+														name="contour"
+														inputProps={{ 'aria-label': 'Toggle Mask Contour' }}
+													/>
+												}
+												label="Mask Contour"
 											/>
 										</Grid>
 										{cloudSettings.contour && (

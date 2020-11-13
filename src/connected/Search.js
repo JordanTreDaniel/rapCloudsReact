@@ -51,9 +51,10 @@ const Search = (props) => {
 				<DebouncedTextField
 					type="text"
 					onChange={(e) => {
-						const { value: searchTerm } = e.target;
-						setSongSearchTerm(searchTerm);
-						searchTerm.length && search(searchTerm);
+						const { value: newSearchTerm } = e.target;
+						setSongSearchTerm(newSearchTerm);
+						console.log({ newSearchTerm });
+						newSearchTerm.length && search(newSearchTerm);
 					}}
 					value={searchTerm}
 					disableUnderline
