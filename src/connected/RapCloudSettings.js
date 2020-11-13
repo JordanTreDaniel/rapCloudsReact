@@ -22,6 +22,7 @@ import * as selectors from '../redux/selectors';
 import { updateCloudSettings, fetchMasks, addCustomMask, deleteMask, resetCloudDefaults } from '../redux/actions';
 import ColorPicker from '../components/ColorPicker';
 import LoadingBar from '../components/LoadingBar';
+import HelpTooltip from '../components/HelpTooltip';
 import { connect } from 'react-redux';
 import uniq from 'lodash/uniq';
 import { classNames } from '../utils';
@@ -195,7 +196,11 @@ const RapCloudSettings = (props) => {
 						wrap="nowrap"
 						alignItems="center"
 					>
-						<Typography variant="h6">Colors</Typography>
+						<HelpTooltip
+							titles={[ 'This option determines what colors the words in your RapCloud will be.' ]}
+						>
+							<Typography variant="h6">Colors</Typography>
+						</HelpTooltip>
 					</Grid>
 					<Grid id="colorsSectionBody" item container direction="column" wrap="nowrap">
 						<FormControlLabel
@@ -211,7 +216,11 @@ const RapCloudSettings = (props) => {
 									inputProps={{ 'aria-label': 'Toggle Random Colors' }}
 								/>
 							}
-							label="Random Colors"
+							label={
+								<HelpTooltip titles={[ 'Randomly chosen colors from the `Viridis` set' ]}>
+									Random Colors
+								</HelpTooltip>
+							}
 						/>
 						<FormControlLabel
 							item
@@ -228,7 +237,18 @@ const RapCloudSettings = (props) => {
 									inputProps={{ 'aria-label': 'Toggle Color from Mask' }}
 								/>
 							}
-							label="Color from Mask"
+							label={
+								<HelpTooltip
+									titles={[
+										`Choose this option in order to have the Rap Cloud resemble your mask
+												image in color, not just shape.`,
+										`Each word will take the average color of whatever space it occupies on
+												your mask image.`,
+									]}
+								>
+									Color from Mask
+								</HelpTooltip>
+							}
 						/>
 						<Grid id="customColorsLabelBox" item container direction="row" justify="space-between">
 							<FormControlLabel
@@ -245,7 +265,18 @@ const RapCloudSettings = (props) => {
 										inputProps={{ 'aria-label': 'Toggle Use Custom Colors' }}
 									/>
 								}
-								label="Custom Colors"
+								label={
+									<HelpTooltip
+										titles={[
+											`Choose this option in order to have the Rap Cloud resemble your mask
+													image in color, not just shape.`,
+											`Each word will take the average color of whatever space it occupies
+													on your mask image.`,
+										]}
+									>
+										Color from Mask
+									</HelpTooltip>
+								}
 							/>
 							{cloudSettings.useCustomColors &&
 							!!cloudSettings.colors.length && (
@@ -296,9 +327,15 @@ const RapCloudSettings = (props) => {
 						wrap="nowrap"
 						alignItems="center"
 					>
-						<Typography variant="h6" align="left">
-							Background
-						</Typography>
+						<HelpTooltip
+							titles={[
+								`This option determines if you will have a background, and how the background will look`,
+							]}
+						>
+							<Typography variant="h6" align="left">
+								Background
+							</Typography>
+						</HelpTooltip>
 					</Grid>
 					<Grid id="backgroundSectionBody" item container direction="column" justify="space-evenly">
 						<Grid
@@ -323,7 +360,16 @@ const RapCloudSettings = (props) => {
 										inputProps={{ 'aria-label': 'Toggle Colored Background' }}
 									/>
 								}
-								label="Colored"
+								label={
+									<HelpTooltip
+										titles={[
+											`Background will be a solid color of your choice.`,
+											`This choice defaults to black`,
+										]}
+									>
+										Colored
+									</HelpTooltip>
+								}
 							/>
 							<ColorPicker
 								item
@@ -363,7 +409,13 @@ const RapCloudSettings = (props) => {
 										inputProps={{ 'aria-label': 'Toggle Transparent Background' }}
 									/>
 								}
-								label="Transparent"
+								label={
+									<HelpTooltip
+										titles={[ `The background will not be there! Completely see-through` ]}
+									>
+										Transparent
+									</HelpTooltip>
+								}
 							/>
 						</Grid>
 						<Grid
@@ -389,7 +441,11 @@ const RapCloudSettings = (props) => {
 										inputProps={{ 'aria-label': 'Toggle Use Mask as Background' }}
 									/>
 								}
-								label="Mask as Background"
+								label={
+									<HelpTooltip titles={[ `The background will be the original mask image chosen` ]}>
+										Mask as Background
+									</HelpTooltip>
+								}
 							/>
 						</Grid>
 					</Grid>
@@ -418,7 +474,16 @@ const RapCloudSettings = (props) => {
 									inputProps={{ 'aria-label': 'Toggle Use of Mask' }}
 								/>
 							}
-							label="Mask"
+							label={
+								<HelpTooltip
+									titles={[
+										`A mask is a picture that you can use to shape and/or color your RapCloud!`,
+										`Click the blue, "Add Mask" (+) button to learn more about masks.`,
+									]}
+								>
+									Mask
+								</HelpTooltip>
+							}
 						/>
 						<IconButton onClick={fetchMasks} color="secondary">
 							<Refresh />
@@ -647,12 +712,23 @@ const RapCloudSettings = (props) => {
 													if (val > 3) val = 3;
 													updateCloudSettings('downSample', val);
 												}}
-												label="Down Sample"
+												label={
+													<HelpTooltip
+														titles={[
+															`Downsampling is the process of making your mask image smaller by removing some of the definition/detail.`,
+															`Higher downsampling (like 3) will result in a less detailed image, but your Rap Cloud will be generated much more quickly`,
+															`Lower downsampling, (like 0 or 1) will result in a highly detailed Rap Cloud, but will take much longer.`,
+														]}
+													>
+														Down Sample
+													</HelpTooltip>
+												}
 												id="downSample"
 												value={cloudSettings.downSample}
 												type="number"
 												autoComplete={false}
 											/>
+
 											<FormControlLabel
 												control={
 													<Switch
@@ -665,7 +741,16 @@ const RapCloudSettings = (props) => {
 														inputProps={{ 'aria-label': 'toggle detect edges' }}
 													/>
 												}
-												label="Detect Edges"
+												label={
+													<HelpTooltip
+														titles={[
+															`Attempts to detect edges of objects within your mask image, then instructs the Rap Cloud not to put words on top of those edges.`,
+															`This results in the words within the cloud "drawing" the edges, making them more visible.`,
+														]}
+													>
+														Detect Edges
+													</HelpTooltip>
+												}
 											/>
 											<FormControlLabel
 												control={
@@ -680,7 +765,16 @@ const RapCloudSettings = (props) => {
 														inputProps={{ 'aria-label': 'toggle color from mask' }}
 													/>
 												}
-												label="Use Mask Colors"
+												label={
+													<HelpTooltip
+														titles={[
+															`Choose this option in order to have the Rap Cloud resemble your mask image in color, not just shape.`,
+															`Each word will take the average color of whatever space it occupies on your mask image.`,
+														]}
+													>
+														Use Mask Colors
+													</HelpTooltip>
+												}
 											/>
 											<FormControlLabel
 												control={
@@ -694,7 +788,16 @@ const RapCloudSettings = (props) => {
 														inputProps={{ 'aria-label': 'Toggle Mask as Background' }}
 													/>
 												}
-												label="Mask as Background"
+												label={
+													<HelpTooltip
+														titles={[
+															`Generates a Rap Cloud with no background, then pastes it on top of the original mask image.`,
+															`This effectively makes a background out of your original mask.`,
+														]}
+													>
+														Mask as Background
+													</HelpTooltip>
+												}
 											/>
 										</FormGroup>
 									</Grid>
@@ -733,7 +836,16 @@ const RapCloudSettings = (props) => {
 														inputProps={{ 'aria-label': 'Toggle Mask Contour' }}
 													/>
 												}
-												label="Mask Contour"
+												label={
+													<HelpTooltip
+														titles={[
+															`Will draw a line with thickness & color of your choice around any edges detected in your mask image`,
+															`This can only be used with a (solid) colored background`,
+														]}
+													>
+														Mask Contour
+													</HelpTooltip>
+												}
 											/>
 										</Grid>
 										{cloudSettings.contour && (
@@ -759,7 +871,17 @@ const RapCloudSettings = (props) => {
 														className={classNames(classes.oneEmMarginRight)}
 														onChange={(e) =>
 															updateCloudSettings('contourWidth', e.target.value)}
-														label="Contour Thickness"
+														label=""
+														label={
+															<HelpTooltip
+																titles={[
+																	`How thick (in pixels) you want the contour to be.`,
+																	`Defaults to 1px`,
+																]}
+															>
+																Contour Thickness
+															</HelpTooltip>
+														}
 														id="contourWidth"
 														value={cloudSettings.contourWidth}
 														type="number"
@@ -803,9 +925,11 @@ const RapCloudSettings = (props) => {
 				</Grid>
 				<Grid id="genSettingsSection" container className={classNames(classes.formSection)} direction="column">
 					<Grid id="genSettingsSectionHead">
-						<Typography variant="h6" align="left">
-							General
-						</Typography>
+						<HelpTooltip titles={[ `General settings applied to your Rap Cloud` ]}>
+							<Typography variant="h6" align="left">
+								General
+							</Typography>
+						</HelpTooltip>
 					</Grid>
 					<Grid item container direction="column">
 						<TextField
@@ -816,7 +940,11 @@ const RapCloudSettings = (props) => {
 								if (val > 2000) val = 2000;
 								updateCloudSettings('width', val);
 							}}
-							label="Cloud Width"
+							label={
+								<HelpTooltip titles={[ `The width of the Rap Cloud to be generated` ]}>
+									Cloud Width
+								</HelpTooltip>
+							}
 							id="cloudWidth"
 							value={cloudSettings.width}
 							type="number"
@@ -830,7 +958,11 @@ const RapCloudSettings = (props) => {
 								if (val > 2000) val = 2000;
 								updateCloudSettings('height', val);
 							}}
-							label="Cloud Height"
+							label={
+								<HelpTooltip titles={[ `The height of the Rap Cloud to be generated` ]}>
+									Cloud Height
+								</HelpTooltip>
+							}
 							id="cloudHeight"
 							value={cloudSettings.height}
 							type="number"
@@ -844,7 +976,17 @@ const RapCloudSettings = (props) => {
 								if (val > 255) val = 255;
 								updateCloudSettings('whiteThreshold', val);
 							}}
-							label="White Detection Threshold"
+							label={
+								<HelpTooltip
+									titles={[
+										`Words are not supposed to be drawn onto white portions of a mask image.`,
+										`Lowering this number will cause the computer to lower the standard of what is considered white. 255 is pure white. 0 is black.`,
+										`Lower this number if your mask's background is off-white, grey, etc., and words are being drawn onto your "background"`,
+									]}
+								>
+									White Detection Threshold
+								</HelpTooltip>
+							}
 							id="whiteThreshold"
 							value={cloudSettings.whiteThreshold}
 							type="number"
@@ -862,7 +1004,17 @@ const RapCloudSettings = (props) => {
 									inputProps={{ 'aria-label': 'toggle include numbers' }}
 								/>
 							}
-							label="Collocations"
+							label={
+								<HelpTooltip
+									titles={[
+										`Allows pairs of words commonly seen together to stay together.`,
+										`So if "I got five on it" is repeated many times, you will see "I got", "got five", "five on", etc.`,
+										`Turn this off if you want all words to stand alone, or if you're actually trying to see which words were used the most.`,
+									]}
+								>
+									Collocations
+								</HelpTooltip>
+							}
 						/>
 						<FormControlLabel
 							control={
@@ -876,7 +1028,16 @@ const RapCloudSettings = (props) => {
 									inputProps={{ 'aria-label': 'toggle include numbers' }}
 								/>
 							}
-							label="Repeat Words to Fill Picture"
+							label={
+								<HelpTooltip
+									titles={[
+										`Once all words have been assigned a place, words can be used again until the entire drawable area is covered.`,
+										`We recommend on, esp if using a mask image.`,
+									]}
+								>
+									Repeat Words to Fill Picture
+								</HelpTooltip>
+							}
 						/>
 						<FormControlLabel
 							control={
@@ -890,7 +1051,16 @@ const RapCloudSettings = (props) => {
 									inputProps={{ 'aria-label': 'toggle include numbers' }}
 								/>
 							}
-							label="Include Numbers"
+							label={
+								<HelpTooltip
+									titles={[
+										`Numbers technically aren't words, but we will still included them in you want us to`,
+										`We recommend keeping this option on`,
+									]}
+								>
+									Include Numbers
+								</HelpTooltip>
+							}
 						/>
 					</Grid>
 				</Grid>
