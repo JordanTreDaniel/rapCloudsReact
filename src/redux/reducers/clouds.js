@@ -17,12 +17,14 @@ export const initialState = {
 		coloredBackground: true,
 		transparentBackground: false,
 		maskAsBackground: false,
+		useCustomColors: false,
+		useRandomColors: false,
+		colorFromMask: false,
 		colors: [], //this defaults to 'viridis' colormap i believe. Aka, empty color arr means use their default
 		repeat: true,
 		collocations: true,
 		includeNumbers: true,
 		detectEdges: true,
-		colorFromMask: false,
 		downSample: '1',
 		whiteThreshold: '240',
 	},
@@ -53,7 +55,10 @@ const setLoading = (state, action) => {
 // };
 
 const updateCloudSettings = (state, action) => {
-	const mutallyExclPropSets = [ [ 'coloredBackground', 'transparentBackground', 'maskAsBackground' ] ];
+	const mutallyExclPropSets = [
+		[ 'coloredBackground', 'transparentBackground', 'maskAsBackground' ],
+		[ 'useCustomColors', 'colorFromMask', 'useRandomColors' ],
+	];
 	const { key, val } = action;
 	const newSettings = { ...state.settings, [key]: val };
 	mutallyExclPropSets.forEach((mutallyExclProps) => {
@@ -64,11 +69,19 @@ const updateCloudSettings = (state, action) => {
 			newSettings[prop] = val ? false : state.settings[prop];
 		});
 	});
+
+	//Settings that require mask in order to be "on"
 	newSettings['contour'] =
 		newSettings.contour && newSettings.coloredBackground && newSettings.maskId && newSettings.maskDesired;
 	newSettings['maskAsBackground'] = newSettings.maskAsBackground && newSettings.maskId && newSettings.maskDesired;
+	newSettings['colorFromMask'] = newSettings.colorFromMask && newSettings.maskId && newSettings.maskDesired;
+
+	//Defaults for mutually exlc prop sets
 	newSettings['transparentBackground'] =
 		newSettings.transparentBackground || (!newSettings.coloredBackground && !newSettings.maskAsBackground);
+	newSettings['useCustomColors'] =
+		newSettings.useCustomColors || (!newSettings.useRandomColors && !newSettings.colorFromMask);
+
 	return { ...state, settings: newSettings };
 };
 

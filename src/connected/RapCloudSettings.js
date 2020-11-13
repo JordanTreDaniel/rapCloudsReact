@@ -186,37 +186,104 @@ const RapCloudSettings = (props) => {
 			<DialogTitle className={classNames(classes.dialogTitle)}>Cloud Customization Settings</DialogTitle>
 			<DialogContent>
 				<Grid id="colorsSection" container className={classNames(classes.formSection)} direction="column">
-					<Grid id="colorsSectionHead">
-						<Typography variant="h6" align="left">
-							Colors
-						</Typography>
-					</Grid>
 					<Grid
-						id="colorsSectionBody"
+						id="colorsSectionHead"
 						item
 						container
 						direction="row"
-						wrap="wrap"
-						justify="flex-start"
-						alignContent="center"
+						justify="space-between"
+						wrap="nowrap"
 						alignItems="center"
 					>
-						<ColorPicker
-							chooseColor={(hex) => updateCloudSettings('colors', uniq([ hex, ...cloudSettings.colors ]))}
+						<Typography variant="h6">Colors</Typography>
+					</Grid>
+					<Grid id="colorsSectionBody" item container direction="column" wrap="nowrap">
+						<FormControlLabel
+							item
+							control={
+								<Switch
+									checked={cloudSettings.useRandomColors}
+									onChange={(e) => {
+										updateCloudSettings(e.target.name, e.target.checked);
+									}}
+									color="secondary"
+									name="useRandomColors"
+									inputProps={{ 'aria-label': 'Toggle Random Colors' }}
+								/>
+							}
+							label="Random Colors"
 						/>
-
-						{cloudSettings.colors.map((hex, idx) => (
-							<Chip
-								label={hex}
-								className={classNames(classes.colorChip)}
-								style={{ backgroundColor: hex }}
-								onDelete={() => {
-									const newColors = [ ...cloudSettings.colors ];
-									newColors.splice(idx, 1);
-									updateCloudSettings('colors', newColors);
-								}}
+						<FormControlLabel
+							item
+							control={
+								<Switch
+									checked={cloudSettings.colorFromMask}
+									onChange={(e) => {
+										const { checked } = e.target;
+										updateCloudSettings(e.target.name, checked);
+									}}
+									disabled={!cloudSettings.maskDesired || !cloudSettings.maskId}
+									color="secondary"
+									name="colorFromMask"
+									inputProps={{ 'aria-label': 'Toggle Color from Mask' }}
+								/>
+							}
+							label="Color from Mask"
+						/>
+						<Grid id="customColorsLabelBox" item container direction="row" justify="space-between">
+							<FormControlLabel
+								item
+								control={
+									<Switch
+										checked={cloudSettings.useCustomColors}
+										onChange={(e) => {
+											const { checked } = e.target;
+											updateCloudSettings(e.target.name, checked);
+										}}
+										color="secondary"
+										name="useCustomColors"
+										inputProps={{ 'aria-label': 'Toggle Use Custom Colors' }}
+									/>
+								}
+								label="Custom Colors"
 							/>
-						))}
+							{cloudSettings.useCustomColors &&
+							!!cloudSettings.colors.length && (
+								<IconButton item onClick={() => updateCloudSettings('colors', [])} color="secondary">
+									<XIcon />
+								</IconButton>
+							)}
+						</Grid>
+						{cloudSettings.useCustomColors && (
+							<Grid
+								item
+								container
+								direction="row"
+								wrap="wrap"
+								alignContent="center"
+								alignItems="center"
+								justify="flex-start"
+							>
+								<ColorPicker
+									chooseColor={(hex) =>
+										updateCloudSettings('colors', uniq([ hex, ...cloudSettings.colors ]))}
+									disabled={cloudSettings.colorFromMask || !cloudSettings.useCustomColors}
+								/>
+								{cloudSettings.colors.map((hex, idx) => (
+									<Chip
+										label={hex}
+										className={classNames(classes.colorChip)}
+										style={{ backgroundColor: hex }}
+										onDelete={() => {
+											const newColors = [ ...cloudSettings.colors ];
+											newColors.splice(idx, 1);
+											updateCloudSettings('colors', newColors);
+										}}
+										disabled={cloudSettings.colorFromMask || !cloudSettings.useCustomColors}
+									/>
+								))}
+							</Grid>
+						)}
 					</Grid>
 				</Grid>
 				<Grid id="backgroundSection" container className={classNames(classes.formSection)} direction="column">
@@ -316,7 +383,7 @@ const RapCloudSettings = (props) => {
 										onChange={(e) => {
 											updateCloudSettings(e.target.name, e.target.checked);
 										}}
-										disabled={!cloudSettings.maskId}
+										disabled={!cloudSettings.maskDesired || !cloudSettings.maskId}
 										color="secondary"
 										name="maskAsBackground"
 										inputProps={{ 'aria-label': 'Toggle Use Mask as Background' }}

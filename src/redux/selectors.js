@@ -171,7 +171,6 @@ export const getCurrentArtist = createSelector(getMatchParams, getArtistsById, (
 /********************************************************************* */
 export const getCloudSettings = (state) => state.clouds.settings;
 export const getCloudSettingsForFlight = createSelector(getCloudSettings, (settings) => {
-	console.log({ initialCloudSettings });
 	return {
 		...settings,
 		maskId: settings.maskDesired && settings.maskId ? settings.maskId : null,
