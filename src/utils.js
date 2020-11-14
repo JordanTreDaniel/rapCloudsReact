@@ -6,6 +6,13 @@ export const getRandomInt = (max) => {
 	return Math.floor(Math.random() * Math.floor(max)) + 1;
 };
 
+export const gcd = (a, b) => {
+	if (!b) {
+		return a;
+	}
+	return gcd(b, a % b);
+};
+
 /**
  * Display a base64 URL inside an iframe in another window.
  */

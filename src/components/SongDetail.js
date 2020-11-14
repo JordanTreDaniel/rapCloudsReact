@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import paths from '../paths';
 import BackButton from './BackButton';
 import LoadingBar from './LoadingBar';
+import YoutubeVideo from './YoutubeVideo';
 import RapCloud from '../connected/RapCloud';
 import { classNames } from '../utils';
 import { Refresh } from '@material-ui/icons';
@@ -37,7 +38,6 @@ const useStyles = makeStyles((theme) => {
 			whiteSpace: 'pre-line',
 			textAlign: 'center',
 		},
-		mainContentChild: { width: '100%' },
 		loadingDiv: {
 			width: '100%',
 			'& > * + *': {
@@ -140,8 +140,10 @@ const SongDetail = (props) => {
 	const { songId } = useParams();
 	const [ lyricsExpanded, setLyricsExpanded ] = React.useState(false);
 	const [ cloudExpanded, setCloudExpanded ] = React.useState(true);
+	const [ mediaExpanded, setMediaExpanded ] = React.useState(true);
 	const toggleLyricsExpanded = () => setLyricsExpanded(!lyricsExpanded);
 	const toggleCloudExpanded = () => setCloudExpanded(!cloudExpanded);
+	const toggleMediaExpanded = () => setMediaExpanded(!mediaExpanded);
 	useEffect(
 		() => {
 			if (songId) {
@@ -159,7 +161,7 @@ const SongDetail = (props) => {
 	const [ briefedTitle, restOfTitle ] = full_title.split(/\sby\s/g);
 
 	return (
-		<Grid className={classes.songDetailContainer}>
+		<Grid id="songDetailContainer" className={classes.songDetailContainer}>
 			<AppBar color="inherit" position="static">
 				<Toolbar className={classes.toolBar}>
 					<Grid id="bubbleContainer" container direction="row" wrap="nowrap">
@@ -209,9 +211,9 @@ const SongDetail = (props) => {
 					</Grid>
 				</Toolbar>
 			</AppBar>
-			<Grid className={classes.mainContent} container>
+			<Grid id="sdMainContent" className={classes.mainContent} container>
 				<LoadingBar loading={isSongDetailLoading} />
-				<Grid item xs={12}>
+				<Grid id="sdHeader" item xs={12}>
 					<div className={classes.songHeader}>
 						<Typography variant="h3" className={classes.header}>
 							{briefedTitle}
@@ -221,8 +223,8 @@ const SongDetail = (props) => {
 						</Typography>
 					</div>
 				</Grid>
-				<Grid item xs={12} sm={6} classes={{ root: classes.mainContentChild }}>
-					<Paper className={classNames(classes.sectionPaper, classes.wordCloudPaper)} elevation={0}>
+				<Grid id="sdRapCloudSection" item xs={12} sm={6}>
+					<Paper className={classNames(classes.sectionPaper)} elevation={0}>
 						<IconButton
 							className={classNames(classes.sectionToggleBtn, classes.sectionActionBtn)}
 							onClick={toggleCloudExpanded}
@@ -242,8 +244,23 @@ const SongDetail = (props) => {
 						)}
 					</Paper>
 				</Grid>
-				<Grid item xs={12} sm={6} classes={{ root: classes.mainContentChild }}>
-					<Paper className={classNames(classes.sectionPaper, classes.lyricsPaper)} elevation={0}>
+				<Grid id="sdRapMediaSection" item xs={12} sm={6}>
+					<Paper className={classNames(classes.sectionPaper)} elevation={0}>
+						<IconButton
+							className={classNames(classes.sectionToggleBtn, classes.sectionActionBtn)}
+							onClick={toggleMediaExpanded}
+						>
+							{mediaExpanded ? <MinusIcon /> : <AddIcon />}
+						</IconButton>
+						<Typography variant="h3" classes={{ root: classes.sectionHeader }}>
+							Media
+						</Typography>
+						<LoadingBar loading={isSongDetailLoading} />
+						{mediaExpanded && <YoutubeVideo song={song} />}
+					</Paper>
+				</Grid>
+				<Grid id="sdLyricSection" item xs={12} sm={6}>
+					<Paper className={classNames(classes.sectionPaper)} elevation={0}>
 						<IconButton
 							className={classNames(classes.sectionToggleBtn, classes.sectionActionBtn)}
 							onClick={toggleLyricsExpanded}
