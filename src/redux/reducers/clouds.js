@@ -17,10 +17,10 @@ export const initialState = {
 		coloredBackground: true,
 		transparentBackground: false,
 		maskAsBackground: false,
-		useCustomColors: false,
+		useCustomColors: true,
 		useRandomColors: false,
 		colorFromMask: false,
-		colors: [], //this defaults to 'viridis' colormap i believe. Aka, empty color arr means use their default
+		colors: [ '#64c1ff', '#0091ea', '#0064b7', '#f5f5f5', '#6d6d6d' ], //this defaults to 'viridis' colormap i believe. Aka, empty color arr means use their default
 		repeat: true,
 		collocations: true,
 		includeNumbers: true,
