@@ -3,7 +3,6 @@ import { Route, Switch } from 'react-router-dom';
 import './App.css';
 import SignIn from './components/SignIn';
 import SongDetail from './components/SongDetail';
-import LoadingCloud from './components/LoadingCloud';
 import Search from './connected/Search';
 import Navbar from './connected/Navbar';
 import ArtistPage from './connected/ArtistPage';
@@ -82,7 +81,7 @@ const App = (props) => {
 							return <ArtistPage history={history} />;
 						}}
 					/>
-					{/* <Route path={'/loadingCloud'} exact render={(routerProps) => <LoadingCloud />} /> */}
+
 					{/* <Route path={'/splash'} exact render={(routerProps) => <SplashScreen />} /> */}
 					<Route render={() => <Redirect to={user ? paths.search : paths.about} />} />
 				</Switch>

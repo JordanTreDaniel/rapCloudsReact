@@ -1,15 +1,5 @@
 import React, { useState } from 'react';
-import {
-	IconButton,
-	Grid,
-	withWidth,
-	Tooltip,
-	Paper,
-	Dialog,
-	DialogContent,
-	DialogActions,
-	Button,
-} from '@material-ui/core';
+import { IconButton, Grid, withWidth, Tooltip, Paper, Dialog, DialogContent } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import RapCloudSettings from './RapCloudSettings';
 import LoadingBar from '../components/LoadingBar';

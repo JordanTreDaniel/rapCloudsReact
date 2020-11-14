@@ -64,22 +64,22 @@ const Footer = (props) => {
 				</List>
 				{/* <Typography variant="h4">Social Media:</Typography> */}
 				<Box className={classes.socialLinksBox}>
-					<a href="https://www.instagram.com/therealrapclouds/" target="_blank">
+					<a href="https://www.instagram.com/therealrapclouds/" target="_blank" rel="noopener noreferrer">
 						<IconButton id="connectOnIG" size="medium" className={classes.socialLink} onClick={null}>
 							<InstagramIcon />
 						</IconButton>
 					</a>
-					<a href="https://www.facebook.com/rap.clouds.7" target="_blank">
+					<a href="https://www.facebook.com/rap.clouds.7" target="_blank" rel="noopener noreferrer">
 						<IconButton id="connectOnFB" size="medium" className={classes.socialLink} onClick={null}>
 							<FacebookIcon />
 						</IconButton>
 					</a>
-					<a href="https://twitter.com/RapClouds" target="_blank">
+					<a href="https://twitter.com/RapClouds" target="_blank" rel="noopener noreferrer">
 						<IconButton id="connectOnTwitter" size="medium" className={classes.socialLink} onClick={null}>
 							<TwitterIcon />
 						</IconButton>
 					</a>
-					<a href="https://www.pinterest.com/rapclouds" target="_blank">
+					<a href="https://www.pinterest.com/rapclouds" target="_blank" rel="noopener noreferrer">
 						<IconButton id="connectOnTwitter" size="medium" className={classes.socialLink} onClick={null}>
 							<PinterestIcon />
 						</IconButton>
@@ -91,9 +91,14 @@ const Footer = (props) => {
 					Contact
 				</Typography>
 				<div className={classes.addressesBox}>
-					<Typography variant="small">
+					<Typography variant="body2">
 						<address>
-							<a target="_blank" href="mailto:info@rapclouds.com" className={classes.link}>
+							<a
+								target="_blank"
+								rel="noopener noreferrer"
+								href="mailto:info@rapclouds.com"
+								className={classes.link}
+							>
 								info@rapclouds.com
 							</a>
 						</address>

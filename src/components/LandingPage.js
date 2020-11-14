@@ -49,7 +49,6 @@ const useStyles = makeStyles((theme) => {
 			marginLeft: '.5em',
 			boxShadow: 'none',
 			border: `1px solid ${theme.palette.primary.dark}`,
-
 		},
 		tryItButton: {
 			backgroundColor: theme.palette.secondary.main,
@@ -68,7 +67,6 @@ const useStyles = makeStyles((theme) => {
 				backgroundColor: theme.palette.primary.light,
 				color: theme.palette.primary.contrastText,
 			},
-
 		},
 		fullSection: {
 			// minWidth: '100%',
@@ -106,7 +104,7 @@ const useStyles = makeStyles((theme) => {
 			marginTop: '2em',
 			marginBottom: '2em',
 			padding: '1em',
-			minHeight: '72vh', 
+			minHeight: '72vh',
 		},
 		blueText: {
 			color: theme.palette.secondary.light,
@@ -123,7 +121,7 @@ const useStyles = makeStyles((theme) => {
 			height: 'fit-content',
 		},
 		exampleCloud: {
-			backgroundImage: `url(\"${process.env.PUBLIC_URL}/Heaven Rap Cloud.png\")`,
+			backgroundImage: `url("${process.env.PUBLIC_URL}/Heaven Rap Cloud.png")`,
 			backgroundRepeat: 'no-repeat',
 			backgroundPosition: 'center center',
 			backgroundSize: 'contain',
@@ -176,9 +174,10 @@ const LandingPage = (props) => {
 				<Button
 					variant="contained"
 					item
-					component={"a"}
+					component={'a'}
 					target="_blank"
-					href={"https://www.instagram.com/therealrapclouds/"}
+					rel="noopener noreferrer"
+					href={'https://www.instagram.com/therealrapclouds/'}
 					color="primary"
 					disableElevation
 					endIcon={<Instagram />}
@@ -302,11 +301,11 @@ const LandingPage = (props) => {
 								<div>
 									<div className={classes.lyricQuote}>
 										<Typography variant="caption">
-											{`\"I gotta get myself together, cuz I got someplace to go \n And I'm praying when I
+											{`"I gotta get myself together, cuz I got someplace to go \n And I'm praying when I
 										get there, I see everyone I know \n I wanna go to heaven, \n I wanna go to heaven \n Said
-										I wanna go to heaven, \n I wanna go to heaven \n Do you wanna go?\"`}
+										I wanna go to heaven, \n I wanna go to heaven \n Do you wanna go?"`}
 										</Typography>
-										<br></br>
+										<br />
 										<Grid container alignItems="center">
 											<Typography
 												item

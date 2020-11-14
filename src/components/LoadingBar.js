@@ -1,6 +1,4 @@
 import React from 'react';
-import { history } from '../redux/store';
-import BackIcon from '@material-ui/icons/ArrowBackOutlined';
 import { makeStyles } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
 

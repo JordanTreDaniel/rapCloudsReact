@@ -1,8 +1,7 @@
 import React from 'react';
 // import { makeStyles } from '@material-ui/core/styles';
-import { Tooltip, IconButton } from '@material-ui/core';
 import ReactHtmlParser from 'react-html-parser';
-import { classNames, gcd } from '../utils';
+import { gcd } from '../utils';
 
 // const useStyles = makeStyles({
 // 	backButton: {

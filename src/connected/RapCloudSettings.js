@@ -170,9 +170,12 @@ const RapCloudSettings = (props) => {
 		resetCloudDefaults,
 		currentMask,
 	} = props;
-	useEffect(() => {
-		if (!masks.length) fetchMasks();
-	}, []);
+	useEffect(
+		() => {
+			if (!masks.length) fetchMasks();
+		},
+		[ masks, fetchMasks ],
+	);
 
 	const [ fullScreenMask, toggleFullScreenMask ] = useState(false);
 	const [ uploadingCustomMask, toggleUploadDialog ] = useState(false);
@@ -824,7 +827,7 @@ const RapCloudSettings = (props) => {
 														checked={cloudSettings.contour}
 														onChange={(e) => {
 															updateCloudSettings(e.target.name, e.target.checked);
-															if (parseInt(cloudSettings.contourWidth) == 0) {
+															if (parseInt(cloudSettings.contourWidth) === 0) {
 																updateCloudSettings('contourWidth', 3);
 															}
 														}}

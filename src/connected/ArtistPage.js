@@ -1,17 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect, useParams } from 'react-router-dom';
-import {
-	Typography,
-	AppBar,
-	Toolbar,
-	Grid,
-	Avatar,
-	Tooltip,
-	Paper,
-	IconButton,
-	withWidth,
-	Button,
-} from '@material-ui/core';
+import { Typography, AppBar, Toolbar, Grid, Avatar, Tooltip, Paper, IconButton, withWidth } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import MinusIcon from '@material-ui/icons/Remove';
 
@@ -126,7 +115,7 @@ const useStyles = makeStyles((theme) => {
 
 const ArtistPage = (props) => {
 	const classes = useStyles();
-	const { artist, fetchArtist, isArtistLoading, isArtistCloudLoading, width, areSongLyricsLoading } = props;
+	const { artist, fetchArtist, isArtistLoading, isArtistCloudLoading, areSongLyricsLoading } = props;
 	const { artistId } = useParams();
 	const [ cloudExpanded, setCloudExpanded ] = useState(true);
 	const [ songsExpanded, setSongsExpanded ] = useState(true);
@@ -138,7 +127,7 @@ const ArtistPage = (props) => {
 				fetchArtist(artistId);
 			}
 		},
-		[ artistId ],
+		[ artistId, fetchArtist ],
 	);
 
 	if (!artistId) return <Redirect to={paths.search} />;
@@ -153,7 +142,12 @@ const ArtistPage = (props) => {
 					<div className={classes.leftBubbles}>
 						<BackButton />
 						<Tooltip placement="bottom" title={`See ${name} on Genius`}>
-							<a href={`https://genius.com${path}`} alt={`${name} on Genius`} target="_blank">
+							<a
+								href={`https://genius.com${path}`}
+								alt={`${name} on Genius`}
+								target="_blank"
+								rel="noopener noreferrer"
+							>
 								<Avatar src="https://pbs.twimg.com/profile_images/885222003174551552/cv3KtGVS_400x400.jpg" />
 							</a>
 						</Tooltip>

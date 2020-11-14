@@ -65,7 +65,7 @@ const updateCloudSettings = (state, action) => {
 		const propIdx = mutallyExclProps.indexOf(key);
 		if (propIdx === -1) return;
 		mutallyExclProps.forEach((prop, idx) => {
-			if (idx == propIdx) return;
+			if (idx === propIdx) return;
 			newSettings[prop] = val ? false : state.settings[prop];
 		});
 	});

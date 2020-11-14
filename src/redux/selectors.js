@@ -78,7 +78,7 @@ export const getSongsList = createSelector(getSongsById, (songsById) => {
 });
 
 export const getNormedSearchTerm = createSelector(getSearchTerm, (rawSearchTerm) => {
-	const preNormed = rawSearchTerm.toLowerCase().replace(/[.,\/#!%\^\*;:{}=\-_`~()\[\]]/g, '');
+	const preNormed = rawSearchTerm.toLowerCase().replace(/[.,/#!%^*;:{}=\-_`~()[\]]/g, '');
 	const result = replaceDiacritics(preNormed);
 	return result;
 });

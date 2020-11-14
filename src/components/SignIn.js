@@ -92,7 +92,6 @@ const SignIn = (props) => {
 	let popup = null;
 	const [ popUpOpen, togglePopUp ] = useState(false);
 	const classes = useStyles();
-	console.log('classes', classes);
 	// Routinely checks the popup to re-enable the login button
 	// if the user closes the popup without authenticating.
 	const checkPopup = () => {
@@ -186,7 +185,7 @@ const SignIn = (props) => {
 						href={'#stepsSection'}
 						align="center"
 						color="primary"
-						variant="small"
+						variant="body2"
 					>
 						(for free, in only 5 seconds!)
 					</Typography>
@@ -204,14 +203,14 @@ const SignIn = (props) => {
 					wrap="wrap"
 				>
 					<Avatar
-						item
+						item="true"
 						alt="Genius Logo"
 						xs={6}
 						src={`${process.env.PUBLIC_URL}/geniusLogo.jpg`}
 						className={classNames(classes.primaryMainBacking, classes.partnerAvatar, classes.geniusAvatar)}
 					/>
 					<Avatar
-						item
+						item="true"
 						alt="RapClouds Logo"
 						xs={6}
 						src={`${process.env.PUBLIC_URL}/rapClouds.png`}
@@ -233,6 +232,7 @@ const SignIn = (props) => {
 				</Grid>
 				<Grid
 					item
+					container
 					xs={6}
 					className={classNames(classes.signUpExplanation)}
 					direction="column"
@@ -241,10 +241,10 @@ const SignIn = (props) => {
 					alignItems="center"
 					direction="column"
 				>
-					<Typography textAlign="center" variant="h5">
+					<Typography align="center" variant="h5">
 						Why do I have to sign into Genius to use Rap Clouds?
 					</Typography>
-					<Typography textAlign="center" variant="body1" className={classNames(classes.whiteLetters)}>
+					<Typography align="center" variant="body1" className={classNames(classes.whiteLetters)}>
 						Genius makes this project possible with the amazing set of data they have collected! To use that
 						data, we must have you sign in for now!
 					</Typography>
@@ -287,9 +287,9 @@ const SignIn = (props) => {
 						<Typography variant="body2">(1.5 sec) </Typography>
 					</Grid>
 
-					<Grid item xs={3} justify="center" alignItems="center">
+					<Grid item container xs={3} justify="center" alignItems="center">
 						<IconButton
-							item
+							item="true"
 							onClick={startAuth}
 							className={classNames(
 								classes.stepNumber,

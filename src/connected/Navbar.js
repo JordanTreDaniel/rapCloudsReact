@@ -209,7 +209,11 @@ const Navbar = (props) => {
 							justify="space-around"
 							className={classNames(classes.whiteLink, classes.drawerItem)}
 						>
-							<a href="https://www.instagram.com/therealrapclouds/" target="_blank">
+							<a
+								href="https://www.instagram.com/therealrapclouds/"
+								target="_blank"
+								rel="noopener noreferrer"
+							>
 								<IconButton
 									id="connectOnIG"
 									size="medium"
@@ -219,7 +223,7 @@ const Navbar = (props) => {
 									<InstagramIcon />
 								</IconButton>
 							</a>
-							<a href="https://www.facebook.com/rap.clouds.7" target="_blank">
+							<a href="https://www.facebook.com/rap.clouds.7" target="_blank" rel="noopener noreferrer">
 								<IconButton
 									id="connectOnFB"
 									size="medium"
@@ -229,7 +233,7 @@ const Navbar = (props) => {
 									<FacebookIcon />
 								</IconButton>
 							</a>
-							<a href="https://twitter.com/RapClouds" target="_blank">
+							<a href="https://twitter.com/RapClouds" target="_blank" rel="noopener noreferrer">
 								<IconButton
 									id="connectOnTwitter"
 									size="medium"
@@ -239,7 +243,7 @@ const Navbar = (props) => {
 									<TwitterIcon />
 								</IconButton>
 							</a>
-							<a href="https://www.pinterest.com/rapclouds" target="_blank">
+							<a href="https://www.pinterest.com/rapclouds" target="_blank" rel="noopener noreferrer">
 								<IconButton
 									id="connectOnTwitter"
 									size="medium"

@@ -132,7 +132,7 @@ const SongDetail = (props) => {
 		fetchSongDetails,
 		isSongDetailLoading,
 		isWordCloudLoading,
-		width,
+		// width,
 		fetchSongCloud,
 		fetchSongLyrics,
 		areSongLyricsLoading,
@@ -150,7 +150,7 @@ const SongDetail = (props) => {
 				fetchSongDetails(songId);
 			}
 		},
-		[ songId ],
+		[ songId, fetchSongDetails ],
 	);
 
 	if (!songId) return <Redirect to={paths.search} />;
@@ -177,7 +177,12 @@ const SongDetail = (props) => {
 						>
 							<BackButton />
 							<Tooltip placement="bottom" title={`See ${briefedTitle} on Genius`}>
-								<a href={`https://genius.com${path}`} alt={`${briefedTitle} on Genius`} target="_blank">
+								<a
+									href={`https://genius.com${path}`}
+									alt={`${briefedTitle} on Genius`}
+									target="_blank"
+									rel="noopener noreferrer"
+								>
 									<Avatar src="https://pbs.twimg.com/profile_images/885222003174551552/cv3KtGVS_400x400.jpg" />
 								</a>
 							</Tooltip>
@@ -218,7 +223,7 @@ const SongDetail = (props) => {
 						<Typography variant="h3" className={classes.header}>
 							{briefedTitle}
 						</Typography>
-						<Typography variant="small" className={classes.header}>
+						<Typography variant="body2" className={classes.header}>
 							{`by ${restOfTitle}`}
 						</Typography>
 					</div>
