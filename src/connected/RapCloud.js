@@ -52,18 +52,18 @@ const useStyles = makeStyles((theme) => {
 		cloudActionsBottom: {},
 		attnGrabber: {
 			backgroundColor: theme.palette.primary.dark,
-			color: theme.palette.secondary.light,
+			color: theme.palette.secondary.main,
 			'& a': {
 				textDecoration: 'none',
-				color: theme.palette.secondary.light,
+				color: theme.palette.secondary.main,
 				backgroundColor: theme.palette.primary.dark,
 			},
 			'&:hover': {
-				backgroundColor: theme.palette.secondary.light,
+				backgroundColor: theme.palette.secondary.main,
 				color: theme.palette.primary.dark,
 				'& a': {
 					textDecoration: 'none',
-					backgroundColor: theme.palette.secondary.light,
+					backgroundColor: theme.palette.secondary.main,
 					color: theme.palette.primary.dark,
 				},
 			},
@@ -72,7 +72,7 @@ const useStyles = makeStyles((theme) => {
 			position: 'absolute',
 			width: '2.51em',
 			height: '2.51em',
-			border: `1px solid ${theme.palette.secondary.light}`,
+			border: `1px solid ${theme.palette.secondary.main}`,
 			'& *': {
 				fontSize: '1.5em',
 			},

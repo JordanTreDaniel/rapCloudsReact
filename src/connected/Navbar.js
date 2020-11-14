@@ -68,7 +68,7 @@ const useStyles = makeStyles((theme) => {
 		drawer: {
 			backgroundColor: theme.palette.primary.main,
 			color: theme.palette.primary.contrastText,
-			cursor: 'pointer'
+			cursor: 'pointer',
 		},
 		drawerItem: {
 			fontSize: '2em',
@@ -89,7 +89,7 @@ const useStyles = makeStyles((theme) => {
 		},
 		drawerToggler: {
 			backgroundColor: theme.palette.primary.dark,
-			color: theme.palette.secondary.light,
+			color: theme.palette.secondary.main,
 			margin: '.5em',
 			width: '2em',
 			height: '2em',
@@ -210,22 +210,42 @@ const Navbar = (props) => {
 							className={classNames(classes.whiteLink, classes.drawerItem)}
 						>
 							<a href="https://www.instagram.com/therealrapclouds/" target="_blank">
-								<IconButton id="connectOnIG" size="medium" className={classes.socialLink} onClick={null}>
+								<IconButton
+									id="connectOnIG"
+									size="medium"
+									className={classes.socialLink}
+									onClick={null}
+								>
 									<InstagramIcon />
 								</IconButton>
 							</a>
 							<a href="https://www.facebook.com/rap.clouds.7" target="_blank">
-								<IconButton id="connectOnFB" size="medium" className={classes.socialLink} onClick={null}>
+								<IconButton
+									id="connectOnFB"
+									size="medium"
+									className={classes.socialLink}
+									onClick={null}
+								>
 									<FacebookIcon />
 								</IconButton>
 							</a>
 							<a href="https://twitter.com/RapClouds" target="_blank">
-								<IconButton id="connectOnTwitter" size="medium" className={classes.socialLink} onClick={null}>
+								<IconButton
+									id="connectOnTwitter"
+									size="medium"
+									className={classes.socialLink}
+									onClick={null}
+								>
 									<TwitterIcon />
 								</IconButton>
 							</a>
 							<a href="https://www.pinterest.com/rapclouds" target="_blank">
-								<IconButton id="connectOnTwitter" size="medium" className={classes.socialLink} onClick={null}>
+								<IconButton
+									id="connectOnTwitter"
+									size="medium"
+									className={classes.socialLink}
+									onClick={null}
+								>
 									<PinterestIcon />
 								</IconButton>
 							</a>

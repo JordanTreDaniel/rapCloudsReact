@@ -82,7 +82,7 @@ const useStyles = makeStyles((theme) => {
 		},
 		sectionActionBtn: {
 			backgroundColor: theme.palette.primary.dark,
-			color: theme.palette.secondary.light,
+			color: theme.palette.secondary.main,
 			margin: '.5em',
 			width: '2em',
 			height: '2em',
