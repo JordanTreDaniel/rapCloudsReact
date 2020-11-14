@@ -16,7 +16,7 @@ const HelpTooltip = (props) => {
 		<Grid item container direction="row" justify="flex-start" wrap="nowrap" alignItems="center">
 			{children}
 			<Tooltip
-				title={<List>{titles.map((title) => <ListItem>{title}</ListItem>)}</List>}
+				title={<List>{titles.map((title, idx) => <ListItem key={idx}>{title}</ListItem>)}</List>}
 				placement={placement}
 				enterTouchDelay={0}
 				enterNextDelay={222}

@@ -207,7 +207,7 @@ const RapCloudSettings = (props) => {
 					</Grid>
 					<Grid id="colorsSectionBody" item container direction="column" wrap="nowrap">
 						<FormControlLabel
-							item
+							item="true"
 							control={
 								<Switch
 									checked={cloudSettings.useRandomColors}
@@ -226,7 +226,7 @@ const RapCloudSettings = (props) => {
 							}
 						/>
 						<FormControlLabel
-							item
+							item="true"
 							control={
 								<Switch
 									checked={cloudSettings.colorFromMask}
@@ -255,7 +255,7 @@ const RapCloudSettings = (props) => {
 						/>
 						<Grid id="customColorsLabelBox" item container direction="row" justify="space-between">
 							<FormControlLabel
-								item
+								item="true"
 								control={
 									<Switch
 										checked={cloudSettings.useCustomColors}
@@ -283,7 +283,11 @@ const RapCloudSettings = (props) => {
 							/>
 							{cloudSettings.useCustomColors &&
 							!!cloudSettings.colors.length && (
-								<IconButton item onClick={() => updateCloudSettings('colors', [])} color="secondary">
+								<IconButton
+									item="true"
+									onClick={() => updateCloudSettings('colors', [])}
+									color="secondary"
+								>
 									<XIcon />
 								</IconButton>
 							)}
@@ -306,6 +310,7 @@ const RapCloudSettings = (props) => {
 								{cloudSettings.colors.map((hex, idx) => (
 									<Chip
 										label={hex}
+										key={idx}
 										className={classNames(classes.colorChip)}
 										style={{ backgroundColor: hex }}
 										onDelete={() => {
@@ -351,7 +356,7 @@ const RapCloudSettings = (props) => {
 							alignItems="center"
 						>
 							<FormControlLabel
-								item
+								item="true"
 								control={
 									<Switch
 										checked={cloudSettings.coloredBackground}
@@ -375,7 +380,7 @@ const RapCloudSettings = (props) => {
 								}
 							/>
 							<ColorPicker
-								item
+								item="true"
 								disabled={!cloudSettings.coloredBackground}
 								anchorStyles={{
 									backgroundColor: cloudSettings.backgroundColor,
@@ -400,7 +405,7 @@ const RapCloudSettings = (props) => {
 							alignItems="center"
 						>
 							<FormControlLabel
-								item
+								item="true"
 								control={
 									<Switch
 										checked={cloudSettings.transparentBackground}
@@ -431,7 +436,7 @@ const RapCloudSettings = (props) => {
 							alignItems="center"
 						>
 							<FormControlLabel
-								item
+								item="true"
 								control={
 									<Switch
 										checked={cloudSettings.maskAsBackground}
@@ -465,7 +470,7 @@ const RapCloudSettings = (props) => {
 						alignItems="center"
 					>
 						<FormControlLabel
-							item
+							item="true"
 							control={
 								<Switch
 									checked={cloudSettings.maskDesired}
@@ -523,7 +528,7 @@ const RapCloudSettings = (props) => {
 									onClick={() => toggleUploadDialog(true)}
 								>
 									<Tooltip title="Upload Your Own Mask" placement="top-start">
-										<IconButton item className={classes.addMaskBtn}>
+										<IconButton item="true" className={classes.addMaskBtn}>
 											<AddIcon />
 										</IconButton>
 									</Tooltip>
@@ -628,10 +633,10 @@ const RapCloudSettings = (props) => {
 										</Dialog>
 									)}
 								</Grid>
-								{masks.map((mask) => {
+								{masks.map((mask, idx) => {
 									const chosen = mask.id === cloudSettings.maskId;
 									return (
-										<Box className={classNames(classes.maskThumbnailBox)}>
+										<Box className={classNames(classes.maskThumbnailBox)} key={idx}>
 											{mask.userId === mongoUserId && (
 												<IconButton
 													className={classNames(classes.maskAction, classes.whiteText)}
@@ -643,7 +648,7 @@ const RapCloudSettings = (props) => {
 												</IconButton>
 											)}
 											<img
-												item
+												item="true"
 												className={classNames(
 													classes.maskThumbnail,
 													chosen && classes.blueBorder,
@@ -681,8 +686,9 @@ const RapCloudSettings = (props) => {
 										justify="space-evenly"
 										alignItems="center"
 									>
-										<Tooltip item title="Show Fullscreen View" placement="right">
+										<Tooltip title="Show Fullscreen View" placement="right">
 											<Box
+												item="true"
 												className={classNames(
 													classes.choseMaskThumbnailBox,
 													classes.maskThumbnailBox,
@@ -707,7 +713,7 @@ const RapCloudSettings = (props) => {
 												/>
 											</Box>
 										</Tooltip>
-										<FormGroup item column>
+										<FormGroup item="true">
 											<TextField
 												className={classNames(classes.oneEmMarginRight)}
 												onChange={(e) => {
@@ -729,7 +735,7 @@ const RapCloudSettings = (props) => {
 												id="downSample"
 												value={cloudSettings.downSample}
 												type="number"
-												autoComplete={false}
+												autoComplete={'off'}
 											/>
 
 											<FormControlLabel
@@ -821,7 +827,7 @@ const RapCloudSettings = (props) => {
 											alignItems="center"
 										>
 											<FormControlLabel
-												item
+												item="true"
 												control={
 													<Switch
 														checked={cloudSettings.contour}
@@ -870,7 +876,7 @@ const RapCloudSettings = (props) => {
 													alignItems="center"
 												>
 													<TextField
-														item
+														item="true"
 														className={classNames(classes.oneEmMarginRight)}
 														onChange={(e) =>
 															updateCloudSettings('contourWidth', e.target.value)}
@@ -888,7 +894,7 @@ const RapCloudSettings = (props) => {
 														id="contourWidth"
 														value={cloudSettings.contourWidth}
 														type="number"
-														autoComplete={false}
+														autoComplete={'off'}
 													/>
 													<ColorPicker
 														anchorStyles={{
@@ -914,7 +920,7 @@ const RapCloudSettings = (props) => {
 						<Dialog open={fullScreenMask} onClose={() => toggleFullScreenMask(false)}>
 							<DialogContent className={classes.fullScreenMaskContainer}>
 								<img
-									item
+									item="true"
 									className={classNames(classes.fullScreenMask)}
 									src={`data:image/png;base64, ${currentMask.base64Img}`}
 									alt={currentMask.name}
@@ -936,7 +942,7 @@ const RapCloudSettings = (props) => {
 					</Grid>
 					<Grid item container direction="column">
 						<TextField
-							item
+							item="true"
 							className={classNames(classes.oneEmMarginRight)}
 							onChange={(e) => {
 								let val = e.target.value;
@@ -951,10 +957,10 @@ const RapCloudSettings = (props) => {
 							id="cloudWidth"
 							value={cloudSettings.width}
 							type="number"
-							autoComplete={false}
+							autoComplete={'off'}
 						/>
 						<TextField
-							item
+							item="true"
 							className={classNames(classes.oneEmMarginRight)}
 							onChange={(e) => {
 								let val = e.target.value;
@@ -969,10 +975,10 @@ const RapCloudSettings = (props) => {
 							id="cloudHeight"
 							value={cloudSettings.height}
 							type="number"
-							autoComplete={false}
+							autoComplete={'off'}
 						/>
 						<TextField
-							item
+							item="true"
 							className={classNames(classes.oneEmMarginRight)}
 							onChange={(e) => {
 								let val = e.target.value;
@@ -993,7 +999,7 @@ const RapCloudSettings = (props) => {
 							id="whiteThreshold"
 							value={cloudSettings.whiteThreshold}
 							type="number"
-							autoComplete={false}
+							autoComplete={'off'}
 						/>
 						<FormControlLabel
 							control={

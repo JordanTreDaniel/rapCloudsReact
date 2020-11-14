@@ -11,7 +11,6 @@ import {
 	Chip,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import * as selectors from '../redux/selectors';
 import { updateCloudSettings } from '../redux/actions';
 import { connect } from 'react-redux';
 import { classNames } from '../utils';
@@ -53,7 +52,17 @@ const useStyles = makeStyles((theme) => {
 
 const ColorPicker = (props) => {
 	const classes = useStyles();
-	const { chooseColor, width, title, anchorStyles = {}, initialColor, label, disabled = false, ...rest } = props;
+	const {
+		chooseColor,
+		width,
+		title,
+		anchorStyles = {},
+		initialColor,
+		label,
+		disabled = false,
+		updateCloudSettings,
+		...rest
+	} = props;
 	const [ dialogOpen, toggleDialog ] = useState(false);
 	const [ newColor, changeNewColor ] = useState(initialColor || false);
 
@@ -113,8 +122,6 @@ const ColorPicker = (props) => {
 	);
 };
 
-const mapState = (state) => ({
-	cloudSettings: selectors.getCloudSettings(state),
-});
+const mapState = (state) => ({});
 
 export default connect(mapState, { updateCloudSettings })(withWidth()(ColorPicker));
