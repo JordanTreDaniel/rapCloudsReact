@@ -41,6 +41,9 @@ const useStyles = makeStyles((theme) => {
 			overflow: 'hidden',
 			backgroundColor: theme.palette.primary.dark,
 		},
+		square: {
+			borderRadius: 0,
+		},
 	};
 });
 const App = (props) => {
@@ -54,9 +57,9 @@ const App = (props) => {
 		return <Redirect to={paths.signIn} />;
 	}
 	return appIsHydrated ? (
-		<Paper className={classNames(classes.appContainer)} square elevation={0}>
+		<Paper className={classNames(classes.appContainer, classes.square)} elevation={0}>
 			<Navbar />
-			<Paper className={classNames(classes.pagesContainer)} square elevation={0}>
+			<Paper className={classNames(classes.pagesContainer, classes.square)} elevation={0}>
 				<Switch>
 					<Route path={paths.about} exact render={() => <LandingPage user={user} />} />
 					<Route
@@ -89,7 +92,7 @@ const App = (props) => {
 			<Footer />
 			<Paper
 				id="copyright"
-				square
+				className={classes.square}
 				elevation={0}
 				style={{
 					height: '2em',

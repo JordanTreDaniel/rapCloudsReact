@@ -239,7 +239,6 @@ const SignIn = (props) => {
 					justify="center"
 					alignContent="center"
 					alignItems="center"
-					direction="column"
 				>
 					<Typography align="center" variant="h5">
 						Why do I have to sign into Genius to use Rap Clouds?

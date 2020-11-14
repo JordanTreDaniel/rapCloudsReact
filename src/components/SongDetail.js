@@ -203,7 +203,7 @@ const SongDetail = (props) => {
 									<Tooltip placement="bottom" title={`See ${artist.name}`} key={idx}>
 										<Link to={`/cloudmakers/${artist.id}`}>
 											<Avatar
-												item
+												item="true"
 												className={classes.artistBubble}
 												src={artist.header_image_url}
 												alt={`Link to ${artist.name}'s page`}

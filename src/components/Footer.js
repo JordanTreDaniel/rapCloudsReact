@@ -44,12 +44,15 @@ const useStyles = makeStyles((theme) => ({
 		color: theme.palette.primary.main,
 		fontWeight: theme.typography.fontWeightBold,
 	},
+	square: {
+		borderRadius: 0,
+	},
 }));
 
 const Footer = (props) => {
 	const classes = useStyles();
 	return (
-		<Grid container square elevation={0} className={classes.footer}>
+		<Grid container elevation={0} className={classNames(classes.footer, classes.square)}>
 			<Grid item xs={12} sm={6} id="two" className={classNames(classes.footerSection, classes.two)}>
 				<Typography variant="h4" className={classes.footerHeader}>
 					Links
@@ -91,7 +94,7 @@ const Footer = (props) => {
 					Contact
 				</Typography>
 				<div className={classes.addressesBox}>
-					<Typography variant="body2">
+					<Typography variant="h6">
 						<address>
 							<a
 								target="_blank"
