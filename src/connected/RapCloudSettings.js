@@ -274,7 +274,7 @@ const RapCloudSettings = (props) => {
 													on your mask image.`,
 										]}
 									>
-										Color from Mask
+										Choose Custom Colors
 									</HelpTooltip>
 								}
 							/>
