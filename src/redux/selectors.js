@@ -112,7 +112,7 @@ export const getSearchedSongsList = createSelector(
 
 export const getCurrentSong = createSelector(getSongsById, getCurrentSongId, (songsById, songId) => {
 	if (!songId) {
-		console.warn(`The "getCurrentSong" selector has been called with no songId detected in match params`);
+		// console.warn(`The "getCurrentSong" selector has been called with no songId detected in match params`);
 		return null;
 	}
 	const song = songsById[songId] || {};
@@ -136,7 +136,7 @@ export const getArtistsSongs = createSelector(
 	(songsList, matchParams, artistsById) => {
 		const { artistId } = matchParams;
 		if (!artistId) {
-			console.warn(`The "getArtistsSongs" selector has been called with no artistId detected in match params`);
+			// console.warn(`The "getArtistsSongs" selector has been called with no artistId detected in match params`);
 			return [];
 		}
 		const artist = artistsById[artistId];
@@ -160,7 +160,7 @@ export const getArtistFromId = createSelector(
 export const getCurrentArtist = createSelector(getMatchParams, getArtistsById, (matchParams, artistsById) => {
 	const { artistId } = matchParams;
 	if (!artistId) {
-		console.warn(`The "getCurrentArtist" selector has been called with no artistId detected in match params`);
+		// console.warn(`The "getCurrentArtist" selector has been called with no artistId detected in match params`);
 		return null;
 	}
 	const currentArtist = artistsById[artistId];

@@ -547,7 +547,6 @@ const RapCloudSettings = (props) => {
 													withIcon={true}
 													buttonText="Choose image"
 													onChange={([ pic ]) => {
-														console.log('pic', pic);
 														const reader = new FileReader();
 														let { name, type } = pic;
 														name = name.split('.')[0];
@@ -880,7 +879,6 @@ const RapCloudSettings = (props) => {
 														className={classNames(classes.oneEmMarginRight)}
 														onChange={(e) =>
 															updateCloudSettings('contourWidth', e.target.value)}
-														label=""
 														label={
 															<HelpTooltip
 																titles={[
