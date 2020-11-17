@@ -5,7 +5,7 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { Provider } from 'react-redux';
 import { store, persistor } from './redux/store';
-import { Switch, Route, Link } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 import { ConnectedRouter } from 'connected-react-router';
 import { PersistGate } from 'redux-persist/es/integration/react';
 import { history } from './redux/store';
@@ -13,7 +13,6 @@ import SplashScreen from './components/SplashScreen';
 import ErrorBoundary from './components/ErrorBoundary';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { Paper } from '@material-ui/core';
-import { defaultShadows } from './utils';
 if (process.env.NODE_ENV === 'development') {
 	window.store = store;
 }
@@ -61,12 +60,17 @@ const theme = createMuiTheme({
 	// }),
 	type: 'dark',
 });
-
+history.listen((event, method) => {
+	const appContainer = document.getElementById('appContainer');
+	if (appContainer) {
+		appContainer.scrollTop = 0;
+	}
+});
 ReactDOM.render(
 	<React.StrictMode>
 		<Provider store={store}>
 			<ThemeProvider theme={theme}>
-				<Paper style={{ minHeight: '100vh', minWidth: '100vw' }} square elevation={0}>
+				<Paper id={'appContainer'} style={{ minHeight: '100vh', minWidth: '100vw' }} square elevation={0}>
 					<PersistGate loading={<SplashScreen />} onBeforeLift={onBeforeLift} persistor={persistor}>
 						<ConnectedRouter history={history}>
 							<Switch>

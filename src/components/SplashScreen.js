@@ -5,7 +5,7 @@ import { Paper } from '@material-ui/core';
 const useStyles = makeStyles((theme) => ({
 	logoDiv: {
 		margin: 'auto',
-		backgroundImage: `url(\"${process.env.PUBLIC_URL}/rapClouds.png\")`,
+		backgroundImage: `url("${process.env.PUBLIC_URL}/rapClouds.png")`,
 		backgroundRepeat: 'no-repeat',
 		backgroundPosition: 'center center',
 		backgroundSize: 'cover',

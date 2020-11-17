@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import LoadingCloud from '../components/LoadingCloud';
 import { Input, IconButton } from '@material-ui/core';
 import { searchSongs, setSongSearchTerm } from '../redux/actions';
 import * as selectors from '../redux/selectors';
@@ -12,12 +11,11 @@ const DebouncedTextField = DebouncedInput(Input, { timeout: 639 });
 
 const useStyles = makeStyles((theme) => ({
 	mainSearchInput: {
-		fontSize: '3em',
+		fontSize: '4em',
 		fontWeight: 560,
-		marginRight: '3vw',
-		marginLeft: '9vw',
+		margin: '.12em 3vw .12em 9vw',
 		color: theme.palette.secondary.main,
-		opacity: '.5',
+		opacity: '.72',
 	},
 	masterBox: {
 		backgroundColor: theme.palette.primary.dark,
@@ -26,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
 	searchIcon: {
 		color: theme.palette.secondary.contrastText,
 		backgroundColor: theme.palette.secondary.main,
-		opacity: '.5',
+		opacity: '.72',
 		marginRight: '9vw',
 		'&:hover': {
 			color: theme.palette.secondary.contrastText,
@@ -40,11 +38,14 @@ const Search = (props) => {
 	const search = () => {
 		searchSongs(searchTerm);
 	};
-	useEffect(() => {
-		if (!songs.length && !searchTerm.length) {
-			searchSongs('drake');
-		}
-	}, []);
+	useEffect(
+		() => {
+			if (!songs.length && !searchTerm.length) {
+				searchSongs('drake');
+			}
+		},
+		[ songs, searchTerm, searchSongs ],
+	);
 	const classes = useStyles();
 	return (
 		<div className={classes.masterBox}>
@@ -52,9 +53,10 @@ const Search = (props) => {
 				<DebouncedTextField
 					type="text"
 					onChange={(e) => {
-						const { value: searchTerm } = e.target;
-						setSongSearchTerm(searchTerm);
-						searchTerm.length && search(searchTerm);
+						const { value: newSearchTerm } = e.target;
+						setSongSearchTerm(newSearchTerm);
+						console.log({ newSearchTerm });
+						newSearchTerm.length && search(newSearchTerm);
 					}}
 					value={searchTerm}
 					disableUnderline

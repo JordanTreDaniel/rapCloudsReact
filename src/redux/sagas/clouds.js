@@ -1,7 +1,7 @@
-import { call, select, takeLatest, put } from 'redux-saga/effects';
+import { call, select, takeLatest, put, takeEvery } from 'redux-saga/effects';
 import axios from 'axios';
 import { getCloudSettingsForFlight, getUserMongoId } from '../selectors';
-import { FETCH_MASKS, ADD_CUSTOM_MASK } from '../actionTypes';
+import { FETCH_MASKS, ADD_CUSTOM_MASK, DELETE_MASK } from '../actionTypes';
 
 const REACT_APP_SERVER_ROOT =
 	process.env.NODE_ENV === 'development' ? 'http://localhost:3333' : 'https://rap-clouds-server.herokuapp.com';
@@ -143,6 +143,57 @@ export function* addCustomMask(action) {
 }
 
 function* watchAddCustomMask() {
-	yield takeLatest(ADD_CUSTOM_MASK.start, addCustomMask);
+	yield takeEvery(ADD_CUSTOM_MASK.start, addCustomMask);
 }
-export default [ watchFetchMasks, watchAddCustomMask ];
+
+const apiDeleteMask = async (maskId) => {
+	const res = await axios({
+		method: 'post',
+		url: `${REACT_APP_SERVER_ROOT}/deleteMask`,
+		headers: {
+			'Content-Type': 'application/json',
+			// 'Accept-Encoding': 'gzip',
+			// 'Access-Control-Allow-Origin': '*'
+			// 'Access-Control-Allow-Headers': 'Content-Type',
+			// Accept: 'application/json'
+		},
+		data: {
+			maskId,
+		},
+	});
+	const { status, statusText, data } = res;
+	const { message } = data;
+	if (status === 200) {
+		return { message };
+	}
+
+	return { error: { status, statusText } };
+};
+
+export function* deleteMask(action) {
+	const { maskId } = action;
+	const userId = yield select(getUserMongoId);
+	if (!maskId || !userId) {
+		yield put({ type: DELETE_MASK.cancellation });
+	}
+	try {
+		const { error } = yield call(apiDeleteMask, maskId);
+		if (error) {
+			console.log('Something went wrong in fetchMasks', error);
+			return { error };
+		} else {
+			yield put({ type: DELETE_MASK.success, maskId });
+			yield put({ type: FETCH_MASKS.start });
+			return maskId;
+		}
+	} catch (err) {
+		console.log('Something went wrong', err);
+		yield put({ type: DELETE_MASK.failure, err });
+		return { error: err };
+	}
+}
+
+function* watchDeleteMask() {
+	yield takeEvery(DELETE_MASK.start, deleteMask);
+}
+export default [ watchFetchMasks, watchAddCustomMask, watchDeleteMask ];

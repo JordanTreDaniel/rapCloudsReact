@@ -3,7 +3,6 @@ import {
 	ADD_SONGS,
 	SEARCH_SONGS,
 	FETCH_SONG_DETAILS,
-	ADD_SONG_DETAILS,
 	SET_SONG_SEARCH_TERM,
 	FETCH_ARTIST,
 	SIGN_OUT,
@@ -13,6 +12,8 @@ import {
 	FETCH_MASKS,
 	ADD_CUSTOM_MASK,
 	RESET_CLOUD_DEFAULTS,
+	DELETE_MASK,
+	FETCH_SONG_LYRICS,
 } from './actionTypes';
 import normalizeLyrics from './utils/normalizeLyrics';
 
@@ -25,7 +26,11 @@ export const addSongs = (songs = [ { name: 'We finally made it.' } ]) => {
 };
 
 export const searchSongs = (searchTerm = null) => {
-	return { type: SEARCH_SONGS, searchTerm };
+	return { type: SEARCH_SONGS.start, searchTerm };
+};
+
+export const fetchSongLyrics = (songId, songPath) => {
+	return { type: FETCH_SONG_LYRICS.start, songId, songPath, forceFetch: true };
 };
 
 export const setSongSearchTerm = (searchTerm = '') => {
@@ -33,15 +38,11 @@ export const setSongSearchTerm = (searchTerm = '') => {
 };
 
 export const fetchSongDetails = (songId) => {
-	return { type: FETCH_SONG_DETAILS, songId };
+	return { type: FETCH_SONG_DETAILS.start, songId };
 };
 
 export const fetchArtist = (artistId) => {
 	return { type: FETCH_ARTIST.start, artistId };
-};
-
-export const addSongDetails = (song) => {
-	return { type: ADD_SONG_DETAILS, song };
 };
 
 export const signOut = () => {
@@ -66,6 +67,10 @@ export const fetchMasks = () => {
 
 export const addCustomMask = (newMask) => {
 	return { type: ADD_CUSTOM_MASK.start, newMask };
+};
+
+export const deleteMask = (maskId) => {
+	return { type: DELETE_MASK.start, maskId };
 };
 
 export const resetCloudDefaults = () => {

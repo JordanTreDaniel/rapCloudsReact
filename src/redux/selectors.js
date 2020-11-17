@@ -53,8 +53,11 @@ export const areSongsLoading = (state) => state.songs.loading;
 export const isSongSearchLoading = (state) => state.songs.searchLoading;
 export const isSongDetailLoading = (state) => state.songs.songDetailLoading;
 export const isWordCloudLoading = (state) => state.songs.wordCloudLoading;
+export const areSongLyricsLoading = (state) => state.songs.lyricsLoading;
 
-export const getCurrentSongId = createSelector(getMatchParams, (matchParams) => matchParams.songId);
+export const getCurrentSongId = createSelector(getMatchParams, (matchParams) => {
+	return matchParams.songId;
+});
 
 export const getSongsById = (state) => {
 	const { byId } = state.songs;
@@ -75,7 +78,7 @@ export const getSongsList = createSelector(getSongsById, (songsById) => {
 });
 
 export const getNormedSearchTerm = createSelector(getSearchTerm, (rawSearchTerm) => {
-	const preNormed = rawSearchTerm.toLowerCase().replace(/[.,\/#!%\^\*;:{}=\-_`~()\[\]]/g, '');
+	const preNormed = rawSearchTerm.toLowerCase().replace(/[.,/#!%^*;:{}=\-_`~()[\]]/g, '');
 	const result = replaceDiacritics(preNormed);
 	return result;
 });
@@ -109,7 +112,7 @@ export const getSearchedSongsList = createSelector(
 
 export const getCurrentSong = createSelector(getSongsById, getCurrentSongId, (songsById, songId) => {
 	if (!songId) {
-		console.warn(`The "getCurrentSong" selector has been called with no songId detected in match params`);
+		// console.warn(`The "getCurrentSong" selector has been called with no songId detected in match params`);
 		return null;
 	}
 	const song = songsById[songId] || {};
@@ -122,23 +125,33 @@ export const getCurrentSong = createSelector(getSongsById, getCurrentSongId, (so
 
 //Artist
 /********************************************************************* */
-export const getArtistsSongs = createSelector(getSongsList, getMatchParams, (songsList, matchParams) => {
-	const { artistId } = matchParams;
-	if (!artistId) {
-		console.warn(`The "getArtistsSongs" selector has been called with no artistId detected in match params`);
-		return [];
-	}
-	const artistsSongs = songsList.filter((song) => String(song.primary_artist.id) === String(artistId));
-	return artistsSongs;
-});
-
-export const getArtistCloud = createSelector();
-//get their songs
-//result fn
-//pattern-match the other cloud selector
-
 export const getArtistsById = (state) => state.artists.byId;
+export const isArtistLoading = (state) => state.artists.artistLoading;
+export const isArtistCloudLoading = (state) => state.artists.artistCloudLoading;
 
+export const getArtistsSongs = createSelector(
+	getSongsList,
+	getMatchParams,
+	getArtistsById,
+	(songsList, matchParams, artistsById) => {
+		const { artistId } = matchParams;
+		if (!artistId) {
+			// console.warn(`The "getArtistsSongs" selector has been called with no artistId detected in match params`);
+			return [];
+		}
+		const artist = artistsById[artistId];
+		const { name } = artist;
+		const artistsSongs = songsList.filter((song) => {
+			return (
+				String(song.primary_artist.id) === String(artistId) ||
+				(song.featured_artists &&
+					song.featured_artists.some((artist) => String(artist.id) === String(artistId))) ||
+				song.full_title.toLowerCase().match(name.toLowerCase())
+			);
+		});
+		return artistsSongs;
+	},
+);
 export const getArtistFromId = createSelector(
 	getArtistsById,
 	(_, artistId) => artistId,
@@ -147,21 +160,17 @@ export const getArtistFromId = createSelector(
 export const getCurrentArtist = createSelector(getMatchParams, getArtistsById, (matchParams, artistsById) => {
 	const { artistId } = matchParams;
 	if (!artistId) {
-		console.warn(`The "getCurrentArtist" selector has been called with no artistId detected in match params`);
+		// console.warn(`The "getCurrentArtist" selector has been called with no artistId detected in match params`);
 		return null;
 	}
 	const currentArtist = artistsById[artistId];
 	return currentArtist;
 });
 
-export const isArtistLoading = (state) => state.artists.artistLoading;
-export const isArtistCloudLoading = (state) => state.artists.artistCloudLoading;
-
 //Clouds
 /********************************************************************* */
 export const getCloudSettings = (state) => state.clouds.settings;
 export const getCloudSettingsForFlight = createSelector(getCloudSettings, (settings) => {
-	console.log({ initialCloudSettings });
 	return {
 		...settings,
 		maskId: settings.maskDesired && settings.maskId ? settings.maskId : null,
@@ -174,5 +183,23 @@ export const getCloudSettingsForFlight = createSelector(getCloudSettings, (setti
 		downSample: String(settings.downSample).length ? settings.downSample : initialCloudSettings.downSample,
 	};
 });
-export const getMasks = (state) => state.clouds.masksById;
+
+export const getMasksById = (state) => state.clouds.masksById;
 export const areMasksLoading = (state) => state.clouds.masksLoading;
+export const getMasks = createSelector(getMasksById, (masksById) => {
+	const customMasks = [],
+		stockMasks = [];
+	Object.values(masksById).forEach((mask) => {
+		if (mask.userId) {
+			customMasks.push(mask);
+		} else {
+			stockMasks.push(mask);
+		}
+	});
+	return [ ...customMasks, ...stockMasks ];
+});
+export const getCurrentMask = createSelector(
+	getMasksById,
+	getCloudSettings,
+	(masksById, cloudSettings) => masksById[cloudSettings.maskId],
+);

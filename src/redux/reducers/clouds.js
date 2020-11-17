@@ -1,6 +1,6 @@
 // import { FETCHCLOUD } from '../actionTypes';
 
-import { UPDATE_CLOUD_SETTINGS, FETCH_MASKS, ADD_CUSTOM_MASK, RESET_CLOUD_DEFAULTS } from '../actionTypes';
+import { UPDATE_CLOUD_SETTINGS, FETCH_MASKS, ADD_CUSTOM_MASK, RESET_CLOUD_DEFAULTS, DELETE_MASK } from '../actionTypes';
 
 export const initialState = {
 	byId: {},
@@ -10,18 +10,22 @@ export const initialState = {
 		maskDesired: true,
 		maskId: null,
 		contour: false,
-		contourWidth: '0',
+		contourWidth: '1',
 		contourColor: '#ffffff',
 		stopWords: [ 'and', 'but', 'the', 'to', 'if', 'it', 'of', 'at' ],
-		background: true,
 		backgroundColor: '#000000',
+		coloredBackground: true,
+		transparentBackground: false,
+		maskAsBackground: false,
+		useCustomColors: true,
+		useRandomColors: false,
+		colorFromMask: false,
 		colors: [ '#64c1ff', '#0091ea', '#0064b7', '#f5f5f5', '#6d6d6d' ], //this defaults to 'viridis' colormap i believe. Aka, empty color arr means use their default
 		repeat: true,
 		collocations: true,
 		includeNumbers: true,
 		detectEdges: true,
-		colorFromMask: false,
-		downSample: '2',
+		downSample: '1',
 		whiteThreshold: '240',
 	},
 	masksById: {},
@@ -31,6 +35,7 @@ export const initialState = {
 const loadingMap = {};
 Object.values(FETCH_MASKS).forEach((actionType) => (loadingMap[actionType] = 'masksLoading'));
 Object.values(ADD_CUSTOM_MASK).forEach((actionType) => (loadingMap[actionType] = 'masksLoading'));
+Object.values(DELETE_MASK).forEach((actionType) => (loadingMap[actionType] = 'masksLoading'));
 
 const setLoading = (state, action) => {
 	const { type } = action;
@@ -50,20 +55,60 @@ const setLoading = (state, action) => {
 // };
 
 const updateCloudSettings = (state, action) => {
+	const mutallyExclPropSets = [
+		[ 'coloredBackground', 'transparentBackground', 'maskAsBackground' ],
+		[ 'useCustomColors', 'colorFromMask', 'useRandomColors' ],
+	];
 	const { key, val } = action;
-	return { ...state, settings: { ...state.settings, [key]: val } };
+	const newSettings = { ...state.settings, [key]: val };
+	mutallyExclPropSets.forEach((mutallyExclProps) => {
+		const propIdx = mutallyExclProps.indexOf(key);
+		if (propIdx === -1) return;
+		mutallyExclProps.forEach((prop, idx) => {
+			if (idx === propIdx) return;
+			newSettings[prop] = val ? false : state.settings[prop];
+		});
+	});
+
+	//Settings that require mask in order to be "on"
+	newSettings['contour'] =
+		newSettings.contour && newSettings.coloredBackground && newSettings.maskId && newSettings.maskDesired;
+	newSettings['maskAsBackground'] = newSettings.maskAsBackground && newSettings.maskId && newSettings.maskDesired;
+	newSettings['colorFromMask'] = newSettings.colorFromMask && newSettings.maskId && newSettings.maskDesired;
+
+	//Defaults for mutually exlc prop sets
+	newSettings['transparentBackground'] =
+		newSettings.transparentBackground || (!newSettings.coloredBackground && !newSettings.maskAsBackground);
+	newSettings['useCustomColors'] =
+		newSettings.useCustomColors || (!newSettings.useRandomColors && !newSettings.colorFromMask);
+
+	return { ...state, settings: newSettings };
+};
+
+const deleteMask = (state, action) => {
+	const { maskId } = action;
+	if (!maskId) return state;
+	const { masksById } = state;
+	delete masksById[maskId];
+	return {
+		...state,
+		masksById: { ...masksById },
+		settings: { ...state.settings, maskId: maskId === state.settings.maskId ? null : state.settings.maskId },
+	};
 };
 
 const addMasks = (state, action) => {
 	const { masks } = action;
-	if (!masks || !masks.length) return state;
 	return {
 		...state,
-		masksById: masks.reduce((masksById, mask) => {
-			const { id } = mask;
-			masksById[id] = mask;
-			return masksById;
-		}, {}),
+		masksById:
+			masks && masks.length
+				? masks.reduce((masksById, mask) => {
+						const { id } = mask;
+						masksById[id] = mask;
+						return masksById;
+					}, {})
+				: state.masksById,
 		masksLoading: false,
 	};
 };
@@ -75,6 +120,7 @@ const addCustomMask = (state, action) => {
 		...state,
 		masksById: { ...state.masksById, [mask.id]: mask },
 		settings: { ...state.settings, maskId: mask.id },
+		masksLoading: false,
 	};
 };
 
@@ -88,10 +134,12 @@ const resetCloudDefaults = (state, action) => {
 const handlers = {};
 Object.values(FETCH_MASKS).forEach((actionType) => (handlers[actionType] = setLoading));
 Object.values(ADD_CUSTOM_MASK).forEach((actionType) => (handlers[actionType] = setLoading));
+Object.values(DELETE_MASK).forEach((actionType) => (handlers[actionType] = setLoading));
 // handlers[FETCHCLOUD.success] = addCloud;
 handlers[UPDATE_CLOUD_SETTINGS] = updateCloudSettings;
 handlers[FETCH_MASKS.success] = addMasks;
 handlers[ADD_CUSTOM_MASK.success] = addCustomMask;
+handlers[DELETE_MASK.success] = deleteMask;
 handlers[RESET_CLOUD_DEFAULTS] = resetCloudDefaults;
 
 export default (state = initialState, action) => {

@@ -3,7 +3,6 @@ import { Route, Switch } from 'react-router-dom';
 import './App.css';
 import SignIn from './components/SignIn';
 import SongDetail from './components/SongDetail';
-import LoadingCloud from './components/LoadingCloud';
 import Search from './connected/Search';
 import Navbar from './connected/Navbar';
 import ArtistPage from './connected/ArtistPage';
@@ -22,7 +21,7 @@ import { classNames } from './utils';
 function initializeReactGA() {
 	console.log('Initializing analytics');
 	ReactGA.initialize('UA-166594032-2');
-	ReactGA.pageview('/home');
+	// ReactGA.pageview('/home');
 	history.listen((location) => {
 		ReactGA.set({ page: location.pathname });
 		ReactGA.pageview(location.pathname);
@@ -42,6 +41,9 @@ const useStyles = makeStyles((theme) => {
 			overflow: 'hidden',
 			backgroundColor: theme.palette.primary.dark,
 		},
+		square: {
+			borderRadius: 0,
+		},
 	};
 });
 const App = (props) => {
@@ -55,16 +57,11 @@ const App = (props) => {
 		return <Redirect to={paths.signIn} />;
 	}
 	return appIsHydrated ? (
-		<Paper className={classNames(classes.appContainer)} square elevation={0}>
+		<Paper className={classNames(classes.appContainer, classes.square)} elevation={0}>
 			<Navbar />
-			<Paper className={classNames(classes.pagesContainer)} square elevation={0}>
+			<Paper className={classNames(classes.pagesContainer, classes.square)} elevation={0}>
 				<Switch>
 					<Route path={paths.about} exact render={() => <LandingPage user={user} />} />
-					<Route
-						path={paths.signIn}
-						exact
-						render={(routerProps) => <SignIn history={routerProps.history} />}
-					/>
 					<Route
 						path={paths.signIn}
 						exact
@@ -87,7 +84,7 @@ const App = (props) => {
 							return <ArtistPage history={history} />;
 						}}
 					/>
-					{/* <Route path={'/loadingCloud'} exact render={(routerProps) => <LoadingCloud />} /> */}
+
 					{/* <Route path={'/splash'} exact render={(routerProps) => <SplashScreen />} /> */}
 					<Route render={() => <Redirect to={user ? paths.search : paths.about} />} />
 				</Switch>
@@ -95,7 +92,7 @@ const App = (props) => {
 			<Footer />
 			<Paper
 				id="copyright"
-				square
+				className={classes.square}
 				elevation={0}
 				style={{
 					height: '2em',

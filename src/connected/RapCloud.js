@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IconButton, Grid, withWidth, Tooltip, Paper } from '@material-ui/core';
+import { IconButton, Grid, withWidth, Tooltip, Paper, Dialog, DialogContent } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import RapCloudSettings from './RapCloudSettings';
 import LoadingBar from '../components/LoadingBar';
@@ -7,6 +7,7 @@ import { classNames } from '../utils';
 import SettingsIcon from '@material-ui/icons/Settings';
 import DownloadIcon from '@material-ui/icons/CloudDownload';
 import NewTabIcon from '@material-ui/icons/AddToPhotos';
+import XIcon from '@material-ui/icons/Cancel';
 // import FacebookIcon from '@material-ui/icons/Facebook';
 // import InstagramIcon from '@material-ui/icons/Instagram';
 // import TwitterIcon from '@material-ui/icons/Twitter';
@@ -39,33 +40,50 @@ const useStyles = makeStyles((theme) => {
 		},
 		cloudActionsTop: {},
 		cloudActionsBottom: {},
-		settingsBtn: {
-			position: 'absolute',
-			backgroundColor: theme.palette.secondary.light,
-			color: theme.palette.primary.dark,
-		},
-		headerAction: {
+		attnGrabber: {
 			backgroundColor: theme.palette.primary.dark,
-			color: theme.palette.secondary.light,
-			margin: '.5em',
-			width: '2em',
-			height: '2em',
+			color: theme.palette.secondary.main,
 			'& a': {
 				textDecoration: 'none',
-				color: theme.palette.secondary.light,
+				color: theme.palette.secondary.main,
 				backgroundColor: theme.palette.primary.dark,
 			},
 			'&:hover': {
-				backgroundColor: theme.palette.secondary.light,
+				backgroundColor: theme.palette.secondary.main,
 				color: theme.palette.primary.dark,
 				'& a': {
 					textDecoration: 'none',
-					backgroundColor: theme.palette.secondary.light,
+					backgroundColor: theme.palette.secondary.main,
 					color: theme.palette.primary.dark,
 				},
 			},
 		},
+		settingsBtn: {
+			position: 'absolute',
+			width: '2.51em',
+			height: '2.51em',
+			border: `1px solid ${theme.palette.secondary.main}`,
+			'& *': {
+				fontSize: '1.5em',
+			},
+		},
+		cloudAction: {
+			margin: '.5em',
+			width: '2em',
+			height: '2em',
+		},
 		headerActionLink: { borderRadius: '50%' },
+		darkBacking: {
+			backgroundColor: theme.palette.primary.dark,
+		},
+		closeFullCloud: {
+			position: 'absolute',
+			top: '-0.5em',
+			right: '-0.5em',
+			width: '3em',
+			height: '3em',
+			color: theme.palette.secondary.main,
+		},
 	};
 });
 
@@ -77,13 +95,14 @@ const RapCloud = (props) => {
 		encodedCloud,
 		top = '-1em',
 		bottom,
-		left = '-0.75em',
+		left = '-0.51em',
 		right,
 		fetchCloud,
 		isLoading,
 	} = props;
 
-	const [ dialogOpen, toggleDialog ] = useState(false);
+	const [ settingsOpen, toggleSettings ] = useState(false);
+	const [ fullScreenCloud, toggleFullScreenCloud ] = useState(false);
 	const renderCloudActions = (place) => {
 		const conditionsPassed = place === 'bottom' ? width === 'xs' : width !== 'xs';
 		return (
@@ -95,7 +114,7 @@ const RapCloud = (props) => {
 					: classes.cloudActionsBottom}`}
 			>
 				<Tooltip placement="bottom" title="Download Your RapCloud!">
-					<IconButton id="downloadBtn" size="medium" className={classes.headerAction}>
+					<IconButton id="downloadBtn" className={classNames(classes.cloudAction, classes.attnGrabber)}>
 						<a
 							className={classes.headerActionLink}
 							href={`data:image/png;base64, ${encodedCloud}`}
@@ -109,24 +128,24 @@ const RapCloud = (props) => {
 					<IconButton
 						id="openInNewTab"
 						size="medium"
-						className={classes.headerAction}
+						className={classNames(classes.cloudAction, classes.attnGrabber)}
 						onClick={() => base64InNewTab(`data:image/png;base64, ${encodedCloud}`)}
 					>
 						<NewTabIcon />
 					</IconButton>
 				</Tooltip>
 				{/* <Tooltip placement="bottom" title="Share on Instagram">
-					<IconButton id="shareOnIG" size="medium" className={classes.headerAction} onClick={null}>
+					<IconButton id="shareOnIG" size="medium" className={classNames(classes.cloudAction, classes.attnGrabber)} onClick={null}>
 						<InstagramIcon />
 					</IconButton>
 				</Tooltip>
 				<Tooltip placement="bottom" title="Share on Facebook">
-					<IconButton id="shareOnFB" size="medium" className={classes.headerAction} onClick={null}>
+					<IconButton id="shareOnFB" size="medium" className={classNames(classes.cloudAction, classes.attnGrabber)} onClick={null}>
 						<FacebookIcon />
 					</IconButton>
 				</Tooltip>
 				<Tooltip placement="bottom" title="Share on Twitter">
-					<IconButton id="shareOnTwitter" size="medium" className={classes.headerAction} onClick={null}>
+					<IconButton id="shareOnTwitter" size="medium" className={classNames(classes.cloudAction, classes.attnGrabber)} onClick={null}>
 						<TwitterIcon />
 					</IconButton>
 				</Tooltip> */}
@@ -149,19 +168,50 @@ const RapCloud = (props) => {
 					}
 					alt={'Rap Cloud'}
 					className={classes.wordCloud}
+					onClick={() => toggleFullScreenCloud(true)}
 				/>
 				<Tooltip placement="bottom-start" title="Customize this Rap Cloud!">
 					<IconButton
-						onClick={() => toggleDialog(true)}
-						className={classNames(classes.settingsBtn)}
+						onClick={() => toggleSettings(true)}
+						className={classNames(classes.settingsBtn, classes.attnGrabber)}
 						style={{ top, bottom, left, right }}
 					>
 						<SettingsIcon />
 					</IconButton>
 				</Tooltip>
 			</Grid>
-			{dialogOpen && (
-				<RapCloudSettings dialogOpen={dialogOpen} toggleDialog={toggleDialog} fetchCloud={fetchCloud} />
+			{settingsOpen && (
+				<RapCloudSettings dialogOpen={settingsOpen} toggleDialog={toggleSettings} fetchCloud={fetchCloud} />
+			)}
+			{fullScreenCloud && (
+				<Dialog fullScreen open={true}>
+					<DialogContent classes={{ root: classes.darkBacking }}>
+						<Grid
+							container
+							direction="row"
+							justify="center"
+							alignItems="center"
+							wrap="nowrap"
+							style={{ height: '100%', position: 'relative' }}
+						>
+							<XIcon className={classes.closeFullCloud} onClick={() => toggleFullScreenCloud(false)} />
+							<Grid item xs={12} style={{ textAlign: 'center' }}>
+								<img
+									item
+									src={
+										encodedCloud ? (
+											`data:image/png;base64, ${encodedCloud}`
+										) : (
+											`${process.env.PUBLIC_URL}/rapClouds.png`
+										)
+									}
+									alt={'Rap Cloud'}
+									style={{ width: '90%' }}
+								/>
+							</Grid>
+						</Grid>
+					</DialogContent>
+				</Dialog>
 			)}
 		</Grid>
 	);
