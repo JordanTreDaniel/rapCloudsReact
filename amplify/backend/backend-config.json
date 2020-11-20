@@ -1,1 +1,10 @@
-{}
+{
+  "auth": {
+    "rapcloudsreact951b3cec": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false
+    }
+  }
+}

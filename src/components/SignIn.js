@@ -4,12 +4,14 @@ import { connect } from 'react-redux';
 import { makeStyles, Button, Grid, IconButton, Typography, Avatar } from '@material-ui/core';
 import ArrowIcon from '@material-ui/icons/ArrowForward';
 // import "./SignIn.css"; //Don't think we need this
-import { setUser, addSongs } from '../redux/actions';
+import { setUser, addSongs, updateUser } from '../redux/actions';
+import { getUserMongoId } from '../redux/selectors';
 import { classNames } from '../utils';
 import paths from '../paths';
+import { Auth } from 'aws-amplify';
+
 const API_URL =
 	process.env.NODE_ENV === 'development' ? 'http://localhost:3333' : 'https://rap-clouds-server.herokuapp.com';
-const socket = io(API_URL);
 
 const useStyles = makeStyles((theme) => {
 	return {
@@ -90,12 +92,56 @@ const useStyles = makeStyles((theme) => {
 
 const SignIn = (props) => {
 	let popup = null;
+	const socket = io(API_URL);
 	const [ popUpOpen, togglePopUp ] = useState(false);
 	const classes = useStyles();
+	const awsSignIn = async (username, password = 'Aws20202020') => {
+		try {
+			const awsUser = await Auth.signIn(username, password);
+			return awsUser;
+		} catch (error) {
+			const { code } = error;
+			console.log('error signing in', error);
+			if (code === 'UserNotFoundException') {
+				awsSignUp(username);
+			}
+		}
+	};
+
+	const awsSignUp = async (username, password = 'Aws20202020') => {
+		try {
+			const awsSignUpResponse = await Auth.signUp({
+				username,
+				password,
+				attributes: {
+					email: username, // optional
+				},
+			});
+			return awsSignUpResponse;
+		} catch (error) {
+			console.log('error signing up:', error);
+		}
+	};
+
+	const awsSignInOrSignUp = async (user) => {
+		const { email = 'noUserEmailFound@rapclouds.com' } = user;
+		let awsAuthInfo = {};
+		if (user.awsAuthInfo) {
+			awsAuthInfo = await awsSignIn(email);
+		} else {
+			const awsSignUpResponse = await awsSignUp(email);
+			awsAuthInfo = awsSignUpResponse.user;
+		}
+		props.updateUser({ awsAuthInfo });
+	};
+
 	// Routinely checks the popup to re-enable the login button
 	// if the user closes the popup without authenticating.
 	const checkPopup = () => {
 		const check = setInterval(() => {
+			if (props.userId) {
+				popup.close();
+			}
 			if (!popup || popup.closed || popup.closed === undefined) {
 				clearInterval(check);
 				togglePopUp(false);
@@ -113,7 +159,7 @@ const SignIn = (props) => {
 		const top = window.innerHeight / 2 - height / 2;
 
 		const url = `${API_URL}/authorize/genius?socketId=${socket.id}`;
-
+		togglePopUp(true);
 		return window.open(
 			url,
 			'',
@@ -128,14 +174,15 @@ const SignIn = (props) => {
 	// attempt to login to the provider twice.
 	const startAuth = () => {
 		if (!popUpOpen) {
-			socket.on('genius', (user) => {
+			popup = openPopup();
+			popup.close();
+			checkPopup();
+			socket.on('genius', async (user) => {
 				popup.close();
 				props.setUser(user);
+				await awsSignInOrSignUp(user);
 				props.history.push(paths.search);
 			});
-			togglePopUp(true);
-			popup = openPopup();
-			checkPopup();
 		}
 	};
 
@@ -394,4 +441,9 @@ const SignIn = (props) => {
 	);
 };
 
-export default connect(null, { setUser, addSongs })(SignIn);
+const mapStateToProps = (state) => {
+	return {
+		userId: getUserMongoId(state),
+	};
+};
+export default connect(null, { setUser, addSongs, updateUser })(SignIn);

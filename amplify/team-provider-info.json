@@ -10,6 +10,11 @@
       "StackName": "amplify-rapcloudsreact-dev-203118",
       "StackId": "arn:aws:cloudformation:us-east-1:869751724373:stack/amplify-rapcloudsreact-dev-203118/507e69b0-2a0f-11eb-9984-12fa7ddfd8bd",
       "AmplifyAppId": "d2ayzirgygw97o"
+    },
+    "categories": {
+      "auth": {
+        "rapcloudsreact951b3cec": {}
+      }
     }
   }
 }

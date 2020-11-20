@@ -14,11 +14,16 @@ import {
 	RESET_CLOUD_DEFAULTS,
 	DELETE_MASK,
 	FETCH_SONG_LYRICS,
+	UPDATE_USER,
 } from './actionTypes';
 import normalizeLyrics from './utils/normalizeLyrics';
 
 export const setUser = (user = { name: 'Tupac' }) => {
 	return { type: SET_USER, user };
+};
+
+export const updateUser = (userUpdates) => {
+	return { type: UPDATE_USER.start, userUpdates };
 };
 
 export const addSongs = (songs = [ { name: 'We finally made it.' } ]) => {
