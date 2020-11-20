@@ -175,7 +175,6 @@ const SignIn = (props) => {
 	const startAuth = () => {
 		if (!popUpOpen) {
 			popup = openPopup();
-			popup.close();
 			checkPopup();
 			socket.on('genius', async (user) => {
 				popup.close();

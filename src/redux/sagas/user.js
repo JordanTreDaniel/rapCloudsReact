@@ -16,7 +16,7 @@ function* watchSetHydrationTrue(action) {
 const apiUpdateUser = async (user) => {
 	const res = await axios({
 		method: 'post',
-		url: `${REACT_APP_SERVER_ROOT}/updateUser`,
+		url: `${REACT_APP_SERVER_ROOT}/users/updateUser`,
 		data: { user },
 	});
 	const { status, statusText, data } = res;
