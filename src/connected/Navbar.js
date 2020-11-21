@@ -30,6 +30,7 @@ import FacebookIcon from '@material-ui/icons/Facebook';
 import InstagramIcon from '@material-ui/icons/Instagram';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import PinterestIcon from '@material-ui/icons/Pinterest';
+import { Auth } from 'aws-amplify';
 
 const useStyles = makeStyles((theme) => {
 	return {
@@ -106,6 +107,14 @@ const useStyles = makeStyles((theme) => {
 		},
 	};
 });
+
+async function awsSignOut() {
+	try {
+		await Auth.signOut();
+	} catch (error) {
+		console.log('error signing out: ', error);
+	}
+}
 
 const Navbar = (props) => {
 	const classes = useStyles();
@@ -276,6 +285,7 @@ const Navbar = (props) => {
 							className={classes.logOutBtn}
 							onClick={async () => {
 								signOut();
+								awsSignOut();
 								toggleLogOutDialog(false);
 								history.push('/signin');
 							}}
