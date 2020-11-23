@@ -14,7 +14,6 @@ export const createRapCloud = /* GraphQL */ `
       userId
       private
       settings {
-        id
         width
         height
         maskDesired
@@ -37,8 +36,6 @@ export const createRapCloud = /* GraphQL */ `
         detectEdges
         downSample
         whiteThreshold
-        createdAt
-        updatedAt
       }
       createdAt
       updatedAt
@@ -58,7 +55,6 @@ export const updateRapCloud = /* GraphQL */ `
       userId
       private
       settings {
-        id
         width
         height
         maskDesired
@@ -81,8 +77,6 @@ export const updateRapCloud = /* GraphQL */ `
         detectEdges
         downSample
         whiteThreshold
-        createdAt
-        updatedAt
       }
       createdAt
       updatedAt
@@ -102,7 +96,6 @@ export const deleteRapCloud = /* GraphQL */ `
       userId
       private
       settings {
-        id
         width
         height
         maskDesired
@@ -125,111 +118,7 @@ export const deleteRapCloud = /* GraphQL */ `
         detectEdges
         downSample
         whiteThreshold
-        createdAt
-        updatedAt
       }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const createRapCloudSettings = /* GraphQL */ `
-  mutation CreateRapCloudSettings(
-    $input: CreateRapCloudSettingsInput!
-    $condition: ModelRapCloudSettingsConditionInput
-  ) {
-    createRapCloudSettings(input: $input, condition: $condition) {
-      id
-      width
-      height
-      maskDesired
-      maskId
-      contour
-      contourWidth
-      contourColor
-      stopWords
-      backgroundColor
-      coloredBackground
-      transparentBackground
-      maskAsBackground
-      useCustomColors
-      useRandomColors
-      colorFromMask
-      colors
-      repeat
-      collocations
-      includeNumbers
-      detectEdges
-      downSample
-      whiteThreshold
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const updateRapCloudSettings = /* GraphQL */ `
-  mutation UpdateRapCloudSettings(
-    $input: UpdateRapCloudSettingsInput!
-    $condition: ModelRapCloudSettingsConditionInput
-  ) {
-    updateRapCloudSettings(input: $input, condition: $condition) {
-      id
-      width
-      height
-      maskDesired
-      maskId
-      contour
-      contourWidth
-      contourColor
-      stopWords
-      backgroundColor
-      coloredBackground
-      transparentBackground
-      maskAsBackground
-      useCustomColors
-      useRandomColors
-      colorFromMask
-      colors
-      repeat
-      collocations
-      includeNumbers
-      detectEdges
-      downSample
-      whiteThreshold
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const deleteRapCloudSettings = /* GraphQL */ `
-  mutation DeleteRapCloudSettings(
-    $input: DeleteRapCloudSettingsInput!
-    $condition: ModelRapCloudSettingsConditionInput
-  ) {
-    deleteRapCloudSettings(input: $input, condition: $condition) {
-      id
-      width
-      height
-      maskDesired
-      maskId
-      contour
-      contourWidth
-      contourColor
-      stopWords
-      backgroundColor
-      coloredBackground
-      transparentBackground
-      maskAsBackground
-      useCustomColors
-      useRandomColors
-      colorFromMask
-      colors
-      repeat
-      collocations
-      includeNumbers
-      detectEdges
-      downSample
-      whiteThreshold
       createdAt
       updatedAt
     }

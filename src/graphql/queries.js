@@ -11,7 +11,6 @@ export const getRapCloud = /* GraphQL */ `
       userId
       private
       settings {
-        id
         width
         height
         maskDesired
@@ -34,8 +33,6 @@ export const getRapCloud = /* GraphQL */ `
         detectEdges
         downSample
         whiteThreshold
-        createdAt
-        updatedAt
       }
       createdAt
       updatedAt
@@ -57,7 +54,6 @@ export const listRapClouds = /* GraphQL */ `
         userId
         private
         settings {
-          id
           width
           height
           maskDesired
@@ -80,82 +76,7 @@ export const listRapClouds = /* GraphQL */ `
           detectEdges
           downSample
           whiteThreshold
-          createdAt
-          updatedAt
         }
-        createdAt
-        updatedAt
-      }
-      nextToken
-    }
-  }
-`;
-export const getRapCloudSettings = /* GraphQL */ `
-  query GetRapCloudSettings($id: ID!) {
-    getRapCloudSettings(id: $id) {
-      id
-      width
-      height
-      maskDesired
-      maskId
-      contour
-      contourWidth
-      contourColor
-      stopWords
-      backgroundColor
-      coloredBackground
-      transparentBackground
-      maskAsBackground
-      useCustomColors
-      useRandomColors
-      colorFromMask
-      colors
-      repeat
-      collocations
-      includeNumbers
-      detectEdges
-      downSample
-      whiteThreshold
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const listRapCloudSettingss = /* GraphQL */ `
-  query ListRapCloudSettingss(
-    $filter: ModelRapCloudSettingsFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listRapCloudSettingss(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        width
-        height
-        maskDesired
-        maskId
-        contour
-        contourWidth
-        contourColor
-        stopWords
-        backgroundColor
-        coloredBackground
-        transparentBackground
-        maskAsBackground
-        useCustomColors
-        useRandomColors
-        colorFromMask
-        colors
-        repeat
-        collocations
-        includeNumbers
-        detectEdges
-        downSample
-        whiteThreshold
         createdAt
         updatedAt
       }

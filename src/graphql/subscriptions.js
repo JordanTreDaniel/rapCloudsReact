@@ -11,7 +11,6 @@ export const onCreateRapCloud = /* GraphQL */ `
       userId
       private
       settings {
-        id
         width
         height
         maskDesired
@@ -34,8 +33,6 @@ export const onCreateRapCloud = /* GraphQL */ `
         detectEdges
         downSample
         whiteThreshold
-        createdAt
-        updatedAt
       }
       createdAt
       updatedAt
@@ -52,7 +49,6 @@ export const onUpdateRapCloud = /* GraphQL */ `
       userId
       private
       settings {
-        id
         width
         height
         maskDesired
@@ -75,8 +71,6 @@ export const onUpdateRapCloud = /* GraphQL */ `
         detectEdges
         downSample
         whiteThreshold
-        createdAt
-        updatedAt
       }
       createdAt
       updatedAt
@@ -93,7 +87,6 @@ export const onDeleteRapCloud = /* GraphQL */ `
       userId
       private
       settings {
-        id
         width
         height
         maskDesired
@@ -116,102 +109,7 @@ export const onDeleteRapCloud = /* GraphQL */ `
         detectEdges
         downSample
         whiteThreshold
-        createdAt
-        updatedAt
       }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const onCreateRapCloudSettings = /* GraphQL */ `
-  subscription OnCreateRapCloudSettings {
-    onCreateRapCloudSettings {
-      id
-      width
-      height
-      maskDesired
-      maskId
-      contour
-      contourWidth
-      contourColor
-      stopWords
-      backgroundColor
-      coloredBackground
-      transparentBackground
-      maskAsBackground
-      useCustomColors
-      useRandomColors
-      colorFromMask
-      colors
-      repeat
-      collocations
-      includeNumbers
-      detectEdges
-      downSample
-      whiteThreshold
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const onUpdateRapCloudSettings = /* GraphQL */ `
-  subscription OnUpdateRapCloudSettings {
-    onUpdateRapCloudSettings {
-      id
-      width
-      height
-      maskDesired
-      maskId
-      contour
-      contourWidth
-      contourColor
-      stopWords
-      backgroundColor
-      coloredBackground
-      transparentBackground
-      maskAsBackground
-      useCustomColors
-      useRandomColors
-      colorFromMask
-      colors
-      repeat
-      collocations
-      includeNumbers
-      detectEdges
-      downSample
-      whiteThreshold
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const onDeleteRapCloudSettings = /* GraphQL */ `
-  subscription OnDeleteRapCloudSettings {
-    onDeleteRapCloudSettings {
-      id
-      width
-      height
-      maskDesired
-      maskId
-      contour
-      contourWidth
-      contourColor
-      stopWords
-      backgroundColor
-      coloredBackground
-      transparentBackground
-      maskAsBackground
-      useCustomColors
-      useRandomColors
-      colorFromMask
-      colors
-      repeat
-      collocations
-      includeNumbers
-      detectEdges
-      downSample
-      whiteThreshold
       createdAt
       updatedAt
     }
