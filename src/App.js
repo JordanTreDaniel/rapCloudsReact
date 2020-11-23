@@ -17,10 +17,7 @@ import { history } from './redux/store';
 import Footer from './components/Footer';
 import LandingPage from './components/LandingPage';
 import { classNames } from './utils';
-import Amplify from 'aws-amplify';
-import awsconfig from './aws-exports';
 
-Amplify.configure(awsconfig);
 function initializeReactGA() {
 	console.log('Initializing analytics');
 	ReactGA.initialize('UA-166594032-2');
