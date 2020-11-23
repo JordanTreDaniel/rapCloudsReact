@@ -1,8 +1,9 @@
 import { call, select, takeLatest, put, takeEvery } from 'redux-saga/effects';
 import axios from 'axios';
 import { getCloudSettingsForFlight, getUserMongoId } from '../selectors';
-import { FETCH_MASKS, ADD_CUSTOM_MASK, DELETE_MASK } from '../actionTypes';
-
+import { FETCH_MASKS, ADD_CUSTOM_MASK, DELETE_MASK, FETCH_CLOUDS } from '../actionTypes';
+import { listRapClouds } from '../../graphql/queries';
+import { API, graphqlOperation, Auth } from 'aws-amplify';
 const REACT_APP_SERVER_ROOT =
 	process.env.NODE_ENV === 'development' ? 'http://localhost:3333' : 'https://rap-clouds-server.herokuapp.com';
 
@@ -196,4 +197,39 @@ export function* deleteMask(action) {
 function* watchDeleteMask() {
 	yield takeEvery(DELETE_MASK.start, deleteMask);
 }
-export default [ watchFetchMasks, watchAddCustomMask, watchDeleteMask ];
+
+const apiFetchClouds = async () => {
+	try {
+		const cUI = await Auth.currentUserInfo();
+		console.log('Currnet user?', cUI);
+		const cloudsData = await API.graphql(graphqlOperation(listRapClouds));
+		const cloudsList = cloudsData.data.listRapClouds.items;
+		return { cloudsList };
+	} catch (error) {
+		console.log('error on fetching songs', error);
+		return { error };
+	}
+};
+
+export function* fetchClouds(action) {
+	try {
+		const { cloudsList, error } = yield call(apiFetchClouds);
+		if (error) {
+			console.log('Something went wrong in fetchMasks', error);
+			return { error };
+		} else {
+			yield put({ type: FETCH_CLOUDS.success, cloudsList });
+			return { cloudsList };
+		}
+	} catch (err) {
+		console.log('Something went wrong', err);
+		yield put({ type: FETCH_CLOUDS.failure, err });
+		return { error: err };
+	}
+}
+
+function* watchFetchClouds() {
+	yield takeLatest(FETCH_CLOUDS.start, fetchClouds);
+}
+
+export default [ watchFetchMasks, watchAddCustomMask, watchDeleteMask, watchFetchClouds ];

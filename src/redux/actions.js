@@ -15,6 +15,7 @@ import {
 	DELETE_MASK,
 	FETCH_SONG_LYRICS,
 	UPDATE_USER,
+	FETCH_CLOUDS,
 } from './actionTypes';
 import normalizeLyrics from './utils/normalizeLyrics';
 
@@ -64,6 +65,10 @@ export const fetchSongCloud = (songId, songLyrics) => {
 };
 export const updateCloudSettings = (key, val) => {
 	return { type: UPDATE_CLOUD_SETTINGS, forceFetch: true, key, val };
+};
+
+export const fetchClouds = () => {
+	return { type: FETCH_CLOUDS.start };
 };
 
 export const fetchMasks = () => {

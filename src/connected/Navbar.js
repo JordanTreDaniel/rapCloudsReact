@@ -167,6 +167,30 @@ const Navbar = (props) => {
 									<Typography variant="h4">Search</Typography>
 								</Grid>
 								<Divider />
+								<Grid
+									item
+									container
+									direction="row"
+									wrap="nowrap"
+									justify="space-between"
+									component={Link}
+									to={paths.profile}
+									className={classNames(classes.whiteLink, classes.drawerItem)}
+								>
+									{userImgURL ? (
+										<Avatar
+											alt="User Profile Pic"
+											src={userImgURL}
+											className={classes.drawerItemButton}
+										/>
+									) : (
+										<IconButton className={classes.drawerItemButton}>
+											<UserIcon />
+										</IconButton>
+									)}
+									<Typography variant="h4">Profile</Typography>
+								</Grid>
+								<Divider />
 							</React.Fragment>
 						)}
 

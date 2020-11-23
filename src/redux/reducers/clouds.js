@@ -30,6 +30,7 @@ export const initialState = {
 	},
 	masksById: {},
 	masksLoading: false,
+	cloudsLoading: false,
 };
 
 const loadingMap = {};

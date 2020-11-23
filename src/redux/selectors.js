@@ -186,6 +186,7 @@ export const getCloudSettingsForFlight = createSelector(getCloudSettings, (setti
 
 export const getMasksById = (state) => state.clouds.masksById;
 export const areMasksLoading = (state) => state.clouds.masksLoading;
+export const areCloudsLoading = (state) => state.clouds.cloudsLoading;
 export const getMasks = createSelector(getMasksById, (masksById) => {
 	const customMasks = [],
 		stockMasks = [];

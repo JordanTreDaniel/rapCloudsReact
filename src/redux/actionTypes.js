@@ -20,6 +20,7 @@ export const FETCH_MASKS = actionNamesForProcess('FETCH_MASKS');
 export const ADD_CUSTOM_MASK = actionNamesForProcess('ADD_CUSTOM_MASK');
 export const DELETE_MASK = actionNamesForProcess('DELETE_MASK');
 export const UPDATE_USER = actionNamesForProcess('UPDATE_USER');
+export const FETCH_CLOUDS = actionNamesForProcess('FETCH_CLOUDS');
 export const SIGN_OUT = 'SIGN_OUT';
 export const DO_NOTHING = 'DO_NOTHING';
 export const UPDATE_CLOUD_SETTINGS = 'UPDATE_CLOUD_SETTINGS';
