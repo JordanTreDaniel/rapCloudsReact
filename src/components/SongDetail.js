@@ -5,7 +5,7 @@ import AddIcon from '@material-ui/icons/Add';
 import MinusIcon from '@material-ui/icons/Remove';
 import { makeStyles } from '@material-ui/core/styles';
 import * as selectors from '../redux/selectors';
-import { fetchSongDetails, fetchSongCloud, fetchSongLyrics } from '../redux/actions';
+import { fetchSongDetails, genSongCloud, fetchSongLyrics } from '../redux/actions';
 import { connect } from 'react-redux';
 import paths from '../paths';
 import BackButton from './BackButton';
@@ -133,7 +133,7 @@ const SongDetail = (props) => {
 		isSongDetailLoading,
 		isWordCloudLoading,
 		// width,
-		fetchSongCloud,
+		genSongCloud,
 		fetchSongLyrics,
 		areSongLyricsLoading,
 	} = props;
@@ -241,7 +241,7 @@ const SongDetail = (props) => {
 						</Typography>
 						{cloudExpanded && (
 							<RapCloud
-								fetchCloud={() => fetchSongCloud(songId, lyrics)}
+								generateCloud={() => genSongCloud(songId, lyrics)}
 								cloudName={briefedTitle}
 								encodedCloud={encodedCloud}
 								isLoading={isWordCloudLoading || isSongDetailLoading || areSongLyricsLoading}
@@ -304,4 +304,4 @@ const mapState = (state) => ({
 	areSongLyricsLoading: selectors.areSongLyricsLoading(state),
 });
 
-export default connect(mapState, { fetchSongDetails, fetchSongCloud, fetchSongLyrics })(withWidth()(SongDetail));
+export default connect(mapState, { fetchSongDetails, genSongCloud, fetchSongLyrics })(withWidth()(SongDetail));

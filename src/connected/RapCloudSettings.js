@@ -166,7 +166,7 @@ const RapCloudSettings = (props) => {
 		mongoUserId,
 		dialogOpen,
 		toggleDialog,
-		fetchCloud,
+		generateCloud,
 		resetCloudDefaults,
 		currentMask,
 	} = props;
@@ -1090,7 +1090,7 @@ const RapCloudSettings = (props) => {
 					variant="contained"
 					autoFocus={true}
 					onClick={() => {
-						fetchCloud();
+						generateCloud();
 						toggleDialog(false);
 					}}
 					disabled={masksLoading}

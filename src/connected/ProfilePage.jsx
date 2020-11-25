@@ -156,7 +156,7 @@ const ProfilePage = (props) => {
 						</Typography>
                         {cloudExpanded && (
                             <RapCloud
-                                fetchCloud={fetchArtistCloud}
+                                generateCloud={genArtistCloud}
                                 cloudName={name}
                                 encodedCloud={encodedCloud}
                                 isLoading={isArtistCloudLoading || isArtistLoading || areSongLyricsLoading}

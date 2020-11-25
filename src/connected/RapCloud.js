@@ -97,7 +97,7 @@ const RapCloud = (props) => {
 		bottom,
 		left = '-0.51em',
 		right,
-		fetchCloud,
+		generateCloud,
 		isLoading,
 	} = props;
 
@@ -181,7 +181,7 @@ const RapCloud = (props) => {
 				</Tooltip>
 			</Grid>
 			{settingsOpen && (
-				<RapCloudSettings dialogOpen={settingsOpen} toggleDialog={toggleSettings} fetchCloud={fetchCloud} />
+				<RapCloudSettings dialogOpen={settingsOpen} toggleDialog={toggleSettings} generateCloud={generateCloud} />
 			)}
 			{fullScreenCloud && (
 				<Dialog fullScreen open={true}>

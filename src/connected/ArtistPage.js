@@ -9,7 +9,7 @@ import ArtistSongList from './ArtistSongList';
 import BackButton from '../components/BackButton';
 import RapCloud from './RapCloud';
 import * as selectors from '../redux/selectors';
-import { fetchArtist, fetchArtistCloud } from '../redux/actions';
+import { fetchArtist, genArtistCloud } from '../redux/actions';
 import { connect } from 'react-redux';
 import paths from '../paths';
 import { classNames } from '../utils';
@@ -173,7 +173,7 @@ const ArtistPage = (props) => {
 						</Typography>
 						{cloudExpanded && (
 							<RapCloud
-								fetchCloud={fetchArtistCloud}
+								generateCloud={genArtistCloud}
 								cloudName={name}
 								encodedCloud={encodedCloud}
 								isLoading={isArtistCloudLoading || isArtistLoading || areSongLyricsLoading}
@@ -205,4 +205,4 @@ const mapState = (state) => ({
 	areSongLyricsLoading: selectors.areSongLyricsLoading(state),
 });
 
-export default connect(mapState, { fetchArtist, fetchArtistCloud })(withWidth()(ArtistPage));
+export default connect(mapState, { fetchArtist, genArtistCloud })(withWidth()(ArtistPage));

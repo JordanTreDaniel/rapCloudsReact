@@ -7,7 +7,7 @@ import { API, graphqlOperation, Auth } from 'aws-amplify';
 const REACT_APP_SERVER_ROOT =
 	process.env.NODE_ENV === 'development' ? 'http://localhost:3333' : 'https://rap-clouds-server.herokuapp.com';
 
-const apiFetchWordCloud = async (lyricString, cloudSettings) => {
+const apiGenerateCloud = async (lyricString, cloudSettings) => {
 	const res = await axios({
 		method: 'post',
 		url: `${REACT_APP_SERVER_ROOT}/makeWordCloud`,
@@ -33,16 +33,16 @@ const apiFetchWordCloud = async (lyricString, cloudSettings) => {
 	return { error: { status, statusText } };
 };
 
-export function* fetchWordCloud(action) {
+export function* generateCloud(action) {
 	try {
 		const cloudSettings = yield select(getCloudSettingsForFlight);
 		const { lyricString } = action;
 		// console.log('Fetch cloud', { cloudSettings, lyricString });
 		if (!lyricString || !lyricString.length) return { error: { message: 'Must include lyrics to get a cloud' } };
-		const { data, error } = yield call(apiFetchWordCloud, lyricString, cloudSettings);
+		const { data, error } = yield call(apiGenerateCloud, lyricString, cloudSettings);
 		const { encodedCloud } = data;
 		if (error) {
-			console.log('Something went wrong in fetchWordCloud', error);
+			console.log('Something went wrong in generateCloud', error);
 			return { error };
 		} else {
 			return { encodedCloud };

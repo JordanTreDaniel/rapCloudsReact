@@ -2,7 +2,7 @@ import { put, takeEvery, takeLatest, call, select, cancel, all } from 'redux-sag
 import { FETCH_ARTIST, ADD_SONGS, SIGN_OUT, FETCH_SONG_LYRICS, FETCH_ARTIST_CLOUD } from '../actionTypes';
 import { getAccessToken, getArtistFromId } from '../selectors';
 import { fetchSongLyrics } from './songs';
-import { fetchWordCloud } from './clouds';
+import { generateCloud } from './clouds';
 import axios from 'axios';
 import normalizeLyrics from '../utils/normalizeLyrics';
 
@@ -65,7 +65,7 @@ export function* fetchArtist(action) {
 	}
 }
 
-export function* fetchArtistCloud(action) {
+export function* genArtistCloud(action) {
 	try {
 		const { artistId, forceFetch = false, songs } = action;
 		const artist = yield select(getArtistFromId, artistId);
@@ -77,14 +77,14 @@ export function* fetchArtistCloud(action) {
 		const allLyrics = yield all(
 			songs.map((song) => {
 				const { id: songId, path: songPath } = song;
-				return fetchSongLyrics({ type: FETCH_SONG_LYRICS.start, songId, songPath, fetchWordCloud: false });
+				return fetchSongLyrics({ type: FETCH_SONG_LYRICS.start, songId, songPath, generateCloud: false });
 			}),
 		);
 		const normalizedLyricsJumble = allLyrics.reduce(
 			(acc, songLyrics) => acc + ' ' + normalizeLyrics(songLyrics),
 			'',
 		);
-		const { encodedCloud, error } = yield call(fetchWordCloud, { lyricString: normalizedLyricsJumble });
+		const { encodedCloud, error } = yield call(generateCloud, { lyricString: normalizedLyricsJumble });
 		if (error) {
 			yield put({ type: FETCH_ARTIST_CLOUD.failure });
 			console.log('Something went wrong in fetch artist cloud', error);
@@ -102,7 +102,7 @@ function* watchFetchArtist() {
 	yield takeEvery(FETCH_ARTIST.start, fetchArtist);
 }
 
-function* watchFetchArtistCloud() {
-	yield takeLatest(FETCH_ARTIST_CLOUD.start, fetchArtistCloud);
+function* watchGenArtistCloud() {
+	yield takeLatest(FETCH_ARTIST_CLOUD.start, genArtistCloud);
 }
-export default [ watchFetchArtist, watchFetchArtistCloud ];
+export default [ watchFetchArtist, watchGenArtistCloud ];

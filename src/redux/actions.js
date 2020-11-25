@@ -55,11 +55,11 @@ export const signOut = () => {
 	return { type: SIGN_OUT };
 };
 
-export const fetchArtistCloud = () => {
+export const genArtistCloud = () => {
 	return { type: FETCH_ARTIST_CLOUD.start, forceFetch: true };
 };
 
-export const fetchSongCloud = (songId, songLyrics) => {
+export const genSongCloud = (songId, songLyrics) => {
 	const normalizedLyrics = normalizeLyrics(songLyrics);
 	return { type: FETCH_SONG_CLOUD.start, lyricString: normalizedLyrics, songId, forceFetch: true };
 };

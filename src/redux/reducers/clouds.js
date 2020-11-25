@@ -1,4 +1,4 @@
-// import { FETCHCLOUD } from '../actionTypes';
+// import { generateCloud } from '../actionTypes';
 
 import { UPDATE_CLOUD_SETTINGS, FETCH_MASKS, ADD_CUSTOM_MASK, RESET_CLOUD_DEFAULTS, DELETE_MASK } from '../actionTypes';
 
@@ -136,7 +136,7 @@ const handlers = {};
 Object.values(FETCH_MASKS).forEach((actionType) => (handlers[actionType] = setLoading));
 Object.values(ADD_CUSTOM_MASK).forEach((actionType) => (handlers[actionType] = setLoading));
 Object.values(DELETE_MASK).forEach((actionType) => (handlers[actionType] = setLoading));
-// handlers[FETCHCLOUD.success] = addCloud;
+// handlers[generateCloud.success] = addCloud;
 handlers[UPDATE_CLOUD_SETTINGS] = updateCloudSettings;
 handlers[FETCH_MASKS.success] = addMasks;
 handlers[ADD_CUSTOM_MASK.success] = addCustomMask;
