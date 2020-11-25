@@ -10,6 +10,7 @@ export const getRapCloud = /* GraphQL */ `
       maskId
       userId
       private
+      description
       settings {
         width
         height
@@ -53,6 +54,7 @@ export const listRapClouds = /* GraphQL */ `
         maskId
         userId
         private
+        description
         settings {
           width
           height

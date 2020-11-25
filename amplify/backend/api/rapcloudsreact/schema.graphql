@@ -5,6 +5,7 @@ type RapCloud @model {
   maskId: ID
   userId: ID!
   private: Boolean!
+  description: String
   settings: RapCloudSettings!
 }
 

@@ -13,6 +13,7 @@ export const createRapCloud = /* GraphQL */ `
       maskId
       userId
       private
+      description
       settings {
         width
         height
@@ -54,6 +55,7 @@ export const updateRapCloud = /* GraphQL */ `
       maskId
       userId
       private
+      description
       settings {
         width
         height
@@ -95,6 +97,7 @@ export const deleteRapCloud = /* GraphQL */ `
       maskId
       userId
       private
+      description
       settings {
         width
         height
