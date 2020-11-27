@@ -64,7 +64,7 @@ Object.values(SEARCH_SONGS).forEach((actionType) => (loadingMap[actionType] = 's
 
 const setLoading = (state, action) => {
 	const { type } = action;
-	const val = type.match('FAILURE') || type.match('CANCELLATION') ? false : true;
+	const val = !!type.match('START');
 	const key = loadingMap[type];
 	return { ...state, [key]: val };
 };
