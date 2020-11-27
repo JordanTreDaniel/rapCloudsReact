@@ -177,7 +177,7 @@ export function* genSongCloud(action) {
 			return finishedCloud;
 		}
 	} catch (err) {
-		yield put({ type: GEN_SONG_CLOUD.failure });
+		yield put({ type: GEN_SONG_CLOUD.failure, err });
 		console.log('Something went wrong in fetch song cloud', err);
 	}
 }
