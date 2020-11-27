@@ -136,6 +136,7 @@ const SongDetail = (props) => {
 		genSongCloud,
 		fetchSongLyrics,
 		areSongLyricsLoading,
+		clouds,
 	} = props;
 	const { songId } = useParams();
 	const [ lyricsExpanded, setLyricsExpanded ] = React.useState(false);
@@ -243,7 +244,7 @@ const SongDetail = (props) => {
 							<RapCloud
 								generateCloud={() => genSongCloud(songId, lyrics)}
 								cloudName={briefedTitle}
-								encodedCloud={encodedCloud}
+								clouds={clouds}
 								isLoading={isWordCloudLoading || isSongDetailLoading || areSongLyricsLoading}
 							/>
 						)}
@@ -302,6 +303,7 @@ const mapState = (state) => ({
 	isSongDetailLoading: selectors.isSongDetailLoading(state),
 	isWordCloudLoading: selectors.isWordCloudLoading(state),
 	areSongLyricsLoading: selectors.areSongLyricsLoading(state),
+	clouds: selectors.getCloudsForSong(state),
 });
 
 export default connect(mapState, { fetchSongDetails, genSongCloud, fetchSongLyrics })(withWidth()(SongDetail));

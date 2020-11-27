@@ -157,12 +157,17 @@ export const getArtistFromId = createSelector(
 	(_, artistId) => artistId,
 	(artistsById, artistId) => artistsById[artistId],
 );
-export const getCurrentArtist = createSelector(getMatchParams, getArtistsById, (matchParams, artistsById) => {
+
+export const getCurrentArtistId = createSelector(getMatchParams, (matchParams) => {
 	const { artistId } = matchParams;
 	if (!artistId) {
-		// console.warn(`The "getCurrentArtist" selector has been called with no artistId detected in match params`);
+		// console.warn(`The "getCurrentArtistId" selector has been called with no artistId detected in match params`);
 		return null;
 	}
+	return artistId;
+});
+
+export const getCurrentArtist = createSelector(getCurrentArtistId, getArtistsById, (artistId, artistsById) => {
 	const currentArtist = artistsById[artistId];
 	return currentArtist;
 });
@@ -237,16 +242,20 @@ export const getCloudsBySongId = createSelector(getCloudsById, (cloudsById) => {
 export const getCloudsForArtist = createSelector(
 	getCloudsById,
 	(_, artistId) => artistId,
-	(cloudsById, artistId) => {
-		if (!artistId) console.warn(`Warning, ${this.name} called without necessary arguments.`);
+	getCurrentArtistId,
+	(cloudsById, artistId, currentArtistId) => {
+		artistId = artistId ? artistId : currentArtistId;
+		if (!artistId) console.warn(`Warning, getCloudsForArtist called without necessary arguments.`);
 		return Object.values(cloudsById).filter((cloud) => cloud.artistIds.includes(artistId));
 	},
 );
 export const getCloudsForSong = createSelector(
 	getCloudsById,
 	(_, songId) => songId,
-	(cloudsById, songId) => {
-		if (!songId) console.warn(`Warning, ${this.name} called without necessary arguments.`);
+	getCurrentSongId,
+	(cloudsById, songId, currentSongId) => {
+		songId = songId ? songId : currentSongId;
+		if (!songId) console.warn(`Warning, getCloudsForSong called without necessary arguments.`);
 		return Object.values(cloudsById).filter((cloud) => cloud.songIds.includes(songId));
 	},
 );

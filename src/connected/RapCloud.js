@@ -89,20 +89,13 @@ const useStyles = makeStyles((theme) => {
 
 const RapCloud = (props) => {
 	const classes = useStyles();
-	const {
-		cloudName,
-		width,
-		encodedCloud,
-		top = '-1em',
-		bottom,
-		left = '-0.51em',
-		right,
-		generateCloud,
-		isLoading,
-	} = props;
-
 	const [ settingsOpen, toggleSettings ] = useState(false);
+	const [ currentCloudIdx, setCurrentCloudIdx ] = React.useState(0);
 	const [ fullScreenCloud, toggleFullScreenCloud ] = useState(false);
+	const { cloudName, clouds, width, top = '-1em', bottom, left = '-0.51em', right, generateCloud, isLoading } = props;
+	const cloud = clouds[currentCloudIdx];
+	// if (!cloud) return null;
+	const { encodedCloud } = cloud || {};
 	const renderCloudActions = (place) => {
 		const conditionsPassed = place === 'bottom' ? width === 'xs' : width !== 'xs';
 		return (
@@ -155,7 +148,7 @@ const RapCloud = (props) => {
 
 	return (
 		<Grid>
-			{renderCloudActions()}
+			{encodedCloud && renderCloudActions()}
 			<Grid className={classNames(classes.wordCloudWrapper)}>
 				<LoadingBar loading={isLoading} />
 				<img
@@ -181,7 +174,11 @@ const RapCloud = (props) => {
 				</Tooltip>
 			</Grid>
 			{settingsOpen && (
-				<RapCloudSettings dialogOpen={settingsOpen} toggleDialog={toggleSettings} generateCloud={generateCloud} />
+				<RapCloudSettings
+					dialogOpen={settingsOpen}
+					toggleDialog={toggleSettings}
+					generateCloud={generateCloud}
+				/>
 			)}
 			{fullScreenCloud && (
 				<Dialog fullScreen open={true}>

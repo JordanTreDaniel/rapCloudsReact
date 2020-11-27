@@ -115,7 +115,7 @@ const useStyles = makeStyles((theme) => {
 
 const ArtistPage = (props) => {
 	const classes = useStyles();
-	const { artist, fetchArtist, isArtistLoading, isArtistCloudLoading, areSongLyricsLoading } = props;
+	const { artist, fetchArtist, isArtistLoading, isArtistCloudLoading, areSongLyricsLoading, clouds } = props;
 	const { artistId } = useParams();
 	const [ cloudExpanded, setCloudExpanded ] = useState(true);
 	const [ songsExpanded, setSongsExpanded ] = useState(true);
@@ -133,7 +133,7 @@ const ArtistPage = (props) => {
 	if (!artistId) return <Redirect to={paths.search} />;
 	if (!artist && !isArtistLoading) return null;
 
-	const { name, encodedCloud, path } = artist || {};
+	const { name, path } = artist || {};
 
 	return (
 		<Grid className={classes.artistPage}>
@@ -175,7 +175,7 @@ const ArtistPage = (props) => {
 							<RapCloud
 								generateCloud={genArtistCloud}
 								cloudName={name}
-								encodedCloud={encodedCloud}
+								clouds={clouds}
 								isLoading={isArtistCloudLoading || isArtistLoading || areSongLyricsLoading}
 							/>
 						)}
@@ -203,6 +203,7 @@ const mapState = (state) => ({
 	isArtistLoading: selectors.isArtistLoading(state),
 	isArtistCloudLoading: selectors.isArtistCloudLoading(state),
 	areSongLyricsLoading: selectors.areSongLyricsLoading(state),
+	clouds: selectors.getCloudsForArtist(state),
 });
 
 export default connect(mapState, { fetchArtist, genArtistCloud })(withWidth()(ArtistPage));
