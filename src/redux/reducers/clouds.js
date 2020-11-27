@@ -6,8 +6,8 @@ import {
 	ADD_CUSTOM_MASK,
 	RESET_CLOUD_DEFAULTS,
 	DELETE_MASK,
-	FETCH_SONG_CLOUD,
-	FETCH_ARTIST_CLOUD,
+	GEN_SONG_CLOUD,
+	GEN_ARTIST_CLOUD,
 } from '../actionTypes';
 
 export const initialState = {
@@ -152,8 +152,8 @@ handlers[FETCH_MASKS.success] = addMasks;
 handlers[ADD_CUSTOM_MASK.success] = addCustomMask;
 handlers[DELETE_MASK.success] = deleteMask;
 handlers[RESET_CLOUD_DEFAULTS] = resetCloudDefaults;
-handlers[FETCH_SONG_CLOUD.success] = addCloud;
-handlers[FETCH_ARTIST_CLOUD.success] = addCloud;
+handlers[GEN_SONG_CLOUD.success] = addCloud;
+handlers[GEN_ARTIST_CLOUD.success] = addCloud;
 
 export default (state = initialState, action) => {
 	const handle = handlers[action.type];

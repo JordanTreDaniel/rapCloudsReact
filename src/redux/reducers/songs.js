@@ -3,8 +3,8 @@ import {
 	SET_SONG_SEARCH_TERM,
 	SEARCH_SONGS,
 	FETCH_SONG_DETAILS,
-	FETCH_SONG_CLOUD,
-	FETCH_SONG_LYRICS
+	GEN_SONG_CLOUD,
+	FETCH_SONG_LYRICS,
 } from '../actionTypes';
 
 const initialState = {
@@ -13,7 +13,7 @@ const initialState = {
 	searchLoading: false,
 	songDetailLoading: false,
 	lyricsLoading: false,
-	wordCloudLoading: false
+	wordCloudLoading: false,
 };
 
 const addSongs = (state, action) => {
@@ -46,16 +46,6 @@ const addSongDetails = (state, action) => {
 	return { ...state, byId: { ...songsById }, songDetailLoading: false };
 };
 
-const addWordCloud = (state, action) => {
-	const { songId, encodedCloud } = action;
-	if (!songId || !encodedCloud) return state;
-	const songsById = state.byId;
-	const oldSong = songsById[songId];
-	const mergedSong = { ...oldSong, encodedCloud };
-	songsById[songId] = mergedSong;
-	return { ...state, byId: { ...songsById }, wordCloudLoading: false };
-};
-
 const addLyrics = (state, action) => {
 	const { songId, lyrics } = action;
 	if (!songId || !lyrics) return state;
@@ -67,29 +57,27 @@ const addLyrics = (state, action) => {
 };
 
 const loadingMap = {};
-Object.values(FETCH_SONG_CLOUD).forEach((actionType) => (loadingMap[actionType] = 'wordCloudLoading'));
+Object.values(GEN_SONG_CLOUD).forEach((actionType) => (loadingMap[actionType] = 'wordCloudLoading'));
 Object.values(FETCH_SONG_LYRICS).forEach((actionType) => (loadingMap[actionType] = 'lyricsLoading'));
 Object.values(FETCH_SONG_DETAILS).forEach((actionType) => (loadingMap[actionType] = 'songDetailLoading'));
 Object.values(SEARCH_SONGS).forEach((actionType) => (loadingMap[actionType] = 'searchLoading'));
 
 const setLoading = (state, action) => {
 	const { type } = action;
-	const val = type.match('FAILURE') || type.match('CANCELLATION') ? false : true
+	const val = type.match('FAILURE') || type.match('CANCELLATION') ? false : true;
 	const key = loadingMap[type];
 	return { ...state, [key]: val };
 };
 
-const handlers = {}
-Object.values(FETCH_SONG_CLOUD).forEach((actionType) => (handlers[actionType] = setLoading));
+const handlers = {};
+Object.values(GEN_SONG_CLOUD).forEach((actionType) => (handlers[actionType] = setLoading));
 Object.values(FETCH_SONG_LYRICS).forEach((actionType) => (handlers[actionType] = setLoading));
 Object.values(FETCH_SONG_DETAILS).forEach((actionType) => (handlers[actionType] = setLoading));
 Object.values(SEARCH_SONGS).forEach((actionType) => (handlers[actionType] = setLoading));
-handlers[ADD_SONGS] = addSongs
-handlers[SET_SONG_SEARCH_TERM] = setSearchTerm
-handlers[FETCH_SONG_DETAILS.success] = addSongDetails
-handlers[FETCH_SONG_CLOUD.success] = addWordCloud
-handlers[FETCH_SONG_LYRICS.success] = addLyrics
-
+handlers[ADD_SONGS] = addSongs;
+handlers[SET_SONG_SEARCH_TERM] = setSearchTerm;
+handlers[FETCH_SONG_DETAILS.success] = addSongDetails;
+handlers[FETCH_SONG_LYRICS.success] = addLyrics;
 
 export default (state = initialState, action) => {
 	const handle = handlers[action.type];

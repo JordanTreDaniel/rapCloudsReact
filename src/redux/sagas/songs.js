@@ -5,7 +5,7 @@ import {
 	FETCH_SONG_DETAILS,
 	FETCH_SONG_LYRICS,
 	SIGN_OUT,
-	FETCH_SONG_CLOUD,
+	GEN_SONG_CLOUD,
 } from '../actionTypes';
 import { generateCloud } from './clouds';
 import { getAccessToken, getSearchTerm, getSongFromId, getCloudsForSong } from '../selectors';
@@ -147,7 +147,7 @@ export function* fetchSongLyrics(action) {
 	} finally {
 		if (generateCloud) {
 			const normalizedLyrics = normalizeLyrics(lyrics);
-			yield put({ type: FETCH_SONG_CLOUD.start, lyricString: normalizedLyrics, songId });
+			yield put({ type: GEN_SONG_CLOUD.start, lyricString: normalizedLyrics, songId });
 		}
 	}
 }
@@ -159,7 +159,7 @@ export function* genSongCloud(action) {
 		const song = yield select(getSongFromId, songId);
 		const cloudsForSong = yield select(getCloudsForSong, songId);
 		if (cloudsForSong.length && !forceFetch) {
-			yield put({ type: FETCH_SONG_CLOUD.cancellation });
+			yield put({ type: GEN_SONG_CLOUD.cancellation });
 			yield cancel();
 			return;
 		}
@@ -170,14 +170,14 @@ export function* genSongCloud(action) {
 		cloud = { ...cloud, artistIds, songIds };
 		const { finishedCloud, error } = yield call(generateCloud, { lyricString, cloud });
 		if (error) {
-			yield put({ type: FETCH_SONG_CLOUD.failure });
+			yield put({ type: GEN_SONG_CLOUD.failure });
 			console.log('Something went wrong in fetch song cloud', error);
 		} else {
-			yield put({ type: FETCH_SONG_CLOUD.success, finishedCloud });
+			yield put({ type: GEN_SONG_CLOUD.success, finishedCloud });
 			return finishedCloud;
 		}
 	} catch (err) {
-		yield put({ type: FETCH_SONG_CLOUD.failure });
+		yield put({ type: GEN_SONG_CLOUD.failure });
 		console.log('Something went wrong in fetch song cloud', err);
 	}
 }
@@ -191,7 +191,7 @@ function* watchFetchSongDetails() {
 }
 
 function* watchGenSongCloud() {
-	yield takeLatest(FETCH_SONG_CLOUD.start, genSongCloud);
+	yield takeLatest(GEN_SONG_CLOUD.start, genSongCloud);
 }
 
 function* watchFetchSongLyrics() {

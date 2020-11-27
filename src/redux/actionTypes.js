@@ -9,8 +9,8 @@ const actionNamesForProcess = (baseName) => {
 export const SET_USER = 'SET_USER';
 export const ADD_SONGS = 'ADD_SONGS';
 export const SEARCH_SONGS = actionNamesForProcess('SEARCH_SONGS');
-export const FETCH_SONG_CLOUD = actionNamesForProcess('FETCH_SONG_CLOUD');
-export const FETCH_ARTIST_CLOUD = actionNamesForProcess('FETCH_ARTIST_CLOUD');
+export const GEN_SONG_CLOUD = actionNamesForProcess('GEN_SONG_CLOUD');
+export const GEN_ARTIST_CLOUD = actionNamesForProcess('GEN_ARTIST_CLOUD');
 export const FETCH_SONG_DETAILS = actionNamesForProcess('FETCH_SONG_DETAILS');
 export const SET_SONG_SEARCH_TERM = 'SET_SONG_SEARCH_TERM';
 export const SET_HYDRATION_TRUE = 'SET_HYDRATION_TRUE';

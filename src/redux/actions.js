@@ -6,8 +6,8 @@ import {
 	SET_SONG_SEARCH_TERM,
 	FETCH_ARTIST,
 	SIGN_OUT,
-	FETCH_ARTIST_CLOUD,
-	FETCH_SONG_CLOUD,
+	GEN_ARTIST_CLOUD,
+	GEN_SONG_CLOUD,
 	UPDATE_CLOUD_SETTINGS,
 	FETCH_MASKS,
 	ADD_CUSTOM_MASK,
@@ -56,12 +56,12 @@ export const signOut = () => {
 };
 
 export const genArtistCloud = (artistId) => {
-	return { type: FETCH_ARTIST_CLOUD.start, forceFetch: true, artistId };
+	return { type: GEN_ARTIST_CLOUD.start, forceFetch: true, artistId };
 };
 
 export const genSongCloud = (songId, songLyrics) => {
 	const normalizedLyrics = normalizeLyrics(songLyrics);
-	return { type: FETCH_SONG_CLOUD.start, lyricString: normalizedLyrics, songId, forceFetch: true };
+	return { type: GEN_SONG_CLOUD.start, lyricString: normalizedLyrics, songId, forceFetch: true };
 };
 export const updateCloudSettings = (key, val) => {
 	return { type: UPDATE_CLOUD_SETTINGS, forceFetch: true, key, val };
