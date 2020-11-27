@@ -4,6 +4,7 @@ import { getCloudSettingsForFlight, getUserMongoId } from '../selectors';
 import { FETCH_MASKS, ADD_CUSTOM_MASK, DELETE_MASK, FETCH_CLOUDS } from '../actionTypes';
 import { listRapClouds } from '../../graphql/queries';
 import { API, graphqlOperation, Auth } from 'aws-amplify';
+import { getAwsUserEmail } from '../../utils';
 const REACT_APP_SERVER_ROOT =
 	process.env.NODE_ENV === 'development' ? 'http://localhost:3333' : 'https://rap-clouds-server.herokuapp.com';
 
@@ -35,17 +36,22 @@ const apiGenerateCloud = async (lyricString, cloudSettings) => {
 
 export function* generateCloud(action) {
 	try {
-		const cloudSettings = yield select(getCloudSettingsForFlight);
-		const { lyricString } = action;
-		// console.log('Fetch cloud', { cloudSettings, lyricString });
+		let { lyricString, cloud } = action;
 		if (!lyricString || !lyricString.length) return { error: { message: 'Must include lyrics to get a cloud' } };
+		const cloudSettings = yield select(getCloudSettingsForFlight);
+		const awsUserEmail = yield call(getAwsUserEmail);
+		cloud = {
+			...cloud,
+			userEmail: awsUserEmail,
+			settings: cloudSettings,
+		};
 		const { data, error } = yield call(apiGenerateCloud, lyricString, cloudSettings);
 		const { encodedCloud } = data;
 		if (error) {
 			console.log('Something went wrong in generateCloud', error);
 			return { error };
 		} else {
-			return { encodedCloud };
+			return { finishedCloud: { ...cloud, encodedCloud } };
 		}
 	} catch (err) {
 		console.log('Something went wrong', err);

@@ -1,6 +1,6 @@
 import { put, takeEvery, takeLatest, call, select, cancel, all } from 'redux-saga/effects';
 import { FETCH_ARTIST, ADD_SONGS, SIGN_OUT, FETCH_SONG_LYRICS, FETCH_ARTIST_CLOUD } from '../actionTypes';
-import { getAccessToken, getArtistFromId } from '../selectors';
+import { getAccessToken, getArtistFromId, getCloudsForArtist } from '../selectors';
 import { fetchSongLyrics } from './songs';
 import { generateCloud } from './clouds';
 import axios from 'axios';
@@ -68,15 +68,23 @@ export function* fetchArtist(action) {
 export function* genArtistCloud(action) {
 	try {
 		const { artistId, forceFetch = false, songs } = action;
+		let { cloud = {} } = action;
 		const artist = yield select(getArtistFromId, artistId);
-		if (artist && artist.encodedCloud && !forceFetch) {
+		const cloudsForArtist = yield select(getCloudsForArtist, artistId);
+
+		if (artist && cloudsForArtist.length && !forceFetch) {
 			yield put({ type: FETCH_ARTIST_CLOUD.cancellation });
 			yield cancel();
 			return;
 		}
+		const songIds = [],
+			artistIds = [];
 		const allLyrics = yield all(
 			songs.map((song) => {
 				const { id: songId, path: songPath } = song;
+				songIds.push(songId);
+				//TO-DO: Add artistIds from each artist of the song.artists
+				artistIds.push(artistId);
 				return fetchSongLyrics({ type: FETCH_SONG_LYRICS.start, songId, songPath, generateCloud: false });
 			}),
 		);
@@ -84,13 +92,21 @@ export function* genArtistCloud(action) {
 			(acc, songLyrics) => acc + ' ' + normalizeLyrics(songLyrics),
 			'',
 		);
-		const { encodedCloud, error } = yield call(generateCloud, { lyricString: normalizedLyricsJumble });
+		cloud = {
+			...cloud,
+			songIds,
+			artistIds,
+		};
+		const { finishedCloud, error } = yield call(generateCloud, {
+			lyricString: normalizedLyricsJumble,
+			cloud,
+		});
 		if (error) {
 			yield put({ type: FETCH_ARTIST_CLOUD.failure });
 			console.log('Something went wrong in fetch artist cloud', error);
 		} else {
-			yield put({ type: FETCH_ARTIST_CLOUD.success, artistId, encodedCloud });
-			return encodedCloud;
+			yield put({ type: FETCH_ARTIST_CLOUD.success, finishedCloud });
+			return finishedCloud;
 		}
 	} catch (err) {
 		yield put({ type: FETCH_ARTIST_CLOUD.failure });

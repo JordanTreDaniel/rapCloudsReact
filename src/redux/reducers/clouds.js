@@ -1,36 +1,45 @@
 // import { generateCloud } from '../actionTypes';
 
-import { UPDATE_CLOUD_SETTINGS, FETCH_MASKS, ADD_CUSTOM_MASK, RESET_CLOUD_DEFAULTS, DELETE_MASK } from '../actionTypes';
+import {
+	UPDATE_CLOUD_SETTINGS,
+	FETCH_MASKS,
+	ADD_CUSTOM_MASK,
+	RESET_CLOUD_DEFAULTS,
+	DELETE_MASK,
+	FETCH_SONG_CLOUD,
+	FETCH_ARTIST_CLOUD,
+} from '../actionTypes';
 
 export const initialState = {
 	byId: {},
-	settings: {
-		width: '400',
-		height: '200',
-		maskDesired: true,
-		maskId: null,
-		contour: false,
-		contourWidth: '1',
-		contourColor: '#ffffff',
-		stopWords: [ 'and', 'but', 'the', 'to', 'if', 'it', 'of', 'at' ],
-		backgroundColor: '#000000',
-		coloredBackground: true,
-		transparentBackground: false,
-		maskAsBackground: false,
-		useCustomColors: true,
-		useRandomColors: false,
-		colorFromMask: false,
-		colors: [ '#64c1ff', '#0091ea', '#0064b7', '#f5f5f5', '#6d6d6d' ], //this defaults to 'viridis' colormap i believe. Aka, empty color arr means use their default
-		repeat: true,
-		collocations: true,
-		includeNumbers: true,
-		detectEdges: true,
-		downSample: '1',
-		whiteThreshold: '240',
-	},
+	cloudsLoading: false,
 	masksById: {},
 	masksLoading: false,
-	cloudsLoading: false,
+	settings: {
+		backgroundColor: '#000000',
+		collocations: true,
+		coloredBackground: true,
+		colorFromMask: false,
+		colors: [ '#64c1ff', '#0091ea', '#0064b7', '#f5f5f5', '#6d6d6d' ], //this defaults to 'viridis' colormap i believe. Aka, empty color arr means use their default
+		contour: false,
+		contourColor: '#ffffff',
+		contourWidth: '1',
+		detectEdges: true,
+		downSample: '1',
+		height: '200',
+		includeNumbers: true,
+		maskAsBackground: false,
+		maskDesired: true,
+		maskId: null,
+		private: true,
+		repeat: true,
+		stopWords: [ 'and', 'but', 'the', 'to', 'if', 'it', 'of', 'at' ],
+		transparentBackground: false,
+		useCustomColors: true,
+		useRandomColors: false,
+		whiteThreshold: '240',
+		width: '400',
+	},
 };
 
 const loadingMap = {};
@@ -45,15 +54,16 @@ const setLoading = (state, action) => {
 	return { ...state, [loadingProperty]: value };
 };
 
-// const addCloud = (state, action) => {
-// 	const { artistId, songIds, cloud } = action;
-// 	if (!artistId || !songIds.length) {
-// 		console.error("Could not save cloud without artist & song id's");
-// 		return state;
-// 	}
-// 	const cloudsById = state.byId;
-// 	return { ...state, byId: { ...cloudsById, [id]: cloud } };
-// };
+const addCloud = (state, action) => {
+	const { finishedCloud } = action;
+	const { artistIds, songIds, id } = finishedCloud;
+	if (!artistIds.length || !songIds.length) {
+		console.error("Could not save cloud without artist & song id's");
+		return state;
+	}
+	const cloudsById = state.byId;
+	return { ...state, byId: { ...cloudsById, [id]: finishedCloud } };
+};
 
 const updateCloudSettings = (state, action) => {
 	const mutallyExclPropSets = [
@@ -142,6 +152,8 @@ handlers[FETCH_MASKS.success] = addMasks;
 handlers[ADD_CUSTOM_MASK.success] = addCustomMask;
 handlers[DELETE_MASK.success] = deleteMask;
 handlers[RESET_CLOUD_DEFAULTS] = resetCloudDefaults;
+handlers[FETCH_SONG_CLOUD.success] = addCloud;
+handlers[FETCH_ARTIST_CLOUD.success] = addCloud;
 
 export default (state = initialState, action) => {
 	const handle = handlers[action.type];

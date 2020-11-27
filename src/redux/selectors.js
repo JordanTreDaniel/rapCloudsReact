@@ -204,3 +204,42 @@ export const getCurrentMask = createSelector(
 	getCloudSettings,
 	(masksById, cloudSettings) => masksById[cloudSettings.maskId],
 );
+export const getCloudsById = (state) => state.clouds.byId;
+export const getCloudsByArtistId = createSelector(getCloudsById, (cloudsById) => {
+	Object.values(cloudsById).reduce((cloudsByArtistId, cloud) => {
+		const { artistIds } = cloud;
+		artistIds.forEach(
+			(artistId) =>
+				(cloudsByArtistId[artistId] = cloudsByArtistId[artistId]
+					? [ ...cloudsByArtistId[artistId], cloud ]
+					: [ cloud ]),
+		);
+		return cloudsByArtistId;
+	}, {});
+});
+export const getCloudsBySongId = createSelector(getCloudsById, (cloudsById) => {
+	Object.values(cloudsById).reduce((cloudsBySongId, cloud) => {
+		const { songIds } = cloud;
+		songIds.forEach(
+			(songId) =>
+				(cloudsBySongId[songId] = cloudsBySongId[songId] ? [ ...cloudsBySongId[songId], cloud ] : [ cloud ]),
+		);
+		return cloudsBySongId;
+	}, {});
+});
+export const getCloudsForArtist = createSelector(
+	getCloudsById,
+	(_, artistId) => artistId,
+	(cloudsById, artistId) => {
+		if (!artistId) console.warn(`Warning, ${this.name} called without necessary arguments.`);
+		return Object.values(cloudsById).filter((cloud) => cloud.artistIds.includes(artistId));
+	},
+);
+export const getCloudsForSong = createSelector(
+	getCloudsById,
+	(_, songId) => songId,
+	(cloudsById, songId) => {
+		if (!songId) console.warn(`Warning, ${this.name} called without necessary arguments.`);
+		return Object.values(cloudsById).filter((cloud) => cloud.songIds.includes(songId));
+	},
+);

@@ -4,37 +4,37 @@
 export const getRapCloud = /* GraphQL */ `
   query GetRapCloud($id: ID!) {
     getRapCloud(id: $id) {
-      id
-      songIds
       artistIds
-      maskId
-      userId
-      private
       description
+      id
+      maskId
       settings {
-        width
-        height
-        maskDesired
-        maskId
-        contour
-        contourWidth
-        contourColor
-        stopWords
         backgroundColor
+        collocations
         coloredBackground
-        transparentBackground
-        maskAsBackground
-        useCustomColors
-        useRandomColors
         colorFromMask
         colors
-        repeat
-        collocations
-        includeNumbers
+        contour
+        contourColor
+        contourWidth
         detectEdges
         downSample
+        height
+        includeNumbers
+        maskAsBackground
+        maskDesired
+        maskId
+        repeat
+        stopWords
+        transparentBackground
+        useCustomColors
+        useRandomColors
         whiteThreshold
+        width
+        private
       }
+      songIds
+      userEmail
       createdAt
       updatedAt
     }
@@ -48,37 +48,37 @@ export const listRapClouds = /* GraphQL */ `
   ) {
     listRapClouds(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
-        id
-        songIds
         artistIds
-        maskId
-        userId
-        private
         description
+        id
+        maskId
         settings {
-          width
-          height
-          maskDesired
-          maskId
-          contour
-          contourWidth
-          contourColor
-          stopWords
           backgroundColor
+          collocations
           coloredBackground
-          transparentBackground
-          maskAsBackground
-          useCustomColors
-          useRandomColors
           colorFromMask
           colors
-          repeat
-          collocations
-          includeNumbers
+          contour
+          contourColor
+          contourWidth
           detectEdges
           downSample
+          height
+          includeNumbers
+          maskAsBackground
+          maskDesired
+          maskId
+          repeat
+          stopWords
+          transparentBackground
+          useCustomColors
+          useRandomColors
           whiteThreshold
+          width
+          private
         }
+        songIds
+        userEmail
         createdAt
         updatedAt
       }

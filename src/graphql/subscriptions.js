@@ -4,37 +4,37 @@
 export const onCreateRapCloud = /* GraphQL */ `
   subscription OnCreateRapCloud {
     onCreateRapCloud {
-      id
-      songIds
       artistIds
-      maskId
-      userId
-      private
       description
+      id
+      maskId
       settings {
-        width
-        height
-        maskDesired
-        maskId
-        contour
-        contourWidth
-        contourColor
-        stopWords
         backgroundColor
+        collocations
         coloredBackground
-        transparentBackground
-        maskAsBackground
-        useCustomColors
-        useRandomColors
         colorFromMask
         colors
-        repeat
-        collocations
-        includeNumbers
+        contour
+        contourColor
+        contourWidth
         detectEdges
         downSample
+        height
+        includeNumbers
+        maskAsBackground
+        maskDesired
+        maskId
+        repeat
+        stopWords
+        transparentBackground
+        useCustomColors
+        useRandomColors
         whiteThreshold
+        width
+        private
       }
+      songIds
+      userEmail
       createdAt
       updatedAt
     }
@@ -43,37 +43,37 @@ export const onCreateRapCloud = /* GraphQL */ `
 export const onUpdateRapCloud = /* GraphQL */ `
   subscription OnUpdateRapCloud {
     onUpdateRapCloud {
-      id
-      songIds
       artistIds
-      maskId
-      userId
-      private
       description
+      id
+      maskId
       settings {
-        width
-        height
-        maskDesired
-        maskId
-        contour
-        contourWidth
-        contourColor
-        stopWords
         backgroundColor
+        collocations
         coloredBackground
-        transparentBackground
-        maskAsBackground
-        useCustomColors
-        useRandomColors
         colorFromMask
         colors
-        repeat
-        collocations
-        includeNumbers
+        contour
+        contourColor
+        contourWidth
         detectEdges
         downSample
+        height
+        includeNumbers
+        maskAsBackground
+        maskDesired
+        maskId
+        repeat
+        stopWords
+        transparentBackground
+        useCustomColors
+        useRandomColors
         whiteThreshold
+        width
+        private
       }
+      songIds
+      userEmail
       createdAt
       updatedAt
     }
@@ -82,37 +82,37 @@ export const onUpdateRapCloud = /* GraphQL */ `
 export const onDeleteRapCloud = /* GraphQL */ `
   subscription OnDeleteRapCloud {
     onDeleteRapCloud {
-      id
-      songIds
       artistIds
-      maskId
-      userId
-      private
       description
+      id
+      maskId
       settings {
-        width
-        height
-        maskDesired
-        maskId
-        contour
-        contourWidth
-        contourColor
-        stopWords
         backgroundColor
+        collocations
         coloredBackground
-        transparentBackground
-        maskAsBackground
-        useCustomColors
-        useRandomColors
         colorFromMask
         colors
-        repeat
-        collocations
-        includeNumbers
+        contour
+        contourColor
+        contourWidth
         detectEdges
         downSample
+        height
+        includeNumbers
+        maskAsBackground
+        maskDesired
+        maskId
+        repeat
+        stopWords
+        transparentBackground
+        useCustomColors
+        useRandomColors
         whiteThreshold
+        width
+        private
       }
+      songIds
+      userEmail
       createdAt
       updatedAt
     }

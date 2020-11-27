@@ -6,9 +6,8 @@ import ArrowIcon from '@material-ui/icons/ArrowForward';
 // import "./SignIn.css"; //Don't think we need this
 import { setUser, addSongs, updateUser } from '../redux/actions';
 import { getUserMongoId } from '../redux/selectors';
-import { classNames } from '../utils';
+import { classNames, awsSignInOrSignUp } from '../utils';
 import paths from '../paths';
-import { Auth } from 'aws-amplify';
 
 const API_URL =
 	process.env.NODE_ENV === 'development' ? 'http://localhost:3333' : 'https://rap-clouds-server.herokuapp.com';
@@ -95,45 +94,6 @@ const SignIn = (props) => {
 	const socket = io(API_URL);
 	const [ popUpOpen, togglePopUp ] = useState(false);
 	const classes = useStyles();
-	const awsSignIn = async (username, password = 'Aws20202020') => {
-		try {
-			const awsUser = await Auth.signIn(username, password);
-			return awsUser;
-		} catch (error) {
-			const { code } = error;
-			console.log('error signing in', error);
-			if (code === 'UserNotFoundException') {
-				awsSignUp(username);
-			}
-		}
-	};
-
-	const awsSignUp = async (username, password = 'Aws20202020') => {
-		try {
-			const awsSignUpResponse = await Auth.signUp({
-				username,
-				password,
-				attributes: {
-					email: username, // optional
-				},
-			});
-			return awsSignUpResponse;
-		} catch (error) {
-			console.log('error signing up:', error);
-		}
-	};
-
-	const awsSignInOrSignUp = async (user) => {
-		const { email = 'noUserEmailFound@rapclouds.com' } = user;
-		let awsAuthInfo = {};
-		if (user.awsAuthInfo) {
-			awsAuthInfo = await awsSignIn(email);
-		} else {
-			const awsSignUpResponse = await awsSignUp(email);
-			awsAuthInfo = awsSignUpResponse.user;
-		}
-		props.updateUser({ awsAuthInfo });
-	};
 
 	// Routinely checks the popup to re-enable the login button
 	// if the user closes the popup without authenticating.

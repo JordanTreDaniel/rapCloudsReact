@@ -8,7 +8,7 @@ import {
 	FETCH_SONG_CLOUD,
 } from '../actionTypes';
 import { generateCloud } from './clouds';
-import { getAccessToken, getSearchTerm, getSongFromId } from '../selectors';
+import { getAccessToken, getSearchTerm, getSongFromId, getCloudsForSong } from '../selectors';
 import normalizeLyrics from '../utils/normalizeLyrics';
 import axios from 'axios';
 
@@ -154,20 +154,27 @@ export function* fetchSongLyrics(action) {
 
 export function* genSongCloud(action) {
 	try {
+		let { cloud = {} } = action;
 		const { lyricString, songId, forceFetch = false } = action;
 		const song = yield select(getSongFromId, songId);
-		if (song.encodedCloud && !forceFetch) {
+		const cloudsForSong = yield select(getCloudsForSong, songId);
+		if (cloudsForSong.length && !forceFetch) {
 			yield put({ type: FETCH_SONG_CLOUD.cancellation });
 			yield cancel();
 			return;
 		}
-		const { encodedCloud, error } = yield call(generateCloud, { lyricString });
+
+		const songIds = [ songId ],
+			artistIds = song.writer_artists && song.writer_artists.map((artist) => artist.id);
+		artistIds.push(song.primary_artist.id);
+		cloud = { ...cloud, artistIds, songIds };
+		const { finishedCloud, error } = yield call(generateCloud, { lyricString, cloud });
 		if (error) {
 			yield put({ type: FETCH_SONG_CLOUD.failure });
 			console.log('Something went wrong in fetch song cloud', error);
 		} else {
-			yield put({ type: FETCH_SONG_CLOUD.success, songId, encodedCloud });
-			return encodedCloud;
+			yield put({ type: FETCH_SONG_CLOUD.success, finishedCloud });
+			return finishedCloud;
 		}
 	} catch (err) {
 		yield put({ type: FETCH_SONG_CLOUD.failure });
