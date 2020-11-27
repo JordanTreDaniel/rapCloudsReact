@@ -16,6 +16,7 @@ import {
 	FETCH_SONG_LYRICS,
 	UPDATE_USER,
 	FETCH_CLOUDS,
+	DELETE_CLOUD,
 } from './actionTypes';
 import normalizeLyrics from './utils/normalizeLyrics';
 
@@ -63,6 +64,11 @@ export const genSongCloud = (songId, songLyrics) => {
 	const normalizedLyrics = normalizeLyrics(songLyrics);
 	return { type: GEN_SONG_CLOUD.start, lyricString: normalizedLyrics, songId, forceFetch: true };
 };
+
+export const deleteCloud = (cloudId) => {
+	return { type: DELETE_CLOUD.start, cloudId };
+};
+
 export const updateCloudSettings = (key, val) => {
 	return { type: UPDATE_CLOUD_SETTINGS, forceFetch: true, key, val };
 };

@@ -1,9 +1,9 @@
 import { call, select, takeLatest, put, takeEvery } from 'redux-saga/effects';
 import axios from 'axios';
 import { getCloudSettingsForFlight, getUserMongoId } from '../selectors';
-import { FETCH_MASKS, ADD_CUSTOM_MASK, DELETE_MASK, FETCH_CLOUDS } from '../actionTypes';
+import { FETCH_MASKS, ADD_CUSTOM_MASK, DELETE_MASK, FETCH_CLOUDS, DELETE_CLOUD } from '../actionTypes';
 import { listRapClouds } from '../../graphql/queries';
-import { createRapCloud } from '../../graphql/mutations';
+import { createRapCloud, deleteRapCloud } from '../../graphql/mutations';
 import { API, graphqlOperation, Auth } from 'aws-amplify';
 import { getAwsUserEmail } from '../../utils';
 const REACT_APP_SERVER_ROOT =
@@ -43,6 +43,37 @@ const apiSaveCloud = async (cloud) => {
 		console.error("Couldn't save the cloud", { cloud, err });
 	}
 };
+
+const apiDeleteCloud = async (cloudId) => {
+	try {
+		const cloudData = await API.graphql(graphqlOperation(deleteRapCloud, { input: { id: cloudId } }));
+		return { data: cloudData.data.deleteRapCloud };
+	} catch (error) {
+		console.error("Couldn't delete the cloud", { cloudId, error });
+		return { error };
+	}
+};
+
+export function* deleteCloud(action) {
+	const { cloudId } = action;
+	if (!cloudId) {
+		yield put({ type: DELETE_CLOUD.cancellation });
+	}
+	try {
+		const { data, error } = yield call(apiDeleteCloud, cloudId);
+		if (error) {
+			console.log('Something went wrong in deleteCloud', error);
+			return { error };
+		} else {
+			yield put({ type: DELETE_CLOUD.success, cloudId });
+			return cloudId;
+		}
+	} catch (err) {
+		console.log('Something went wrong', err);
+		yield put({ type: DELETE_CLOUD.failure, err });
+		return { error: err };
+	}
+}
 
 export function* generateCloud(action) {
 	try {
@@ -249,4 +280,8 @@ function* watchFetchClouds() {
 	yield takeLatest(FETCH_CLOUDS.start, fetchClouds);
 }
 
-export default [ watchFetchMasks, watchAddCustomMask, watchDeleteMask, watchFetchClouds ];
+function* watchDeleteCloud() {
+	yield takeEvery(DELETE_CLOUD.start, deleteCloud);
+}
+
+export default [ watchFetchMasks, watchAddCustomMask, watchDeleteMask, watchFetchClouds, watchDeleteCloud ];

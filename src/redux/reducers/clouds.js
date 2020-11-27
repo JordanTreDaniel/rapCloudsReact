@@ -8,6 +8,7 @@ import {
 	DELETE_MASK,
 	GEN_SONG_CLOUD,
 	GEN_ARTIST_CLOUD,
+	DELETE_CLOUD,
 } from '../actionTypes';
 
 export const initialState = {
@@ -46,6 +47,7 @@ const loadingMap = {};
 Object.values(FETCH_MASKS).forEach((actionType) => (loadingMap[actionType] = 'masksLoading'));
 Object.values(ADD_CUSTOM_MASK).forEach((actionType) => (loadingMap[actionType] = 'masksLoading'));
 Object.values(DELETE_MASK).forEach((actionType) => (loadingMap[actionType] = 'masksLoading'));
+Object.values(DELETE_CLOUD).forEach((actionType) => (loadingMap[actionType] = 'cloudsLoading'));
 
 const setLoading = (state, action) => {
 	const { type } = action;
@@ -62,7 +64,18 @@ const addCloud = (state, action) => {
 		return state;
 	}
 	const cloudsById = state.byId;
-	return { ...state, byId: { ...cloudsById, [id]: finishedCloud } };
+	return { ...state, byId: { ...cloudsById, [id]: finishedCloud }, cloudsLoading: false };
+};
+
+const removeCloud = (state, action) => {
+	const { cloudId } = action;
+	if (!cloudId) {
+		console.error('Could not delete cloud without cloudId');
+		return state;
+	}
+	const cloudsById = state.byId;
+	delete cloudsById[cloudId];
+	return { ...state, byId: { ...cloudsById }, cloudsLoading: false };
 };
 
 const updateCloudSettings = (state, action) => {
@@ -146,6 +159,7 @@ const handlers = {};
 Object.values(FETCH_MASKS).forEach((actionType) => (handlers[actionType] = setLoading));
 Object.values(ADD_CUSTOM_MASK).forEach((actionType) => (handlers[actionType] = setLoading));
 Object.values(DELETE_MASK).forEach((actionType) => (handlers[actionType] = setLoading));
+Object.values(DELETE_CLOUD).forEach((actionType) => (handlers[actionType] = setLoading));
 // handlers[generateCloud.success] = addCloud;
 handlers[UPDATE_CLOUD_SETTINGS] = updateCloudSettings;
 handlers[FETCH_MASKS.success] = addMasks;
@@ -154,6 +168,7 @@ handlers[DELETE_MASK.success] = deleteMask;
 handlers[RESET_CLOUD_DEFAULTS] = resetCloudDefaults;
 handlers[GEN_SONG_CLOUD.success] = addCloud;
 handlers[GEN_ARTIST_CLOUD.success] = addCloud;
+handlers[DELETE_CLOUD.success] = removeCloud;
 
 export default (state = initialState, action) => {
 	const handle = handlers[action.type];

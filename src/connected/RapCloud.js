@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 import { IconButton, Grid, withWidth, Tooltip, Paper, Dialog, DialogContent } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Pagination from '@material-ui/lab/Pagination';
 import RapCloudSettings from './RapCloudSettings';
 import LoadingBar from '../components/LoadingBar';
-import { classNames } from '../utils';
+import { classNames, base64InNewTab } from '../utils';
 import SettingsIcon from '@material-ui/icons/Settings';
 import DownloadIcon from '@material-ui/icons/CloudDownload';
 import NewTabIcon from '@material-ui/icons/AddToPhotos';
 import XIcon from '@material-ui/icons/Cancel';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import ChevronRight from '@material-ui/icons/ChevronRight';
+import Delete from '@material-ui/icons/Delete';
 // import FacebookIcon from '@material-ui/icons/Facebook';
 // import InstagramIcon from '@material-ui/icons/Instagram';
 // import TwitterIcon from '@material-ui/icons/Twitter';
-import { base64InNewTab } from '../utils';
+import { deleteCloud } from '../redux/actions';
 
 const useStyles = makeStyles((theme) => {
 	return {
@@ -107,10 +109,21 @@ const RapCloud = (props) => {
 	const [ settingsOpen, toggleSettings ] = useState(false);
 	const [ currentCloudIdx, setCurrentCloudIdx ] = React.useState(0);
 	const [ fullScreenCloud, toggleFullScreenCloud ] = useState(false);
-	const { cloudName, clouds, width, top = '-1em', bottom, left = '-0.51em', right, generateCloud, isLoading } = props;
+	const {
+		cloudName,
+		clouds,
+		width,
+		top = '-1em',
+		bottom,
+		left = '-0.51em',
+		right,
+		generateCloud,
+		isLoading,
+		deleteCloud,
+	} = props;
 	const cloud = clouds[currentCloudIdx];
 	// if (!cloud) return null;
-	const { encodedCloud } = cloud || {};
+	const { encodedCloud, id: cloudId } = cloud || {};
 	const cycleClouds = (direction) => {
 		const operand = direction === 'left' ? '-' : '+';
 		let newIdx = eval(`${currentCloudIdx}${operand}1`);
@@ -131,6 +144,18 @@ const RapCloud = (props) => {
 					? classes.cloudActionsTop
 					: classes.cloudActionsBottom}`}
 			>
+				<Tooltip placement="bottom" title="Delete Your RapCloud!">
+					<IconButton
+						id="deleteBtn"
+						onClick={() => {
+							deleteCloud(cloudId);
+							cycleClouds('left');
+						}}
+						className={classNames(classes.cloudAction, classes.attnGrabber)}
+					>
+						<Delete />
+					</IconButton>
+				</Tooltip>
 				<Tooltip placement="bottom" title="Download Your RapCloud!">
 					<IconButton id="downloadBtn" className={classNames(classes.cloudAction, classes.attnGrabber)}>
 						<a
@@ -276,4 +301,4 @@ const RapCloud = (props) => {
 	);
 };
 
-export default withWidth()(RapCloud);
+export default connect(null, { deleteCloud })(withWidth()(RapCloud));
