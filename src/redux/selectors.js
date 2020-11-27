@@ -171,10 +171,17 @@ export const getCurrentArtist = createSelector(getMatchParams, getArtistsById, (
 /********************************************************************* */
 export const getCloudSettings = (state) => state.clouds.settings;
 export const getCloudSettingsForFlight = createSelector(getCloudSettings, (settings) => {
+	// Object.entries(settings).map((key, val) => {
+	// 	const _type = typeof val;
+	// 	if ([ 'string', 'number' ].includes(_type)) {
+	// 		const stringVal = String(val);
+	// 		settings[key] = stringVal.length ? stringVal : String(initialCloudSettings[key]);
+	// 	}
+	// });
 	return {
 		...settings,
 		maskId: settings.maskDesired && settings.maskId ? settings.maskId : null,
-		contourWidth: settings.contour ? settings.contourWidth : 0,
+		contourWidth: settings.contour ? settings.contourWidth : '0',
 		width: String(settings.width).length ? settings.width : initialCloudSettings.width,
 		height: String(settings.height).length ? settings.height : initialCloudSettings.height,
 		whiteThreshold: String(settings.whiteThreshold).length

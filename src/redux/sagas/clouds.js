@@ -3,12 +3,13 @@ import axios from 'axios';
 import { getCloudSettingsForFlight, getUserMongoId } from '../selectors';
 import { FETCH_MASKS, ADD_CUSTOM_MASK, DELETE_MASK, FETCH_CLOUDS } from '../actionTypes';
 import { listRapClouds } from '../../graphql/queries';
+import { createRapCloud } from '../../graphql/mutations';
 import { API, graphqlOperation, Auth } from 'aws-amplify';
 import { getAwsUserEmail } from '../../utils';
 const REACT_APP_SERVER_ROOT =
 	process.env.NODE_ENV === 'development' ? 'http://localhost:3333' : 'https://rap-clouds-server.herokuapp.com';
 
-const apiGenerateCloud = async (lyricString, cloudSettings) => {
+const apiGenerateCloud = async (lyricString, cloudSettingsForFlight) => {
 	const res = await axios({
 		method: 'post',
 		url: `${REACT_APP_SERVER_ROOT}/makeWordCloud`,
@@ -21,7 +22,7 @@ const apiGenerateCloud = async (lyricString, cloudSettings) => {
 		},
 		data: {
 			lyricString,
-			cloudSettings,
+			cloudSettings: cloudSettingsForFlight,
 		},
 	});
 
@@ -34,23 +35,33 @@ const apiGenerateCloud = async (lyricString, cloudSettings) => {
 	return { error: { status, statusText } };
 };
 
+const apiSaveCloud = async (cloud) => {
+	try {
+		const cloudData = await API.graphql(graphqlOperation(createRapCloud, { input: cloud }));
+		return cloudData.data.createRapCloud;
+	} catch (err) {
+		console.error("Couldn't save the cloud", { cloud, err });
+	}
+};
+
 export function* generateCloud(action) {
 	try {
 		let { lyricString, cloud } = action;
 		if (!lyricString || !lyricString.length) return { error: { message: 'Must include lyrics to get a cloud' } };
-		const cloudSettings = yield select(getCloudSettingsForFlight);
+		const cloudSettingsForFlight = yield select(getCloudSettingsForFlight);
 		const awsUserEmail = yield call(getAwsUserEmail);
 		cloud = {
 			...cloud,
 			userEmail: awsUserEmail,
-			settings: cloudSettings,
+			settings: cloudSettingsForFlight,
 		};
-		const { data, error } = yield call(apiGenerateCloud, lyricString, cloudSettings);
+		const { data, error } = yield call(apiGenerateCloud, lyricString, cloudSettingsForFlight);
 		const { encodedCloud } = data;
 		if (error) {
 			console.log('Something went wrong in generateCloud', error);
 			return { error };
 		} else {
+			cloud = yield call(apiSaveCloud, cloud);
 			return { finishedCloud: { ...cloud, encodedCloud } };
 		}
 	} catch (err) {
