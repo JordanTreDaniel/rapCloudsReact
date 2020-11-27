@@ -55,8 +55,8 @@ export const signOut = () => {
 	return { type: SIGN_OUT };
 };
 
-export const genArtistCloud = () => {
-	return { type: FETCH_ARTIST_CLOUD.start, forceFetch: true };
+export const genArtistCloud = (artistId) => {
+	return { type: FETCH_ARTIST_CLOUD.start, forceFetch: true, artistId };
 };
 
 export const genSongCloud = (songId, songLyrics) => {

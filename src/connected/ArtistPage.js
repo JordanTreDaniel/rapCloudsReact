@@ -115,7 +115,15 @@ const useStyles = makeStyles((theme) => {
 
 const ArtistPage = (props) => {
 	const classes = useStyles();
-	const { artist, fetchArtist, isArtistLoading, isArtistCloudLoading, areSongLyricsLoading, clouds } = props;
+	const {
+		artist,
+		fetchArtist,
+		isArtistLoading,
+		isArtistCloudLoading,
+		areSongLyricsLoading,
+		clouds,
+		genArtistCloud,
+	} = props;
 	const { artistId } = useParams();
 	const [ cloudExpanded, setCloudExpanded ] = useState(true);
 	const [ songsExpanded, setSongsExpanded ] = useState(true);
@@ -173,7 +181,9 @@ const ArtistPage = (props) => {
 						</Typography>
 						{cloudExpanded && (
 							<RapCloud
-								generateCloud={genArtistCloud}
+								generateCloud={() => {
+									genArtistCloud(artistId);
+								}}
 								cloudName={name}
 								clouds={clouds}
 								isLoading={isArtistCloudLoading || isArtistLoading || areSongLyricsLoading}

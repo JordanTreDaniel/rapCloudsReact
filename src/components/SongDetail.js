@@ -242,7 +242,9 @@ const SongDetail = (props) => {
 						</Typography>
 						{cloudExpanded && (
 							<RapCloud
-								generateCloud={() => genSongCloud(songId, lyrics)}
+								generateCloud={() => {
+									genSongCloud(songId, lyrics);
+								}}
 								cloudName={briefedTitle}
 								clouds={clouds}
 								isLoading={isWordCloudLoading || isSongDetailLoading || areSongLyricsLoading}
