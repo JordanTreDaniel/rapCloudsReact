@@ -30,6 +30,7 @@ import FacebookIcon from '@material-ui/icons/Facebook';
 import InstagramIcon from '@material-ui/icons/Instagram';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import PinterestIcon from '@material-ui/icons/Pinterest';
+import ExitToApp from '@material-ui/icons/ExitToApp';
 import { Auth } from 'aws-amplify';
 
 const useStyles = makeStyles((theme) => {
@@ -79,6 +80,7 @@ const useStyles = makeStyles((theme) => {
 		drawerItemButton: {
 			backgroundColor: theme.palette.secondary.main,
 			color: theme.palette.secondary.contrastText,
+			marginLeft: '1em',
 		},
 		thumbnailImg: {
 			width: '5em',
@@ -156,15 +158,15 @@ const Navbar = (props) => {
 									container
 									direction="row"
 									wrap="nowrap"
-									justify="space-between"
+									justify="center"
 									component={Link}
 									to={paths.search}
 									className={classNames(classes.whiteLink, classes.drawerItem)}
 								>
+									<Typography variant="h4">Search</Typography>
 									<IconButton className={classes.drawerItemButton}>
 										<SearchIcon />
 									</IconButton>
-									<Typography variant="h4">Search</Typography>
 								</Grid>
 								<Divider />
 								<Grid
@@ -172,11 +174,12 @@ const Navbar = (props) => {
 									container
 									direction="row"
 									wrap="nowrap"
-									justify="space-between"
+									justify="center"
 									component={Link}
 									to={paths.profile}
 									className={classNames(classes.whiteLink, classes.drawerItem)}
 								>
+									<Typography variant="h4">Profile</Typography>
 									{userImgURL ? (
 										<Avatar
 											alt="User Profile Pic"
@@ -188,7 +191,6 @@ const Navbar = (props) => {
 											<UserIcon />
 										</IconButton>
 									)}
-									<Typography variant="h4">Profile</Typography>
 								</Grid>
 								<Divider />
 							</React.Fragment>
@@ -199,17 +201,17 @@ const Navbar = (props) => {
 							container
 							direction="row"
 							wrap="nowrap"
-							justify="space-between"
+							justify="center"
 							component={Link}
 							to={paths.about}
 							className={classNames(classes.whiteLink, classes.drawerItem)}
 						>
+							<Typography variant="h4">About</Typography>
 							<Avatar
 								className={classes.drawerItemButton}
 								alt="Rap Clouds Logo"
 								src={process.env.PUBLIC_URL + '/rapClouds.png'}
 							/>
-							<Typography variant="h4">About</Typography>
 						</Grid>
 						<Divider />
 						<Grid
@@ -218,20 +220,16 @@ const Navbar = (props) => {
 							component={userName ? 'div' : Link}
 							direction="row"
 							wrap="nowrap"
-							justify="space-between"
+							justify="center"
 							button
 							onClick={userName ? () => toggleLogOutDialog(true) : null}
 							to={userName ? null : paths.signIn}
 							className={classNames(classes.whiteLink, classes.drawerItem)}
 						>
-							{userImgURL ? (
-								<Avatar alt="User Profile Pic" src={userImgURL} className={classes.drawerItemButton} />
-							) : (
-								<IconButton className={classes.drawerItemButton}>
-									<UserIcon />
-								</IconButton>
-							)}
 							<Typography variant="h4">{userName ? `Sign Out` : `Sign In`}</Typography>
+							<IconButton className={classes.drawerItemButton}>
+								<ExitToApp />
+							</IconButton>
 						</Grid>
 						<Divider />
 						<Grid
