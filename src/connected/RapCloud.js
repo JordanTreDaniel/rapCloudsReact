@@ -122,8 +122,13 @@ const RapCloud = (props) => {
 		deleteCloud,
 	} = props;
 	const cloud = clouds[currentCloudIdx];
-	// if (!cloud) return null;
 	const { viewingUrl, id: cloudId, filePath } = cloud || {};
+	useEffect(
+		() => {
+			setCurrentCloudIdx(clouds.length - 1);
+		},
+		[ clouds.length ],
+	);
 	const cycleClouds = (direction) => {
 		const operand = direction === 'left' ? '-' : '+';
 		let newIdx = eval(`${currentCloudIdx}${operand}1`);
@@ -149,7 +154,6 @@ const RapCloud = (props) => {
 						id="deleteBtn"
 						onClick={() => {
 							deleteCloud(cloudId);
-							cycleClouds('left');
 						}}
 						className={classNames(classes.cloudAction, classes.attnGrabber)}
 					>
