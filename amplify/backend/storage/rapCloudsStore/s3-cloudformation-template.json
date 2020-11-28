@@ -19,62 +19,63 @@
 		},
 		"s3PublicPolicy": {
 			"Type": "String",
-			"Default" : "NONE"
+			"Default": "NONE"
 		},
 		"s3PrivatePolicy": {
 			"Type": "String",
-			"Default" : "NONE"
+			"Default": "NONE"
 		},
 		"s3ProtectedPolicy": {
 			"Type": "String",
-			"Default" : "NONE"
+			"Default": "NONE"
 		},
 		"s3UploadsPolicy": {
 			"Type": "String",
-			"Default" : "NONE"
+			"Default": "NONE"
 		},
 		"s3ReadPolicy": {
 			"Type": "String",
-			"Default" : "NONE"
+			"Default": "NONE"
 		},
 		"s3PermissionsAuthenticatedPublic": {
 			"Type": "String",
-			"Default" : "DISALLOW"
+			"Default": "DISALLOW"
 		},
 		"s3PermissionsAuthenticatedProtected": {
 			"Type": "String",
-			"Default" : "DISALLOW"
+			"Default": "DISALLOW"
 		},
 		"s3PermissionsAuthenticatedPrivate": {
 			"Type": "String",
-			"Default" : "DISALLOW"
+			"Default": "DISALLOW"
 		},
 		"s3PermissionsAuthenticatedUploads": {
 			"Type": "String",
-			"Default" : "DISALLOW"
+			"Default": "DISALLOW"
 		},
 		"s3PermissionsGuestPublic": {
 			"Type": "String",
-			"Default" : "DISALLOW"
-		},	
+			"Default": "DISALLOW"
+		},
 		"s3PermissionsGuestUploads": {
 			"Type": "String",
-			"Default" : "DISALLOW"		},
+			"Default": "DISALLOW"
+		},
 		"AuthenticatedAllowList": {
 			"Type": "String",
-			"Default" : "DISALLOW"
+			"Default": "DISALLOW"
 		},
 		"GuestAllowList": {
 			"Type": "String",
-			"Default" : "DISALLOW"
+			"Default": "DISALLOW"
 		},
 		"selectedGuestPermissions": {
 			"Type": "CommaDelimitedList",
-			"Default" : "NONE"
+			"Default": "NONE"
 		},
 		"selectedAuthenticatedPermissions": {
 			"Type": "CommaDelimitedList",
-			"Default" : "NONE"
+			"Default": "NONE"
 		},
 		"env": {
 			"Type": "String"
@@ -82,8 +83,6 @@
 		"triggerFunction": {
 			"Type": "String"
 		}
-	
-
 	},
 	"Conditions": {
 		"ShouldNotCreateEnvResources": {
@@ -95,128 +94,110 @@
 			]
 		},
 		"CreateAuthPublic": {
-			"Fn::Not" : [{
-				"Fn::Equals" : [
-					 {"Ref" : "s3PermissionsAuthenticatedPublic"},
-					 "DISALLOW"
-				]
-		 }]
+			"Fn::Not": [
+				{
+					"Fn::Equals": [ { "Ref": "s3PermissionsAuthenticatedPublic" }, "DISALLOW" ]
+				}
+			]
 		},
 		"CreateAuthProtected": {
-			"Fn::Not" : [{
-				"Fn::Equals" : [
-					 {"Ref" : "s3PermissionsAuthenticatedProtected"},
-					 "DISALLOW"
-				]
-		 }]
+			"Fn::Not": [
+				{
+					"Fn::Equals": [ { "Ref": "s3PermissionsAuthenticatedProtected" }, "DISALLOW" ]
+				}
+			]
 		},
 		"CreateAuthPrivate": {
-			"Fn::Not" : [{
-				"Fn::Equals" : [
-					 {"Ref" : "s3PermissionsAuthenticatedPrivate"},
-					 "DISALLOW"
-				]
-		 }]
+			"Fn::Not": [
+				{
+					"Fn::Equals": [ { "Ref": "s3PermissionsAuthenticatedPrivate" }, "DISALLOW" ]
+				}
+			]
 		},
 		"CreateAuthUploads": {
-			"Fn::Not" : [{
-				"Fn::Equals" : [
-					 {"Ref" : "s3PermissionsAuthenticatedUploads"},
-					 "DISALLOW"
-				]
-		 }]
+			"Fn::Not": [
+				{
+					"Fn::Equals": [ { "Ref": "s3PermissionsAuthenticatedUploads" }, "DISALLOW" ]
+				}
+			]
 		},
 		"CreateGuestPublic": {
-			"Fn::Not" : [{
-				"Fn::Equals" : [
-					 {"Ref" : "s3PermissionsGuestPublic"},
-					 "DISALLOW"
-				]
-		 }]
+			"Fn::Not": [
+				{
+					"Fn::Equals": [ { "Ref": "s3PermissionsGuestPublic" }, "DISALLOW" ]
+				}
+			]
 		},
 		"CreateGuestUploads": {
-			"Fn::Not" : [{
-				"Fn::Equals" : [
-					 {"Ref" : "s3PermissionsGuestUploads"},
-					 "DISALLOW"
-				]
-		 }]
+			"Fn::Not": [
+				{
+					"Fn::Equals": [ { "Ref": "s3PermissionsGuestUploads" }, "DISALLOW" ]
+				}
+			]
 		},
 		"AuthReadAndList": {
-			"Fn::Not" : [{
-				"Fn::Equals" : [
-					 {"Ref" : "AuthenticatedAllowList"},
-					 "DISALLOW"
-				]
-		 }]
+			"Fn::Not": [
+				{
+					"Fn::Equals": [ { "Ref": "AuthenticatedAllowList" }, "DISALLOW" ]
+				}
+			]
 		},
 		"GuestReadAndList": {
-			"Fn::Not" : [{
-				"Fn::Equals" : [
-					 {"Ref" : "GuestAllowList"},
-					 "DISALLOW"
-				]
-		 }]
+			"Fn::Not": [
+				{
+					"Fn::Equals": [ { "Ref": "GuestAllowList" }, "DISALLOW" ]
+				}
+			]
 		}
 	},
 	"Resources": {
 		"S3Bucket": {
 			"Type": "AWS::S3::Bucket",
-		    
-			"DeletionPolicy" : "Retain",
+
+			"DeletionPolicy": "Retain",
 			"Properties": {
 				"BucketName": {
-                    "Fn::If": [
-                        "ShouldNotCreateEnvResources",
-                        {
-                            "Ref": "bucketName"
-                        },
-                        {
-                            "Fn::Join": [
-                                "",
-                                [
-                                    {
-                                        "Ref": "bucketName"
-                                    },
-                                    {
-                                      "Fn::Select": [
-                                          3,
-                                          {
-                                              "Fn::Split": [
-                                                  "-",
-                                                  {
-                                                      "Ref": "AWS::StackName"
-                                                  }
-                                              ]
-                                          }
-                                      ]
-                                    },
-                                    "-",
-                                    {
-                                        "Ref": "env"
-                                    }
-                                ]
-                            ]
-                        }
-                    ]
-                },
-                
+					"Fn::If": [
+						"ShouldNotCreateEnvResources",
+						{
+							"Ref": "bucketName"
+						},
+						{
+							"Fn::Join": [
+								"",
+								[
+									{
+										"Ref": "bucketName"
+									},
+									{
+										"Fn::Select": [
+											3,
+											{
+												"Fn::Split": [
+													"-",
+													{
+														"Ref": "AWS::StackName"
+													}
+												]
+											}
+										]
+									},
+									"-",
+									{
+										"Ref": "env"
+									}
+								]
+							]
+						}
+					]
+				},
+
 				"CorsConfiguration": {
 					"CorsRules": [
 						{
-							"AllowedHeaders": [
-								"*"
-							],
-							"AllowedMethods": [
-								"GET",
-								"HEAD",
-								"PUT",
-								"POST",
-								"DELETE"
-							],
-							"AllowedOrigins": [
-								"*"
-							],
+							"AllowedHeaders": [ "*" ],
+							"AllowedMethods": [ "GET", "HEAD", "PUT", "POST", "DELETE" ],
+							"AllowedOrigins": [ "*" ],
 							"ExposedHeaders": [
 								"x-amz-server-side-encryption",
 								"x-amz-request-id",
@@ -230,12 +211,76 @@
 				}
 			}
 		},
-      
-	    
+
+		"S3BucketPolicy": {
+			"Type": "AWS::S3::BucketPolicy",
+			"Properties": {
+				"Bucket": {
+					"Fn::Join": [
+						"",
+						[
+							{ "Ref": "bucketName" },
+							{
+								"Fn::Select": [
+									3,
+									{
+										"Fn::Split": [
+											"-",
+											{
+												"Ref": "AWS::StackName"
+											}
+										]
+									}
+								]
+							},
+							"-",
+							{
+								"Ref": "env"
+							}
+						]
+					]
+				},
+				"PolicyDocument": {
+					"Statement": [
+						{
+							"Sid": "PublidReadGetObject",
+							"Effect": "Allow",
+							"Action": "s3:GetObject",
+							"Principal": "*",
+							"Resource": {
+								"Fn::Join": [
+									"",
+									[
+										"arn:aws:s3:::",
+										{ "Ref": "bucketName" },
+										{
+											"Fn::Select": [
+												3,
+												{
+													"Fn::Split": [
+														"-",
+														{
+															"Ref": "AWS::StackName"
+														}
+													]
+												}
+											]
+										},
+										"-",
+										{
+											"Ref": "env"
+										},
+										"/*"
+									]
+								]
+							}
+						}
+					]
+				}
+			}
+		},
 		"S3AuthPublicPolicy": {
-			"DependsOn": [
-				"S3Bucket"
-			],
+			"DependsOn": [ "S3Bucket" ],
 			"Condition": "CreateAuthPublic",
 			"Type": "AWS::IAM::Policy",
 			"Properties": {
@@ -253,9 +298,12 @@
 						{
 							"Effect": "Allow",
 							"Action": {
-								"Fn::Split" : [ "," , {
-									"Ref": "s3PermissionsAuthenticatedPublic"
-								} ] 
+								"Fn::Split": [
+									",",
+									{
+										"Ref": "s3PermissionsAuthenticatedPublic"
+									}
+								]
 							},
 							"Resource": [
 								{
@@ -277,9 +325,7 @@
 			}
 		},
 		"S3AuthProtectedPolicy": {
-			"DependsOn": [
-				"S3Bucket"
-			],
+			"DependsOn": [ "S3Bucket" ],
 			"Condition": "CreateAuthProtected",
 			"Type": "AWS::IAM::Policy",
 			"Properties": {
@@ -297,9 +343,12 @@
 						{
 							"Effect": "Allow",
 							"Action": {
-								"Fn::Split" : [ "," , {
-									"Ref": "s3PermissionsAuthenticatedProtected"
-								} ] 
+								"Fn::Split": [
+									",",
+									{
+										"Ref": "s3PermissionsAuthenticatedProtected"
+									}
+								]
 							},
 							"Resource": [
 								{
@@ -321,9 +370,7 @@
 			}
 		},
 		"S3AuthPrivatePolicy": {
-			"DependsOn": [
-				"S3Bucket"
-			],
+			"DependsOn": [ "S3Bucket" ],
 			"Condition": "CreateAuthPrivate",
 			"Type": "AWS::IAM::Policy",
 			"Properties": {
@@ -341,9 +388,12 @@
 						{
 							"Effect": "Allow",
 							"Action": {
-								"Fn::Split" : [ "," , {
-									"Ref": "s3PermissionsAuthenticatedPrivate"
-								} ] 
+								"Fn::Split": [
+									",",
+									{
+										"Ref": "s3PermissionsAuthenticatedPrivate"
+									}
+								]
 							},
 							"Resource": [
 								{
@@ -365,9 +415,7 @@
 			}
 		},
 		"S3AuthUploadPolicy": {
-			"DependsOn": [
-				"S3Bucket"
-			],
+			"DependsOn": [ "S3Bucket" ],
 			"Condition": "CreateAuthUploads",
 			"Type": "AWS::IAM::Policy",
 			"Properties": {
@@ -385,9 +433,12 @@
 						{
 							"Effect": "Allow",
 							"Action": {
-								"Fn::Split" : [ "," , {
-									"Ref": "s3PermissionsAuthenticatedUploads"
-								} ] 
+								"Fn::Split": [
+									",",
+									{
+										"Ref": "s3PermissionsAuthenticatedUploads"
+									}
+								]
 							},
 							"Resource": [
 								{
@@ -409,9 +460,7 @@
 			}
 		},
 		"S3AuthReadPolicy": {
-			"DependsOn": [
-				"S3Bucket"
-			],
+			"DependsOn": [ "S3Bucket" ],
 			"Condition": "AuthReadAndList",
 			"Type": "AWS::IAM::Policy",
 			"Properties": {
@@ -428,9 +477,7 @@
 					"Statement": [
 						{
 							"Effect": "Allow",
-							"Action": [
-								"s3:GetObject"
-							],
+							"Action": [ "s3:GetObject" ],
 							"Resource": [
 								{
 									"Fn::Join": [
@@ -448,9 +495,7 @@
 						},
 						{
 							"Effect": "Allow",
-							"Action": [
-								"s3:ListBucket"
-							],
+							"Action": [ "s3:ListBucket" ],
 							"Resource": [
 								{
 									"Fn::Join": [
@@ -482,9 +527,7 @@
 			}
 		},
 		"S3GuestPublicPolicy": {
-			"DependsOn": [
-				"S3Bucket"
-			],
+			"DependsOn": [ "S3Bucket" ],
 			"Condition": "CreateGuestPublic",
 			"Type": "AWS::IAM::Policy",
 			"Properties": {
@@ -502,9 +545,12 @@
 						{
 							"Effect": "Allow",
 							"Action": {
-								"Fn::Split" : [ "," , {
-									"Ref": "s3PermissionsGuestPublic"
-								} ] 
+								"Fn::Split": [
+									",",
+									{
+										"Ref": "s3PermissionsGuestPublic"
+									}
+								]
 							},
 							"Resource": [
 								{
@@ -526,9 +572,7 @@
 			}
 		},
 		"S3GuestUploadPolicy": {
-			"DependsOn": [
-				"S3Bucket"
-			],
+			"DependsOn": [ "S3Bucket" ],
 			"Condition": "CreateGuestUploads",
 			"Type": "AWS::IAM::Policy",
 			"Properties": {
@@ -546,9 +590,12 @@
 						{
 							"Effect": "Allow",
 							"Action": {
-								"Fn::Split" : [ "," , {
-									"Ref": "s3PermissionsGuestUploads"
-								} ] 
+								"Fn::Split": [
+									",",
+									{
+										"Ref": "s3PermissionsGuestUploads"
+									}
+								]
 							},
 							"Resource": [
 								{
@@ -570,9 +617,7 @@
 			}
 		},
 		"S3GuestReadPolicy": {
-			"DependsOn": [
-				"S3Bucket"
-			],
+			"DependsOn": [ "S3Bucket" ],
 			"Condition": "GuestReadAndList",
 			"Type": "AWS::IAM::Policy",
 			"Properties": {
@@ -589,9 +634,7 @@
 					"Statement": [
 						{
 							"Effect": "Allow",
-							"Action": [
-								"s3:GetObject"
-							],
+							"Action": [ "s3:GetObject" ],
 							"Resource": [
 								{
 									"Fn::Join": [
@@ -609,9 +652,7 @@
 						},
 						{
 							"Effect": "Allow",
-							"Action": [
-								"s3:ListBucket"
-							],
+							"Action": [ "s3:ListBucket" ],
 							"Resource": [
 								{
 									"Fn::Join": [
@@ -627,12 +668,7 @@
 							],
 							"Condition": {
 								"StringLike": {
-									"s3:prefix": [
-										"public/",
-										"public/*",
-										"protected/",
-										"protected/*"
-									]
+									"s3:prefix": [ "public/", "public/*", "protected/", "protected/*" ]
 								}
 							}
 						}
