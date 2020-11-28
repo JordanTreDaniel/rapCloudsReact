@@ -35,6 +35,8 @@ export const getRapCloud = /* GraphQL */ `
       }
       songIds
       userEmail
+      filePath
+      viewingUrl
       createdAt
       updatedAt
     }
@@ -79,6 +81,8 @@ export const listRapClouds = /* GraphQL */ `
         }
         songIds
         userEmail
+        filePath
+        viewingUrl
         createdAt
         updatedAt
       }

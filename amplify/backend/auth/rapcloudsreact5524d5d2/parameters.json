@@ -1,6 +1,6 @@
 {
     "identityPoolName": "rapcloudsreact5524d5d2_identitypool_5524d5d2",
-    "allowUnauthenticatedIdentities": false,
+    "allowUnauthenticatedIdentities": true,
     "resourceNameTruncated": "rapclo5524d5d2",
     "userPoolName": "rapcloudsreact5524d5d2_userpool_5524d5d2",
     "autoVerifiedAttributes": [

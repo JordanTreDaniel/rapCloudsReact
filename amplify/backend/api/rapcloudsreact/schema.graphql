@@ -1,11 +1,13 @@
 type RapCloud @model {
-  artistIds: [ID!]!
-  description: String
-  id: ID!
-  maskId: ID
-  settings: RapCloudSettings!
-  songIds: [ID!]!
-  userEmail: String!
+	artistIds: [ID!]!
+	description: String
+	id: ID!
+	maskId: ID
+	settings: RapCloudSettings!
+	songIds: [ID!]!
+	userEmail: String!
+	filePath: String!
+	viewingUrl: String!
 }
 
 type RapCloudSettings {
@@ -13,7 +15,7 @@ type RapCloudSettings {
 	collocations: Boolean!
 	coloredBackground: Boolean!
 	colorFromMask: Boolean!
-	colors: [ String! ]!
+	colors: [String!]!
 	contour: Boolean!
 	contourColor: String!
 	contourWidth: String!
@@ -25,12 +27,11 @@ type RapCloudSettings {
 	maskDesired: Boolean!
 	maskId: ID
 	repeat: Boolean!
-	stopWords: [ String! ]!
+	stopWords: [String!]!
 	transparentBackground: Boolean!
 	useCustomColors: Boolean!
 	useRandomColors: Boolean!
-	whiteThreshold: String!,
+	whiteThreshold: String!
 	width: String!
-  	private: Boolean!
+	private: Boolean!
 }
-

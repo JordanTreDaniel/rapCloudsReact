@@ -35,6 +35,8 @@ export const onCreateRapCloud = /* GraphQL */ `
       }
       songIds
       userEmail
+      filePath
+      viewingUrl
       createdAt
       updatedAt
     }
@@ -74,6 +76,8 @@ export const onUpdateRapCloud = /* GraphQL */ `
       }
       songIds
       userEmail
+      filePath
+      viewingUrl
       createdAt
       updatedAt
     }
@@ -113,6 +117,8 @@ export const onDeleteRapCloud = /* GraphQL */ `
       }
       songIds
       userEmail
+      filePath
+      viewingUrl
       createdAt
       updatedAt
     }

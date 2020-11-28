@@ -1,10 +1,11 @@
 import { call, select, takeLatest, put, takeEvery } from 'redux-saga/effects';
 import axios from 'axios';
+import { v4 as uuid } from 'uuid';
 import { getCloudSettingsForFlight, getUserMongoId } from '../selectors';
 import { FETCH_MASKS, ADD_CUSTOM_MASK, DELETE_MASK, FETCH_CLOUDS, DELETE_CLOUD } from '../actionTypes';
 import { listRapClouds } from '../../graphql/queries';
 import { createRapCloud, deleteRapCloud } from '../../graphql/mutations';
-import { API, graphqlOperation, Auth } from 'aws-amplify';
+import { API, graphqlOperation, Auth, Storage } from 'aws-amplify';
 import { getAwsUserEmail } from '../../utils';
 const REACT_APP_SERVER_ROOT =
 	process.env.NODE_ENV === 'development' ? 'http://localhost:3333' : 'https://rap-clouds-server.herokuapp.com';
@@ -36,6 +37,7 @@ const apiGenerateCloud = async (lyricString, cloudSettingsForFlight) => {
 };
 
 const apiSaveCloud = async (cloud) => {
+	console.log('api SAve cloud', cloud);
 	try {
 		const cloudData = await API.graphql(graphqlOperation(createRapCloud, { input: cloud }));
 		return cloudData.data.createRapCloud;
@@ -75,6 +77,18 @@ export function* deleteCloud(action) {
 	}
 }
 
+const s3SaveCloud = async (encodedCloud) => {
+	try {
+		const blob = await fetch(`data:image/png;base64, ${encodedCloud}`).then((res) => res.blob());
+		const { key } = await Storage.put(`${uuid()}.png`, blob, { contentType: 'image/png' });
+		const viewingUrl = await Storage.get(key);
+		return { key, viewingUrl };
+	} catch (error) {
+		console.error("Couldn't save the cloud to S3", { error });
+		return { error };
+	}
+};
+
 export function* generateCloud(action) {
 	try {
 		let { lyricString, cloud } = action;
@@ -87,13 +101,15 @@ export function* generateCloud(action) {
 			settings: cloudSettingsForFlight,
 		};
 		const { data, error } = yield call(apiGenerateCloud, lyricString, cloudSettingsForFlight);
-		const { encodedCloud } = data;
 		if (error) {
 			console.log('Something went wrong in generateCloud', error);
 			return { error };
 		} else {
+			const { encodedCloud } = data;
+			const { key, viewingUrl } = yield call(s3SaveCloud, encodedCloud);
+			cloud = { ...cloud, filePath: key, viewingUrl };
 			cloud = yield call(apiSaveCloud, cloud);
-			return { finishedCloud: { ...cloud, encodedCloud } };
+			return { finishedCloud: cloud };
 		}
 	} catch (err) {
 		console.log('Something went wrong', err);
