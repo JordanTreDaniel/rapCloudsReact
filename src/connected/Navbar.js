@@ -221,7 +221,6 @@ const Navbar = (props) => {
 							direction="row"
 							wrap="nowrap"
 							justify="center"
-							button
 							onClick={userName ? () => toggleLogOutDialog(true) : null}
 							to={userName ? null : paths.signIn}
 							className={classNames(classes.whiteLink, classes.drawerItem)}

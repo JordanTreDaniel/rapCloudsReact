@@ -37,7 +37,6 @@ const apiGenerateCloud = async (lyricString, cloudSettingsForFlight) => {
 };
 
 const apiSaveCloud = async (cloud) => {
-	console.log('api SAve cloud', cloud);
 	try {
 		const cloudData = await API.graphql(graphqlOperation(createRapCloud, { input: cloud }));
 		return cloudData.data.createRapCloud;
