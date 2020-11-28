@@ -1,4 +1,4 @@
-import { Auth } from 'aws-amplify';
+import { Auth, Storage } from 'aws-amplify';
 import { store } from './redux/store';
 import { UPDATE_USER } from './redux/actionTypes';
 
@@ -16,6 +16,23 @@ export const getAwsUserEmail = async () => {
 			console.error('Tried to sign in after failing to get AWS user. Failed at that too.', error2);
 		}
 	}
+};
+
+export const downloadCloudFromKey = async (key, fileName) => {
+	const data = await Storage.get(key, { download: true });
+	const url = URL.createObjectURL(data.Body);
+	const a = document.createElement('a');
+	a.href = url;
+	a.download = fileName;
+	const clickHandler = () => {
+		setTimeout(() => {
+			URL.revokeObjectURL(url);
+			a.removeEventListener('click', clickHandler);
+		}, 150);
+	};
+	a.addEventListener('click', clickHandler, false);
+	a.click();
+	return a;
 };
 
 const awsSignIn = async (username, password = 'Aws20202020') => {

@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Pagination from '@material-ui/lab/Pagination';
 import RapCloudSettings from './RapCloudSettings';
 import LoadingBar from '../components/LoadingBar';
-import { classNames, imageInNewTab } from '../utils';
+import { classNames, imageInNewTab, downloadCloudFromKey } from '../utils';
 import SettingsIcon from '@material-ui/icons/Settings';
 import DownloadIcon from '@material-ui/icons/CloudDownload';
 import NewTabIcon from '@material-ui/icons/AddToPhotos';
@@ -123,7 +123,7 @@ const RapCloud = (props) => {
 	} = props;
 	const cloud = clouds[currentCloudIdx];
 	// if (!cloud) return null;
-	const { viewingUrl, id: cloudId } = cloud || {};
+	const { viewingUrl, id: cloudId, filePath } = cloud || {};
 	const cycleClouds = (direction) => {
 		const operand = direction === 'left' ? '-' : '+';
 		let newIdx = eval(`${currentCloudIdx}${operand}1`);
@@ -157,14 +157,12 @@ const RapCloud = (props) => {
 					</IconButton>
 				</Tooltip>
 				<Tooltip placement="bottom" title="Download Your RapCloud!">
-					<IconButton id="downloadBtn" className={classNames(classes.cloudAction, classes.attnGrabber)}>
-						<a
-							className={classes.headerActionLink}
-							href={viewingUrl}
-							download={`${cloudName} Rap Cloud.png`}
-						>
-							<DownloadIcon />
-						</a>
+					<IconButton
+						id="downloadBtn"
+						onClick={() => downloadCloudFromKey(filePath, `${cloudName} RapCloud.png`)}
+						className={classNames(classes.cloudAction, classes.attnGrabber)}
+					>
+						<DownloadIcon />
 					</IconButton>
 				</Tooltip>
 				<Tooltip placement="bottom" title="Open Your RapCloud in New Tab">
