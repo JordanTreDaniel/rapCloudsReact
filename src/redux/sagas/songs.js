@@ -106,7 +106,8 @@ export function* fetchSongDetails(action) {
 	const accessToken = yield select(getAccessToken);
 	const { songId, fetchLyrics = true, generateCloud = true } = action;
 	const existingSong = yield select(getSongFromId, songId);
-	if (existingSong && existingSong.normalizedLyrics && existingSong.encodedCloud) {
+	const cloudsForSong = yield select(getCloudsForSong, songId);
+	if (existingSong && existingSong.normalizedLyrics && cloudsForSong.length) {
 		yield put({ type: FETCH_SONG_DETAILS.cancellation });
 		yield cancel();
 	}

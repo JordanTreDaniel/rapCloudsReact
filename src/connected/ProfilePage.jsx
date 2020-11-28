@@ -158,7 +158,6 @@ const ProfilePage = (props) => {
                             <RapCloud
                                 generateCloud={genArtistCloud}
                                 cloudName={name}
-                                encodedCloud={encodedCloud}
                                 isLoading={isArtistCloudLoading || isArtistLoading || areSongLyricsLoading}
                             />
                         )}

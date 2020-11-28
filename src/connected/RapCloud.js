@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Pagination from '@material-ui/lab/Pagination';
 import RapCloudSettings from './RapCloudSettings';
 import LoadingBar from '../components/LoadingBar';
-import { classNames, base64InNewTab } from '../utils';
+import { classNames, imageInNewTab } from '../utils';
 import SettingsIcon from '@material-ui/icons/Settings';
 import DownloadIcon from '@material-ui/icons/CloudDownload';
 import NewTabIcon from '@material-ui/icons/AddToPhotos';
@@ -123,7 +123,7 @@ const RapCloud = (props) => {
 	} = props;
 	const cloud = clouds[currentCloudIdx];
 	// if (!cloud) return null;
-	const { encodedCloud, id: cloudId } = cloud || {};
+	const { viewingUrl, id: cloudId } = cloud || {};
 	const cycleClouds = (direction) => {
 		const operand = direction === 'left' ? '-' : '+';
 		let newIdx = eval(`${currentCloudIdx}${operand}1`);
@@ -160,7 +160,7 @@ const RapCloud = (props) => {
 					<IconButton id="downloadBtn" className={classNames(classes.cloudAction, classes.attnGrabber)}>
 						<a
 							className={classes.headerActionLink}
-							href={`data:image/png;base64, ${encodedCloud}`}
+							href={viewingUrl}
 							download={`${cloudName} Rap Cloud.png`}
 						>
 							<DownloadIcon />
@@ -172,7 +172,7 @@ const RapCloud = (props) => {
 						id="openInNewTab"
 						size="medium"
 						className={classNames(classes.cloudAction, classes.attnGrabber)}
-						onClick={() => base64InNewTab(`data:image/png;base64, ${encodedCloud}`)}
+						onClick={() => imageInNewTab(viewingUrl)}
 					>
 						<NewTabIcon />
 					</IconButton>
@@ -216,18 +216,12 @@ const RapCloud = (props) => {
 	};
 	return (
 		<Grid>
-			{encodedCloud && renderCloudActions()}
+			{viewingUrl && renderCloudActions()}
 			{renderPagination(true)}
 			<Grid className={classNames(classes.wordCloudWrapper)}>
 				<LoadingBar loading={isLoading} />
 				<img
-					src={
-						encodedCloud ? (
-							`data:image/png;base64, ${encodedCloud}`
-						) : (
-							`${process.env.PUBLIC_URL}/rapClouds.png`
-						)
-					}
+					src={viewingUrl || `${process.env.PUBLIC_URL}/rapClouds.png`}
 					alt={'Rap Cloud'}
 					className={classes.wordCloud}
 					onClick={() => toggleFullScreenCloud(true)}
@@ -281,14 +275,8 @@ const RapCloud = (props) => {
 							<Grid item xs={12} style={{ textAlign: 'center' }}>
 								<img
 									item
-									src={
-										encodedCloud ? (
-											`data:image/png;base64, ${encodedCloud}`
-										) : (
-											`${process.env.PUBLIC_URL}/rapClouds.png`
-										)
-									}
-									alt={'Rap Cloud'}
+									src={viewingUrl || `${process.env.PUBLIC_URL}/rapClouds.png`}
+									alt={cloudName}
 									style={{ width: '90%' }}
 								/>
 							</Grid>

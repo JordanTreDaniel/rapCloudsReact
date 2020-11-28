@@ -157,7 +157,7 @@ const SongDetail = (props) => {
 	if (!songId) return <Redirect to={paths.search} />;
 	if (!song) return null;
 
-	const { full_title, path, writer_artists, primary_artist, lyrics, encodedCloud } = song;
+	const { full_title, path, writer_artists, primary_artist, lyrics } = song;
 	const artists = writer_artists ? [ ...writer_artists ] : primary_artist ? [ primary_artist ] : [];
 	const [ briefedTitle, restOfTitle ] = full_title.split(/\sby\s/g);
 
