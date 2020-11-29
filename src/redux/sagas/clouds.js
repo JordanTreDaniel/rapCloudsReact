@@ -36,15 +36,6 @@ const apiGenerateCloud = async (lyricString, cloudSettingsForFlight) => {
 	return { error: { status, statusText } };
 };
 
-const apiSaveCloud = async (cloud) => {
-	try {
-		const cloudData = await API.graphql(graphqlOperation(createRapCloud, { input: cloud }));
-		return cloudData.data.createRapCloud;
-	} catch (err) {
-		console.error("Couldn't save the cloud", { cloud, err });
-	}
-};
-
 const apiDeleteCloud = async (cloudId) => {
 	try {
 		const cloudData = await API.graphql(graphqlOperation(deleteRapCloud, { input: { id: cloudId } }));
@@ -61,7 +52,7 @@ export function* deleteCloud(action) {
 		yield put({ type: DELETE_CLOUD.cancellation });
 	}
 	try {
-		const { data, error } = yield call(apiDeleteCloud, cloudId);
+		const { error } = yield call(apiDeleteCloud, cloudId);
 		if (error) {
 			console.log('Something went wrong in deleteCloud', error);
 			return { error };
@@ -76,10 +67,24 @@ export function* deleteCloud(action) {
 	}
 }
 
+const apiSaveCloud = async (cloud) => {
+	try {
+		const cloudData = await API.graphql(graphqlOperation(createRapCloud, { input: cloud }));
+		return cloudData.data.createRapCloud;
+	} catch (err) {
+		console.error("Couldn't save the cloud", { cloud, err });
+	}
+};
+
 const s3SaveCloud = async (encodedCloud) => {
 	try {
 		const blob = await fetch(`data:image/png;base64, ${encodedCloud}`).then((res) => res.blob());
-		const { key } = await Storage.put(`${uuid()}.png`, blob, { contentType: 'image/png' });
+		const { key } = await Storage.put(`${uuid()}.png`, blob, {
+			contentType: 'image/png',
+			level: 'public', //TO-DO: Get private/protected levels to work.
+			// ...the fact that it doesn't work with those levels is likely bc of this:
+			// https://github.com/JordanTreDaniel/rapCloudsReact/pull/17/commits/cdf81390aba5e9e566de70692177979709f43f97
+		});
 		const viewingUrl = await Storage.get(key);
 		return { key, viewingUrl };
 	} catch (error) {
