@@ -4,12 +4,12 @@ import { connect } from 'react-redux';
 import { makeStyles, Button, Grid, IconButton, Typography, Avatar } from '@material-ui/core';
 import ArrowIcon from '@material-ui/icons/ArrowForward';
 // import "./SignIn.css"; //Don't think we need this
-import { setUser, addSongs } from '../redux/actions';
-import { classNames } from '../utils';
+import { setUser, addSongs, updateUser } from '../redux/actions';
+import { classNames, awsSignInOrSignUp } from '../utils';
 import paths from '../paths';
+
 const API_URL =
 	process.env.NODE_ENV === 'development' ? 'http://localhost:3333' : 'https://rap-clouds-server.herokuapp.com';
-const socket = io(API_URL);
 
 const useStyles = makeStyles((theme) => {
 	return {
@@ -90,12 +90,17 @@ const useStyles = makeStyles((theme) => {
 
 const SignIn = (props) => {
 	let popup = null;
+	const socket = io(API_URL);
 	const [ popUpOpen, togglePopUp ] = useState(false);
 	const classes = useStyles();
+
 	// Routinely checks the popup to re-enable the login button
 	// if the user closes the popup without authenticating.
 	const checkPopup = () => {
 		const check = setInterval(() => {
+			if (props.userId) {
+				popup.close();
+			}
 			if (!popup || popup.closed || popup.closed === undefined) {
 				clearInterval(check);
 				togglePopUp(false);
@@ -113,7 +118,7 @@ const SignIn = (props) => {
 		const top = window.innerHeight / 2 - height / 2;
 
 		const url = `${API_URL}/authorize/genius?socketId=${socket.id}`;
-
+		togglePopUp(true);
 		return window.open(
 			url,
 			'',
@@ -128,14 +133,14 @@ const SignIn = (props) => {
 	// attempt to login to the provider twice.
 	const startAuth = () => {
 		if (!popUpOpen) {
-			socket.on('genius', (user) => {
-				popup.close();
-				props.setUser(user);
-				props.history.push(paths.search);
-			});
-			togglePopUp(true);
 			popup = openPopup();
 			checkPopup();
+			socket.on('genius', async (user) => {
+				popup.close();
+				props.setUser(user);
+				await awsSignInOrSignUp(user);
+				props.history.push(paths.search);
+			});
 		}
 	};
 
@@ -394,4 +399,4 @@ const SignIn = (props) => {
 	);
 };
 
-export default connect(null, { setUser, addSongs })(SignIn);
+export default connect(null, { setUser, addSongs, updateUser })(SignIn);

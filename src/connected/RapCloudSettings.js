@@ -166,7 +166,7 @@ const RapCloudSettings = (props) => {
 		mongoUserId,
 		dialogOpen,
 		toggleDialog,
-		fetchCloud,
+		generateCloud,
 		resetCloudDefaults,
 		currentMask,
 	} = props;
@@ -669,7 +669,6 @@ const RapCloudSettings = (props) => {
 									direction="column"
 									justify="center"
 									alignItems="center"
-									id="chosenMask"
 									className={classNames(
 										classes.chosenMaskSection,
 										classes.blueBorder,
@@ -1090,7 +1089,7 @@ const RapCloudSettings = (props) => {
 					variant="contained"
 					autoFocus={true}
 					onClick={() => {
-						fetchCloud();
+						generateCloud();
 						toggleDialog(false);
 					}}
 					disabled={masksLoading}

@@ -6,6 +6,7 @@ import SongDetail from './components/SongDetail';
 import Search from './connected/Search';
 import Navbar from './connected/Navbar';
 import ArtistPage from './connected/ArtistPage';
+import ProfilePage from './connected/ProfilePage.jsx';
 import { setUser } from './redux/actions';
 import { Redirect } from 'react-router-dom';
 import * as selectors from './redux/selectors';
@@ -77,6 +78,7 @@ const App = (props) => {
 						exact
 						render={(routerProps) => <SongDetail history={routerProps.history} />}
 					/>
+					<Route path={paths.profile} exact render={() => <ProfilePage />} />
 					<Route
 						path={paths.artistPage}
 						exact

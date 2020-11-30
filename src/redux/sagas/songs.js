@@ -5,10 +5,10 @@ import {
 	FETCH_SONG_DETAILS,
 	FETCH_SONG_LYRICS,
 	SIGN_OUT,
-	FETCH_SONG_CLOUD,
+	GEN_SONG_CLOUD,
 } from '../actionTypes';
-import { fetchWordCloud } from './clouds';
-import { getAccessToken, getSearchTerm, getSongFromId } from '../selectors';
+import { generateCloud } from './clouds';
+import { getAccessToken, getSearchTerm, getSongFromId, getCloudsForSong } from '../selectors';
 import normalizeLyrics from '../utils/normalizeLyrics';
 import axios from 'axios';
 
@@ -104,9 +104,10 @@ const apiFetchSongLyrics = async (songPath, songId) => {
 
 export function* fetchSongDetails(action) {
 	const accessToken = yield select(getAccessToken);
-	const { songId, fetchLyrics = true, fetchWordCloud = true } = action;
+	const { songId, fetchLyrics = true, generateCloud = true } = action;
 	const existingSong = yield select(getSongFromId, songId);
-	if (existingSong && existingSong.normalizedLyrics && existingSong.encodedCloud) {
+	const cloudsForSong = yield select(getCloudsForSong, songId);
+	if (existingSong && existingSong.normalizedLyrics && cloudsForSong.length) {
 		yield put({ type: FETCH_SONG_DETAILS.cancellation });
 		yield cancel();
 	}
@@ -119,13 +120,13 @@ export function* fetchSongDetails(action) {
 		yield put({ type: FETCH_SONG_DETAILS.success, song });
 		if (fetchLyrics) {
 			yield delay(500);
-			yield put({ type: FETCH_SONG_LYRICS.start, songId, songPath, fetchWordCloud });
+			yield put({ type: FETCH_SONG_LYRICS.start, songId, songPath, generateCloud });
 		}
 	}
 }
 
 export function* fetchSongLyrics(action) {
-	const { songPath, songId, fetchWordCloud = true, forceFetch = false } = action;
+	const { songPath, songId, generateCloud = true, forceFetch = false } = action;
 	const song = yield select(getSongFromId, songId);
 	let lyrics = song.lyrics;
 	try {
@@ -145,32 +146,39 @@ export function* fetchSongLyrics(action) {
 	} catch (err) {
 		console.log('Something went wrong in fetchSongLyrics', err);
 	} finally {
-		if (fetchWordCloud) {
+		if (generateCloud) {
 			const normalizedLyrics = normalizeLyrics(lyrics);
-			yield put({ type: FETCH_SONG_CLOUD.start, lyricString: normalizedLyrics, songId });
+			yield put({ type: GEN_SONG_CLOUD.start, lyricString: normalizedLyrics, songId });
 		}
 	}
 }
 
-export function* fetchSongCloud(action) {
+export function* genSongCloud(action) {
 	try {
+		let { cloud = {} } = action;
 		const { lyricString, songId, forceFetch = false } = action;
 		const song = yield select(getSongFromId, songId);
-		if (song.encodedCloud && !forceFetch) {
-			yield put({ type: FETCH_SONG_CLOUD.cancellation });
+		const cloudsForSong = yield select(getCloudsForSong, songId);
+		if (cloudsForSong.length && !forceFetch) {
+			yield put({ type: GEN_SONG_CLOUD.cancellation });
 			yield cancel();
 			return;
 		}
-		const { encodedCloud, error } = yield call(fetchWordCloud, { lyricString });
+
+		const songIds = [ songId ],
+			artistIds = song.writer_artists && song.writer_artists.map((artist) => artist.id);
+		artistIds.push(song.primary_artist.id);
+		cloud = { ...cloud, artistIds, songIds };
+		const { finishedCloud, error } = yield call(generateCloud, { lyricString, cloud });
 		if (error) {
-			yield put({ type: FETCH_SONG_CLOUD.failure });
+			yield put({ type: GEN_SONG_CLOUD.failure });
 			console.log('Something went wrong in fetch song cloud', error);
 		} else {
-			yield put({ type: FETCH_SONG_CLOUD.success, songId, encodedCloud });
-			return encodedCloud;
+			yield put({ type: GEN_SONG_CLOUD.success, finishedCloud });
+			return finishedCloud;
 		}
 	} catch (err) {
-		yield put({ type: FETCH_SONG_CLOUD.failure });
+		yield put({ type: GEN_SONG_CLOUD.failure, err });
 		console.log('Something went wrong in fetch song cloud', err);
 	}
 }
@@ -183,12 +191,12 @@ function* watchFetchSongDetails() {
 	yield takeEvery(FETCH_SONG_DETAILS.start, fetchSongDetails);
 }
 
-function* watchFetchSongCloud() {
-	yield takeLatest(FETCH_SONG_CLOUD.start, fetchSongCloud);
+function* watchGenSongCloud() {
+	yield takeLatest(GEN_SONG_CLOUD.start, genSongCloud);
 }
 
 function* watchFetchSongLyrics() {
 	yield takeEvery(FETCH_SONG_LYRICS.start, fetchSongLyrics);
 }
 
-export default [ watchSearchSongs, watchFetchSongDetails, watchFetchSongCloud, watchFetchSongLyrics ];
+export default [ watchSearchSongs, watchFetchSongDetails, watchGenSongCloud, watchFetchSongLyrics ];

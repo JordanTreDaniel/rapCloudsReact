@@ -5,7 +5,7 @@ import AddIcon from '@material-ui/icons/Add';
 import MinusIcon from '@material-ui/icons/Remove';
 import { makeStyles } from '@material-ui/core/styles';
 import * as selectors from '../redux/selectors';
-import { fetchSongDetails, fetchSongCloud, fetchSongLyrics } from '../redux/actions';
+import { fetchSongDetails, genSongCloud, fetchSongLyrics } from '../redux/actions';
 import { connect } from 'react-redux';
 import paths from '../paths';
 import BackButton from './BackButton';
@@ -133,9 +133,10 @@ const SongDetail = (props) => {
 		isSongDetailLoading,
 		isWordCloudLoading,
 		// width,
-		fetchSongCloud,
+		genSongCloud,
 		fetchSongLyrics,
 		areSongLyricsLoading,
+		clouds,
 	} = props;
 	const { songId } = useParams();
 	const [ lyricsExpanded, setLyricsExpanded ] = React.useState(false);
@@ -156,7 +157,7 @@ const SongDetail = (props) => {
 	if (!songId) return <Redirect to={paths.search} />;
 	if (!song) return null;
 
-	const { full_title, path, writer_artists, primary_artist, lyrics, encodedCloud } = song;
+	const { full_title, path, writer_artists, primary_artist, lyrics } = song;
 	const artists = writer_artists ? [ ...writer_artists ] : primary_artist ? [ primary_artist ] : [];
 	const [ briefedTitle, restOfTitle ] = full_title.split(/\sby\s/g);
 
@@ -241,9 +242,11 @@ const SongDetail = (props) => {
 						</Typography>
 						{cloudExpanded && (
 							<RapCloud
-								fetchCloud={() => fetchSongCloud(songId, lyrics)}
+								generateCloud={() => {
+									genSongCloud(songId, lyrics);
+								}}
 								cloudName={briefedTitle}
-								encodedCloud={encodedCloud}
+								clouds={clouds}
 								isLoading={isWordCloudLoading || isSongDetailLoading || areSongLyricsLoading}
 							/>
 						)}
@@ -302,6 +305,7 @@ const mapState = (state) => ({
 	isSongDetailLoading: selectors.isSongDetailLoading(state),
 	isWordCloudLoading: selectors.isWordCloudLoading(state),
 	areSongLyricsLoading: selectors.areSongLyricsLoading(state),
+	clouds: selectors.getCloudsForSong(state),
 });
 
-export default connect(mapState, { fetchSongDetails, fetchSongCloud, fetchSongLyrics })(withWidth()(SongDetail));
+export default connect(mapState, { fetchSongDetails, genSongCloud, fetchSongLyrics })(withWidth()(SongDetail));

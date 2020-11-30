@@ -1,17 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 import { IconButton, Grid, withWidth, Tooltip, Paper, Dialog, DialogContent } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import Pagination from '@material-ui/lab/Pagination';
 import RapCloudSettings from './RapCloudSettings';
 import LoadingBar from '../components/LoadingBar';
-import { classNames } from '../utils';
+import { classNames, imageInNewTab, downloadCloudFromKey } from '../utils';
 import SettingsIcon from '@material-ui/icons/Settings';
 import DownloadIcon from '@material-ui/icons/CloudDownload';
 import NewTabIcon from '@material-ui/icons/AddToPhotos';
 import XIcon from '@material-ui/icons/Cancel';
+import ChevronLeft from '@material-ui/icons/ChevronLeft';
+import ChevronRight from '@material-ui/icons/ChevronRight';
+import Delete from '@material-ui/icons/Delete';
 // import FacebookIcon from '@material-ui/icons/Facebook';
 // import InstagramIcon from '@material-ui/icons/Instagram';
 // import TwitterIcon from '@material-ui/icons/Twitter';
-import { base64InNewTab } from '../utils';
+import { deleteCloud } from '../redux/actions';
 
 const useStyles = makeStyles((theme) => {
 	return {
@@ -22,7 +27,6 @@ const useStyles = makeStyles((theme) => {
 		wordCloudWrapper: {
 			width: '100%',
 			margin: 'auto',
-			marginBottom: '3em',
 			position: 'relative',
 			textAlign: 'center',
 		},
@@ -30,13 +34,10 @@ const useStyles = makeStyles((theme) => {
 			backgroundColor: theme.palette.primary.main,
 			display: 'flex',
 			flexFlow: 'row nowrap',
-			// position: 'absolute',
 			alignItems: 'center',
 			justifyContent: 'space-around',
 			overflowX: 'scroll',
 			width: '100%',
-			padding: '.5em',
-			paddingLeft: '3em',
 		},
 		cloudActionsTop: {},
 		cloudActionsBottom: {},
@@ -84,25 +85,59 @@ const useStyles = makeStyles((theme) => {
 			height: '3em',
 			color: theme.palette.secondary.main,
 		},
+		cycleCloudsBtn: {
+			position: 'absolute',
+			top: '40%',
+			backgroundColor: 'rgb(17, 145, 234, .3)',
+			color: theme.palette.secondary.main,
+			'&:hover': {
+				backgroundColor: 'rgb(17, 145, 234, .8)',
+				color: theme.palette.primary.dark,
+			},
+		},
+		cycleCloudsLeft: {
+			left: '-1.2em',
+		},
+		cycleCloudsRight: {
+			right: '-1.2em',
+		},
 	};
 });
 
 const RapCloud = (props) => {
 	const classes = useStyles();
+	const [ settingsOpen, toggleSettings ] = useState(false);
+	const [ currentCloudIdx, setCurrentCloudIdx ] = React.useState(0);
+	const [ fullScreenCloud, toggleFullScreenCloud ] = useState(false);
 	const {
 		cloudName,
+		clouds,
 		width,
-		encodedCloud,
 		top = '-1em',
 		bottom,
 		left = '-0.51em',
 		right,
-		fetchCloud,
+		generateCloud,
 		isLoading,
+		deleteCloud,
 	} = props;
-
-	const [ settingsOpen, toggleSettings ] = useState(false);
-	const [ fullScreenCloud, toggleFullScreenCloud ] = useState(false);
+	const cloud = clouds[currentCloudIdx];
+	const { viewingUrl, id: cloudId, filePath } = cloud || {};
+	useEffect(
+		() => {
+			setCurrentCloudIdx(clouds.length - 1);
+		},
+		[ clouds.length ],
+	);
+	const cycleClouds = (direction) => {
+		let newIdx = direction === 'left' ? currentCloudIdx - 1 : currentCloudIdx + 1;
+		if (newIdx >= clouds.length) {
+			newIdx = 0;
+		} else if (newIdx < 0) {
+			newIdx = clouds.length - 1;
+		}
+		setCurrentCloudIdx(newIdx);
+	};
 	const renderCloudActions = (place) => {
 		const conditionsPassed = place === 'bottom' ? width === 'xs' : width !== 'xs';
 		return (
@@ -113,15 +148,24 @@ const RapCloud = (props) => {
 					? classes.cloudActionsTop
 					: classes.cloudActionsBottom}`}
 			>
+				<Tooltip placement="bottom" title="Delete Your RapCloud!">
+					<IconButton
+						id="deleteBtn"
+						onClick={() => {
+							deleteCloud(cloudId);
+						}}
+						className={classNames(classes.cloudAction, classes.attnGrabber)}
+					>
+						<Delete />
+					</IconButton>
+				</Tooltip>
 				<Tooltip placement="bottom" title="Download Your RapCloud!">
-					<IconButton id="downloadBtn" className={classNames(classes.cloudAction, classes.attnGrabber)}>
-						<a
-							className={classes.headerActionLink}
-							href={`data:image/png;base64, ${encodedCloud}`}
-							download={`${cloudName} Rap Cloud.png`}
-						>
-							<DownloadIcon />
-						</a>
+					<IconButton
+						id="downloadBtn"
+						onClick={() => downloadCloudFromKey(filePath, `${cloudName} RapCloud.png`)}
+						className={classNames(classes.cloudAction, classes.attnGrabber)}
+					>
+						<DownloadIcon />
 					</IconButton>
 				</Tooltip>
 				<Tooltip placement="bottom" title="Open Your RapCloud in New Tab">
@@ -129,7 +173,7 @@ const RapCloud = (props) => {
 						id="openInNewTab"
 						size="medium"
 						className={classNames(classes.cloudAction, classes.attnGrabber)}
-						onClick={() => base64InNewTab(`data:image/png;base64, ${encodedCloud}`)}
+						onClick={() => imageInNewTab(viewingUrl)}
 					>
 						<NewTabIcon />
 					</IconButton>
@@ -152,24 +196,55 @@ const RapCloud = (props) => {
 			</Paper>
 		);
 	};
-
+	const renderPagination = (bottomSpace = false) => {
+		return (
+			<Grid id="paginationContainer" item container xs={12} justify="center">
+				<Grid item>
+					{clouds.length ? (
+						<Pagination
+							count={clouds.length}
+							page={currentCloudIdx + 1}
+							variant="outlined"
+							size="small"
+							boundaryCount={1}
+							color="secondary"
+							onChange={(_, val) => setCurrentCloudIdx(val - 1)}
+							style={{ marginBottom: bottomSpace ? '.2em' : '0' }}
+						/>
+					) : null}
+				</Grid>
+			</Grid>
+		);
+	};
 	return (
 		<Grid>
-			{renderCloudActions()}
+			{viewingUrl && renderCloudActions()}
+			{renderPagination(true)}
 			<Grid className={classNames(classes.wordCloudWrapper)}>
 				<LoadingBar loading={isLoading} />
 				<img
-					src={
-						encodedCloud ? (
-							`data:image/png;base64, ${encodedCloud}`
-						) : (
-							`${process.env.PUBLIC_URL}/rapClouds.png`
-						)
-					}
+					src={viewingUrl || `${process.env.PUBLIC_URL}/rapClouds.png`}
 					alt={'Rap Cloud'}
 					className={classes.wordCloud}
 					onClick={() => toggleFullScreenCloud(true)}
 				/>
+				{clouds.length > 1 ? (
+					<React.Fragment>
+						<IconButton
+							onClick={() => cycleClouds('left')}
+							className={classNames(classes.cycleCloudsBtn, classes.cycleCloudsLeft)}
+						>
+							<ChevronLeft />
+						</IconButton>
+						<IconButton
+							onClick={() => cycleClouds('right')}
+							className={classNames(classes.cycleCloudsBtn, classes.cycleCloudsRight)}
+						>
+							<ChevronRight />
+						</IconButton>
+					</React.Fragment>
+				) : null}
+
 				<Tooltip placement="bottom-start" title="Customize this Rap Cloud!">
 					<IconButton
 						onClick={() => toggleSettings(true)}
@@ -181,7 +256,11 @@ const RapCloud = (props) => {
 				</Tooltip>
 			</Grid>
 			{settingsOpen && (
-				<RapCloudSettings dialogOpen={settingsOpen} toggleDialog={toggleSettings} fetchCloud={fetchCloud} />
+				<RapCloudSettings
+					dialogOpen={settingsOpen}
+					toggleDialog={toggleSettings}
+					generateCloud={generateCloud}
+				/>
 			)}
 			{fullScreenCloud && (
 				<Dialog fullScreen open={true}>
@@ -198,14 +277,8 @@ const RapCloud = (props) => {
 							<Grid item xs={12} style={{ textAlign: 'center' }}>
 								<img
 									item
-									src={
-										encodedCloud ? (
-											`data:image/png;base64, ${encodedCloud}`
-										) : (
-											`${process.env.PUBLIC_URL}/rapClouds.png`
-										)
-									}
-									alt={'Rap Cloud'}
+									src={viewingUrl || `${process.env.PUBLIC_URL}/rapClouds.png`}
+									alt={cloudName}
 									style={{ width: '90%' }}
 								/>
 							</Grid>
@@ -213,8 +286,9 @@ const RapCloud = (props) => {
 					</DialogContent>
 				</Dialog>
 			)}
+			{renderPagination()}
 		</Grid>
 	);
 };
 
-export default withWidth()(RapCloud);
+export default connect(null, { deleteCloud })(withWidth()(RapCloud));

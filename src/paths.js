@@ -5,4 +5,5 @@ export default {
 	songPage: '/clouds/:songId',
 	artistPage: '/cloudmakers/:artistId',
 	about: '/about',
+	profile: '/me',
 };

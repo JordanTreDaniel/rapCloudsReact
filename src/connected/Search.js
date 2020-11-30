@@ -22,12 +22,12 @@ const useStyles = makeStyles((theme) => ({
 	},
 	searchBar: {},
 	searchIcon: {
-		color: theme.palette.secondary.contrastText,
+		color: theme.palette.secondary.dark,
 		backgroundColor: theme.palette.secondary.main,
 		opacity: '.72',
 		marginRight: '9vw',
 		'&:hover': {
-			color: theme.palette.secondary.contrastText,
+			color: theme.palette.secondary.dark,
 			backgroundColor: theme.palette.secondary.main,
 		},
 	},

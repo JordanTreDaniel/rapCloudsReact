@@ -6,19 +6,26 @@ import {
 	SET_SONG_SEARCH_TERM,
 	FETCH_ARTIST,
 	SIGN_OUT,
-	FETCH_ARTIST_CLOUD,
-	FETCH_SONG_CLOUD,
+	GEN_ARTIST_CLOUD,
+	GEN_SONG_CLOUD,
 	UPDATE_CLOUD_SETTINGS,
 	FETCH_MASKS,
 	ADD_CUSTOM_MASK,
 	RESET_CLOUD_DEFAULTS,
 	DELETE_MASK,
 	FETCH_SONG_LYRICS,
+	UPDATE_USER,
+	FETCH_CLOUDS,
+	DELETE_CLOUD,
 } from './actionTypes';
 import normalizeLyrics from './utils/normalizeLyrics';
 
 export const setUser = (user = { name: 'Tupac' }) => {
 	return { type: SET_USER, user };
+};
+
+export const updateUser = (userUpdates) => {
+	return { type: UPDATE_USER.start, userUpdates };
 };
 
 export const addSongs = (songs = [ { name: 'We finally made it.' } ]) => {
@@ -49,16 +56,25 @@ export const signOut = () => {
 	return { type: SIGN_OUT };
 };
 
-export const fetchArtistCloud = () => {
-	return { type: FETCH_ARTIST_CLOUD.start, forceFetch: true };
+export const genArtistCloud = (artistId) => {
+	return { type: GEN_ARTIST_CLOUD.start, forceFetch: true, artistId };
 };
 
-export const fetchSongCloud = (songId, songLyrics) => {
+export const genSongCloud = (songId, songLyrics) => {
 	const normalizedLyrics = normalizeLyrics(songLyrics);
-	return { type: FETCH_SONG_CLOUD.start, lyricString: normalizedLyrics, songId, forceFetch: true };
+	return { type: GEN_SONG_CLOUD.start, lyricString: normalizedLyrics, songId, forceFetch: true };
 };
+
+export const deleteCloud = (cloudId) => {
+	return { type: DELETE_CLOUD.start, cloudId };
+};
+
 export const updateCloudSettings = (key, val) => {
 	return { type: UPDATE_CLOUD_SETTINGS, forceFetch: true, key, val };
+};
+
+export const fetchClouds = () => {
+	return { type: FETCH_CLOUDS.start };
 };
 
 export const fetchMasks = () => {

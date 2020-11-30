@@ -9,7 +9,7 @@ import ArtistSongList from './ArtistSongList';
 import BackButton from '../components/BackButton';
 import RapCloud from './RapCloud';
 import * as selectors from '../redux/selectors';
-import { fetchArtist, fetchArtistCloud } from '../redux/actions';
+import { fetchArtist, genArtistCloud } from '../redux/actions';
 import { connect } from 'react-redux';
 import paths from '../paths';
 import { classNames } from '../utils';
@@ -115,7 +115,15 @@ const useStyles = makeStyles((theme) => {
 
 const ArtistPage = (props) => {
 	const classes = useStyles();
-	const { artist, fetchArtist, isArtistLoading, isArtistCloudLoading, areSongLyricsLoading } = props;
+	const {
+		artist,
+		fetchArtist,
+		isArtistLoading,
+		isArtistCloudLoading,
+		areSongLyricsLoading,
+		clouds,
+		genArtistCloud,
+	} = props;
 	const { artistId } = useParams();
 	const [ cloudExpanded, setCloudExpanded ] = useState(true);
 	const [ songsExpanded, setSongsExpanded ] = useState(true);
@@ -133,7 +141,7 @@ const ArtistPage = (props) => {
 	if (!artistId) return <Redirect to={paths.search} />;
 	if (!artist && !isArtistLoading) return null;
 
-	const { name, encodedCloud, path } = artist || {};
+	const { name, path } = artist || {};
 
 	return (
 		<Grid className={classes.artistPage}>
@@ -173,9 +181,11 @@ const ArtistPage = (props) => {
 						</Typography>
 						{cloudExpanded && (
 							<RapCloud
-								fetchCloud={fetchArtistCloud}
+								generateCloud={() => {
+									genArtistCloud(artistId);
+								}}
 								cloudName={name}
-								encodedCloud={encodedCloud}
+								clouds={clouds}
 								isLoading={isArtistCloudLoading || isArtistLoading || areSongLyricsLoading}
 							/>
 						)}
@@ -203,6 +213,7 @@ const mapState = (state) => ({
 	isArtistLoading: selectors.isArtistLoading(state),
 	isArtistCloudLoading: selectors.isArtistCloudLoading(state),
 	areSongLyricsLoading: selectors.areSongLyricsLoading(state),
+	clouds: selectors.getCloudsForArtist(state),
 });
 
-export default connect(mapState, { fetchArtist, fetchArtistCloud })(withWidth()(ArtistPage));
+export default connect(mapState, { fetchArtist, genArtistCloud })(withWidth()(ArtistPage));

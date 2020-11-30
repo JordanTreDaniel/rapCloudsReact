@@ -1,12 +1,16 @@
-import { call, select, takeLatest, put, takeEvery } from 'redux-saga/effects';
+import { call, select, takeLatest, put, takeEvery, cancel } from 'redux-saga/effects';
 import axios from 'axios';
-import { getCloudSettingsForFlight, getUserMongoId } from '../selectors';
-import { FETCH_MASKS, ADD_CUSTOM_MASK, DELETE_MASK } from '../actionTypes';
-
+import { v4 as uuid } from 'uuid';
+import { getCloudSettingsForFlight, getUserMongoId, getCloudFromId } from '../selectors';
+import { FETCH_MASKS, ADD_CUSTOM_MASK, DELETE_MASK, FETCH_CLOUDS, DELETE_CLOUD } from '../actionTypes';
+import { listRapClouds } from '../../graphql/queries';
+import { createRapCloud, deleteRapCloud } from '../../graphql/mutations';
+import { API, graphqlOperation, Auth, Storage } from 'aws-amplify';
+import { getAwsUserEmail } from '../../utils';
 const REACT_APP_SERVER_ROOT =
 	process.env.NODE_ENV === 'development' ? 'http://localhost:3333' : 'https://rap-clouds-server.herokuapp.com';
 
-const apiFetchWordCloud = async (lyricString, cloudSettings) => {
+const apiGenerateCloud = async (lyricString, cloudSettingsForFlight) => {
 	const res = await axios({
 		method: 'post',
 		url: `${REACT_APP_SERVER_ROOT}/makeWordCloud`,
@@ -19,7 +23,7 @@ const apiFetchWordCloud = async (lyricString, cloudSettings) => {
 		},
 		data: {
 			lyricString,
-			cloudSettings,
+			cloudSettings: cloudSettingsForFlight,
 		},
 	});
 
@@ -32,19 +36,88 @@ const apiFetchWordCloud = async (lyricString, cloudSettings) => {
 	return { error: { status, statusText } };
 };
 
-export function* fetchWordCloud(action) {
+const apiDeleteCloud = async (cloud) => {
 	try {
-		const cloudSettings = yield select(getCloudSettingsForFlight);
-		const { lyricString } = action;
-		// console.log('Fetch cloud', { cloudSettings, lyricString });
-		if (!lyricString || !lyricString.length) return { error: { message: 'Must include lyrics to get a cloud' } };
-		const { data, error } = yield call(apiFetchWordCloud, lyricString, cloudSettings);
-		const { encodedCloud } = data;
+		const { id: cloudId, filePath, level = 'public' } = cloud;
+		await Storage.remove(filePath, { level }); //TO-DO: Implement levels on clouds
+		const cloudData = await API.graphql(graphqlOperation(deleteRapCloud, { input: { id: cloudId } }));
+		return { data: cloudData.data.deleteRapCloud };
+	} catch (error) {
+		console.error("Couldn't delete the cloud", { cloud, error });
+		return { error };
+	}
+};
+
+export function* deleteCloud(action) {
+	try {
+		const { cloudId } = action;
+		if (!cloudId) {
+			yield put({ type: DELETE_CLOUD.cancellation });
+			yield cancel();
+		}
+		const cloud = yield select(getCloudFromId, cloudId);
+		const { error } = yield call(apiDeleteCloud, cloud);
 		if (error) {
-			console.log('Something went wrong in fetchWordCloud', error);
+			console.log('Something went wrong in deleteCloud', error);
 			return { error };
 		} else {
-			return { encodedCloud };
+			yield put({ type: DELETE_CLOUD.success, cloudId });
+			return cloudId;
+		}
+	} catch (err) {
+		console.log('Something went wrong', err);
+		yield put({ type: DELETE_CLOUD.failure, err });
+		return { error: err };
+	}
+}
+
+const apiSaveCloud = async (cloud) => {
+	try {
+		const cloudData = await API.graphql(graphqlOperation(createRapCloud, { input: cloud }));
+		return cloudData.data.createRapCloud;
+	} catch (err) {
+		console.error("Couldn't save the cloud", { cloud, err });
+	}
+};
+
+const s3SaveCloud = async (encodedCloud) => {
+	try {
+		const blob = await fetch(`data:image/png;base64, ${encodedCloud}`).then((res) => res.blob());
+		const { key } = await Storage.put(`${uuid()}.png`, blob, {
+			contentType: 'image/png',
+			level: 'public', //TO-DO: Get private/protected levels to work.
+			// ...the fact that it doesn't work with those levels is likely bc of this:
+			// https://github.com/JordanTreDaniel/rapCloudsReact/pull/17/commits/cdf81390aba5e9e566de70692177979709f43f97
+		});
+		const viewingUrl = await Storage.get(key);
+		return { key, viewingUrl };
+	} catch (error) {
+		console.error("Couldn't save the cloud to S3", { error });
+		return { error };
+	}
+};
+
+export function* generateCloud(action) {
+	try {
+		let { lyricString, cloud } = action;
+		if (!lyricString || !lyricString.length) return { error: { message: 'Must include lyrics to get a cloud' } };
+		const cloudSettingsForFlight = yield select(getCloudSettingsForFlight);
+		const awsUserEmail = yield call(getAwsUserEmail);
+		cloud = {
+			...cloud,
+			userEmail: awsUserEmail,
+			settings: cloudSettingsForFlight,
+		};
+		const { data, error } = yield call(apiGenerateCloud, lyricString, cloudSettingsForFlight);
+		if (error) {
+			console.log('Something went wrong in generateCloud', error);
+			return { error };
+		} else {
+			const { encodedCloud } = data;
+			const { key, viewingUrl } = yield call(s3SaveCloud, encodedCloud);
+			cloud = { ...cloud, filePath: key, viewingUrl };
+			cloud = yield call(apiSaveCloud, cloud);
+			return { finishedCloud: cloud };
 		}
 	} catch (err) {
 		console.log('Something went wrong', err);
@@ -196,4 +269,43 @@ export function* deleteMask(action) {
 function* watchDeleteMask() {
 	yield takeEvery(DELETE_MASK.start, deleteMask);
 }
-export default [ watchFetchMasks, watchAddCustomMask, watchDeleteMask ];
+
+const apiFetchClouds = async () => {
+	try {
+		const cUI = await Auth.currentUserInfo();
+		console.log('Currnet user?', cUI);
+		const cloudsData = await API.graphql(graphqlOperation(listRapClouds));
+		const cloudsList = cloudsData.data.listRapClouds.items;
+		return { cloudsList };
+	} catch (error) {
+		console.log('error on fetching songs', error);
+		return { error };
+	}
+};
+
+export function* fetchClouds(action) {
+	try {
+		const { cloudsList, error } = yield call(apiFetchClouds);
+		if (error) {
+			console.log('Something went wrong in fetchMasks', error);
+			return { error };
+		} else {
+			yield put({ type: FETCH_CLOUDS.success, cloudsList });
+			return { cloudsList };
+		}
+	} catch (err) {
+		console.log('Something went wrong', err);
+		yield put({ type: FETCH_CLOUDS.failure, err });
+		return { error: err };
+	}
+}
+
+function* watchFetchClouds() {
+	yield takeLatest(FETCH_CLOUDS.start, fetchClouds);
+}
+
+function* watchDeleteCloud() {
+	yield takeEvery(DELETE_CLOUD.start, deleteCloud);
+}
+
+export default [ watchFetchMasks, watchAddCustomMask, watchDeleteMask, watchFetchClouds, watchDeleteCloud ];
