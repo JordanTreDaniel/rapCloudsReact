@@ -130,8 +130,7 @@ const RapCloud = (props) => {
 		[ clouds.length ],
 	);
 	const cycleClouds = (direction) => {
-		const operand = direction === 'left' ? '-' : '+';
-		let newIdx = eval(`${currentCloudIdx}${operand}1`);
+		let newIdx = direction === 'left' ? currentCloudIdx - 1 : currentCloudIdx + 1;
 		if (newIdx >= clouds.length) {
 			newIdx = 0;
 		} else if (newIdx < 0) {
@@ -200,19 +199,20 @@ const RapCloud = (props) => {
 	const renderPagination = (bottomSpace = false) => {
 		return (
 			<Grid id="paginationContainer" item container xs={12} justify="center">
-				{clouds.length ? (
-					<Pagination
-						item
-						count={clouds.length}
-						page={currentCloudIdx + 1}
-						variant="outlined"
-						size="small"
-						boundaryCount={1}
-						color="secondary"
-						onChange={(_, val) => setCurrentCloudIdx(val - 1)}
-						style={{ marginBottom: bottomSpace ? '.2em' : '0' }}
-					/>
-				) : null}
+				<Grid item>
+					{clouds.length ? (
+						<Pagination
+							count={clouds.length}
+							page={currentCloudIdx + 1}
+							variant="outlined"
+							size="small"
+							boundaryCount={1}
+							color="secondary"
+							onChange={(_, val) => setCurrentCloudIdx(val - 1)}
+							style={{ marginBottom: bottomSpace ? '.2em' : '0' }}
+						/>
+					) : null}
+				</Grid>
 			</Grid>
 		);
 	};

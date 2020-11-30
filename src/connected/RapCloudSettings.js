@@ -669,7 +669,6 @@ const RapCloudSettings = (props) => {
 									direction="column"
 									justify="center"
 									alignItems="center"
-									id="chosenMask"
 									className={classNames(
 										classes.chosenMaskSection,
 										classes.blueBorder,

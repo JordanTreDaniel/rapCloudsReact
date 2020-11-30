@@ -39,7 +39,7 @@ const apiGenerateCloud = async (lyricString, cloudSettingsForFlight) => {
 const apiDeleteCloud = async (cloud) => {
 	try {
 		const { id: cloudId, filePath, level = 'public' } = cloud;
-		const s3Res = await Storage.remove(filePath, { level }); //TO-DO: Implement levels on clouds
+		await Storage.remove(filePath, { level }); //TO-DO: Implement levels on clouds
 		const cloudData = await API.graphql(graphqlOperation(deleteRapCloud, { input: { id: cloudId } }));
 		return { data: cloudData.data.deleteRapCloud };
 	} catch (error) {

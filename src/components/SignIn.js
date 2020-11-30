@@ -5,7 +5,6 @@ import { makeStyles, Button, Grid, IconButton, Typography, Avatar } from '@mater
 import ArrowIcon from '@material-ui/icons/ArrowForward';
 // import "./SignIn.css"; //Don't think we need this
 import { setUser, addSongs, updateUser } from '../redux/actions';
-import { getUserMongoId } from '../redux/selectors';
 import { classNames, awsSignInOrSignUp } from '../utils';
 import paths from '../paths';
 
@@ -400,9 +399,4 @@ const SignIn = (props) => {
 	);
 };
 
-const mapStateToProps = (state) => {
-	return {
-		userId: getUserMongoId(state),
-	};
-};
 export default connect(null, { setUser, addSongs, updateUser })(SignIn);

@@ -265,6 +265,8 @@ export const getCloudsForSong = createSelector(
 	(cloudsById, songId, currentSongId) => {
 		songId = songId ? songId : currentSongId;
 		if (!songId) console.warn(`Warning, getCloudsForSong called without necessary arguments.`);
-		return Object.values(cloudsById).filter((cloud) => cloud.songIds.includes(songId) && cloud.songIds.length == 1);
+		return Object.values(cloudsById).filter(
+			(cloud) => cloud.songIds.includes(songId) && cloud.songIds.length === 1,
+		);
 	},
 );
