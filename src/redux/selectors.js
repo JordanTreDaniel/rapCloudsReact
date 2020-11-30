@@ -217,6 +217,13 @@ export const getCurrentMask = createSelector(
 	(masksById, cloudSettings) => masksById[cloudSettings.maskId],
 );
 export const getCloudsById = (state) => state.clouds.byId;
+export const getCloudFromId = createSelector(
+	getCloudsById,
+	(_, cloudId) => cloudId,
+	(cloudsById, cloudId) => {
+		return cloudsById[cloudId];
+	},
+);
 export const getCloudsByArtistId = createSelector(getCloudsById, (cloudsById) => {
 	Object.values(cloudsById).reduce((cloudsByArtistId, cloud) => {
 		const { artistIds } = cloud;

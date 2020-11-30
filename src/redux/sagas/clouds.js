@@ -1,7 +1,7 @@
-import { call, select, takeLatest, put, takeEvery } from 'redux-saga/effects';
+import { call, select, takeLatest, put, takeEvery, cancel } from 'redux-saga/effects';
 import axios from 'axios';
 import { v4 as uuid } from 'uuid';
-import { getCloudSettingsForFlight, getUserMongoId } from '../selectors';
+import { getCloudSettingsForFlight, getUserMongoId, getCloudFromId } from '../selectors';
 import { FETCH_MASKS, ADD_CUSTOM_MASK, DELETE_MASK, FETCH_CLOUDS, DELETE_CLOUD } from '../actionTypes';
 import { listRapClouds } from '../../graphql/queries';
 import { createRapCloud, deleteRapCloud } from '../../graphql/mutations';
@@ -36,23 +36,27 @@ const apiGenerateCloud = async (lyricString, cloudSettingsForFlight) => {
 	return { error: { status, statusText } };
 };
 
-const apiDeleteCloud = async (cloudId) => {
+const apiDeleteCloud = async (cloud) => {
 	try {
+		const { id: cloudId, filePath, level = 'public' } = cloud;
+		const s3Res = await Storage.remove(filePath, { level }); //TO-DO: Implement levels on clouds
 		const cloudData = await API.graphql(graphqlOperation(deleteRapCloud, { input: { id: cloudId } }));
 		return { data: cloudData.data.deleteRapCloud };
 	} catch (error) {
-		console.error("Couldn't delete the cloud", { cloudId, error });
+		console.error("Couldn't delete the cloud", { cloud, error });
 		return { error };
 	}
 };
 
 export function* deleteCloud(action) {
-	const { cloudId } = action;
-	if (!cloudId) {
-		yield put({ type: DELETE_CLOUD.cancellation });
-	}
 	try {
-		const { error } = yield call(apiDeleteCloud, cloudId);
+		const { cloudId } = action;
+		if (!cloudId) {
+			yield put({ type: DELETE_CLOUD.cancellation });
+			yield cancel();
+		}
+		const cloud = yield select(getCloudFromId, cloudId);
+		const { error } = yield call(apiDeleteCloud, cloud);
 		if (error) {
 			console.log('Something went wrong in deleteCloud', error);
 			return { error };
