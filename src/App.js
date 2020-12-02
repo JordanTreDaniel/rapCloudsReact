@@ -7,7 +7,7 @@ import Search from './connected/Search';
 import Navbar from './connected/Navbar';
 import ArtistPage from './connected/ArtistPage';
 import ProfilePage from './connected/ProfilePage.jsx';
-import { setUser } from './redux/actions';
+import { setUser, addCustomMask } from './redux/actions'; //TO-DO: is setUser needed?
 import { Redirect } from 'react-router-dom';
 import * as selectors from './redux/selectors';
 import { connect } from 'react-redux';
@@ -28,7 +28,6 @@ function initializeReactGA() {
 		ReactGA.pageview(location.pathname);
 	});
 }
-
 const useStyles = makeStyles((theme) => {
 	return {
 		appContainer: {
@@ -48,10 +47,31 @@ const useStyles = makeStyles((theme) => {
 	};
 });
 const App = (props) => {
-	const { user, appIsHydrated, location } = props;
+	const { user, appIsHydrated, location, addCustomMask, mongoUserId } = props;
 	const classes = useStyles();
 	useEffect(() => {
 		initializeReactGA();
+		//Creating the uploadWidget here for performance. Fast for UX, & not creating extra widgets on re-renders.
+		window.uploadWidget = window.cloudinary.createUploadWidget(
+			{
+				cloudName: 'rap-clouds',
+				uploadPreset: 'default_unsigned',
+			},
+			(error, result) => {
+				if (!error && result && result.event === 'success') {
+					console.log('Done! Here is the image info: ', result.info);
+					const mask = {
+						userId: mongoUserId,
+						cloudinaryInfo: result.info,
+					};
+					addCustomMask(mask);
+					// toggleUploadDialog(false);
+				}
+			},
+		);
+		window.openWidget = async () => {
+			window.uploadWidget.open();
+		};
 	}, []);
 	if (!user && appIsHydrated && ![ paths.signIn, paths.about, paths.root ].includes(location.pathname)) {
 		console.log('APP rendered w/ no user after hydration, redirecting.');
@@ -119,6 +139,7 @@ const App = (props) => {
 const mapState = (state) => ({
 	user: selectors.getUser(state),
 	appIsHydrated: selectors.isAppRehydrated(state),
+	mongoUserId: selectors.getUserMongoId(state),
 });
 
-export default connect(mapState, { setUser })(App);
+export default connect(mapState, { setUser, addCustomMask })(App);

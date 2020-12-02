@@ -19,7 +19,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import * as selectors from '../redux/selectors';
-import { updateCloudSettings, fetchMasks, addCustomMask, deleteMask, resetCloudDefaults } from '../redux/actions';
+import { updateCloudSettings, fetchMasks, deleteMask, resetCloudDefaults } from '../redux/actions';
 import ColorPicker from '../components/ColorPicker';
 import LoadingBar from '../components/LoadingBar';
 import HelpTooltip from '../components/HelpTooltip';
@@ -30,7 +30,6 @@ import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import Refresh from '@material-ui/icons/Refresh';
 import AddIcon from '@material-ui/icons/Add';
 import XIcon from '@material-ui/icons/Cancel';
-import ImageUploader from 'react-images-upload';
 
 const useStyles = makeStyles((theme) => {
 	return {
@@ -159,7 +158,6 @@ const RapCloudSettings = (props) => {
 		cloudSettings,
 		updateCloudSettings,
 		fetchMasks,
-		addCustomMask,
 		deleteMask,
 		masks,
 		masksLoading,
@@ -543,40 +541,7 @@ const RapCloudSettings = (props) => {
 													A mask is a picture that you can use to shape and/or color your
 													RapCloud!
 												</Typography>
-												<ImageUploader
-													withIcon={true}
-													buttonText="Choose image"
-													onChange={([ pic ]) => {
-														const reader = new FileReader();
-														let { name, type } = pic;
-														name = name.split('.')[0];
-														reader.addEventListener(
-															'load',
-															function() {
-																const { result } = reader;
-																const dataDeclarationRegEx = new RegExp(
-																	`data:${pic.type};base64,`,
-																);
-																const splitResult = result.split(dataDeclarationRegEx);
-																const base64Img = splitResult[1];
-																const mask = {
-																	name,
-																	base64Img,
-																	userId: mongoUserId,
-																	type,
-																};
-																addCustomMask(mask);
-																toggleUploadDialog(false);
-															},
-															false,
-														);
-														reader.readAsDataURL(pic);
-													}}
-													imgExtension={[ '.jpeg', '.jpg', '.png' ]}
-													maxFileSize={5242880}
-													singleImage
-													// withPreview
-												/>
+												<Button onClick={window.openWidget}>Upload (From Anywhere)</Button>
 												<Typography
 													color="primary"
 													variant="h5"
@@ -1109,6 +1074,6 @@ const mapState = (state) => ({
 	mongoUserId: selectors.getUserMongoId(state),
 });
 
-export default connect(mapState, { updateCloudSettings, fetchMasks, addCustomMask, deleteMask, resetCloudDefaults })(
+export default connect(mapState, { updateCloudSettings, fetchMasks, deleteMask, resetCloudDefaults })(
 	withWidth()(RapCloudSettings),
 );
