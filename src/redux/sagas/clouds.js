@@ -242,28 +242,33 @@ function* watchDeleteMask() {
 	yield takeEvery(DELETE_MASK.start, deleteMask);
 }
 
-const apiFetchClouds = async () => {
-	try {
-		const cUI = await Auth.currentUserInfo();
-		console.log('Currnet user?', cUI);
-		const cloudsData = await API.graphql(graphqlOperation(listRapClouds));
-		const cloudsList = cloudsData.data.listRapClouds.items;
-		return { cloudsList };
-	} catch (error) {
-		console.log('error on fetching songs', error);
-		return { error };
+const apiFetchClouds = async (userId) => {
+	const res = await axios({
+		method: 'get',
+		url: `${REACT_APP_SERVER_ROOT}/getClouds/${userId}`,
+		headers: {
+			'Content-Type': 'application/json',
+		},
+	});
+	const { status, statusText, data } = res;
+	const { clouds } = data;
+	if (status === 200) {
+		return { clouds, status, statusText };
 	}
+
+	return { error: { status, statusText } };
 };
 
 export function* fetchClouds(action) {
 	try {
-		const { cloudsList, error } = yield call(apiFetchClouds);
+		const userId = yield select(getUserMongoId);
+		const { clouds, error } = yield call(apiFetchClouds, userId);
 		if (error) {
-			console.log('Something went wrong in fetchMasks', error);
+			console.log('Something went wrong in fetchClouds', error);
 			return { error };
 		} else {
-			yield put({ type: FETCH_CLOUDS.success, cloudsList });
-			return { cloudsList };
+			yield put({ type: FETCH_CLOUDS.success, clouds });
+			return { clouds };
 		}
 	} catch (err) {
 		console.log('Something went wrong', err);
