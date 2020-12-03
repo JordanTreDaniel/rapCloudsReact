@@ -1,7 +1,7 @@
 import { call, select, takeLatest, put, takeEvery, cancel } from 'redux-saga/effects';
 import axios from 'axios';
 import { v4 as uuid } from 'uuid';
-import { getCloudSettingsForFlight, getUserMongoId, getCloudFromId } from '../selectors';
+import { getCloudSettingsForFlight, getUserMongoId, getCloudFromId, getMaskFromId } from '../selectors';
 import { FETCH_MASKS, ADD_CUSTOM_MASK, DELETE_MASK, FETCH_CLOUDS, DELETE_CLOUD } from '../actionTypes';
 import { listRapClouds } from '../../graphql/queries';
 import { createRapCloud, deleteRapCloud } from '../../graphql/mutations';
@@ -13,7 +13,7 @@ const REACT_APP_SERVER_ROOT =
 const apiGenerateCloud = async (lyricString, cloudSettingsForFlight) => {
 	const res = await axios({
 		method: 'post',
-		url: `${REACT_APP_SERVER_ROOT}/makeWordCloud`,
+		url: `${REACT_APP_SERVER_ROOT}/generateCloud`,
 		headers: {
 			'Content-Type': 'application/json',
 			// 'Accept-Encoding': 'gzip',
@@ -219,7 +219,7 @@ function* watchAddCustomMask() {
 	yield takeEvery(ADD_CUSTOM_MASK.start, addCustomMask);
 }
 
-const apiDeleteMask = async (maskId) => {
+const apiDeleteMask = async ({ maskId, public_id }) => {
 	const res = await axios({
 		method: 'post',
 		url: `${REACT_APP_SERVER_ROOT}/deleteMask`,
@@ -232,6 +232,7 @@ const apiDeleteMask = async (maskId) => {
 		},
 		data: {
 			maskId,
+			public_id,
 		},
 	});
 	const { status, statusText, data } = res;
@@ -246,11 +247,13 @@ const apiDeleteMask = async (maskId) => {
 export function* deleteMask(action) {
 	const { maskId } = action;
 	const userId = yield select(getUserMongoId);
+	const mask = yield select(getMaskFromId, maskId);
+	const { public_id } = mask.info;
 	if (!maskId || !userId) {
 		yield put({ type: DELETE_MASK.cancellation });
 	}
 	try {
-		const { error } = yield call(apiDeleteMask, maskId);
+		const { error } = yield call(apiDeleteMask, { maskId, public_id });
 		if (error) {
 			console.log('Something went wrong in fetchMasks', error);
 			return { error };
