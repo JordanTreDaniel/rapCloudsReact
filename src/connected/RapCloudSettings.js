@@ -618,8 +618,8 @@ const RapCloudSettings = (props) => {
 													chosen && classes.blueBorder,
 												)}
 												elevation={chosen ? 20 : 0}
-												src={`data:image/png;base64, ${mask.base64Img}`}
-												alt={mask.name}
+												src={mask.info.thumbnail_url}
+												alt={`${mask.info.original_filename} Mask`}
 												onClick={() => updateCloudSettings('maskId', chosen ? null : mask.id)}
 											/>
 										</Box>
@@ -671,8 +671,8 @@ const RapCloudSettings = (props) => {
 														classes.maskThumbnail,
 														classes.chosenMaskThumbnail,
 													)}
-													src={`data:image/png;base64, ${currentMask.base64Img}`}
-													alt={currentMask.name}
+													src={currentMask.info.url}
+													alt={`${currentMask.info.original_filename} Mask`}
 												/>
 											</Box>
 										</Tooltip>
@@ -884,8 +884,8 @@ const RapCloudSettings = (props) => {
 								<img
 									item="true"
 									className={classNames(classes.fullScreenMask)}
-									src={`data:image/png;base64, ${currentMask.base64Img}`}
-									alt={currentMask.name}
+									src={currentMask.info.url}
+									alt={`Mask Image ${currentMask.info.original_filename}`}
 								/>
 							</DialogContent>
 							<DialogActions>
