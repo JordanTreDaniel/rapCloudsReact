@@ -59,14 +59,28 @@ export function* generateCloud(action) {
 	}
 }
 
-const apiDeleteCloud = async (cloud) => {
+const apiDeleteCloud = async (cloudId, public_id) => {
 	try {
-		const { id: cloudId, filePath, level = 'public' } = cloud;
-		await Storage.remove(filePath, { level }); //TO-DO: Implement levels on clouds
-		const cloudData = await API.graphql(graphqlOperation(deleteRapCloud, { input: { id: cloudId } }));
-		return { data: cloudData.data.deleteRapCloud };
+		const res = await axios({
+			method: 'post',
+			url: `${REACT_APP_SERVER_ROOT}/deleteCloud`,
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			data: {
+				cloudId,
+				public_id,
+			},
+		});
+		const { status, statusText, data } = res;
+		const { message } = data;
+		if (status === 200) {
+			return { message };
+		}
+
+		return { error: { status, statusText } };
 	} catch (error) {
-		console.error("Couldn't delete the cloud", { cloud, error });
+		console.error("Couldn't delete the cloud", { cloudId, error });
 		return { error };
 	}
 };
@@ -79,7 +93,8 @@ export function* deleteCloud(action) {
 			yield cancel();
 		}
 		const cloud = yield select(getCloudFromId, cloudId);
-		const { error } = yield call(apiDeleteCloud, cloud);
+		const { public_id } = cloud.info;
+		const { error } = yield call(apiDeleteCloud, cloudId, public_id);
 		if (error) {
 			console.log('Something went wrong in deleteCloud', error);
 			return { error };
