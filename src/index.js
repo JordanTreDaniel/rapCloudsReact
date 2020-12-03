@@ -13,10 +13,6 @@ import SplashScreen from './components/SplashScreen';
 import ErrorBoundary from './components/ErrorBoundary';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { Paper } from '@material-ui/core';
-import Amplify from 'aws-amplify';
-import awsconfig from './aws-exports';
-
-Amplify.configure(awsconfig);
 
 if (process.env.NODE_ENV === 'development') {
 	//NOTE: Why am I doing this with the store?

@@ -1,12 +1,7 @@
 import { call, select, takeLatest, put, takeEvery, cancel } from 'redux-saga/effects';
 import axios from 'axios';
-import { v4 as uuid } from 'uuid';
 import { getCloudSettingsForFlight, getUserMongoId, getCloudFromId, getMaskFromId } from '../selectors';
 import { FETCH_MASKS, ADD_CUSTOM_MASK, DELETE_MASK, FETCH_CLOUDS, DELETE_CLOUD } from '../actionTypes';
-import { listRapClouds } from '../../graphql/queries';
-import { createRapCloud, deleteRapCloud } from '../../graphql/mutations';
-import { API, graphqlOperation, Auth, Storage } from 'aws-amplify';
-import { getAwsUserEmail } from '../../utils';
 const REACT_APP_SERVER_ROOT =
 	process.env.NODE_ENV === 'development' ? 'http://localhost:3333' : 'https://rap-clouds-server.herokuapp.com';
 
