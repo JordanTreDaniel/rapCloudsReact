@@ -78,13 +78,13 @@ export function* genArtistCloud(action) {
 			return;
 		}
 		const songIds = [],
-			artistIds = [];
+			artistIds = [ artistId ];
 		const allLyrics = yield all(
 			songs.map((song) => {
 				const { id: songId, path: songPath } = song;
 				songIds.push(songId);
 				//TO-DO: Add artistIds from each artist of the song.artists
-				artistIds.push(artistId);
+				// artistIds.push(artistId);
 				return fetchSongLyrics({ type: FETCH_SONG_LYRICS.start, songId, songPath, generateCloud: false });
 			}),
 		);
@@ -94,8 +94,10 @@ export function* genArtistCloud(action) {
 		);
 		cloud = {
 			...cloud,
-			songIds,
 			artistIds,
+			songIds,
+			lyricString: normalizedLyricsJumble,
+			inspirationType: 'artist',
 		};
 		const { finishedCloud, error } = yield call(generateCloud, {
 			lyricString: normalizedLyricsJumble,

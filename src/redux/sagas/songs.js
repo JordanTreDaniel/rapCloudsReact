@@ -168,7 +168,13 @@ export function* genSongCloud(action) {
 		const songIds = [ songId ],
 			artistIds = song.writer_artists && song.writer_artists.map((artist) => artist.id);
 		artistIds.push(song.primary_artist.id);
-		cloud = { ...cloud, artistIds, songIds };
+		cloud = {
+			...cloud,
+			artistIds,
+			songIds,
+			lyricString,
+			inspirationType: 'song',
+		};
 		const { finishedCloud, error } = yield call(generateCloud, { lyricString, cloud });
 		if (error) {
 			yield put({ type: GEN_SONG_CLOUD.failure });

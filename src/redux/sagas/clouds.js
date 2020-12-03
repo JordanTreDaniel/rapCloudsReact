@@ -10,7 +10,7 @@ import { getAwsUserEmail } from '../../utils';
 const REACT_APP_SERVER_ROOT =
 	process.env.NODE_ENV === 'development' ? 'http://localhost:3333' : 'https://rap-clouds-server.herokuapp.com';
 
-const apiGenerateCloud = async (lyricString, cloudSettingsForFlight) => {
+const apiGenerateCloud = async (cloud) => {
 	const res = await axios({
 		method: 'post',
 		url: `${REACT_APP_SERVER_ROOT}/generateCloud`,
@@ -21,10 +21,7 @@ const apiGenerateCloud = async (lyricString, cloudSettingsForFlight) => {
 			// 'Access-Control-Allow-Headers': 'Content-Type',
 			// Accept: 'application/json'
 		},
-		data: {
-			lyricString,
-			cloudSettings: cloudSettingsForFlight,
-		},
+		data: cloud,
 	});
 
 	const { status, statusText, data } = res;
@@ -35,6 +32,32 @@ const apiGenerateCloud = async (lyricString, cloudSettingsForFlight) => {
 
 	return { error: { status, statusText } };
 };
+
+export function* generateCloud(action) {
+	try {
+		let { lyricString, cloud } = action;
+		if (!lyricString || !lyricString.length) return { error: { message: 'Must include lyrics to get a cloud' } };
+		const cloudSettingsForFlight = yield select(getCloudSettingsForFlight);
+		const userId = yield select(getUserMongoId);
+		cloud = {
+			...cloud,
+			settings: cloudSettingsForFlight,
+			lyricString,
+			userId,
+		};
+		const { data, error } = yield call(apiGenerateCloud, cloud);
+		if (error) {
+			console.error('Something went wrong in generateCloud', error);
+			return { error };
+		} else {
+			const { rapCloud } = data;
+			return { finishedCloud: rapCloud };
+		}
+	} catch (err) {
+		console.error('Something went wrong', err);
+		return { error: err };
+	}
+}
 
 const apiDeleteCloud = async (cloud) => {
 	try {
@@ -67,60 +90,6 @@ export function* deleteCloud(action) {
 	} catch (err) {
 		console.log('Something went wrong', err);
 		yield put({ type: DELETE_CLOUD.failure, err });
-		return { error: err };
-	}
-}
-
-const apiSaveCloud = async (cloud) => {
-	try {
-		const cloudData = await API.graphql(graphqlOperation(createRapCloud, { input: cloud }));
-		return cloudData.data.createRapCloud;
-	} catch (err) {
-		console.error("Couldn't save the cloud", { cloud, err });
-	}
-};
-
-const s3SaveCloud = async (encodedCloud) => {
-	try {
-		const blob = await fetch(`data:image/png;base64, ${encodedCloud}`).then((res) => res.blob());
-		const { key } = await Storage.put(`${uuid()}.png`, blob, {
-			contentType: 'image/png',
-			level: 'public', //TO-DO: Get private/protected levels to work.
-			// ...the fact that it doesn't work with those levels is likely bc of this:
-			// https://github.com/JordanTreDaniel/rapCloudsReact/pull/17/commits/cdf81390aba5e9e566de70692177979709f43f97
-		});
-		const viewingUrl = await Storage.get(key);
-		return { key, viewingUrl };
-	} catch (error) {
-		console.error("Couldn't save the cloud to S3", { error });
-		return { error };
-	}
-};
-
-export function* generateCloud(action) {
-	try {
-		let { lyricString, cloud } = action;
-		if (!lyricString || !lyricString.length) return { error: { message: 'Must include lyrics to get a cloud' } };
-		const cloudSettingsForFlight = yield select(getCloudSettingsForFlight);
-		const awsUserEmail = yield call(getAwsUserEmail);
-		cloud = {
-			...cloud,
-			userEmail: awsUserEmail,
-			settings: cloudSettingsForFlight,
-		};
-		const { data, error } = yield call(apiGenerateCloud, lyricString, cloudSettingsForFlight);
-		if (error) {
-			console.log('Something went wrong in generateCloud', error);
-			return { error };
-		} else {
-			const { encodedCloud } = data;
-			const { key, viewingUrl } = yield call(s3SaveCloud, encodedCloud);
-			cloud = { ...cloud, filePath: key, viewingUrl };
-			cloud = yield call(apiSaveCloud, cloud);
-			return { finishedCloud: cloud };
-		}
-	} catch (err) {
-		console.log('Something went wrong', err);
 		return { error: err };
 	}
 }

@@ -18,21 +18,24 @@ export const getAwsUserEmail = async () => {
 	}
 };
 
-export const downloadCloudFromKey = async (key, fileName) => {
-	const data = await Storage.get(key, { download: true });
-	const url = URL.createObjectURL(data.Body);
+export const downloadCloudFromUrl = async (url, fileName) => {
+	const blob = await fetch(url)
+		.then((res) => res.blob())
+		.catch((err) => console.log("Couldn't download RapCloud", err));
+	const downloadableUrl = URL.createObjectURL(blob);
 	const a = document.createElement('a');
-	a.href = url;
+	a.href = downloadableUrl;
 	a.download = fileName;
+	document.body.appendChild(a);
 	const clickHandler = () => {
 		setTimeout(() => {
-			URL.revokeObjectURL(url);
+			URL.revokeObjectURL(downloadableUrl);
 			a.removeEventListener('click', clickHandler);
+			a.parentNode.removeChild(a);
 		}, 150);
 	};
 	a.addEventListener('click', clickHandler, false);
 	a.click();
-	return a;
 };
 
 const awsSignIn = async (username, password = 'Aws20202020') => {
