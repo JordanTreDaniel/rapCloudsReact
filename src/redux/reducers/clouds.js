@@ -125,14 +125,13 @@ const addMasks = (state, action) => {
 	const { masks } = action;
 	return {
 		...state,
-		masksById:
-			masks && masks.length
-				? masks.reduce((masksById, mask) => {
-						const { id } = mask;
-						masksById[id] = mask;
-						return masksById;
-					}, {})
-				: state.masksById,
+		masksById: masks
+			? masks.reduce((masksById, mask) => {
+					const { id } = mask;
+					masksById[id] = mask;
+					return masksById;
+				}, {})
+			: state.masksById,
 		masksLoading: false,
 	};
 };
