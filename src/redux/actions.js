@@ -61,7 +61,7 @@ export const genArtistCloud = (artistId) => {
 };
 
 export const genSongCloud = (songId, songLyrics) => {
-	const normalizedLyrics = normalizeLyrics(songLyrics);
+	const normalizedLyrics = normalizeLyrics(songLyrics); //TO-DO: Move this to another place
 	return { type: GEN_SONG_CLOUD.start, lyricString: normalizedLyrics, songId, forceFetch: true };
 };
 

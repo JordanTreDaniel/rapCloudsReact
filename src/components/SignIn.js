@@ -5,7 +5,7 @@ import { makeStyles, Button, Grid, IconButton, Typography, Avatar } from '@mater
 import ArrowIcon from '@material-ui/icons/ArrowForward';
 // import "./SignIn.css"; //Don't think we need this
 import { setUser, addSongs, updateUser } from '../redux/actions';
-import { classNames, awsSignInOrSignUp } from '../utils';
+import { classNames } from '../utils';
 import paths from '../paths';
 
 const API_URL =
@@ -138,7 +138,6 @@ const SignIn = (props) => {
 			socket.on('genius', async (user) => {
 				popup.close();
 				props.setUser(user);
-				await awsSignInOrSignUp(user);
 				props.history.push(paths.search);
 			});
 		}

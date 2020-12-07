@@ -211,6 +211,13 @@ export const getMasks = createSelector(getMasksById, (masksById) => {
 	});
 	return [ ...customMasks, ...stockMasks ];
 });
+
+export const getMaskFromId = createSelector(
+	getMasksById,
+	(_, maskId) => maskId,
+	(masksById, maskId) => masksById[maskId],
+);
+
 export const getCurrentMask = createSelector(
 	getMasksById,
 	getCloudSettings,

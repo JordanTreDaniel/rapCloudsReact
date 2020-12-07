@@ -1,80 +1,21 @@
-import { Auth, Storage } from 'aws-amplify';
-import { store } from './redux/store';
-import { UPDATE_USER } from './redux/actionTypes';
-
-export const getAwsUserEmail = async () => {
-	try {
-		const user = await Auth.currentAuthenticatedUser();
-		const { attributes } = user;
-		const { email } = attributes;
-		return email;
-	} catch (error) {
-		console.error('Failed to get current userId', error);
-		try {
-			await awsSignInOrSignUp();
-		} catch (error2) {
-			console.error('Tried to sign in after failing to get AWS user. Failed at that too.', error2);
-		}
-	}
-};
-
-export const downloadCloudFromKey = async (key, fileName) => {
-	const data = await Storage.get(key, { download: true });
-	const url = URL.createObjectURL(data.Body);
+export const downloadCloudFromUrl = async (url, fileName) => {
+	const blob = await fetch(url)
+		.then((res) => res.blob())
+		.catch((err) => console.log("Couldn't download RapCloud", err));
+	const downloadableUrl = URL.createObjectURL(blob);
 	const a = document.createElement('a');
-	a.href = url;
+	a.href = downloadableUrl;
 	a.download = fileName;
+	document.body.appendChild(a);
 	const clickHandler = () => {
 		setTimeout(() => {
-			URL.revokeObjectURL(url);
+			URL.revokeObjectURL(downloadableUrl);
 			a.removeEventListener('click', clickHandler);
+			a.parentNode.removeChild(a);
 		}, 150);
 	};
 	a.addEventListener('click', clickHandler, false);
 	a.click();
-	return a;
-};
-
-const awsSignIn = async (username, password = 'Aws20202020') => {
-	try {
-		const awsUser = await Auth.signIn(username, password);
-		return awsUser;
-	} catch (error) {
-		const { code } = error;
-		console.log('error signing in', error);
-		if (code === 'UserNotFoundException') {
-			awsSignUp(username);
-		}
-	}
-};
-
-const awsSignUp = async (username, password = 'Aws20202020') => {
-	try {
-		const awsSignUpResponse = await Auth.signUp({
-			username,
-			password,
-			attributes: {
-				email: username, // optional
-			},
-		});
-		return awsSignUpResponse;
-	} catch (error) {
-		console.log('error signing up:', error);
-	}
-};
-
-export const awsSignInOrSignUp = async () => {
-	const { user } = store.getState().userInfo;
-	const { email = 'noUserEmailFound@rapclouds.com' } = user;
-	let awsAuthInfo = {};
-	if (user.awsAuthInfo) {
-		awsAuthInfo = await awsSignIn(email);
-	} else {
-		const awsSignUpResponse = await awsSignUp(email);
-		awsAuthInfo = awsSignUpResponse.user;
-	}
-	store.dispatch({ type: UPDATE_USER.start, userUpdates: { awsAuthInfo } });
-	return awsAuthInfo;
 };
 
 export const classNames = (...classes) => {

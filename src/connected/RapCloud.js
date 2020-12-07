@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Pagination from '@material-ui/lab/Pagination';
 import RapCloudSettings from './RapCloudSettings';
 import LoadingBar from '../components/LoadingBar';
-import { classNames, imageInNewTab, downloadCloudFromKey } from '../utils';
+import { classNames, imageInNewTab, downloadCloudFromUrl } from '../utils';
 import SettingsIcon from '@material-ui/icons/Settings';
 import DownloadIcon from '@material-ui/icons/CloudDownload';
 import NewTabIcon from '@material-ui/icons/AddToPhotos';
@@ -122,7 +122,8 @@ const RapCloud = (props) => {
 		deleteCloud,
 	} = props;
 	const cloud = clouds[currentCloudIdx];
-	const { viewingUrl, id: cloudId, filePath } = cloud || {};
+	const { info, id: cloudId } = cloud || {};
+	const { url } = info || {};
 	useEffect(
 		() => {
 			setCurrentCloudIdx(clouds.length - 1);
@@ -162,7 +163,7 @@ const RapCloud = (props) => {
 				<Tooltip placement="bottom" title="Download Your RapCloud!">
 					<IconButton
 						id="downloadBtn"
-						onClick={() => downloadCloudFromKey(filePath, `${cloudName} RapCloud.png`)}
+						onClick={() => downloadCloudFromUrl(url, `${cloudName} RapCloud.png`)}
 						className={classNames(classes.cloudAction, classes.attnGrabber)}
 					>
 						<DownloadIcon />
@@ -173,7 +174,7 @@ const RapCloud = (props) => {
 						id="openInNewTab"
 						size="medium"
 						className={classNames(classes.cloudAction, classes.attnGrabber)}
-						onClick={() => imageInNewTab(viewingUrl)}
+						onClick={() => imageInNewTab(url)}
 					>
 						<NewTabIcon />
 					</IconButton>
@@ -218,12 +219,12 @@ const RapCloud = (props) => {
 	};
 	return (
 		<Grid>
-			{viewingUrl && renderCloudActions()}
+			{cloud && renderCloudActions()}
 			{renderPagination(true)}
 			<Grid className={classNames(classes.wordCloudWrapper)}>
 				<LoadingBar loading={isLoading} />
 				<img
-					src={viewingUrl || `${process.env.PUBLIC_URL}/rapClouds.png`}
+					src={url || `${process.env.PUBLIC_URL}/rapClouds.png`}
 					alt={'Rap Cloud'}
 					className={classes.wordCloud}
 					onClick={() => toggleFullScreenCloud(true)}
@@ -277,7 +278,7 @@ const RapCloud = (props) => {
 							<Grid item xs={12} style={{ textAlign: 'center' }}>
 								<img
 									item
-									src={viewingUrl || `${process.env.PUBLIC_URL}/rapClouds.png`}
+									src={url || `${process.env.PUBLIC_URL}/rapClouds.png`}
 									alt={cloudName}
 									style={{ width: '90%' }}
 								/>
