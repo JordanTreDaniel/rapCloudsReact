@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { makeStyles, Button, Grid, IconButton, Typography, Avatar } from '@material-ui/core';
 import ArrowIcon from '@material-ui/icons/ArrowForward';
 // import "./SignIn.css"; //Don't think we need this
-import { setUser, addSongs, updateUser } from '../redux/actions';
+import { setUser, addSongs, updateUser, fetchClouds } from '../redux/actions';
 import { classNames } from '../utils';
 import paths from '../paths';
 
@@ -138,6 +138,7 @@ const SignIn = (props) => {
 			socket.on('genius', async (user) => {
 				popup.close();
 				props.setUser(user);
+				props.fetchClouds();
 				props.history.push(paths.search);
 			});
 		}
@@ -398,4 +399,4 @@ const SignIn = (props) => {
 	);
 };
 
-export default connect(null, { setUser, addSongs, updateUser })(SignIn);
+export default connect(null, { setUser, fetchClouds, addSongs, updateUser })(SignIn);
