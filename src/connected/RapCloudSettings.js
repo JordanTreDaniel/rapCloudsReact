@@ -616,7 +616,7 @@ const RapCloudSettings = (props) => {
 												)}
 												elevation={chosen ? 20 : 0}
 												src={
-													(mask && mask.info && mask.info.thumbnail_url) ||
+													(mask && mask.info && mask.info.url) ||
 													`${process.env.PUBLIC_URL}/rapClouds.png`
 												}
 												alt={`${mask && mask.info && mask.info.original_filename} Mask`}
