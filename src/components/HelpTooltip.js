@@ -11,9 +11,9 @@ const useStyles = makeStyles({
 
 const HelpTooltip = (props) => {
 	const classes = useStyles();
-	const { children, titles = [ 'No help provided' ], placement = 'right-end' } = props;
+	const { children, titles = [ 'No help provided' ], placement = 'right-end', ...rest } = props;
 	return (
-		<Grid item container direction="row" justify="flex-start" wrap="nowrap" alignItems="center">
+		<Grid item container direction="row" justify="flex-start" wrap="nowrap" alignItems="center" {...rest}>
 			{children}
 			<Tooltip
 				title={<List>{titles.map((title, idx) => <ListItem key={idx}>{title}</ListItem>)}</List>}
