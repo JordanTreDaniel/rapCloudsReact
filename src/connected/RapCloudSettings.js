@@ -618,8 +618,11 @@ const RapCloudSettings = (props) => {
 													chosen && classes.blueBorder,
 												)}
 												elevation={chosen ? 20 : 0}
-												src={mask.info.thumbnail_url}
-												alt={`${mask.info.original_filename} Mask`}
+												src={
+													(mask && mask.info && mask.info.thumbnail_url) ||
+													`${process.env.PUBLIC_URL}/rapClouds.png`
+												}
+												alt={`${mask && mask.info && mask.info.original_filename} Mask`}
 												onClick={() => updateCloudSettings('maskId', chosen ? null : mask.id)}
 											/>
 										</Box>
