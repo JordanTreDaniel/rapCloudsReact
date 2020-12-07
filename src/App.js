@@ -49,30 +49,33 @@ const useStyles = makeStyles((theme) => {
 const App = (props) => {
 	const { user, appIsHydrated, location, addCustomMask, mongoUserId } = props;
 	const classes = useStyles();
-	useEffect(() => {
-		initializeReactGA();
-		//Creating the uploadWidget here for performance. Fast for UX, & not creating extra widgets on re-renders.
-		window.uploadWidget = window.cloudinary.createUploadWidget(
-			{
-				cloudName: 'rap-clouds',
-				uploadPreset: 'default_unsigned',
-			},
-			(error, result) => {
-				if (!error && result && result.event === 'success') {
-					console.log('Done! Here is the image info: ', result.info);
-					const mask = {
-						userId: mongoUserId,
-						cloudinaryInfo: result.info,
-					};
-					addCustomMask(mask);
-					// toggleUploadDialog(false);
-				}
-			},
-		);
-		window.openWidget = async () => {
-			window.uploadWidget.open();
-		};
-	}, []);
+	useEffect(
+		() => {
+			initializeReactGA();
+			//Creating the uploadWidget here for performance. Fast for UX, & not creating extra widgets on re-renders.
+			window.uploadWidget = window.cloudinary.createUploadWidget(
+				{
+					cloudName: 'rap-clouds',
+					uploadPreset: 'default_unsigned',
+				},
+				(error, result) => {
+					if (!error && result && result.event === 'success') {
+						console.log('Done! Here is the image info: ', result.info);
+						const mask = {
+							userId: mongoUserId,
+							cloudinaryInfo: result.info,
+						};
+						addCustomMask(mask);
+						// toggleUploadDialog(false);
+					}
+				},
+			);
+			window.openWidget = async () => {
+				window.uploadWidget.open();
+			};
+		},
+		[ mongoUserId, addCustomMask ],
+	);
 	if (!user && appIsHydrated && ![ paths.signIn, paths.about, paths.root ].includes(location.pathname)) {
 		console.log('APP rendered w/ no user after hydration, redirecting.');
 		return <Redirect to={paths.signIn} />;

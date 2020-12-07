@@ -885,7 +885,7 @@ const RapCloudSettings = (props) => {
 									item="true"
 									className={classNames(classes.fullScreenMask)}
 									src={currentMask.info.url}
-									alt={`Mask Image ${currentMask.info.original_filename}`}
+									alt={`${currentMask.info.original_filename} Mask`}
 								/>
 							</DialogContent>
 							<DialogActions>
