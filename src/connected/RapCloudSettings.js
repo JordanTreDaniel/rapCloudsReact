@@ -483,6 +483,7 @@ const RapCloudSettings = (props) => {
 										`A mask is a picture that you can use to shape and/or color your RapCloud!`,
 										`Click the blue, "Add Mask" (+) button to learn more about masks.`,
 									]}
+									onClick={() => toggleUploadDialog(true)}
 								>
 									Mask
 								</HelpTooltip>
@@ -520,7 +521,7 @@ const RapCloudSettings = (props) => {
 									justify="center"
 									alignContent="center"
 									className={classNames(classes.maskThumbnail)}
-									onClick={() => toggleUploadDialog(true)}
+									onClick={window.openWidget}
 								>
 									<Tooltip title="Upload Your Own Mask" placement="top-start">
 										<IconButton item="true" className={classes.addMaskBtn}>
@@ -538,7 +539,6 @@ const RapCloudSettings = (props) => {
 													A mask is a picture that you can use to shape and/or color your
 													RapCloud!
 												</Typography>
-												<Button onClick={window.openWidget}>Upload (From Anywhere)</Button>
 												<Typography
 													color="primary"
 													variant="h5"
@@ -616,7 +616,7 @@ const RapCloudSettings = (props) => {
 												)}
 												elevation={chosen ? 20 : 0}
 												src={
-													(mask && mask.info && mask.info.thumbnail_url) ||
+													(mask && mask.info && mask.info.url) ||
 													`${process.env.PUBLIC_URL}/rapClouds.png`
 												}
 												alt={`${mask && mask.info && mask.info.original_filename} Mask`}

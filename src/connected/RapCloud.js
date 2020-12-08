@@ -6,7 +6,7 @@ import Pagination from '@material-ui/lab/Pagination';
 import RapCloudSettings from './RapCloudSettings';
 import LoadingBar from '../components/LoadingBar';
 import { classNames, imageInNewTab, downloadCloudFromUrl } from '../utils';
-import SettingsIcon from '@material-ui/icons/Settings';
+import AddIcon from '@material-ui/icons/AddRounded';
 import DownloadIcon from '@material-ui/icons/CloudDownload';
 import NewTabIcon from '@material-ui/icons/AddToPhotos';
 import XIcon from '@material-ui/icons/Cancel';
@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme) => {
 				},
 			},
 		},
-		settingsBtn: {
+		addCloudBtn: {
 			position: 'absolute',
 			width: '2.51em',
 			height: '2.51em',
@@ -246,13 +246,13 @@ const RapCloud = (props) => {
 					</React.Fragment>
 				) : null}
 
-				<Tooltip placement="bottom-start" title="Customize this Rap Cloud!">
+				<Tooltip placement="bottom-start" title="Creat a Rap Cloud">
 					<IconButton
 						onClick={() => toggleSettings(true)}
-						className={classNames(classes.settingsBtn, classes.attnGrabber)}
+						className={classNames(classes.addCloudBtn, classes.attnGrabber)}
 						style={{ top, bottom, left, right }}
 					>
-						<SettingsIcon />
+						<AddIcon />
 					</IconButton>
 				</Tooltip>
 			</Grid>

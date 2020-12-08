@@ -1,7 +1,14 @@
-import { call, select, takeLatest, put, takeEvery, cancel } from 'redux-saga/effects';
+import { call, select, takeLatest, put, takeEvery, cancel, all } from 'redux-saga/effects';
 import axios from 'axios';
-import { getCloudSettingsForFlight, getUserMongoId, getCloudFromId, getMaskFromId } from '../selectors';
-import { FETCH_MASKS, ADD_CUSTOM_MASK, DELETE_MASK, FETCH_CLOUDS, DELETE_CLOUD } from '../actionTypes';
+import { getCloudSettingsForFlight, getUserMongoId, getCloudFromId, getMaskFromId, getSongFromId } from '../selectors';
+import {
+	FETCH_MASKS,
+	ADD_CUSTOM_MASK,
+	DELETE_MASK,
+	FETCH_CLOUDS,
+	DELETE_CLOUD,
+	FETCH_SONG_DETAILS,
+} from '../actionTypes';
 const REACT_APP_SERVER_ROOT =
 	process.env.NODE_ENV === 'development' ? 'http://localhost:3333' : 'https://rap-clouds-server.herokuapp.com';
 
@@ -277,6 +284,19 @@ export function* fetchClouds(action) {
 			console.log('Something went wrong in fetchClouds', error);
 			return { error };
 		} else {
+			const neededSongIds = [];
+			for (let cloud of clouds) {
+				for (let songId of cloud.songIds) {
+					const matchingSong = yield select(getSongFromId, songId);
+					if (!matchingSong && !neededSongIds.includes(songId)) {
+						neededSongIds.push(songId);
+					}
+				}
+			}
+			yield all(
+				neededSongIds.map((songId) => put({ type: FETCH_SONG_DETAILS.start, songId, generateCloud: false })),
+			);
+			//TO-DO: Should I also fetch associated artists?
 			yield put({ type: FETCH_CLOUDS.success, clouds });
 			return { clouds };
 		}
