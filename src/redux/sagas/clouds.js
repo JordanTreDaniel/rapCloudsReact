@@ -95,7 +95,7 @@ export function* deleteCloud(action) {
 			yield cancel();
 		}
 		const cloud = yield select(getCloudFromId, cloudId);
-		const { public_id } = cloud.info;
+		const { public_id } = cloud.info || {};
 		const { error } = yield call(apiDeleteCloud, cloudId, public_id);
 		if (error) {
 			console.log('Something went wrong in deleteCloud', error);
