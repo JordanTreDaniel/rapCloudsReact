@@ -46,6 +46,7 @@ const useStyles = makeStyles((theme) => {
 		},
 	};
 });
+
 const App = (props) => {
 	const { user, appIsHydrated, location, addCustomMask, mongoUserId } = props;
 	const classes = useStyles();
@@ -56,7 +57,7 @@ const App = (props) => {
 			window.uploadWidget = window.cloudinary.createUploadWidget(
 				{
 					cloudName: 'rap-clouds',
-					uploadPreset: 'default_unsigned',
+					uploadPreset: process.env.NODE_ENV === 'development' ? 'reactMasksDev' : 'reactMasks',
 				},
 				(error, result) => {
 					if (!error && result && result.event === 'success') {
