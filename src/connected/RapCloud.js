@@ -149,17 +149,21 @@ const RapCloud = (props) => {
 					? classes.cloudActionsTop
 					: classes.cloudActionsBottom}`}
 			>
-				<Tooltip placement="bottom" title="Delete Your RapCloud!">
-					<IconButton
-						id="deleteBtn"
-						onClick={() => {
-							deleteCloud(cloudId);
-						}}
-						className={classNames(classes.cloudAction, classes.attnGrabber)}
-					>
-						<Delete />
+				{/* <Tooltip placement="bottom" title="Share on Instagram">
+					<IconButton id="shareOnIG" size="medium" className={classNames(classes.cloudAction, classes.attnGrabber)} onClick={null}>
+						<InstagramIcon />
 					</IconButton>
 				</Tooltip>
+				<Tooltip placement="bottom" title="Share on Facebook">
+					<IconButton id="shareOnFB" size="medium" className={classNames(classes.cloudAction, classes.attnGrabber)} onClick={null}>
+						<FacebookIcon />
+					</IconButton>
+				</Tooltip>
+				<Tooltip placement="bottom" title="Share on Twitter">
+					<IconButton id="shareOnTwitter" size="medium" className={classNames(classes.cloudAction, classes.attnGrabber)} onClick={null}>
+						<TwitterIcon />
+					</IconButton>
+				</Tooltip> */}
 				<Tooltip placement="bottom" title="Download Your RapCloud!">
 					<IconButton
 						id="downloadBtn"
@@ -179,21 +183,17 @@ const RapCloud = (props) => {
 						<NewTabIcon />
 					</IconButton>
 				</Tooltip>
-				{/* <Tooltip placement="bottom" title="Share on Instagram">
-					<IconButton id="shareOnIG" size="medium" className={classNames(classes.cloudAction, classes.attnGrabber)} onClick={null}>
-						<InstagramIcon />
+				<Tooltip placement="bottom" title="Delete Your RapCloud!">
+					<IconButton
+						id="deleteBtn"
+						onClick={() => {
+							deleteCloud(cloudId);
+						}}
+						className={classNames(classes.cloudAction, classes.attnGrabber)}
+					>
+						<Delete />
 					</IconButton>
 				</Tooltip>
-				<Tooltip placement="bottom" title="Share on Facebook">
-					<IconButton id="shareOnFB" size="medium" className={classNames(classes.cloudAction, classes.attnGrabber)} onClick={null}>
-						<FacebookIcon />
-					</IconButton>
-				</Tooltip>
-				<Tooltip placement="bottom" title="Share on Twitter">
-					<IconButton id="shareOnTwitter" size="medium" className={classNames(classes.cloudAction, classes.attnGrabber)} onClick={null}>
-						<TwitterIcon />
-					</IconButton>
-				</Tooltip> */}
 			</Paper>
 		);
 	};
