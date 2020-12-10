@@ -139,6 +139,7 @@ const SignIn = (props) => {
 				popup.close();
 				props.setUser(user);
 				props.fetchClouds();
+				socket.close();
 				props.history.push(paths.search);
 			});
 		}

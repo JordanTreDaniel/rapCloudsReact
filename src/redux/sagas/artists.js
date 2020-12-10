@@ -121,6 +121,6 @@ function* watchFetchArtist() {
 }
 
 function* watchGenArtistCloud() {
-	yield takeLatest(GEN_ARTIST_CLOUD.start, genArtistCloud);
+	yield takeEvery(GEN_ARTIST_CLOUD.start, genArtistCloud);
 }
 export default [ watchFetchArtist, watchGenArtistCloud ];

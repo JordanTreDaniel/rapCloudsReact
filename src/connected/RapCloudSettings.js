@@ -616,7 +616,7 @@ const RapCloudSettings = (props) => {
 												)}
 												elevation={chosen ? 20 : 0}
 												src={
-													(mask && mask.info && mask.info.url) ||
+													(mask && mask.info && mask.info.secure_url) ||
 													`${process.env.PUBLIC_URL}/rapClouds.png`
 												}
 												alt={`${mask && mask.info && mask.info.original_filename} Mask`}
@@ -671,7 +671,7 @@ const RapCloudSettings = (props) => {
 														classes.maskThumbnail,
 														classes.chosenMaskThumbnail,
 													)}
-													src={currentMask.info.url}
+													src={currentMask.info.secure_url}
 													alt={`${currentMask.info.original_filename} Mask`}
 												/>
 											</Box>
@@ -884,7 +884,7 @@ const RapCloudSettings = (props) => {
 								<img
 									item="true"
 									className={classNames(classes.fullScreenMask)}
-									src={currentMask.info.url}
+									src={currentMask.info.secure_url}
 									alt={`${currentMask.info.original_filename} Mask`}
 								/>
 							</DialogContent>

@@ -198,7 +198,7 @@ function* watchFetchSongDetails() {
 }
 
 function* watchGenSongCloud() {
-	yield takeLatest(GEN_SONG_CLOUD.start, genSongCloud);
+	yield takeEvery(GEN_SONG_CLOUD.start, genSongCloud);
 }
 
 function* watchFetchSongLyrics() {

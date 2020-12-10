@@ -123,7 +123,7 @@ const RapCloud = (props) => {
 	} = props;
 	const cloud = clouds[currentCloudIdx];
 	const { info, id: cloudId } = cloud || {};
-	const { url } = info || {};
+	const { secure_url } = info || {};
 	useEffect(
 		() => {
 			setCurrentCloudIdx(clouds.length - 1);
@@ -149,36 +149,6 @@ const RapCloud = (props) => {
 					? classes.cloudActionsTop
 					: classes.cloudActionsBottom}`}
 			>
-				<Tooltip placement="bottom" title="Delete Your RapCloud!">
-					<IconButton
-						id="deleteBtn"
-						onClick={() => {
-							deleteCloud(cloudId);
-						}}
-						className={classNames(classes.cloudAction, classes.attnGrabber)}
-					>
-						<Delete />
-					</IconButton>
-				</Tooltip>
-				<Tooltip placement="bottom" title="Download Your RapCloud!">
-					<IconButton
-						id="downloadBtn"
-						onClick={() => downloadCloudFromUrl(url, `${cloudName} RapCloud.png`)}
-						className={classNames(classes.cloudAction, classes.attnGrabber)}
-					>
-						<DownloadIcon />
-					</IconButton>
-				</Tooltip>
-				<Tooltip placement="bottom" title="Open Your RapCloud in New Tab">
-					<IconButton
-						id="openInNewTab"
-						size="medium"
-						className={classNames(classes.cloudAction, classes.attnGrabber)}
-						onClick={() => imageInNewTab(url)}
-					>
-						<NewTabIcon />
-					</IconButton>
-				</Tooltip>
 				{/* <Tooltip placement="bottom" title="Share on Instagram">
 					<IconButton id="shareOnIG" size="medium" className={classNames(classes.cloudAction, classes.attnGrabber)} onClick={null}>
 						<InstagramIcon />
@@ -194,6 +164,36 @@ const RapCloud = (props) => {
 						<TwitterIcon />
 					</IconButton>
 				</Tooltip> */}
+				<Tooltip placement="bottom" title="Download Your RapCloud!">
+					<IconButton
+						id="downloadBtn"
+						onClick={() => downloadCloudFromUrl(secure_url, `${cloudName} RapCloud.png`)}
+						className={classNames(classes.cloudAction, classes.attnGrabber)}
+					>
+						<DownloadIcon />
+					</IconButton>
+				</Tooltip>
+				<Tooltip placement="bottom" title="Open Your RapCloud in New Tab">
+					<IconButton
+						id="openInNewTab"
+						size="medium"
+						className={classNames(classes.cloudAction, classes.attnGrabber)}
+						onClick={() => imageInNewTab(secure_url)}
+					>
+						<NewTabIcon />
+					</IconButton>
+				</Tooltip>
+				<Tooltip placement="bottom" title="Delete Your RapCloud!">
+					<IconButton
+						id="deleteBtn"
+						onClick={() => {
+							deleteCloud(cloudId);
+						}}
+						className={classNames(classes.cloudAction, classes.attnGrabber)}
+					>
+						<Delete />
+					</IconButton>
+				</Tooltip>
 			</Paper>
 		);
 	};
@@ -224,7 +224,7 @@ const RapCloud = (props) => {
 			<Grid className={classNames(classes.wordCloudWrapper)}>
 				<LoadingBar loading={isLoading} />
 				<img
-					src={url || `${process.env.PUBLIC_URL}/rapClouds.png`}
+					src={secure_url || `${process.env.PUBLIC_URL}/rapClouds.png`}
 					alt={'Rap Cloud'}
 					className={classes.wordCloud}
 					onClick={() => toggleFullScreenCloud(true)}
@@ -278,7 +278,7 @@ const RapCloud = (props) => {
 							<Grid item xs={12} style={{ textAlign: 'center' }}>
 								<img
 									item
-									src={url || `${process.env.PUBLIC_URL}/rapClouds.png`}
+									src={secure_url || `${process.env.PUBLIC_URL}/rapClouds.png`}
 									alt={cloudName}
 									style={{ width: '90%' }}
 								/>
