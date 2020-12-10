@@ -9,13 +9,27 @@ import {
 	DELETE_CLOUD,
 	FETCH_SONG_DETAILS,
 } from '../actionTypes';
+import io from 'socket.io-client';
 const REACT_APP_SERVER_ROOT =
 	process.env.NODE_ENV === 'development' ? 'http://localhost:3333' : 'https://rap-clouds-server.herokuapp.com';
 
-const apiGenerateCloud = async (cloud) => {
+const getConnectedSocket = () => {
+	return new Promise((resolve, reject) => {
+		const API_URL =
+			process.env.NODE_ENV === 'development'
+				? 'http://localhost:3333'
+				: 'https://rap-clouds-server.herokuapp.com';
+		const socket = io(API_URL);
+		socket.on('connect', () => {
+			resolve(socket);
+		});
+	});
+};
+
+const apiGenerateCloud = async (cloud, socketId) => {
 	const res = await axios({
 		method: 'post',
-		url: `${REACT_APP_SERVER_ROOT}/generateCloud`,
+		url: `${REACT_APP_SERVER_ROOT}/triggerCloudGeneration/${socketId}`,
 		headers: {
 			'Content-Type': 'application/json',
 			// 'Accept-Encoding': 'gzip',
@@ -27,9 +41,9 @@ const apiGenerateCloud = async (cloud) => {
 	});
 
 	const { status, statusText, data } = res;
-
+	const { cloud: newCloud, message } = data;
 	if (status === 200) {
-		return { data: data.data, status, statusText };
+		return { cloud: newCloud, message, status, statusText };
 	}
 
 	return { error: { status, statusText } };
@@ -41,19 +55,40 @@ export function* generateCloud(action) {
 		if (!lyricString || !lyricString.length) return { error: { message: 'Must include lyrics to get a cloud' } };
 		const cloudSettingsForFlight = yield select(getCloudSettingsForFlight);
 		const userId = yield select(getUserMongoId);
+		let finishedCloud;
 		cloud = {
 			...cloud,
 			settings: cloudSettingsForFlight,
 			lyricString,
 			userId,
 		};
-		const { data, error } = yield call(apiGenerateCloud, cloud);
+
+		const socket = yield call(getConnectedSocket);
+		socket.on('RapCloudFinished', (_finishedCloud) => {
+			finishedCloud = _finishedCloud;
+			socket.close();
+		});
+		const { error, ...rest } = yield call(apiGenerateCloud, cloud, socket.id);
+		// const {cloud, message} = rest;
+		//TO-DO: Do something with the cloud generation confirmation.
 		if (error) {
 			console.error('Something went wrong in generateCloud', error);
 			return { error };
 		} else {
-			const { rapCloud } = data;
-			return { finishedCloud: rapCloud };
+			const waitForCloud = () => {
+				return new Promise((resolve, reject) => {
+					const intervalId = setInterval(() => {
+						console.log('Checking for cloud');
+						if (finishedCloud) {
+							console.log('got the cloud in the interval');
+							clearInterval(intervalId);
+							resolve(finishedCloud);
+						}
+					}, 1000);
+				});
+			};
+			finishedCloud = yield call(waitForCloud);
+			return { finishedCloud };
 		}
 	} catch (err) {
 		console.error('Something went wrong', err);
