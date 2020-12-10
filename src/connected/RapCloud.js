@@ -123,7 +123,7 @@ const RapCloud = (props) => {
 	} = props;
 	const cloud = clouds[currentCloudIdx];
 	const { info, id: cloudId } = cloud || {};
-	const { url } = info || {};
+	const { secure_url } = info || {};
 	useEffect(
 		() => {
 			setCurrentCloudIdx(clouds.length - 1);
@@ -167,7 +167,7 @@ const RapCloud = (props) => {
 				<Tooltip placement="bottom" title="Download Your RapCloud!">
 					<IconButton
 						id="downloadBtn"
-						onClick={() => downloadCloudFromUrl(url, `${cloudName} RapCloud.png`)}
+						onClick={() => downloadCloudFromUrl(secure_url, `${cloudName} RapCloud.png`)}
 						className={classNames(classes.cloudAction, classes.attnGrabber)}
 					>
 						<DownloadIcon />
@@ -178,7 +178,7 @@ const RapCloud = (props) => {
 						id="openInNewTab"
 						size="medium"
 						className={classNames(classes.cloudAction, classes.attnGrabber)}
-						onClick={() => imageInNewTab(url)}
+						onClick={() => imageInNewTab(secure_url)}
 					>
 						<NewTabIcon />
 					</IconButton>
@@ -224,7 +224,7 @@ const RapCloud = (props) => {
 			<Grid className={classNames(classes.wordCloudWrapper)}>
 				<LoadingBar loading={isLoading} />
 				<img
-					src={url || `${process.env.PUBLIC_URL}/rapClouds.png`}
+					src={secure_url || `${process.env.PUBLIC_URL}/rapClouds.png`}
 					alt={'Rap Cloud'}
 					className={classes.wordCloud}
 					onClick={() => toggleFullScreenCloud(true)}
@@ -278,7 +278,7 @@ const RapCloud = (props) => {
 							<Grid item xs={12} style={{ textAlign: 'center' }}>
 								<img
 									item
-									src={url || `${process.env.PUBLIC_URL}/rapClouds.png`}
+									src={secure_url || `${process.env.PUBLIC_URL}/rapClouds.png`}
 									alt={cloudName}
 									style={{ width: '90%' }}
 								/>
