@@ -9,6 +9,7 @@ import {
 	GEN_SONG_CLOUD,
 	GEN_ARTIST_CLOUD,
 	DELETE_CLOUD,
+	FETCH_CLOUDS,
 } from '../actionTypes';
 
 export const initialState = {
@@ -65,6 +66,17 @@ const addCloud = (state, action) => {
 	}
 	const cloudsById = state.byId;
 	return { ...state, byId: { ...cloudsById, [id]: finishedCloud }, cloudsLoading: false };
+};
+
+const replaceClouds = (state, action) => {
+	const { clouds } = action;
+	if (!clouds) return state;
+	const cloudsById = clouds.reduce((cloudsById, cloud) => {
+		const { id } = cloud;
+		cloudsById[id] = cloud;
+		return cloudsById;
+	}, {});
+	return { ...state, byId: cloudsById, cloudsLoading: false };
 };
 
 const removeCloud = (state, action) => {
@@ -168,6 +180,7 @@ handlers[RESET_CLOUD_DEFAULTS] = resetCloudDefaults;
 handlers[GEN_SONG_CLOUD.success] = addCloud;
 handlers[GEN_ARTIST_CLOUD.success] = addCloud;
 handlers[DELETE_CLOUD.success] = removeCloud;
+handlers[FETCH_CLOUDS.success] = replaceClouds;
 
 export default (state = initialState, action) => {
 	const handle = handlers[action.type];
