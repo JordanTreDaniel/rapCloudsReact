@@ -6,6 +6,7 @@ import {
 	FETCH_SONG_LYRICS,
 	SIGN_OUT,
 	GEN_SONG_CLOUD,
+	ADD_ARTISTS,
 } from '../actionTypes';
 import { generateCloud } from './clouds';
 import { getAccessToken, getSearchTerm, getSongFromId, getCloudsForSong } from '../selectors';
@@ -31,9 +32,9 @@ const apiSearchSongs = async (searchTerm, accessToken) => {
 		},
 	});
 	const { status, statusText, data } = res;
-	const { songs } = data;
+	const { songs, artists } = data;
 	if (status === 200) {
-		return { songs };
+		return { songs, artists };
 	}
 
 	return { error: { status, statusText } };
@@ -47,12 +48,13 @@ export function* searchSongs(action) {
 		if (!accessToken) yield put({ type: SIGN_OUT });
 		yield cancel();
 	}
-	const { songs, error } = yield call(apiSearchSongs, searchTerm, accessToken);
+	const { songs, artists, error } = yield call(apiSearchSongs, searchTerm, accessToken);
 	if (error) {
 		console.log('Something went wrong', error);
 		yield put({ type: SEARCH_SONGS.failure });
 	} else {
 		yield put({ type: ADD_SONGS, songs });
+		yield put({ type: ADD_ARTISTS, artists });
 	}
 }
 
