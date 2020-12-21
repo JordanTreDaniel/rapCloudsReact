@@ -171,6 +171,32 @@ export const getCurrentArtist = createSelector(getCurrentArtistId, getArtistsByI
 	const currentArtist = artistsById[artistId];
 	return currentArtist;
 });
+export const getArtistsList = createSelector(getArtistsById, (artistsById) => {
+	return Object.values(artistsById);
+});
+export const getSearchedArtistList = createSelector(
+	getArtistsList,
+	getNormedSearchTerm,
+	(artists, normalizedSearchTerm) => {
+		if (!normalizedSearchTerm.length) return artists;
+		const matchingArtists = artists.reduce((matchingArtists, artist) => {
+			const normalizedArtistName = replaceDiacritics(artist.name.toLowerCase());
+			const searchTermItems = normalizedSearchTerm.split(' ');
+			let isMatch = false;
+			let searchRank = 0;
+			searchTermItems.forEach((word) => {
+				const artistMatch = normalizedArtistName.match(word);
+				if (artistMatch) isMatch = true;
+				searchRank += artistMatch ? artistMatch[0].length : 0;
+			});
+			if (!isMatch) return matchingArtists;
+			const rankedArtist = { ...artist, searchRank };
+			matchingArtists.push(rankedArtist);
+			return matchingArtists;
+		}, []);
+		return sortBy(matchingArtists, (artist) => artist.searchRank).reverse();
+	},
+);
 
 //Clouds
 /********************************************************************* */
