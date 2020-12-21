@@ -11,6 +11,10 @@ import {
 	IconButton,
 	withWidth,
 	Input,
+	List,
+	ListItem,
+	ListItemAvatar,
+	ListItemText,
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import MinusIcon from '@material-ui/icons/Remove';
@@ -54,12 +58,19 @@ const useStyles = makeStyles((theme) => {
 				backgroundColor: theme.palette.secondary.main,
 			},
 		},
+		artistAvatar: {
+			width: '3.3em',
+			height: '3.3em',
+		},
+		artistName: {
+			fontSize: '2.4em',
+		},
 	};
 });
 
 const GameMaker = (props) => {
 	const classes = useStyles();
-	const { setSongSearchTerm, searchTerm, searchSongs } = props;
+	const { setSongSearchTerm, searchTerm, searchSongs, artists } = props;
 	const search = () => {
 		searchSongs(searchTerm);
 	};
@@ -72,7 +83,6 @@ const GameMaker = (props) => {
 					onChange={(e) => {
 						const { value: newSearchTerm } = e.target;
 						setSongSearchTerm(newSearchTerm);
-						console.log({ newSearchTerm });
 						newSearchTerm.length && search(newSearchTerm);
 					}}
 					value={searchTerm}
@@ -94,6 +104,24 @@ const GameMaker = (props) => {
 					}
 				/>
 			</div>
+			<List>
+				{artists.map((artist) => (
+					<ListItem>
+						<ListItemAvatar>
+							<Avatar
+								src={artist.image_url}
+								alt={artist.name}
+								className={classNames(classes.artistAvatar)}
+							/>
+						</ListItemAvatar>
+						<ListItemText
+							primary={artist.name}
+							primaryTypographyProps={{ className: classes.artistName }}
+							inset
+						/>
+					</ListItem>
+				))}
+			</List>
 		</Grid>
 	);
 };
@@ -101,7 +129,7 @@ const GameMaker = (props) => {
 const mapState = (state) => ({
 	searchTerm: selectors.getSearchTerm(state),
 	songSearchLoading: selectors.isSongSearchLoading(state),
-	matchedArtists: selectors.getSearchedArtistList(state),
+	artists: selectors.getSearchedArtistList(state),
 });
 
 export default connect(mapState, { searchSongs, setSongSearchTerm })(withWidth()(GameMaker));
