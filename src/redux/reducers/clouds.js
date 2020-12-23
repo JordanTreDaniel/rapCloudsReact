@@ -10,6 +10,7 @@ import {
 	GEN_ARTIST_CLOUD,
 	DELETE_CLOUD,
 	FETCH_CLOUDS,
+	ADD_CLOUD,
 } from '../actionTypes';
 
 export const initialState = {
@@ -179,6 +180,7 @@ handlers[DELETE_MASK.success] = deleteMask;
 handlers[RESET_CLOUD_DEFAULTS] = resetCloudDefaults;
 handlers[GEN_SONG_CLOUD.success] = addCloud;
 handlers[GEN_ARTIST_CLOUD.success] = addCloud;
+handlers[ADD_CLOUD] = addCloud;
 handlers[DELETE_CLOUD.success] = removeCloud;
 handlers[FETCH_CLOUDS.success] = replaceClouds;
 
