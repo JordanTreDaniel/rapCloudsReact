@@ -17,22 +17,15 @@ const normalizeLyrics = (songLyrics) => {
 		const whiteSpaceRegEx = /\s+/g;
 		const rawSectionWords = section.split(whiteSpaceRegEx); // Markers undetectable after this point.
 
-		const filteredSectionWords = rawSectionWords.filter((word) => {
-			// const unwantedWords = [ 'and', 'but', 'the', 'to', 'if', 'it', 'of', 'at', '' ];
-			const unwantedWords = []; //Going to let the library handle getting rid of words
-			if (unwantedWords.includes(word)) return false;
-			return true;
-		});
-
 		//multiply words to influence weight
 		if (isChorus) {
 			for (let i = 1; i < multiplier; i++) {
-				_rawWords.push(...filteredSectionWords);
+				_rawWords.push(...rawSectionWords);
 			}
 			return _rawWords;
 		}
 
-		return [ ..._rawWords, ...filteredSectionWords ];
+		return [ ..._rawWords, ...rawSectionWords ];
 	}, []);
 
 	if (rawWords) {
