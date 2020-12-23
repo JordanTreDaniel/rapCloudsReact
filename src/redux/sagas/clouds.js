@@ -55,7 +55,6 @@ export function* generateCloud(action) {
 		if (!lyricString || !lyricString.length) return { error: { message: 'Must include lyrics to get a cloud' } };
 		const cloudSettingsForFlight = yield select(getCloudSettingsForFlight);
 		const userId = yield select(getUserMongoId);
-		let finishedCloud;
 		cloud = {
 			...cloud,
 			settings: cloudSettingsForFlight,
@@ -64,10 +63,23 @@ export function* generateCloud(action) {
 		};
 
 		const socket = yield call(getConnectedSocket);
-		socket.on('RapCloudFinished', (_finishedCloud) => {
-			finishedCloud = _finishedCloud;
-			socket.close();
-		});
+		const waitForCloud = () => {
+			return new Promise((resolve, reject) => {
+				try {
+					socket.on('RapCloudFinished', (finishedCloud) => {
+						resolve({ finishedCloud });
+						socket.close();
+					});
+					socket.on('RapCloudError', (newCloudError) => {
+						reject({ newCloudError });
+						socket.close();
+					});
+				} catch (err) {
+					reject({ newCloudError: error });
+				}
+			});
+		};
+
 		const { error, ...rest } = yield call(apiGenerateCloud, cloud, socket.id);
 		// const {cloud, message} = rest;
 		//TO-DO: Do something with the cloud generation confirmation.
@@ -75,20 +87,11 @@ export function* generateCloud(action) {
 			console.error('Something went wrong in generateCloud', error);
 			return { error };
 		} else {
-			const waitForCloud = () => {
-				return new Promise((resolve, reject) => {
-					const intervalId = setInterval(() => {
-						console.log('Checking for cloud');
-						if (finishedCloud) {
-							console.log('got the cloud in the interval');
-							clearInterval(intervalId);
-							resolve(finishedCloud);
-						}
-					}, 1000);
-				});
-			};
-			finishedCloud = yield call(waitForCloud);
-			return { finishedCloud };
+			const { finishedCloud, newCloudError } = yield call(waitForCloud);
+			if (finishedCloud) {
+				return { finishedCloud };
+			}
+			return { error: newCloudError };
 		}
 	} catch (err) {
 		console.error('Something went wrong', err);
