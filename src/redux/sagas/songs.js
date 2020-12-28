@@ -127,19 +127,23 @@ const apiFetchSongLyrics = async (songPath, songId) => {
 export function* fetchSongDetails(action) {
 	const accessToken = yield select(getAccessToken);
 	const userId = yield select(getUserMongoId);
-	const { songId, fetchLyrics = true, generateCloud = true } = action;
-	const { officialCloud, userMadeClouds, error: cloudsError } = yield call(
-		apiFetchSongClouds,
-		songId,
-		accessToken,
-		userId,
-	);
-	//TO-DO: Handle possible cloudsError
-	if (userMadeClouds && userMadeClouds.length) {
-		yield put({ type: ADD_CLOUDS, clouds: userMadeClouds });
-	}
-	if (officialCloud) {
-		yield put({ type: ADD_CLOUD, finishedCloud: officialCloud });
+	const { songId, fetchLyrics = true, generateCloud = true, fetchClouds = true } = action;
+	let hasOfficialCloud = false;
+	if (fetchClouds) {
+		const { officialCloud, userMadeClouds, error: cloudsError } = yield call(
+			apiFetchSongClouds,
+			songId,
+			accessToken,
+			userId,
+		);
+		//TO-DO: Handle possible cloudsError
+		if (userMadeClouds && userMadeClouds.length) {
+			yield put({ type: ADD_CLOUDS, clouds: userMadeClouds });
+		}
+		if (officialCloud) {
+			hasOfficialCloud = true;
+			yield put({ type: ADD_CLOUD, finishedCloud: officialCloud });
+		}
 	}
 	const existingSong = yield select(getSongFromId, songId);
 	const officialCloudForSong = yield select(getOfficalCloudForSong, songId);
@@ -161,7 +165,7 @@ export function* fetchSongDetails(action) {
 				type: FETCH_SONG_LYRICS.start,
 				songId,
 				songPath,
-				generateCloud: generateCloud && !officialCloud,
+				generateCloud: generateCloud && !hasOfficialCloud,
 			});
 		}
 	}

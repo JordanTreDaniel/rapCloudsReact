@@ -78,7 +78,6 @@ const addClouds = (state, action) => {
 		newCloudsById[id] = cloud;
 		return newCloudsById;
 	}, {});
-	console.log({ newCloudsById });
 	return { ...state, byId: { ...state.byId, ...newCloudsById }, cloudsLoading: false };
 };
 

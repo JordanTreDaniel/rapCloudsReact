@@ -332,7 +332,9 @@ export function* fetchClouds(action) {
 				}
 			}
 			yield all(
-				neededSongIds.map((songId) => put({ type: FETCH_SONG_DETAILS.start, songId, generateCloud: false })),
+				neededSongIds.map((songId) =>
+					put({ type: FETCH_SONG_DETAILS.start, songId, generateCloud: false, fetchClouds: false }),
+				),
 			);
 			//TO-DO: Should I also fetch associated artists?
 			yield put({ type: FETCH_CLOUDS.success, clouds });
