@@ -122,7 +122,7 @@ const RapCloud = (props) => {
 		deleteCloud,
 	} = props;
 	const cloud = clouds[currentCloudIdx];
-	const { info, id: cloudId } = cloud || {};
+	const { info, id: cloudId, officialCloud } = cloud || {};
 	const { secure_url } = info || {};
 	useEffect(
 		() => {
@@ -183,17 +183,19 @@ const RapCloud = (props) => {
 						<NewTabIcon />
 					</IconButton>
 				</Tooltip>
-				<Tooltip placement="bottom" title="Delete Your RapCloud!">
-					<IconButton
-						id="deleteBtn"
-						onClick={() => {
-							deleteCloud(cloudId);
-						}}
-						className={classNames(classes.cloudAction, classes.attnGrabber)}
-					>
-						<Delete />
-					</IconButton>
-				</Tooltip>
+				{!officialCloud && (
+					<Tooltip placement="bottom" title="Delete Your RapCloud!">
+						<IconButton
+							id="deleteBtn"
+							onClick={() => {
+								deleteCloud(cloudId);
+							}}
+							className={classNames(classes.cloudAction, classes.attnGrabber)}
+						>
+							<Delete />
+						</IconButton>
+					</Tooltip>
+				)}
 			</Paper>
 		);
 	};
