@@ -128,11 +128,12 @@ const apiDeleteCloud = async (cloudId, public_id) => {
 export function* deleteCloud(action) {
 	try {
 		const { cloudId } = action;
+		let { cloud } = action;
 		if (!cloudId) {
-			yield put({ type: DELETE_CLOUD.cancellation });
+			yield put({ type: DELETE_CLOUD.cancellation, cloudId });
 			yield cancel();
 		}
-		const cloud = yield select(getCloudFromId, cloudId);
+		cloud = cloud ? cloud : yield select(getCloudFromId, cloudId);
 		const { public_id } = cloud.info || {};
 		const { error } = yield call(apiDeleteCloud, cloudId, public_id);
 		if (error) {
@@ -324,6 +325,11 @@ export function* fetchClouds(action) {
 		} else {
 			const neededSongIds = [];
 			for (let cloud of clouds) {
+				if (!cloud.info) {
+					//TO-DO: Roll the deletions together into one call
+					console.log('Got cloud with no info. Deleting', cloud);
+					yield put({ type: DELETE_CLOUD.start, cloudId: cloud.id, cloud });
+				}
 				for (let songId of cloud.songIds) {
 					const matchingSong = yield select(getSongFromId, songId);
 					if (!matchingSong && !neededSongIds.includes(songId)) {
