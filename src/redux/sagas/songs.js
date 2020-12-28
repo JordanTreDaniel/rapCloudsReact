@@ -191,6 +191,10 @@ export function* fetchSongLyrics(action) {
 			console.error('Something went wrong', error);
 		} else {
 			yield put({ type: FETCH_SONG_LYRICS.success, songId, lyrics });
+			if (generateCloud) {
+				const normalizedLyrics = normalizeLyrics(lyrics);
+				yield put({ type: GEN_SONG_CLOUD.start, lyricString: normalizedLyrics, songId, officialCloud: true });
+			}
 			return lyrics;
 		}
 	} catch (err) {
