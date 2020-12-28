@@ -10,6 +10,7 @@ export const SET_USER = 'SET_USER';
 export const ADD_SONGS = 'ADD_SONGS';
 export const ADD_ARTISTS = 'ADD_ARTISTS';
 export const ADD_CLOUD = 'ADD_CLOUD';
+export const ADD_CLOUDS = 'ADD_CLOUDS';
 export const SEARCH_SONGS = actionNamesForProcess('SEARCH_SONGS');
 export const GEN_SONG_CLOUD = actionNamesForProcess('GEN_SONG_CLOUD');
 export const GEN_ARTIST_CLOUD = actionNamesForProcess('GEN_ARTIST_CLOUD');

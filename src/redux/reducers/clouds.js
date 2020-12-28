@@ -11,6 +11,7 @@ import {
 	DELETE_CLOUD,
 	FETCH_CLOUDS,
 	ADD_CLOUD,
+	ADD_CLOUDS,
 } from '../actionTypes';
 
 export const initialState = {
@@ -67,6 +68,18 @@ const addCloud = (state, action) => {
 	}
 	const cloudsById = state.byId;
 	return { ...state, byId: { ...cloudsById, [id]: finishedCloud }, cloudsLoading: false };
+};
+
+const addClouds = (state, action) => {
+	const { clouds } = action;
+	if (!clouds || !clouds.length) return state;
+	const newCloudsById = clouds.reduce((newCloudsById, cloud) => {
+		const { id } = cloud;
+		newCloudsById[id] = cloud;
+		return newCloudsById;
+	}, {});
+	console.log({ newCloudsById });
+	return { ...state, byId: { ...state.byId, ...newCloudsById }, cloudsLoading: false };
 };
 
 const replaceClouds = (state, action) => {
@@ -183,6 +196,7 @@ handlers[GEN_ARTIST_CLOUD.success] = addCloud;
 handlers[ADD_CLOUD] = addCloud;
 handlers[DELETE_CLOUD.success] = removeCloud;
 handlers[FETCH_CLOUDS.success] = replaceClouds;
+handlers[ADD_CLOUDS] = addClouds;
 
 export default (state = initialState, action) => {
 	const handle = handlers[action.type];
