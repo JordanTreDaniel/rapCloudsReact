@@ -1,6 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect, useParams } from 'react-router-dom';
-import { Typography, AppBar, Toolbar, Grid, Avatar, Tooltip, Paper, IconButton, withWidth } from '@material-ui/core';
+import {
+	Typography,
+	AppBar,
+	Toolbar,
+	Grid,
+	Avatar,
+	Tooltip,
+	Paper,
+	IconButton,
+	withWidth,
+	Button,
+} from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import MinusIcon from '@material-ui/icons/Remove';
 
@@ -9,7 +20,7 @@ import ArtistSongList from './ArtistSongList';
 import BackButton from '../components/BackButton';
 import RapCloud from './RapCloud';
 import * as selectors from '../redux/selectors';
-import { fetchArtist, genArtistCloud } from '../redux/actions';
+import { fetchArtist, genArtistCloud, fetchArtistSongs } from '../redux/actions';
 import { connect } from 'react-redux';
 import paths from '../paths';
 import { classNames } from '../utils';
@@ -110,6 +121,15 @@ const useStyles = makeStyles((theme) => {
 		},
 		cloudActionsTop: {},
 		cloudActionsBottom: {},
+		loadMoreSongsBtn: {
+			backgroundColor: theme.palette.secondary.main,
+			color: theme.palette.secondary.contrastText,
+			border: `1px solid ${theme.palette.primary.contrastText}`,
+			'&:hover': {
+				backgroundColor: theme.palette.secondary.light,
+				color: theme.palette.secondary.contrastText,
+			},
+		},
 	};
 });
 
@@ -123,6 +143,7 @@ const ArtistPage = (props) => {
 		areSongLyricsLoading,
 		clouds,
 		genArtistCloud,
+		fetchArtistSongs,
 	} = props;
 	const { artistId } = useParams();
 	const [ cloudExpanded, setCloudExpanded ] = useState(true);
@@ -201,6 +222,17 @@ const ArtistPage = (props) => {
 						</Typography>
 						<LoadingBar loading={isArtistLoading} />
 						{songsExpanded && !isArtistLoading && <ArtistSongList artistId={artistId} />}
+						{songsExpanded &&
+						artist.nextPage && (
+							<Grid container justify="center">
+								<Button
+									className={classes.loadMoreSongsBtn}
+									onClick={() => fetchArtistSongs(artist.id)}
+								>
+									Load More Songs
+								</Button>
+							</Grid>
+						)}
 					</Paper>
 				</Grid>
 			</Grid>
@@ -216,4 +248,6 @@ const mapState = (state) => ({
 	clouds: selectors.getCloudsForArtist(state),
 });
 
-export default connect(mapState, { fetchArtist, genArtistCloud })(withWidth()(ArtistPage));
+export default connect(mapState, { fetchArtist, genArtistCloud, fetchArtistSongs, fetchArtistSongs })(
+	withWidth()(ArtistPage),
+);

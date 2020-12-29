@@ -1,5 +1,12 @@
 import { put, takeEvery, takeLatest, call, select, cancel, all } from 'redux-saga/effects';
-import { FETCH_ARTIST, ADD_SONGS, SIGN_OUT, FETCH_SONG_LYRICS, GEN_ARTIST_CLOUD } from '../actionTypes';
+import {
+	FETCH_ARTIST,
+	ADD_SONGS,
+	SIGN_OUT,
+	FETCH_SONG_LYRICS,
+	GEN_ARTIST_CLOUD,
+	FETCH_ARTIST_SONGS,
+} from '../actionTypes';
 import { getAccessToken, getArtistFromId, getCloudsForArtist, getArtistsSongs } from '../selectors';
 import { fetchSongLyrics } from './songs';
 import { generateCloud } from './clouds';
@@ -21,6 +28,23 @@ const apiFetchArtist = async (artistId, accessToken) => {
 	const { artist, songs, nextPage } = data;
 	if (status === 200) {
 		return { artist, songs, nextPage };
+	}
+
+	return { error: { status, statusText } };
+};
+
+const apiFetchArtistSongs = async (artistId, page, accessToken) => {
+	const res = await axios({
+		method: 'get',
+		url: `${REACT_APP_SERVER_ROOT}/getArtistSongs/${artistId}/${page}`,
+		headers: {
+			Authorization: accessToken,
+		},
+	});
+	const { status, statusText, data } = res;
+	const { songs, nextPage } = data;
+	if (status === 200) {
+		return { songs, nextPage };
 	}
 
 	return { error: { status, statusText } };
@@ -62,6 +86,39 @@ export function* fetchArtist(action) {
 				artistId,
 			});
 		}
+	}
+}
+
+export function* fetchArtistSongs(action) {
+	const { artistId } = action;
+	const accessToken = yield select(getAccessToken);
+	if (!accessToken) {
+		console.error(`Could not fetch artist without access token `, { accessToken });
+		yield put({ type: SIGN_OUT });
+		yield cancel();
+	}
+	if (!artistId) {
+		console.error(`Could not fetch artist without artist id`, { artistId });
+		yield put({ type: FETCH_ARTIST_SONGS.failure, artistId });
+		yield cancel();
+	}
+	const artist = yield select(getArtistFromId, artistId);
+	const { nextPage } = artist;
+	if (!nextPage) {
+		yield put({ type: FETCH_ARTIST_SONGS.cancellation, artistId, reason: "Next page doesn't exist." });
+	}
+	const { songs = [], nextPage: newNextPage, error } = yield call(
+		apiFetchArtistSongs,
+		artistId,
+		nextPage,
+		accessToken,
+	);
+	if (error) {
+		yield put({ type: FETCH_ARTIST_SONGS.failure, artistId });
+	} else {
+		artist.nextPage = newNextPage;
+		if (songs.length) yield put({ type: ADD_SONGS, songs });
+		yield put({ type: FETCH_ARTIST_SONGS.success, artist });
 	}
 }
 
@@ -120,7 +177,11 @@ function* watchFetchArtist() {
 	yield takeEvery(FETCH_ARTIST.start, fetchArtist);
 }
 
+function* watchFetchArtistSongs() {
+	yield takeEvery(FETCH_ARTIST_SONGS.start, fetchArtistSongs);
+}
+
 function* watchGenArtistCloud() {
 	yield takeEvery(GEN_ARTIST_CLOUD.start, genArtistCloud);
 }
-export default [ watchFetchArtist, watchGenArtistCloud ];
+export default [ watchFetchArtist, watchGenArtistCloud, watchFetchArtistSongs ];

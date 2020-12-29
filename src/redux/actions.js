@@ -17,6 +17,7 @@ import {
 	UPDATE_USER,
 	FETCH_CLOUDS,
 	DELETE_CLOUD,
+	FETCH_ARTIST_SONGS,
 } from './actionTypes';
 import normalizeLyrics from './utils/normalizeLyrics';
 
@@ -50,6 +51,10 @@ export const fetchSongDetails = (songId) => {
 
 export const fetchArtist = (artistId) => {
 	return { type: FETCH_ARTIST.start, artistId };
+};
+
+export const fetchArtistSongs = (artistId) => {
+	return { type: FETCH_ARTIST_SONGS.start, artistId };
 };
 
 export const signOut = () => {
