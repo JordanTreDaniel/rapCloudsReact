@@ -122,6 +122,7 @@ const useStyles = makeStyles((theme) => {
 		cloudActionsTop: {},
 		cloudActionsBottom: {},
 		loadMoreSongsBtn: {
+			marginTop: '1em',
 			backgroundColor: theme.palette.secondary.main,
 			color: theme.palette.secondary.contrastText,
 			border: `1px solid ${theme.palette.primary.contrastText}`,
