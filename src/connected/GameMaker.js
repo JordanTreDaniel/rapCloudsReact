@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Redirect, useParams } from 'react-router-dom';
+import { Redirect, useParams, Link } from 'react-router-dom';
 import {
 	Typography,
 	AppBar,
@@ -106,7 +106,7 @@ const GameMaker = (props) => {
 			</div>
 			<List>
 				{artists.map((artist) => (
-					<ListItem>
+					<ListItem component={Link} to={`games/${artist.id}`}>
 						<ListItemAvatar>
 							<Avatar
 								src={artist.image_url}

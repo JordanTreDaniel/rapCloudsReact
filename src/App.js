@@ -8,6 +8,7 @@ import Navbar from './connected/Navbar';
 import ArtistPage from './connected/ArtistPage';
 import ProfilePage from './connected/ProfilePage.jsx';
 import GameMaker from './connected/GameMaker';
+import ArtistGame from './connected/ArtistGame';
 import { setUser, addCustomMask } from './redux/actions'; //TO-DO: is setUser needed?
 import { Redirect } from 'react-router-dom';
 import * as selectors from './redux/selectors';
@@ -111,10 +112,17 @@ const App = (props) => {
 						}}
 					/>
 					<Route
+						path={paths.play}
+						exact
+						render={() => {
+							return <GameMaker />;
+						}}
+					/>
+					<Route
 						path={paths.game}
 						exact
-						render={({ history }) => {
-							return <GameMaker />;
+						render={() => {
+							return <ArtistGame />;
 						}}
 					/>
 
