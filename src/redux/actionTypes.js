@@ -26,6 +26,7 @@ export const DELETE_MASK = actionNamesForProcess('DELETE_MASK');
 export const UPDATE_USER = actionNamesForProcess('UPDATE_USER');
 export const FETCH_CLOUDS = actionNamesForProcess('FETCH_CLOUDS');
 export const DELETE_CLOUD = actionNamesForProcess('DELETE_CLOUD');
+export const FETCH_ARTIST_GAME = actionNamesForProcess('FETCH_ARTIST_GAME');
 export const SIGN_OUT = 'SIGN_OUT';
 export const DO_NOTHING = 'DO_NOTHING';
 export const UPDATE_CLOUD_SETTINGS = 'UPDATE_CLOUD_SETTINGS';
