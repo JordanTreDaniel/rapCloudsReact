@@ -348,11 +348,12 @@ export const getArtistGame = createSelector(
 		};
 
 		const cookedGame = {
+			artist: { ...artist },
 			clouds: songs.map((_song) => {
 				const song = songsById[_song.id];
 				const cloud = (cloudsBySongId[_song.id] || []).find((cloud) => cloud.officialCloud);
 				const answers = genAnswers(_song);
-				return { cloud, song, answers, artist };
+				return { cloud, song, answers };
 			}),
 		};
 		console.log({ cookedGame });
