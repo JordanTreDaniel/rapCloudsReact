@@ -24,6 +24,7 @@ import { Avatar } from '@material-ui/core';
 import paths from '../paths';
 import { classNames } from '../utils';
 import SearchIcon from '@material-ui/icons/SearchOutlined';
+import Question from '@material-ui/icons/QuestionAnswerOutlined';
 import UserIcon from '@material-ui/icons/PersonOutline';
 import MenuIcon from '@material-ui/icons/Menu';
 import FacebookIcon from '@material-ui/icons/Facebook';
@@ -144,6 +145,22 @@ const Navbar = (props) => {
 					>
 						{userName && (
 							<React.Fragment>
+								<Grid
+									item
+									container
+									direction="row"
+									wrap="nowrap"
+									justify="center"
+									component={Link}
+									to={paths.play}
+									className={classNames(classes.whiteLink, classes.drawerItem)}
+								>
+									<Typography variant="h4">Guessing Games</Typography>
+									<IconButton className={classes.drawerItemButton}>
+										<Question />
+									</IconButton>
+								</Grid>
+								<Divider />
 								<Grid
 									item
 									container
