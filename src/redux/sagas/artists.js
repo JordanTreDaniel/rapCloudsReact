@@ -181,7 +181,28 @@ export function* fetchArtistGame(action) {
 	try {
 		const { artistId } = action;
 		const { _, songs, error } = yield call(fetchArtist, { artistId, fetchCloudToo: false, forceFetch: true });
-		const game = { artistId, songIds: songs.map((song) => song.id) };
+		const genAnswers = (song) => {
+			const { full_title, id: songId } = song;
+			let answers = [ { title: full_title, correct: true, songId: song.id } ],
+				visited = [];
+			do {
+				let randomIdx = Math.floor(Math.random() * (songs.length - 1));
+				while (visited.includes(randomIdx)) {
+					randomIdx = Math.floor(Math.random() * (songs.length - 1));
+				}
+				visited.push(randomIdx);
+				const song = songs[randomIdx];
+				if (song.id === songId) continue;
+				answers.splice(Math.floor(Math.random() * 3), 0, {
+					title: song.full_title,
+					songId: song.id,
+					correct: song.full_title === full_title,
+				});
+			} while (answers.length < 4);
+			return answers;
+		};
+
+		const game = { artistId, questions: songs.map((song) => ({ songId: song.id, answers: genAnswers(song) })) };
 		if (error) {
 			yield put({ type: FETCH_ARTIST_GAME.failure });
 			console.log('Something went wrong in fetch artist cloud', error);

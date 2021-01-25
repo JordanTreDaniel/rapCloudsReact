@@ -296,7 +296,7 @@ export const getCloudsForSong = createSelector(
 	(_, songId) => songId,
 	getCurrentSongId,
 	(cloudsById, songId, currentSongId) => {
-		songId = songId ? songId : currentSongId;
+		songId = songId ? String(songId) : String(currentSongId);
 		if (!songId) console.warn(`Warning, getCloudsForSong called without necessary arguments.`);
 		const matchingClouds = Object.values(cloudsById).filter(
 			(cloud) => cloud.songIds.includes(songId) && cloud.songIds.length === 1,
@@ -322,41 +322,12 @@ export const getArtistGame = createSelector(
 	getSongsById,
 	getCloudsBySongId,
 	(artist, games, songsById, cloudsBySongId) => {
-		console.log({ artist, games, songsById, cloudsBySongId });
 		const rawGame = games.find((game) => game.artistId == artist.id);
 		if (!rawGame) return null;
-		const songs = rawGame.songIds.map((songId) => songsById[songId]);
-		const genAnswers = (song) => {
-			const { full_title, id: songId } = song;
-			let answers = [ { title: full_title, correct: true, songId: song.id } ],
-				visited = [];
-			do {
-				let randomIdx = Math.floor(Math.random() * (songs.length - 1));
-				while (visited.includes(randomIdx)) {
-					randomIdx = Math.floor(Math.random() * (songs.length - 1));
-				}
-				visited.push(randomIdx);
-				const song = songs[randomIdx];
-				if (song.id === songId) continue;
-				answers.splice(Math.floor(Math.random() * 3), 0, {
-					title: song.full_title,
-					songId: song.id,
-					correct: song.full_title === full_title,
-				});
-			} while (answers.length < 4);
-			return answers;
-		};
-
 		const cookedGame = {
+			...rawGame,
 			artist: { ...artist },
-			clouds: songs.map((_song) => {
-				const song = songsById[_song.id];
-				const cloud = (cloudsBySongId[_song.id] || []).find((cloud) => cloud.officialCloud);
-				const answers = genAnswers(_song);
-				return { cloud, song, answers };
-			}),
 		};
-		console.log({ cookedGame });
 		return cookedGame;
 	},
 );

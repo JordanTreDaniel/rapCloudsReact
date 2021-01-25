@@ -25,7 +25,7 @@ import ArtistSongList from './ArtistSongList';
 import BackButton from '../components/BackButton';
 import RapCloud from './RapCloud';
 import * as selectors from '../redux/selectors';
-import { searchSongs, setSongSearchTerm, fetchArtistGame } from '../redux/actions';
+import { searchSongs, setSongSearchTerm, fetchArtistGame, fetchSongDetails } from '../redux/actions';
 import { connect } from 'react-redux';
 import paths from '../paths';
 import { classNames } from '../redux/utils';
@@ -68,33 +68,53 @@ const useStyles = makeStyles((theme) => {
 	};
 });
 
+const _QuizBox = (props) => {
+	const { question, fetchSongDetails, song, clouds } = props;
+	const cloud = clouds[0] || {};
+	const { answers } = question;
+	const { info } = cloud;
+	useEffect(() => {
+		if (!info) fetchSongDetails(song.id);
+	}, []);
+	return (
+		<Grid container>
+			Current cloud goes here
+			<Typography>{song && song.title}</Typography>
+			{/* Box to show cloud */}
+			<img item src={info && info.secure_url} />
+			{/* Multiple choice */}
+			<List>{answers.map((a) => <ListItem>{a.title}</ListItem>)}</List>
+			{/* next/previous */}
+		</Grid>
+	);
+};
+
+const mapStateQB = (state, ownProps) => {
+	return {
+		song: selectors.getSongFromId(state, ownProps.question.songId),
+		clouds: selectors.getCloudsForSong(state, ownProps.question.songId),
+	};
+};
+const QuizBox = connect(mapStateQB, { fetchSongDetails })(withWidth()(_QuizBox));
+
 const ArtistGame = (props) => {
 	const classes = useStyles();
 	const { artistId } = useParams();
-	const [ cloudIdx, updateCloudIdx ] = useState(0);
-	const { fetchArtistGame, game } = props;
+	const [ questionIdx, updateQuestionIdx ] = useState(0);
+	const { fetchArtistGame, fetchSongDetails, game } = props;
 	useEffect(() => {
 		if (!game) fetchArtistGame(artistId);
 	});
 	if (!game) {
 		return <h1>Loading</h1>;
 	}
-	const { clouds = [] } = game;
-	const cloud = clouds[cloudIdx] || {};
-	const { answers, artist } = cloud;
-
+	const { questions = [], artist } = game;
+	const question = questions[questionIdx] || {};
 	return (
 		<Grid className={classes.artistGamePage}>
 			<Typography>Guess {artist.name}'s RapClouds</Typography>
 
-			{!!game ? (
-				<Fragment>
-					Current cloud goes here
-					{/* Box to show cloud */}
-					{/* Multiple choice */}
-					{/* next/previous */}
-				</Fragment>
-			) : null}
+			<QuizBox question={question} fetchSongDetails={fetchSongDetails} />
 		</Grid>
 	);
 };
@@ -103,4 +123,6 @@ const mapState = (state) => ({
 	game: selectors.getArtistGame(state),
 });
 
-export default connect(mapState, { searchSongs, setSongSearchTerm, fetchArtistGame })(withWidth()(ArtistGame));
+export default connect(mapState, { searchSongs, setSongSearchTerm, fetchArtistGame, fetchSongDetails })(
+	withWidth()(ArtistGame),
+);
