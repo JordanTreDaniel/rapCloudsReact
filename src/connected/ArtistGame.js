@@ -81,7 +81,9 @@ const _QuizBox = (props) => {
 				<List>
 					{answers.map((a) => (
 						<ListItem>
-							<Box className={classes.answerChoice}>{a.title}</Box>
+							<Box className={classes.answerChoice}>
+								<ListItemText>{a.title}</ListItemText>
+							</Box>
 						</ListItem>
 					))}
 				</List>
