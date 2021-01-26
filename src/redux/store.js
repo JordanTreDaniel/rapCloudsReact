@@ -42,7 +42,7 @@ const persistConfig = {
 	key: 'authType',
 	storage: localforage,
 	version: 0,
-	whitelist: [ 'songs', 'userInfo', 'artists', 'clouds' ],
+	whitelist: [ 'songs', 'userInfo', 'artists', 'clouds', 'games' ],
 	blacklist: [], //don't store
 	migration: createMigrate(migrations, { debug: process.env.NODE_ENV === 'development' }),
 };

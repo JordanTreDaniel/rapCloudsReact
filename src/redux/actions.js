@@ -19,6 +19,7 @@ import {
 	DELETE_CLOUD,
 	FETCH_ARTIST_SONGS,
 	FETCH_ARTIST_GAME,
+	ANSWER_QUESTION,
 } from './actionTypes';
 import normalizeLyrics from './utils/normalizeLyrics';
 
@@ -101,4 +102,8 @@ export const resetCloudDefaults = () => {
 
 export const fetchArtistGame = (artistId) => {
 	return { type: FETCH_ARTIST_GAME.start, artistId };
+};
+
+export const answerQuestion = (gameId, questionIdx, answerIdx) => {
+	return { type: ANSWER_QUESTION, gameId, questionIdx, answerIdx };
 };

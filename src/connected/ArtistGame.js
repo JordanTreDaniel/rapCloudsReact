@@ -18,15 +18,16 @@ import {
 	Box,
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
-import MinusIcon from '@material-ui/icons/Remove';
-import SearchIcon from '@material-ui/icons/Search';
+import CloudDone from '@material-ui/icons/CloudDone';
+import CloudQueue from '@material-ui/icons/CloudQueue';
+import CloudOff from '@material-ui/icons/CloudOff';
 
 import { makeStyles } from '@material-ui/core/styles';
 import ArtistSongList from './ArtistSongList';
 import BackButton from '../components/BackButton';
 import RapCloud from './RapCloud';
 import * as selectors from '../redux/selectors';
-import { searchSongs, setSongSearchTerm, fetchArtistGame, fetchSongDetails } from '../redux/actions';
+import { searchSongs, setSongSearchTerm, fetchArtistGame, fetchSongDetails, answerQuestion } from '../redux/actions';
 import { connect } from 'react-redux';
 import paths from '../paths';
 import { classNames } from '../redux/utils';
@@ -58,12 +59,13 @@ const useStyles = makeStyles((theme) => {
 			margin: '.6em',
 			borderRadius: '21px',
 			padding: 'inherit',
+			cursor: 'pointer',
 		},
 	};
 });
 
 const _QuizBox = (props) => {
-	const { question, fetchSongDetails, song, clouds } = props;
+	const { question, fetchSongDetails, answerQuestion, song, clouds, gameId, questionIdx } = props;
 	const classes = useStyles();
 	const cloud = clouds[0] || {};
 	const { answers } = question;
@@ -79,9 +81,12 @@ const _QuizBox = (props) => {
 			</Grid>
 			<Grid item>
 				<List>
-					{answers.map((a) => (
+					{answers.map((a, i) => (
 						<ListItem>
-							<Box className={classes.answerChoice}>
+							<Box
+								className={classes.answerChoice}
+								onClick={() => answerQuestion(gameId, questionIdx, i)}
+							>
 								<ListItemText>{a.title}</ListItemText>
 							</Box>
 						</ListItem>
@@ -98,7 +103,7 @@ const mapStateQB = (state, ownProps) => {
 		clouds: selectors.getCloudsForSong(state, ownProps.question.songId),
 	};
 };
-const QuizBox = connect(mapStateQB, { fetchSongDetails })(withWidth()(_QuizBox));
+const QuizBox = connect(mapStateQB, { fetchSongDetails, answerQuestion })(withWidth()(_QuizBox));
 
 const ArtistGame = (props) => {
 	const classes = useStyles();
@@ -108,16 +113,46 @@ const ArtistGame = (props) => {
 	useEffect(() => {
 		if (!game) fetchArtistGame(artistId);
 	});
-	if (!game) {
+	const { questions = [], artist } = game || {};
+	if (!questions.length || !artist) {
 		return <h1>Loading</h1>;
 	}
-	const { questions = [], artist } = game;
-	const question = questions[questionIdx] || {};
+	const question = questions[questionIdx];
 	return (
 		<Grid className={classes.artistGamePage}>
-			<Typography>Guess {artist.name}'s RapClouds</Typography>
-
-			<QuizBox question={question} fetchSongDetails={fetchSongDetails} />
+			<Typography align="center">Guess {artist.name}'s RapClouds</Typography>
+			<Grid
+				container
+				direction="row"
+				wrap="nowrap"
+				alignContent="center"
+				justify="space-around"
+				className={classes.ul}
+			>
+				{questions.map((question, index) => {
+					let children;
+					const { answerIdx } = question;
+					const answer = question.answers[answerIdx];
+					if (!answer) {
+						children = <CloudQueue />;
+					} else if (answer.correct) {
+						children = <CloudDone />;
+					} else {
+						children = <CloudOff />;
+					}
+					return (
+						<Grid item key={index}>
+							{children}
+						</Grid>
+					);
+				})}
+			</Grid>
+			<QuizBox
+				question={question}
+				gameId={game.id}
+				questionIdx={questionIdx}
+				fetchSongDetails={fetchSongDetails}
+			/>
 		</Grid>
 	);
 };

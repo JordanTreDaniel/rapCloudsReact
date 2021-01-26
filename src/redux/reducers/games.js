@@ -1,4 +1,4 @@
-import { FETCH_ARTIST_GAME } from '../actionTypes';
+import { FETCH_ARTIST_GAME, ANSWER_QUESTION } from '../actionTypes';
 
 const initialState = {
 	byId: {},
@@ -21,8 +21,23 @@ const addGame = (state, action) => {
 	const { artistId } = game;
 	if (!game || !artistId) return state;
 	const id = `${artistId}-${Date.now()}`;
+	game.id = id;
 	const gamesById = state.byId;
 	return { ...state, byId: { ...gamesById, [id]: game }, gameLoading: false };
+};
+
+const answerQuestion = (state, action) => {
+	const { gameId, questionIdx, answerIdx } = action;
+	const game = state.byId[gameId];
+	if ((!gameId || !game || !String(questionIdx), !String(answerIdx))) return state;
+	// game.questions[questionIdx].answerIdx = answerIdx;
+	let { questions } = game;
+	questions = [ ...questions ];
+	questions.splice(questionIdx, 1, { ...questions[questionIdx], answerIdx });
+	return {
+		...state,
+		byId: { ...state.byId, [gameId]: { ...game, questions } },
+	};
 };
 
 const handlers = {};
@@ -30,6 +45,7 @@ const handlers = {};
 Object.values(FETCH_ARTIST_GAME).forEach((actionType) => (handlers[actionType] = setLoading));
 // Note: Be sure to over-write the .success variations of FETCH actions, like below.
 handlers[FETCH_ARTIST_GAME.success] = addGame;
+handlers[ANSWER_QUESTION] = answerQuestion;
 
 export default (state = initialState, action) => {
 	const handle = handlers[action.type];
