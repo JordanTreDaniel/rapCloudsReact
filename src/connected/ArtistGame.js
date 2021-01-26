@@ -88,7 +88,7 @@ const useStyles = makeStyles((theme) => {
 });
 
 const _QuizBox = (props) => {
-	const { question, fetchSongDetails, answerQuestion, song, clouds, gameId, questionIdx } = props;
+	const { question, fetchSongDetails, answerQuestion, song, clouds, gameId, questionIdx, updateQuestionIdx } = props;
 	const classes = useStyles();
 	const cloud = clouds[0] || {};
 	const { answers, answerIdx } = question;
@@ -117,7 +117,12 @@ const _QuizBox = (props) => {
 												: thisAnswerChosen ? classes.incorrectAnswer : classes.decoyAnswer
 											: classes.decoyAnswer,
 									)}
-									onClick={() => answerQuestion(gameId, questionIdx, i)}
+									onClick={() => {
+										answerQuestion(gameId, questionIdx, i);
+										setTimeout(() => {
+											updateQuestionIdx(questionIdx + 1);
+										}, 1500);
+									}}
 								>
 									<ListItemText>{a.title}</ListItemText>
 								</Box>
@@ -149,6 +154,9 @@ const ArtistGame = (props) => {
 	const { questions = [], artist } = game || {};
 	if (!questions.length || !artist) {
 		return <h1>Loading</h1>;
+	}
+	if (questionIdx > questions.length) {
+		return <h1>Game Over</h1>;
 	}
 	const question = questions[questionIdx];
 	let prevAnswered = false;
@@ -205,6 +213,7 @@ const ArtistGame = (props) => {
 				gameId={game.id}
 				questionIdx={questionIdx}
 				fetchSongDetails={fetchSongDetails}
+				updateQuestionIdx={updateQuestionIdx}
 			/>
 		</Grid>
 	);
