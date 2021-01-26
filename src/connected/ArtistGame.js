@@ -151,6 +151,7 @@ const ArtistGame = (props) => {
 		return <h1>Loading</h1>;
 	}
 	const question = questions[questionIdx];
+	let prevAnswered = false;
 	return (
 		<Grid className={classes.artistGamePage}>
 			<Grid
@@ -165,13 +166,30 @@ const ArtistGame = (props) => {
 					let children;
 					const { answerIdx } = question;
 					const answer = question.answers[answerIdx];
+
 					if (!answer) {
-						children = <CloudQueue className={classNames(classes.miniCloud, classes.unanswered)} />;
+						children = (
+							<CloudQueue
+								className={classNames(classes.miniCloud, classes.unanswered)}
+								onClick={prevAnswered || index == 0 ? () => updateQuestionIdx(index) : null}
+							/>
+						);
 					} else if (answer.correct) {
-						children = <CloudDone className={classNames(classes.miniCloud, classes.green)} />;
+						children = (
+							<CloudDone
+								className={classNames(classes.miniCloud, classes.green)}
+								onClick={prevAnswered || index == 0 ? () => updateQuestionIdx(index) : null}
+							/>
+						);
 					} else {
-						children = <CloudOff className={classNames(classes.miniCloud, classes.red)} />;
+						children = (
+							<CloudOff
+								className={classNames(classes.miniCloud, classes.red)}
+								onClick={prevAnswered || index == 0 ? () => updateQuestionIdx(index) : null}
+							/>
+						);
 					}
+					prevAnswered = answerIdx == 0 || answerIdx;
 					return (
 						<Grid item key={index}>
 							{children}
