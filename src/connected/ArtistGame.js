@@ -180,7 +180,7 @@ const ArtistGame = (props) => {
 				})}
 			</Grid>
 			<Typography align="center" variant="h6">
-				Which {artist.name} song was this RapCloud made from?
+				Which song was this Cloud made from?
 			</Typography>
 			<QuizBox
 				question={question}
