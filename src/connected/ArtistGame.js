@@ -15,6 +15,7 @@ import {
 	ListItem,
 	ListItemAvatar,
 	ListItemText,
+	Box,
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import MinusIcon from '@material-ui/icons/Remove';
@@ -40,24 +41,6 @@ const useStyles = makeStyles((theme) => {
 			backgroundColor: theme.palette.primary.main,
 			overflow: 'hidden',
 		},
-		mainSearchInput: {
-			fontSize: '4em',
-			fontWeight: 560,
-			margin: '.12em 3vw .12em 9vw',
-			color: theme.palette.secondary.main,
-			opacity: '.72',
-		},
-		searchBar: {},
-		searchIcon: {
-			color: theme.palette.secondary.dark,
-			backgroundColor: theme.palette.secondary.main,
-			opacity: '.72',
-			marginRight: '9vw',
-			'&:hover': {
-				color: theme.palette.secondary.dark,
-				backgroundColor: theme.palette.secondary.main,
-			},
-		},
 		artistAvatar: {
 			width: '3.3em',
 			height: '3.3em',
@@ -65,11 +48,23 @@ const useStyles = makeStyles((theme) => {
 		artistName: {
 			fontSize: '2.4em',
 		},
+		quizBoxContainer: {},
+		cloud: {
+			height: '90%',
+			margin: 'auto',
+		},
+		answerChoice: {
+			border: `3px solid ${theme.palette.secondary.main}`,
+			margin: '.6em',
+			borderRadius: '21px',
+			padding: 'inherit',
+		},
 	};
 });
 
 const _QuizBox = (props) => {
 	const { question, fetchSongDetails, song, clouds } = props;
+	const classes = useStyles();
 	const cloud = clouds[0] || {};
 	const { answers } = question;
 	const { info } = cloud;
@@ -77,14 +72,20 @@ const _QuizBox = (props) => {
 		if (!info) fetchSongDetails(song.id);
 	}, []);
 	return (
-		<Grid container>
-			Current cloud goes here
-			<Typography>{song && song.title}</Typography>
-			{/* Box to show cloud */}
-			<img item src={info && info.secure_url} />
-			{/* Multiple choice */}
-			<List>{answers.map((a) => <ListItem>{a.title}</ListItem>)}</List>
-			{/* next/previous */}
+		<Grid container direction="column" className={classes.quizBoxContainer}>
+			<Grid item container direction="column">
+				<img item src={info && info.secure_url} className={classes.cloud} />
+				<Typography align="center">Which song was this RapCloud made from?</Typography>
+			</Grid>
+			<Grid item>
+				<List>
+					{answers.map((a) => (
+						<ListItem>
+							<Box className={classes.answerChoice}>{a.title}</Box>
+						</ListItem>
+					))}
+				</List>
+			</Grid>
 		</Grid>
 	);
 };
