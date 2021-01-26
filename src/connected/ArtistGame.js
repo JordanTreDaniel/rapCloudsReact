@@ -97,11 +97,6 @@ const _QuizBox = (props) => {
 	const isAnswered = answerIdx == 0 || answerIdx;
 	useEffect(
 		() => {
-			if (answerIdx == 0 || answerIdx) {
-				//TO-DO: Actually FIND the first unanswered question. More efficient
-				updateQuestionIdx(questionIdx + 1);
-				return;
-			}
 			if (questionIdx == 0) {
 				if (!info) fetchSongDetails(question.songId);
 			}
@@ -112,6 +107,17 @@ const _QuizBox = (props) => {
 		},
 		[ questionIdx ],
 	);
+	useEffect(() => {
+		let newIdx = questionIdx + 1;
+		let nextQuestionAnswered = true;
+		while (nextQuestionAnswered) {
+			const nextQuestion = questions[newIdx];
+			nextQuestionAnswered = nextQuestion.answerIdx == 0 || nextQuestion.answerIdx;
+			if (nextQuestionAnswered) newIdx++;
+		}
+		updateQuestionIdx(newIdx);
+		return;
+	}, []);
 	return (
 		<Grid container direction="column" className={classes.quizBoxContainer}>
 			{info ? (
@@ -135,6 +141,7 @@ const _QuizBox = (props) => {
 													: classes.decoyAnswer,
 											)}
 											onClick={() => {
+												if (isAnswered) return;
 												answerQuestion(gameId, questionIdx, i);
 												setTimeout(() => {
 													updateQuestionIdx(questionIdx + 1);
