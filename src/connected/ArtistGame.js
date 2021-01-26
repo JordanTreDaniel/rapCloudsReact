@@ -77,7 +77,6 @@ const _QuizBox = (props) => {
 		<Grid container direction="column" className={classes.quizBoxContainer}>
 			<Grid item container direction="column">
 				<img item src={info && info.secure_url} className={classes.cloud} />
-				<Typography align="center">Which song was this RapCloud made from?</Typography>
 			</Grid>
 			<Grid item>
 				<List>
@@ -120,7 +119,6 @@ const ArtistGame = (props) => {
 	const question = questions[questionIdx];
 	return (
 		<Grid className={classes.artistGamePage}>
-			<Typography align="center">Guess {artist.name}'s RapClouds</Typography>
 			<Grid
 				container
 				direction="row"
@@ -147,6 +145,9 @@ const ArtistGame = (props) => {
 					);
 				})}
 			</Grid>
+			<Typography align="center" variant="h6">
+				Which {artist.name} song was this RapCloud made from?
+			</Typography>
 			<QuizBox
 				question={question}
 				gameId={game.id}
