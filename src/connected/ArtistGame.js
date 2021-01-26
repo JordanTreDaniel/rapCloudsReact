@@ -88,57 +88,79 @@ const useStyles = makeStyles((theme) => {
 });
 
 const _QuizBox = (props) => {
-	const { question, fetchSongDetails, answerQuestion, song, clouds, gameId, questionIdx, updateQuestionIdx } = props;
+	const { questions, fetchSongDetails, answerQuestion, song, clouds, gameId, questionIdx, updateQuestionIdx } = props;
+	const question = questions[questionIdx];
 	const classes = useStyles();
 	const cloud = clouds[0] || {};
 	const { answers, answerIdx } = question;
 	const { info } = cloud;
 	const isAnswered = answerIdx == 0 || answerIdx;
-	useEffect(() => {
-		if (!info) fetchSongDetails(song.id);
-	}, []);
+	useEffect(
+		() => {
+			if (answerIdx == 0 || answerIdx) {
+				//TO-DO: Actually FIND the first unanswered question. More efficient
+				updateQuestionIdx(questionIdx + 1);
+				return;
+			}
+			if (questionIdx == 0) {
+				if (!info) fetchSongDetails(question.songId);
+			}
+			const nextQuestion = questions[questionIdx + 1];
+			if (nextQuestion) {
+				fetchSongDetails(nextQuestion.songId);
+			}
+		},
+		[ questionIdx ],
+	);
 	return (
 		<Grid container direction="column" className={classes.quizBoxContainer}>
-			<Grid item container direction="column">
-				<img item src={info && info.secure_url} className={classes.cloud} />
-			</Grid>
-			<Grid item>
-				<List>
-					{answers.map((a, i) => {
-						const thisAnswerChosen = answerIdx == i;
-						return (
-							<ListItem>
-								<Box
-									className={classNames(
-										classes.answerChoice,
-										isAnswered
-											? a.correct
-												? classes.correctAnswer
-												: thisAnswerChosen ? classes.incorrectAnswer : classes.decoyAnswer
-											: classes.decoyAnswer,
-									)}
-									onClick={() => {
-										answerQuestion(gameId, questionIdx, i);
-										setTimeout(() => {
-											updateQuestionIdx(questionIdx + 1);
-										}, 1500);
-									}}
-								>
-									<ListItemText>{a.title}</ListItemText>
-								</Box>
-							</ListItem>
-						);
-					})}
-				</List>
-			</Grid>
+			{info ? (
+				<Fragment>
+					<Grid item container direction="column">
+						<img item src={info && info.secure_url} className={classes.cloud} />
+					</Grid>
+					<Grid item>
+						<List>
+							{answers.map((a, i) => {
+								const thisAnswerChosen = answerIdx == i;
+								return (
+									<ListItem key={i}>
+										<Box
+											className={classNames(
+												classes.answerChoice,
+												isAnswered
+													? a.correct
+														? classes.correctAnswer
+														: thisAnswerChosen ? classes.incorrectAnswer : classes.decoyAnswer
+													: classes.decoyAnswer,
+											)}
+											onClick={() => {
+												answerQuestion(gameId, questionIdx, i);
+												setTimeout(() => {
+													updateQuestionIdx(questionIdx + 1);
+												}, 1500);
+											}}
+										>
+											<ListItemText>{a.title}</ListItemText>
+										</Box>
+									</ListItem>
+								);
+							})}
+						</List>
+					</Grid>
+				</Fragment>
+			) : (
+				<h1>Loading</h1>
+			)}
 		</Grid>
 	);
 };
 
 const mapStateQB = (state, ownProps) => {
+	const { questions, questionIdx } = ownProps;
 	return {
-		song: selectors.getSongFromId(state, ownProps.question.songId),
-		clouds: selectors.getCloudsForSong(state, ownProps.question.songId),
+		song: selectors.getSongFromId(state, questions[questionIdx].songId), // Possibly not needed. Just using for song Id
+		clouds: selectors.getCloudsForSong(state, questions[questionIdx].songId),
 	};
 };
 const QuizBox = connect(mapStateQB, { fetchSongDetails, answerQuestion })(withWidth()(_QuizBox));
@@ -155,6 +177,7 @@ const ArtistGame = (props) => {
 	if (!questions.length || !artist) {
 		return <h1>Loading</h1>;
 	}
+
 	if (questionIdx > questions.length) {
 		return <h1>Game Over</h1>;
 	}
@@ -209,7 +232,7 @@ const ArtistGame = (props) => {
 				Which song was this Cloud made from?
 			</Typography>
 			<QuizBox
-				question={question}
+				questions={questions}
 				gameId={game.id}
 				questionIdx={questionIdx}
 				fetchSongDetails={fetchSongDetails}
