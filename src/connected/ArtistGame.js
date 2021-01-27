@@ -76,8 +76,9 @@ const useStyles = makeStyles((theme) => {
 			border: `3px solid ${theme.palette.error.main} !important`,
 		},
 		quizBoxContainer: {},
+		quizBoxWrapper: {},
 		cloud: {
-			height: '90%',
+			width: '100%',
 			margin: 'auto',
 		},
 		decoyAnswer: {
@@ -224,15 +225,15 @@ const ArtistGame = (props) => {
 	let prevAnswered = false;
 	return (
 		<Grid
+			className={classes.artistGamePage}
 			container
 			direction="row"
 			wrap="wrap"
 			alignItems="flex-start"
-			alignContent="space-around"
+			alignContent="flex-start"
 			justify="center"
-			className={classes.artistGamePage}
 		>
-			<Grid container item xs="11" direction="row" wrap="nowrap" className={classes.scoreBoard}>
+			<Grid className={classes.scoreBoard} container item xs="11" direction="row" wrap="nowrap">
 				{questions.map((question, index) => {
 					let children;
 					const { answerIdx } = question;
@@ -276,7 +277,7 @@ const ArtistGame = (props) => {
 					);
 				})}
 			</Grid>
-			<Grid xs="10">
+			<Grid xs="10" className={classes.quizBoxWrapper}>
 				<QuizBox
 					questions={questions}
 					gameId={game.id}
