@@ -38,7 +38,8 @@ const DebouncedTextField = DebouncedInput(Input, { timeout: 639 });
 const useStyles = makeStyles((theme) => {
 	return {
 		artistGamePage: {
-			height: '100%',
+			height: '100vh',
+			width: '100%',
 			backgroundColor: theme.palette.primary.main,
 			overflow: 'hidden',
 		},
@@ -50,8 +51,15 @@ const useStyles = makeStyles((theme) => {
 			fontSize: '2.4em',
 		},
 		miniCloud: {
-			marginRight: '.6em',
+			marginRight: '1.2em',
 		},
+		currentMiniCloud: {
+			backgroundColor: theme.palette.secondary.main,
+			borderRadius: '5px',
+			padding: '.12em',
+		},
+		blueTxt: { color: theme.palette.secondary.main },
+		blackTxt: { color: theme.palette.primary.dark },
 		unanswered: {
 			color: theme.palette.primary.dark,
 		},
@@ -88,13 +96,26 @@ const useStyles = makeStyles((theme) => {
 });
 
 const _QuizBox = (props) => {
-	const { questions, fetchSongDetails, answerQuestion, song, clouds, gameId, questionIdx, updateQuestionIdx } = props;
+	const {
+		questions,
+		fetchSongDetails,
+		answerQuestion,
+		song,
+		clouds,
+		gameId,
+		questionIdx,
+		updateQuestionIdx,
+		isSongDetailLoading,
+		isWordCloudLoading,
+		areSongLyricsLoading,
+	} = props;
 	const question = questions[questionIdx];
 	const classes = useStyles();
 	const cloud = clouds[0] || {};
 	const { answers, answerIdx } = question;
 	const { info } = cloud;
 	const isAnswered = answerIdx == 0 || answerIdx;
+	const letters = [ 'A', 'B', 'C', 'D' ];
 	useEffect(
 		() => {
 			if (questionIdx == 0) {
@@ -122,8 +143,11 @@ const _QuizBox = (props) => {
 	}, []);
 	return (
 		<Grid container direction="column" className={classes.quizBoxContainer}>
-			{info ? (
+			{!isSongDetailLoading && !isWordCloudLoading && !areSongLyricsLoading ? info ? (
 				<Fragment>
+					<Typography align="center" variant="h6" style={{ marginBottom: '.9em' }}>
+						Which song was this Cloud made from?
+					</Typography>
 					<Grid item container direction="column">
 						<img item src={info && info.secure_url} className={classes.cloud} />
 					</Grid>
@@ -147,10 +171,13 @@ const _QuizBox = (props) => {
 												answerQuestion(gameId, questionIdx, i);
 												setTimeout(() => {
 													updateQuestionIdx(questionIdx + 1);
-												}, 1500);
+												}, 900);
 											}}
 										>
-											<ListItemText>{a.title}</ListItemText>
+											<ListItemText>
+												<span className={classes.blueTxt}>{`${letters[i]}.) `}</span>
+												{`${a.title}`}
+											</ListItemText>
 										</Box>
 									</ListItem>
 								);
@@ -158,7 +185,7 @@ const _QuizBox = (props) => {
 						</List>
 					</Grid>
 				</Fragment>
-			) : (
+			) : null : (
 				<h1>Loading</h1>
 			)}
 		</Grid>
@@ -167,9 +194,13 @@ const _QuizBox = (props) => {
 
 const mapStateQB = (state, ownProps) => {
 	const { questions, questionIdx } = ownProps;
+	//NOTE: The props here are very similar to SongDetail. Maybe make HOC?
 	return {
 		song: selectors.getSongFromId(state, questions[questionIdx].songId), // Possibly not needed. Just using for song Id
 		clouds: selectors.getCloudsForSong(state, questions[questionIdx].songId),
+		isSongDetailLoading: selectors.isSongDetailLoading(state),
+		isWordCloudLoading: selectors.isWordCloudLoading(state),
+		areSongLyricsLoading: selectors.areSongLyricsLoading(state),
 	};
 };
 const QuizBox = connect(mapStateQB, { fetchSongDetails, answerQuestion })(withWidth()(_QuizBox));
@@ -186,22 +217,13 @@ const ArtistGame = (props) => {
 	if (!questions.length || !artist) {
 		return <h1>Loading</h1>;
 	}
-
 	if (questionIdx > questions.length) {
 		return <h1>Game Over</h1>;
 	}
-	const question = questions[questionIdx];
 	let prevAnswered = false;
 	return (
-		<Grid className={classes.artistGamePage}>
-			<Grid
-				container
-				direction="row"
-				wrap="nowrap"
-				alignContent="center"
-				justify="space-around"
-				className={classes.scoreBoard}
-			>
+		<Grid container direction="column" alignItems="center" className={classes.artistGamePage}>
+			<Grid container item direction="row" wrap="nowrap" className={classes.scoreBoard} xs="9">
 				{questions.map((question, index) => {
 					let children;
 					const { answerIdx } = question;
@@ -210,43 +232,50 @@ const ArtistGame = (props) => {
 					if (!answer) {
 						children = (
 							<CloudQueue
-								className={classNames(classes.miniCloud, classes.unanswered)}
+								className={classNames(classes.unanswered)}
 								onClick={prevAnswered || index == 0 ? () => updateQuestionIdx(index) : null}
 							/>
 						);
 					} else if (answer.correct) {
 						children = (
 							<CloudDone
-								className={classNames(classes.miniCloud, classes.green)}
+								className={classNames(classes.green)}
 								onClick={prevAnswered || index == 0 ? () => updateQuestionIdx(index) : null}
 							/>
 						);
 					} else {
 						children = (
 							<CloudOff
-								className={classNames(classes.miniCloud, classes.red)}
+								className={classNames(classes.red)}
 								onClick={prevAnswered || index == 0 ? () => updateQuestionIdx(index) : null}
 							/>
 						);
 					}
 					prevAnswered = answerIdx == 0 || answerIdx;
 					return (
-						<Grid item key={index}>
+						<Grid
+							item
+							key={index}
+							className={classNames(classes.miniCloud, index == questionIdx && classes.currentMiniCloud)}
+							xs={2}
+						>
 							{children}
+							<Typography align="center" variant="h6" className={classes.blackTxt}>
+								{index + 1}
+							</Typography>
 						</Grid>
 					);
 				})}
 			</Grid>
-			<Typography align="center" variant="h6">
-				Which song was this Cloud made from?
-			</Typography>
-			<QuizBox
-				questions={questions}
-				gameId={game.id}
-				questionIdx={questionIdx}
-				fetchSongDetails={fetchSongDetails}
-				updateQuestionIdx={updateQuestionIdx}
-			/>
+			<Grid xs="10">
+				<QuizBox
+					questions={questions}
+					gameId={game.id}
+					questionIdx={questionIdx}
+					fetchSongDetails={fetchSongDetails}
+					updateQuestionIdx={updateQuestionIdx}
+				/>
+			</Grid>
 		</Grid>
 	);
 };
