@@ -53,6 +53,7 @@ const useStyles = makeStyles((theme) => {
 		miniCloud: {
 			marginRight: '1.2em',
 			cursor: 'pointer',
+			textAlign: 'center',
 		},
 		currentMiniCloud: {
 			backgroundColor: theme.palette.secondary.main,
@@ -150,14 +151,16 @@ const _QuizBox = (props) => {
 	return (
 		<Grid container direction="column" className={classes.quizBoxContainer}>
 			{info ? (
-				<Fragment>
-					<Typography align="center" variant="h6" style={{ marginBottom: '.9em' }}>
-						Which song was this Cloud made from?
-					</Typography>
-					<Grid item container direction="column">
+				<Grid item container>
+					<Grid item xs={12} container direction="column">
+						<Typography align="center" variant="h6" style={{ marginBottom: '.9em' }}>
+							Which song was this Cloud made from?
+						</Typography>
+					</Grid>
+					<Grid item xs={12} lg={8} container direction="column">
 						<img item src={info && info.secure_url} className={classes.cloud} />
 					</Grid>
-					<Grid item>
+					<Grid item xs={12} lg={4}>
 						<List>
 							{answers.map((a, i) => {
 								const thisAnswerChosen = answerIdx == i;
@@ -190,7 +193,7 @@ const _QuizBox = (props) => {
 							})}
 						</List>
 					</Grid>
-				</Fragment>
+				</Grid>
 			) : !isSongDetailLoading && !isWordCloudLoading && !areSongLyricsLoading ? (
 				<Grid>
 					<Typography variant="h3" align="center" className={classes.textPlaceholder}>
