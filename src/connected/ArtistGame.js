@@ -109,14 +109,16 @@ const _QuizBox = (props) => {
 	);
 	useEffect(() => {
 		let newIdx = questionIdx + 1;
-		let nextQuestionAnswered = true;
-		while (nextQuestionAnswered) {
-			const nextQuestion = questions[newIdx];
-			nextQuestionAnswered = nextQuestion.answerIdx == 0 || nextQuestion.answerIdx;
-			if (nextQuestionAnswered) newIdx++;
+		if (isAnswered) {
+			let nextQuestion = questions[newIdx];
+			let nextQuestionAnswered = nextQuestion.answerIdx == 0 || nextQuestion.answerIdx;
+			while (nextQuestionAnswered) {
+				newIdx++;
+				nextQuestion = questions[newIdx];
+				nextQuestionAnswered = nextQuestion.answerIdx == 0 || nextQuestion.answerIdx;
+			}
+			updateQuestionIdx(newIdx);
 		}
-		updateQuestionIdx(newIdx);
-		return;
 	}, []);
 	return (
 		<Grid container direction="column" className={classes.quizBoxContainer}>
