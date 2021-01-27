@@ -38,7 +38,7 @@ const DebouncedTextField = DebouncedInput(Input, { timeout: 639 });
 const useStyles = makeStyles((theme) => {
 	return {
 		artistGamePage: {
-			height: '100vh',
+			minHeight: '91vh', //TO-DO: Why doesn't 100% height work here, but does work on ArtistPage? Content/children?
 			width: '100%',
 			backgroundColor: theme.palette.primary.main,
 			overflow: 'hidden',
@@ -116,18 +116,6 @@ const _QuizBox = (props) => {
 	const { info } = cloud;
 	const isAnswered = answerIdx == 0 || answerIdx;
 	const letters = [ 'A', 'B', 'C', 'D' ];
-	useEffect(
-		() => {
-			if (questionIdx == 0) {
-				if (!info) fetchSongDetails(question.songId);
-			}
-			const nextQuestion = questions[questionIdx + 1];
-			if (nextQuestion) {
-				fetchSongDetails(nextQuestion.songId);
-			}
-		},
-		[ questionIdx ],
-	);
 	useEffect(() => {
 		let newIdx = questionIdx + 1;
 		if (isAnswered) {
@@ -141,6 +129,19 @@ const _QuizBox = (props) => {
 			updateQuestionIdx(newIdx);
 		}
 	}, []);
+	useEffect(
+		() => {
+			if (questionIdx == 0) {
+				if (!info) fetchSongDetails(question.songId);
+			}
+			const nextQuestion = questions[questionIdx + 1];
+			if (nextQuestion) {
+				fetchSongDetails(nextQuestion.songId);
+			}
+		},
+		[ questionIdx ],
+	);
+
 	return (
 		<Grid container direction="column" className={classes.quizBoxContainer}>
 			{!isSongDetailLoading && !isWordCloudLoading && !areSongLyricsLoading ? info ? (
@@ -222,8 +223,16 @@ const ArtistGame = (props) => {
 	}
 	let prevAnswered = false;
 	return (
-		<Grid container direction="column" alignItems="center" className={classes.artistGamePage}>
-			<Grid container item direction="row" wrap="nowrap" className={classes.scoreBoard} xs="9">
+		<Grid
+			container
+			direction="row"
+			wrap="wrap"
+			alignItems="flex-start"
+			alignContent="space-around"
+			justify="center"
+			className={classes.artistGamePage}
+		>
+			<Grid container item xs="11" direction="row" wrap="nowrap" className={classes.scoreBoard}>
 				{questions.map((question, index) => {
 					let children;
 					const { answerIdx } = question;
