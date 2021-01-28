@@ -171,6 +171,32 @@ export const getCurrentArtist = createSelector(getCurrentArtistId, getArtistsByI
 	const currentArtist = artistsById[artistId];
 	return currentArtist;
 });
+export const getArtistsList = createSelector(getArtistsById, (artistsById) => {
+	return Object.values(artistsById);
+});
+export const getSearchedArtistList = createSelector(
+	getArtistsList,
+	getNormedSearchTerm,
+	(artists, normalizedSearchTerm) => {
+		if (!normalizedSearchTerm.length) return artists;
+		const matchingArtists = artists.reduce((matchingArtists, artist) => {
+			const normalizedArtistName = replaceDiacritics(artist.name.toLowerCase());
+			const searchTermItems = normalizedSearchTerm.split(' ');
+			let isMatch = false;
+			let searchRank = 0;
+			searchTermItems.forEach((word) => {
+				const artistMatch = normalizedArtistName.match(word);
+				if (artistMatch) isMatch = true;
+				searchRank += artistMatch ? artistMatch[0].length : 0;
+			});
+			if (!isMatch) return matchingArtists;
+			const rankedArtist = { ...artist, searchRank };
+			matchingArtists.push(rankedArtist);
+			return matchingArtists;
+		}, []);
+		return sortBy(matchingArtists, (artist) => artist.searchRank).reverse();
+	},
+);
 
 //Clouds
 /********************************************************************* */
@@ -244,7 +270,7 @@ export const getCloudsByArtistId = createSelector(getCloudsById, (cloudsById) =>
 	}, {});
 });
 export const getCloudsBySongId = createSelector(getCloudsById, (cloudsById) => {
-	Object.values(cloudsById).reduce((cloudsBySongId, cloud) => {
+	return Object.values(cloudsById).reduce((cloudsBySongId, cloud) => {
 		const { songIds } = cloud;
 		songIds.forEach(
 			(songId) =>
@@ -270,10 +296,39 @@ export const getCloudsForSong = createSelector(
 	(_, songId) => songId,
 	getCurrentSongId,
 	(cloudsById, songId, currentSongId) => {
-		songId = songId ? songId : currentSongId;
+		songId = songId ? String(songId) : String(currentSongId);
 		if (!songId) console.warn(`Warning, getCloudsForSong called without necessary arguments.`);
-		return Object.values(cloudsById).filter(
+		const matchingClouds = Object.values(cloudsById).filter(
 			(cloud) => cloud.songIds.includes(songId) && cloud.songIds.length === 1,
 		);
+		return matchingClouds;
+	},
+);
+
+export const getOfficalCloudForSong = createSelector(getCloudsForSong, (cloudsForSong) =>
+	cloudsForSong.find((cloud) => cloud.officialCloud && cloud.info),
+);
+
+//Clouds
+/********************************************************************* */
+
+export const getGamesById = (state) => state.games.byId;
+
+export const getGames = createSelector(getGamesById, (gamesById) => Object.values(gamesById));
+
+export const getArtistGame = createSelector(
+	getCurrentArtist,
+	getGames,
+	getSongsById,
+	getCloudsBySongId,
+	(artist, games, songsById, cloudsBySongId) => {
+		if (!artist) return null;
+		const rawGame = games.find((game) => game.artistId == artist.id);
+		if (!rawGame) return null;
+		const cookedGame = {
+			...rawGame,
+			artist: { ...artist },
+		};
+		return cookedGame;
 	},
 );

@@ -4,10 +4,11 @@ import songs from './songs';
 import userInfo from './userInfo';
 import artists from './artists';
 import clouds from './clouds';
+import games from './games';
 import { SIGN_OUT } from '../actionTypes';
 
 export default (history) => {
-	const appReducer = combineReducers({ router: connectRouter(history), songs, userInfo, artists, clouds });
+	const appReducer = combineReducers({ router: connectRouter(history), songs, userInfo, artists, clouds, games });
 
 	const rootReducer = (state, action) => {
 		if (action.type === SIGN_OUT) {

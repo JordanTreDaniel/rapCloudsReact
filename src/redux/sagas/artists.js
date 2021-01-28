@@ -1,5 +1,13 @@
 import { put, takeEvery, takeLatest, call, select, cancel, all } from 'redux-saga/effects';
-import { FETCH_ARTIST, ADD_SONGS, SIGN_OUT, FETCH_SONG_LYRICS, GEN_ARTIST_CLOUD } from '../actionTypes';
+import {
+	FETCH_ARTIST,
+	ADD_SONGS,
+	SIGN_OUT,
+	FETCH_SONG_LYRICS,
+	GEN_ARTIST_CLOUD,
+	FETCH_ARTIST_SONGS,
+	FETCH_ARTIST_GAME,
+} from '../actionTypes';
 import { getAccessToken, getArtistFromId, getCloudsForArtist, getArtistsSongs } from '../selectors';
 import { fetchSongLyrics } from './songs';
 import { generateCloud } from './clouds';
@@ -26,8 +34,25 @@ const apiFetchArtist = async (artistId, accessToken) => {
 	return { error: { status, statusText } };
 };
 
+const apiFetchArtistSongs = async (artistId, page, accessToken) => {
+	const res = await axios({
+		method: 'get',
+		url: `${REACT_APP_SERVER_ROOT}/getArtistSongs/${artistId}/${page}`,
+		headers: {
+			Authorization: accessToken,
+		},
+	});
+	const { status, statusText, data } = res;
+	const { songs, nextPage } = data;
+	if (status === 200) {
+		return { songs, nextPage };
+	}
+
+	return { error: { status, statusText } };
+};
+
 export function* fetchArtist(action) {
-	const { fetchCloudToo = true, artistId } = action;
+	const { fetchCloudToo = true, artistId, forceFetch = false } = action;
 	const accessToken = yield select(getAccessToken);
 	if (!accessToken) {
 		console.error(`Could not fetch artist without access token `, { accessToken });
@@ -40,7 +65,7 @@ export function* fetchArtist(action) {
 		yield cancel();
 	}
 	const exisitingInStore = yield select(getArtistFromId, artistId);
-	if (exisitingInStore) {
+	if (exisitingInStore && !forceFetch) {
 		//TO-DO: This efficiency check doesn't work around rehydration time
 		yield put({ type: FETCH_ARTIST.cancellation });
 		yield cancel();
@@ -49,7 +74,8 @@ export function* fetchArtist(action) {
 
 	const { artist, songs = [], nextPage, error } = yield call(apiFetchArtist, artistId, accessToken);
 	if (error) {
-		yield put({ type: FETCH_ARTIST.failure, artistId });
+		yield put({ type: FETCH_ARTIST.failure, artistId, error });
+		return error;
 	} else {
 		artist.nextPage = nextPage;
 		if (songs.length) yield put({ type: ADD_SONGS, songs });
@@ -62,6 +88,40 @@ export function* fetchArtist(action) {
 				artistId,
 			});
 		}
+		return { artist, songs };
+	}
+}
+
+export function* fetchArtistSongs(action) {
+	const { artistId } = action;
+	const accessToken = yield select(getAccessToken);
+	if (!accessToken) {
+		console.error(`Could not fetch artist without access token `, { accessToken });
+		yield put({ type: SIGN_OUT });
+		yield cancel();
+	}
+	if (!artistId) {
+		console.error(`Could not fetch artist without artist id`, { artistId });
+		yield put({ type: FETCH_ARTIST_SONGS.failure, artistId });
+		yield cancel();
+	}
+	const artist = yield select(getArtistFromId, artistId);
+	const { nextPage } = artist;
+	if (!nextPage) {
+		yield put({ type: FETCH_ARTIST_SONGS.cancellation, artistId, reason: "Next page doesn't exist." });
+	}
+	const { songs = [], nextPage: newNextPage, error } = yield call(
+		apiFetchArtistSongs,
+		artistId,
+		nextPage,
+		accessToken,
+	);
+	if (error) {
+		yield put({ type: FETCH_ARTIST_SONGS.failure, artistId });
+	} else {
+		artist.nextPage = newNextPage;
+		if (songs.length) yield put({ type: ADD_SONGS, songs });
+		yield put({ type: FETCH_ARTIST_SONGS.success, artist });
 	}
 }
 
@@ -116,11 +176,60 @@ export function* genArtistCloud(action) {
 	}
 }
 
+//TO-DO: Move this to games sagas when created.
+export function* fetchArtistGame(action) {
+	try {
+		const { artistId } = action;
+		const { _, songs, error } = yield call(fetchArtist, { artistId, fetchCloudToo: false, forceFetch: true });
+		const genAnswers = (song) => {
+			const { full_title, id: songId } = song;
+			let answers = [ { title: full_title, correct: true, songId: song.id } ],
+				visited = [];
+			do {
+				let randomIdx = Math.floor(Math.random() * (songs.length - 1));
+				while (visited.includes(randomIdx)) {
+					randomIdx = Math.floor(Math.random() * (songs.length - 1));
+				}
+				visited.push(randomIdx);
+				const song = songs[randomIdx];
+				if (song.id === songId) continue;
+				answers.splice(Math.floor(Math.random() * 3), 0, {
+					title: song.full_title,
+					songId: song.id,
+					correct: song.full_title === full_title,
+				});
+			} while (answers.length < 4);
+			return answers;
+		};
+
+		const game = { artistId, questions: songs.map((song) => ({ songId: song.id, answers: genAnswers(song) })) };
+		if (error) {
+			yield put({ type: FETCH_ARTIST_GAME.failure });
+			console.log('Something went wrong in fetch artist cloud', error);
+		} else {
+			yield put({ type: FETCH_ARTIST_GAME.success, game });
+			return game;
+		}
+	} catch (err) {
+		yield put({ type: FETCH_ARTIST_GAME.failure });
+		console.log('Something went wrong in fetch artist cloud', err);
+	}
+}
+
 function* watchFetchArtist() {
 	yield takeEvery(FETCH_ARTIST.start, fetchArtist);
+}
+
+function* watchFetchArtistSongs() {
+	yield takeEvery(FETCH_ARTIST_SONGS.start, fetchArtistSongs);
 }
 
 function* watchGenArtistCloud() {
 	yield takeEvery(GEN_ARTIST_CLOUD.start, genArtistCloud);
 }
-export default [ watchFetchArtist, watchGenArtistCloud ];
+
+function* watchGenArtistGame() {
+	yield takeEvery(FETCH_ARTIST_GAME.start, fetchArtistGame);
+}
+
+export default [ watchFetchArtist, watchGenArtistCloud, watchFetchArtistSongs, watchGenArtistGame ];

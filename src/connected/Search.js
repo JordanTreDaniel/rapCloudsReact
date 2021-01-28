@@ -55,7 +55,6 @@ const Search = (props) => {
 					onChange={(e) => {
 						const { value: newSearchTerm } = e.target;
 						setSongSearchTerm(newSearchTerm);
-						console.log({ newSearchTerm });
 						newSearchTerm.length && search(newSearchTerm);
 					}}
 					value={searchTerm}

@@ -140,7 +140,7 @@ const SignIn = (props) => {
 				props.setUser(user);
 				props.fetchClouds();
 				socket.close();
-				props.history.push(paths.search);
+				props.history.push(paths.play);
 			});
 		}
 	};

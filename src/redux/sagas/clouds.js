@@ -55,7 +55,6 @@ export function* generateCloud(action) {
 		if (!lyricString || !lyricString.length) return { error: { message: 'Must include lyrics to get a cloud' } };
 		const cloudSettingsForFlight = yield select(getCloudSettingsForFlight);
 		const userId = yield select(getUserMongoId);
-		let finishedCloud;
 		cloud = {
 			...cloud,
 			settings: cloudSettingsForFlight,
@@ -64,10 +63,23 @@ export function* generateCloud(action) {
 		};
 
 		const socket = yield call(getConnectedSocket);
-		socket.on('RapCloudFinished', (_finishedCloud) => {
-			finishedCloud = _finishedCloud;
-			socket.close();
-		});
+		const waitForCloud = () => {
+			return new Promise((resolve, reject) => {
+				try {
+					socket.on('RapCloudFinished', (finishedCloud) => {
+						resolve({ finishedCloud });
+						socket.close();
+					});
+					socket.on('RapCloudError', (newCloudError) => {
+						reject({ newCloudError });
+						socket.close();
+					});
+				} catch (err) {
+					reject({ newCloudError: error });
+				}
+			});
+		};
+
 		const { error, ...rest } = yield call(apiGenerateCloud, cloud, socket.id);
 		// const {cloud, message} = rest;
 		//TO-DO: Do something with the cloud generation confirmation.
@@ -75,20 +87,11 @@ export function* generateCloud(action) {
 			console.error('Something went wrong in generateCloud', error);
 			return { error };
 		} else {
-			const waitForCloud = () => {
-				return new Promise((resolve, reject) => {
-					const intervalId = setInterval(() => {
-						console.log('Checking for cloud');
-						if (finishedCloud) {
-							console.log('got the cloud in the interval');
-							clearInterval(intervalId);
-							resolve(finishedCloud);
-						}
-					}, 1000);
-				});
-			};
-			finishedCloud = yield call(waitForCloud);
-			return { finishedCloud };
+			const { finishedCloud, newCloudError } = yield call(waitForCloud);
+			if (finishedCloud) {
+				return { finishedCloud };
+			}
+			return { error: newCloudError };
 		}
 	} catch (err) {
 		console.error('Something went wrong', err);
@@ -125,11 +128,12 @@ const apiDeleteCloud = async (cloudId, public_id) => {
 export function* deleteCloud(action) {
 	try {
 		const { cloudId } = action;
+		let { cloud } = action;
 		if (!cloudId) {
-			yield put({ type: DELETE_CLOUD.cancellation });
+			yield put({ type: DELETE_CLOUD.cancellation, cloudId });
 			yield cancel();
 		}
-		const cloud = yield select(getCloudFromId, cloudId);
+		cloud = cloud ? cloud : yield select(getCloudFromId, cloudId);
 		const { public_id } = cloud.info || {};
 		const { error } = yield call(apiDeleteCloud, cloudId, public_id);
 		if (error) {
@@ -321,6 +325,11 @@ export function* fetchClouds(action) {
 		} else {
 			const neededSongIds = [];
 			for (let cloud of clouds) {
+				if (!cloud.info) {
+					//TO-DO: Roll the deletions together into one call
+					console.log('Got cloud with no info. Deleting', cloud);
+					yield put({ type: DELETE_CLOUD.start, cloudId: cloud.id, cloud });
+				}
 				for (let songId of cloud.songIds) {
 					const matchingSong = yield select(getSongFromId, songId);
 					if (!matchingSong && !neededSongIds.includes(songId)) {
@@ -329,7 +338,9 @@ export function* fetchClouds(action) {
 				}
 			}
 			yield all(
-				neededSongIds.map((songId) => put({ type: FETCH_SONG_DETAILS.start, songId, generateCloud: false })),
+				neededSongIds.map((songId) =>
+					put({ type: FETCH_SONG_DETAILS.start, songId, generateCloud: false, fetchClouds: false }),
+				),
 			);
 			//TO-DO: Should I also fetch associated artists?
 			yield put({ type: FETCH_CLOUDS.success, clouds });

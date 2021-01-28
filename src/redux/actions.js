@@ -17,6 +17,9 @@ import {
 	UPDATE_USER,
 	FETCH_CLOUDS,
 	DELETE_CLOUD,
+	FETCH_ARTIST_SONGS,
+	FETCH_ARTIST_GAME,
+	ANSWER_QUESTION,
 } from './actionTypes';
 import normalizeLyrics from './utils/normalizeLyrics';
 
@@ -50,6 +53,10 @@ export const fetchSongDetails = (songId) => {
 
 export const fetchArtist = (artistId) => {
 	return { type: FETCH_ARTIST.start, artistId };
+};
+
+export const fetchArtistSongs = (artistId) => {
+	return { type: FETCH_ARTIST_SONGS.start, artistId };
 };
 
 export const signOut = () => {
@@ -91,4 +98,12 @@ export const deleteMask = (maskId) => {
 
 export const resetCloudDefaults = () => {
 	return { type: RESET_CLOUD_DEFAULTS };
+};
+
+export const fetchArtistGame = (artistId) => {
+	return { type: FETCH_ARTIST_GAME.start, artistId };
+};
+
+export const answerQuestion = (gameId, questionIdx, answerIdx) => {
+	return { type: ANSWER_QUESTION, gameId, questionIdx, answerIdx };
 };

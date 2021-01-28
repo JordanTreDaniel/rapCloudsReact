@@ -6,9 +6,12 @@ import {
 	FETCH_SONG_LYRICS,
 	SIGN_OUT,
 	GEN_SONG_CLOUD,
+	ADD_ARTISTS,
+	ADD_CLOUD,
+	ADD_CLOUDS,
 } from '../actionTypes';
 import { generateCloud } from './clouds';
-import { getAccessToken, getSearchTerm, getSongFromId, getCloudsForSong } from '../selectors';
+import { getAccessToken, getSearchTerm, getSongFromId, getUserMongoId, getOfficalCloudForSong } from '../selectors';
 import normalizeLyrics from '../utils/normalizeLyrics';
 import axios from 'axios';
 
@@ -31,9 +34,9 @@ const apiSearchSongs = async (searchTerm, accessToken) => {
 		},
 	});
 	const { status, statusText, data } = res;
-	const { songs } = data;
+	const { songs, artists } = data;
 	if (status === 200) {
-		return { songs };
+		return { songs, artists };
 	}
 
 	return { error: { status, statusText } };
@@ -47,12 +50,13 @@ export function* searchSongs(action) {
 		if (!accessToken) yield put({ type: SIGN_OUT });
 		yield cancel();
 	}
-	const { songs, error } = yield call(apiSearchSongs, searchTerm, accessToken);
+	const { songs, artists, error } = yield call(apiSearchSongs, searchTerm, accessToken);
 	if (error) {
 		console.log('Something went wrong', error);
 		yield put({ type: SEARCH_SONGS.failure });
 	} else {
 		yield put({ type: ADD_SONGS, songs });
+		yield put({ type: ADD_ARTISTS, artists });
 	}
 }
 
@@ -72,6 +76,24 @@ const apiFetchSongDetails = async (songId, accessToken) => {
 	const { song } = data;
 	if (status === 200) {
 		return { song };
+	}
+
+	return { error: { status, statusText } };
+};
+
+const apiFetchSongClouds = async (songId, accessToken, userId) => {
+	if (!songId || !accessToken || !userId) {
+		console.error(`Could not fetch song clouds without access token, user id, & song id`, { songId, accessToken });
+		return { error: `Could not fetch song clouds without access token, user id, & song id` };
+	}
+	const res = await axios({
+		method: 'get',
+		url: `${REACT_APP_SERVER_ROOT}/getSongClouds/${songId}/${userId}`,
+	});
+	const { status, statusText, data } = res;
+	const { officialCloud, userMadeClouds } = data;
+	if (status === 200) {
+		return { officialCloud, userMadeClouds };
 	}
 
 	return { error: { status, statusText } };
@@ -104,10 +126,29 @@ const apiFetchSongLyrics = async (songPath, songId) => {
 
 export function* fetchSongDetails(action) {
 	const accessToken = yield select(getAccessToken);
-	const { songId, fetchLyrics = true, generateCloud = true } = action;
+	const userId = yield select(getUserMongoId);
+	const { songId, fetchLyrics = true, generateCloud = true, fetchClouds = true } = action;
+	let hasOfficialCloud = false;
+	if (fetchClouds) {
+		const { officialCloud, userMadeClouds, error: cloudsError } = yield call(
+			apiFetchSongClouds,
+			songId,
+			accessToken,
+			userId,
+		);
+		//TO-DO: Handle possible cloudsError
+		if (userMadeClouds && userMadeClouds.length) {
+			yield put({ type: ADD_CLOUDS, clouds: userMadeClouds });
+		}
+		if (officialCloud) {
+			hasOfficialCloud = true;
+			yield put({ type: ADD_CLOUD, finishedCloud: officialCloud });
+		}
+	}
 	const existingSong = yield select(getSongFromId, songId);
-	const cloudsForSong = yield select(getCloudsForSong, songId);
-	if (existingSong && existingSong.normalizedLyrics && cloudsForSong.length) {
+	const officialCloudForSong = yield select(getOfficalCloudForSong, songId);
+	if (existingSong && existingSong.normalizedLyrics && officialCloudForSong && officialCloudForSong.info) {
+		//TO-DO: Check for existing clouds with no info and delete?
 		yield put({ type: FETCH_SONG_DETAILS.cancellation });
 		yield cancel();
 	}
@@ -120,7 +161,12 @@ export function* fetchSongDetails(action) {
 		yield put({ type: FETCH_SONG_DETAILS.success, song });
 		if (fetchLyrics) {
 			yield delay(500);
-			yield put({ type: FETCH_SONG_LYRICS.start, songId, songPath, generateCloud });
+			yield put({
+				type: FETCH_SONG_LYRICS.start,
+				songId,
+				songPath,
+				generateCloud: generateCloud && !hasOfficialCloud,
+			});
 		}
 	}
 }
@@ -132,6 +178,10 @@ export function* fetchSongLyrics(action) {
 	try {
 		if (song.lyrics && !forceFetch) {
 			yield put({ type: FETCH_SONG_LYRICS.cancellation });
+			if (generateCloud) {
+				const normalizedLyrics = normalizeLyrics(song.lyrics);
+				yield put({ type: GEN_SONG_CLOUD.start, lyricString: normalizedLyrics, songId, officialCloud: true });
+			}
 			return song.lyrics;
 		}
 		const { lyrics: newLyrics, error } = yield call(apiFetchSongLyrics, songPath, songId);
@@ -141,25 +191,24 @@ export function* fetchSongLyrics(action) {
 			console.error('Something went wrong', error);
 		} else {
 			yield put({ type: FETCH_SONG_LYRICS.success, songId, lyrics });
+			if (generateCloud) {
+				const normalizedLyrics = normalizeLyrics(lyrics);
+				yield put({ type: GEN_SONG_CLOUD.start, lyricString: normalizedLyrics, songId, officialCloud: true });
+			}
 			return lyrics;
 		}
 	} catch (err) {
 		console.log('Something went wrong in fetchSongLyrics', err);
-	} finally {
-		if (generateCloud) {
-			const normalizedLyrics = normalizeLyrics(lyrics);
-			yield put({ type: GEN_SONG_CLOUD.start, lyricString: normalizedLyrics, songId });
-		}
 	}
 }
 
 export function* genSongCloud(action) {
 	try {
 		let { cloud = {} } = action;
-		const { lyricString, songId, forceFetch = false } = action;
+		const { lyricString, songId, forceFetch = false, officialCloud = false } = action;
 		const song = yield select(getSongFromId, songId);
-		const cloudsForSong = yield select(getCloudsForSong, songId);
-		if (cloudsForSong.length && !forceFetch) {
+		const officialCloudForSong = yield select(getOfficalCloudForSong, songId);
+		if (officialCloudForSong && officialCloudForSong.info && !forceFetch) {
 			yield put({ type: GEN_SONG_CLOUD.cancellation });
 			yield cancel();
 			return;
@@ -174,7 +223,11 @@ export function* genSongCloud(action) {
 			songIds,
 			lyricString,
 			inspirationType: 'song',
+			officialCloud,
 		};
+		if (officialCloud && cloud.userId) {
+			delete cloud.userId;
+		}
 		const { finishedCloud, error } = yield call(generateCloud, { lyricString, cloud });
 		if (error) {
 			yield put({ type: GEN_SONG_CLOUD.failure });
