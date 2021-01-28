@@ -155,7 +155,7 @@ const Navbar = (props) => {
 									to={paths.play}
 									className={classNames(classes.whiteLink, classes.drawerItem)}
 								>
-									<Typography variant="h4">Guessing Games</Typography>
+									<Typography variant="h4">Play</Typography>
 									<IconButton className={classes.drawerItemButton}>
 										<Question />
 									</IconButton>
