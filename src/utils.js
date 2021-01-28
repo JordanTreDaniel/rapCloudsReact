@@ -1,3 +1,5 @@
+import io from 'socket.io-client';
+
 export const downloadCloudFromUrl = async (url, fileName) => {
 	const blob = await fetch(url)
 		.then((res) => res.blob())
@@ -26,6 +28,18 @@ export const getRandomInt = (max) => {
 	return Math.floor(Math.random() * Math.floor(max)) + 1;
 };
 
+export const getConnectedSocket = () => {
+	return new Promise((resolve, reject) => {
+		const API_URL =
+			process.env.NODE_ENV === 'development'
+				? 'http://localhost:3333'
+				: 'https://rap-clouds-server.herokuapp.com';
+		const socket = io(API_URL);
+		socket.on('connect', () => {
+			resolve(socket);
+		});
+	});
+};
 export const gcd = (a, b) => {
 	if (!b) {
 		return a;

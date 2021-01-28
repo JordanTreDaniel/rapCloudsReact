@@ -5,9 +5,8 @@ import { makeStyles, Button, Grid, IconButton, Typography, Avatar } from '@mater
 import ArrowIcon from '@material-ui/icons/ArrowForward';
 // import "./SignIn.css"; //Don't think we need this
 import { setUser, addSongs, updateUser, fetchClouds } from '../redux/actions';
-import { classNames } from '../utils';
+import { classNames, getConnectedSocket } from '../utils';
 import paths from '../paths';
-
 const API_URL =
 	process.env.NODE_ENV === 'development' ? 'http://localhost:3333' : 'https://rap-clouds-server.herokuapp.com';
 
@@ -90,7 +89,7 @@ const useStyles = makeStyles((theme) => {
 
 const SignIn = (props) => {
 	let popup = null;
-	const socket = io(API_URL);
+	let socket;
 	const [ popUpOpen, togglePopUp ] = useState(false);
 	const classes = useStyles();
 
@@ -131,7 +130,8 @@ const SignIn = (props) => {
 	// Kicks off the processes of opening the popup on the server and listening
 	// to the popup. It also disables the login button so the user can not
 	// attempt to login to the provider twice.
-	const startAuth = () => {
+	const startAuth = async () => {
+		socket = await getConnectedSocket();
 		if (!popUpOpen) {
 			popup = openPopup();
 			checkPopup();
