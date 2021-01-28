@@ -124,12 +124,12 @@ const _QuizBox = (props) => {
 		isWordCloudLoading,
 		areSongLyricsLoading,
 		gameOver,
+		cloud,
 	} = props;
 	const question = questions[questionIdx];
 	const classes = useStyles();
-	const cloud = clouds[0] || {};
 	const { answers, answerIdx } = question;
-	const { info } = cloud;
+	const { info } = cloud || {};
 	const isAnswered = answerIdx == 0 || answerIdx;
 	const letters = [ 'A', 'B', 'C', 'D' ];
 	useEffect(() => {
@@ -231,7 +231,7 @@ const mapStateQB = (state, ownProps) => {
 	//NOTE: The props here are very similar to SongDetail. Maybe make HOC?
 	return {
 		song: selectors.getSongFromId(state, songId), // Possibly not needed. Just using for song Id
-		clouds: selectors.getCloudsForSong(state, songId),
+		cloud: selectors.getOfficalCloudForSong(state, songId),
 		isSongDetailLoading: selectors.isSongDetailLoading(state),
 		isWordCloudLoading: selectors.isWordCloudLoading(state),
 		areSongLyricsLoading: selectors.areSongLyricsLoading(state),

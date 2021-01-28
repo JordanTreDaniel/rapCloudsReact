@@ -208,7 +208,7 @@ export function* genSongCloud(action) {
 		const { lyricString, songId, forceFetch = false, officialCloud = false } = action;
 		const song = yield select(getSongFromId, songId);
 		const officialCloudForSong = yield select(getOfficalCloudForSong, songId);
-		if (officialCloudForSong && !forceFetch) {
+		if (officialCloudForSong && officialCloudForSong.info && !forceFetch) {
 			yield put({ type: GEN_SONG_CLOUD.cancellation });
 			yield cancel();
 			return;

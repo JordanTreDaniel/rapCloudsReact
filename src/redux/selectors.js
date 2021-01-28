@@ -306,7 +306,7 @@ export const getCloudsForSong = createSelector(
 );
 
 export const getOfficalCloudForSong = createSelector(getCloudsForSong, (cloudsForSong) =>
-	cloudsForSong.find((cloud) => cloud.officialCloud),
+	cloudsForSong.find((cloud) => cloud.officialCloud && cloud.info),
 );
 
 //Clouds
