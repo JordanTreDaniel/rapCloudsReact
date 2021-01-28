@@ -37,7 +37,7 @@ const DebouncedTextField = DebouncedInput(Input, { timeout: 639 });
 const useStyles = makeStyles((theme) => {
 	return {
 		gameMaker: {
-			height: '100%',
+			height: '100vh',
 			backgroundColor: theme.palette.primary.dark,
 			overflow: 'hidden',
 		},
@@ -48,7 +48,9 @@ const useStyles = makeStyles((theme) => {
 			color: theme.palette.secondary.main,
 			opacity: '.72',
 		},
-		searchBar: {},
+		searchBarGrid: {
+			height: '18%',
+		},
 		searchIcon: {
 			color: theme.palette.secondary.dark,
 			backgroundColor: theme.palette.secondary.main,
@@ -58,6 +60,10 @@ const useStyles = makeStyles((theme) => {
 				color: theme.palette.secondary.dark,
 				backgroundColor: theme.palette.secondary.main,
 			},
+		},
+		artistListGrid: {
+			height: '64%',
+			overflowY: 'scroll',
 		},
 		artistAvatar: {
 			width: '3.3em',
@@ -85,13 +91,19 @@ const GameMaker = (props) => {
 		searchSongs(searchTerm);
 	};
 	return (
-		<Grid className={classes.gameMaker} justify="center" container>
-			<Grid item xs={12}>
+		<Grid
+			className={classes.gameMaker}
+			justify="center"
+			container
+			alignItems="flex-start"
+			alignContent="flex-start"
+		>
+			<Grid item xs={12} style={{ height: '18%' }}>
 				<Typography variant="h3" align="center" gutterBottom style={{ marginTop: '1em' }}>
-					Pick an artist, please!
+					Pick an artist
 				</Typography>
 			</Grid>
-			<Grid item className={classes.searchBar} xs={12}>
+			<Grid item className={classes.searchBarGrid} xs={12}>
 				<DebouncedTextField
 					type="text"
 					onChange={(e) => {
@@ -118,7 +130,7 @@ const GameMaker = (props) => {
 					}
 				/>
 			</Grid>
-			<Grid item xs={12}>
+			<Grid item xs={12} className={classes.artistListGrid}>
 				<List>
 					<Divider className={classes.dividers} />
 					{artists.map((artist) => (
