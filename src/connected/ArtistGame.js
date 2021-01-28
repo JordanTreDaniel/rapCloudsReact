@@ -128,7 +128,7 @@ const _QuizBox = (props) => {
 	} = props;
 	const question = questions[questionIdx];
 	const classes = useStyles();
-	const { answers, answerIdx } = question;
+	const { answers, answerIdx } = question || {};
 	const { info } = cloud || {};
 	const isAnswered = answerIdx == 0 || answerIdx;
 	const letters = [ 'A', 'B', 'C', 'D' ];
@@ -176,7 +176,7 @@ const _QuizBox = (props) => {
 						</Typography>
 					</Grid>
 					<Grid item xs={12} lg={8} container direction="column">
-						<img item src={info && info.secure_url} className={classes.cloud} />
+						<img src={info && info.secure_url} className={classes.cloud} />
 					</Grid>
 					<Grid item xs={12} lg={4}>
 						<List>
@@ -275,11 +275,14 @@ const ArtistGame = (props) => {
 		) : (
 			<Fragment>
 				{gameOver && (
-					<Grid justify="center" className={classes.gameOverGrid}>
-						<Typography align="center">Game Over!</Typography>
-						<Typography align="center">
-							You got {correctAnswers} out of {questions.length} RapClouds right!
+					<Grid container item justify="center" className={classes.gameOverGrid} xs={11}>
+						<Typography align="center" variant="h5" className={classes.blueTxt}>
+							Game Over!
 						</Typography>
+						<Typography align="center">
+							You got {correctAnswers} out of {questions.length} of {artist.name} RapClouds right!
+						</Typography>
+						<Typography align="center">That's {correctAnswers * 100 / questions.length}%!</Typography>
 						<Typography align="center">
 							<Button
 								variant="contained"
@@ -292,7 +295,7 @@ const ArtistGame = (props) => {
 						</Typography>
 					</Grid>
 				)}
-				<Grid className={classes.scoreBoard} container item xs="11" direction="row" wrap="nowrap">
+				<Grid className={classes.scoreBoard} container item xs={11} direction="row" wrap="nowrap">
 					{questions.map((question, index) => {
 						let children;
 						const { answerIdx } = question;
@@ -332,7 +335,7 @@ const ArtistGame = (props) => {
 						);
 					})}
 				</Grid>
-				<Grid xs="10" className={classes.quizBoxWrapper}>
+				<Grid item xs={10} className={classes.quizBoxWrapper}>
 					<QuizBox
 						questions={questions}
 						gameId={game.id}
