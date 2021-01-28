@@ -48,9 +48,7 @@ const useStyles = makeStyles((theme) => {
 			color: theme.palette.secondary.main,
 			opacity: '.72',
 		},
-		searchBarGrid: {
-			height: '18%',
-		},
+		searchBarGrid: {},
 		searchIcon: {
 			color: theme.palette.secondary.dark,
 			backgroundColor: theme.palette.secondary.main,
@@ -62,7 +60,7 @@ const useStyles = makeStyles((theme) => {
 			},
 		},
 		artistListGrid: {
-			height: '64%',
+			maxHeight: '72%',
 			overflowY: 'scroll',
 		},
 		artistAvatar: {
@@ -98,8 +96,8 @@ const GameMaker = (props) => {
 			alignItems="flex-start"
 			alignContent="flex-start"
 		>
-			<Grid item xs={12} style={{ height: '18%' }}>
-				<Typography variant="h3" align="center" gutterBottom style={{ marginTop: '1em' }}>
+			<Grid item xs={12}>
+				<Typography variant="h3" align="center" style={{ marginTop: '.5em' }}>
 					Pick an artist
 				</Typography>
 			</Grid>
@@ -133,8 +131,8 @@ const GameMaker = (props) => {
 			<Grid item xs={12} className={classes.artistListGrid}>
 				<List>
 					<Divider className={classes.dividers} />
-					{artists.map((artist) => (
-						<Fragment>
+					{artists.map((artist, idx) => (
+						<Grid key={idx}>
 							<ListItem component={Link} to={`games/${artist.id}`} className={classes.artistLink}>
 								<ListItemAvatar>
 									<Avatar
@@ -150,7 +148,7 @@ const GameMaker = (props) => {
 								/>
 							</ListItem>
 							<Divider className={classes.dividers} />
-						</Fragment>
+						</Grid>
 					))}
 				</List>
 			</Grid>
