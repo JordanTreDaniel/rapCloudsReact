@@ -9,22 +9,9 @@ import {
 	DELETE_CLOUD,
 	FETCH_SONG_DETAILS,
 } from '../actionTypes';
-import io from 'socket.io-client';
+import { getConnectedSocket } from '../../utils';
 const REACT_APP_SERVER_ROOT =
 	process.env.NODE_ENV === 'development' ? 'http://localhost:3333' : 'https://rap-clouds-server.herokuapp.com';
-
-const getConnectedSocket = () => {
-	return new Promise((resolve, reject) => {
-		const API_URL =
-			process.env.NODE_ENV === 'development'
-				? 'http://localhost:3333'
-				: 'https://rap-clouds-server.herokuapp.com';
-		const socket = io(API_URL);
-		socket.on('connect', () => {
-			resolve(socket);
-		});
-	});
-};
 
 const apiGenerateCloud = async (cloud, socketId) => {
 	const res = await axios({
