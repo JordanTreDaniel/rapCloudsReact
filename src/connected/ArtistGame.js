@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import { Redirect, useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import {
 	Typography,
 	AppBar,
@@ -16,6 +16,7 @@ import {
 	ListItemAvatar,
 	ListItemText,
 	Box,
+	Button,
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import CloudDone from '@material-ui/icons/CloudDone';
@@ -98,6 +99,14 @@ const useStyles = makeStyles((theme) => {
 		textPlaceholder: {
 			width: '100%',
 		},
+		gameOverGrid: {
+			marginBottom: '.3em',
+		},
+		playAgainLink: {
+			margin: '1.2em',
+			textDecoration: 'none',
+			color: theme.palette.secondary.main,
+		},
 	};
 });
 
@@ -114,6 +123,7 @@ const _QuizBox = (props) => {
 		isSongDetailLoading,
 		isWordCloudLoading,
 		areSongLyricsLoading,
+		gameOver,
 	} = props;
 	const question = questions[questionIdx];
 	const classes = useStyles();
@@ -129,6 +139,10 @@ const _QuizBox = (props) => {
 			let nextQuestionAnswered = nextQuestion.answerIdx == 0 || nextQuestion.answerIdx;
 			while (nextQuestionAnswered) {
 				newIdx++;
+				if (newIdx > questions.length - 1) {
+					newIdx--;
+					break;
+				}
 				nextQuestion = questions[newIdx];
 				nextQuestionAnswered = nextQuestion.answerIdx == 0 || nextQuestion.answerIdx;
 			}
@@ -154,7 +168,11 @@ const _QuizBox = (props) => {
 				<Grid item container>
 					<Grid item xs={12} container direction="column">
 						<Typography align="center" variant="h6" style={{ marginBottom: '.9em' }}>
-							Which song was this Cloud made from?
+							{isAnswered ? (
+								`This RapCloud was made from ${song.full_title}`
+							) : (
+								`Which song was this RapCloud made from?`
+							)}
 						</Typography>
 					</Grid>
 					<Grid item xs={12} lg={8} container direction="column">
@@ -194,7 +212,7 @@ const _QuizBox = (props) => {
 						</List>
 					</Grid>
 				</Grid>
-			) : !isSongDetailLoading && !isWordCloudLoading && !areSongLyricsLoading ? (
+			) : isSongDetailLoading || isWordCloudLoading || areSongLyricsLoading ? (
 				<Grid>
 					<Typography variant="h3" align="center" className={classes.textPlaceholder}>
 						Loading...
@@ -208,10 +226,12 @@ const _QuizBox = (props) => {
 
 const mapStateQB = (state, ownProps) => {
 	const { questions, questionIdx } = ownProps;
+	const question = questions[questionIdx] || {};
+	const { songId } = question;
 	//NOTE: The props here are very similar to SongDetail. Maybe make HOC?
 	return {
-		song: selectors.getSongFromId(state, questions[questionIdx].songId), // Possibly not needed. Just using for song Id
-		clouds: selectors.getCloudsForSong(state, questions[questionIdx].songId),
+		song: selectors.getSongFromId(state, songId), // Possibly not needed. Just using for song Id
+		clouds: selectors.getCloudsForSong(state, songId),
 		isSongDetailLoading: selectors.isSongDetailLoading(state),
 		isWordCloudLoading: selectors.isWordCloudLoading(state),
 		areSongLyricsLoading: selectors.areSongLyricsLoading(state),
@@ -228,17 +248,50 @@ const ArtistGame = (props) => {
 		if (!(game && game.id)) fetchArtistGame(artistId);
 	});
 	const { questions = [], artist } = game || {};
-	let prevAnswered = false;
+	let prevAnswered = false,
+		correctAnswers = 0,
+		incorrectAnswers = 0;
+	questions.forEach((question) => {
+		const { answerIdx } = question;
+		if (answerIdx !== 0 && !answerIdx) {
+			return;
+		}
+		const answer = question.answers[answerIdx];
+		if (answer.correct) {
+			correctAnswers++;
+		} else {
+			incorrectAnswers++;
+		}
+	});
+	const gameOver = correctAnswers + incorrectAnswers === questions.length;
 	const content =
-		questionIdx > questions.length || (!questions.length || !artist) ? (
+		!questions.length || !artist ? (
 			<Grid xs={12}>
 				<Typography align="center" variant="h1" className={classes.textPlaceholder}>
-					{!questions.length || !artist ? 'Loading' : 'Game Over'}
+					{!questions.length || !artist ? 'Loading' : null}
 				</Typography>
 				<LoadingBar loading={artistLoading} />
 			</Grid>
 		) : (
 			<Fragment>
+				{gameOver && (
+					<Grid justify="center" className={classes.gameOverGrid}>
+						<Typography align="center">Game Over!</Typography>
+						<Typography align="center">
+							You got {correctAnswers} out of {questions.length} RapClouds right!
+						</Typography>
+						<Typography align="center">
+							<Button
+								variant="contained"
+								component={Link}
+								to={paths.play}
+								className={classes.playAgainLink}
+							>
+								Play Again?
+							</Button>
+						</Typography>
+					</Grid>
+				)}
 				<Grid className={classes.scoreBoard} container item xs="11" direction="row" wrap="nowrap">
 					{questions.map((question, index) => {
 						let children;
@@ -286,6 +339,7 @@ const ArtistGame = (props) => {
 						questionIdx={questionIdx}
 						fetchSongDetails={fetchSongDetails}
 						updateQuestionIdx={updateQuestionIdx}
+						gameOver={gameOver}
 					/>
 				</Grid>
 			</Fragment>
