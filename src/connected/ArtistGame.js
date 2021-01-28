@@ -167,13 +167,18 @@ const _QuizBox = (props) => {
 			{info ? (
 				<Grid item container>
 					<Grid item xs={12} container direction="column">
-						<Typography align="center" variant="h6" style={{ marginBottom: '.9em' }}>
-							{isAnswered ? (
-								`This RapCloud was made from ${song.full_title}`
-							) : (
+						{isAnswered ? (
+							<Typography align="center" variant="h6" style={{ marginBottom: '.9em' }}>
+								This RapCloud was made from{' '}
+								<Link className={classes.blueTxt} to={`/clouds/${song.id}`}>
+									{song.title}
+								</Link>
+							</Typography>
+						) : (
+							<Typography align="center" variant="h6" style={{ marginBottom: '.9em' }}>
 								`Which song was this RapCloud made from?`
-							)}
-						</Typography>
+							</Typography>
+						)}
 					</Grid>
 					<Grid item xs={12} lg={8} container direction="column">
 						<img src={info && info.secure_url} className={classes.cloud} />
@@ -276,14 +281,16 @@ const ArtistGame = (props) => {
 			<Fragment>
 				{gameOver && (
 					<Grid container item justify="center" className={classes.gameOverGrid} xs={11}>
-						<Typography align="center" variant="h5" className={classes.blueTxt}>
+						<Typography align="center" variant="h5" className={classes.blueTxt} style={{ width: '100%' }}>
 							Game Over!
 						</Typography>
-						<Typography align="center">
+						<Typography align="center" style={{ width: '100%' }}>
 							You got {correctAnswers} out of {questions.length} of {artist.name} RapClouds right!
 						</Typography>
-						<Typography align="center">That's {correctAnswers * 100 / questions.length}%!</Typography>
-						<Typography align="center">
+						<Typography align="center" style={{ width: '100%' }}>
+							That's {correctAnswers * 100 / questions.length}%!
+						</Typography>
+						<Typography align="center" style={{ width: '100%' }}>
 							<Button
 								variant="contained"
 								component={Link}
