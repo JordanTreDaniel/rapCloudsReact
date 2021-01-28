@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import { Redirect, useParams, Link } from 'react-router-dom';
 import {
 	Typography,
@@ -15,6 +15,7 @@ import {
 	ListItem,
 	ListItemAvatar,
 	ListItemText,
+	Divider,
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import MinusIcon from '@material-ui/icons/Remove';
@@ -37,7 +38,7 @@ const useStyles = makeStyles((theme) => {
 	return {
 		gameMaker: {
 			height: '100%',
-			backgroundColor: theme.palette.primary.main,
+			backgroundColor: theme.palette.primary.dark,
 			overflow: 'hidden',
 		},
 		mainSearchInput: {
@@ -65,6 +66,15 @@ const useStyles = makeStyles((theme) => {
 		artistName: {
 			fontSize: '2.4em',
 		},
+		artistLink: {
+			textDecoration: 'none',
+			color: theme.palette.secondary.light,
+			fontWeight: theme.typography.fontWeightBold,
+		},
+		dividers: {
+			color: theme.palette.primary.main,
+			backgroundColor: theme.palette.primary.main,
+		},
 	};
 });
 
@@ -75,9 +85,13 @@ const GameMaker = (props) => {
 		searchSongs(searchTerm);
 	};
 	return (
-		<Grid className={classes.gameMaker}>
-			<Typography>Pick an artist</Typography>
-			<div className={classes.searchBar}>
+		<Grid className={classes.gameMaker} justify="center" container>
+			<Grid item xs={12}>
+				<Typography variant="h3" align="center" gutterBottom style={{ marginTop: '1em' }}>
+					Pick an artist, please!
+				</Typography>
+			</Grid>
+			<Grid item className={classes.searchBar} xs={12}>
 				<DebouncedTextField
 					type="text"
 					onChange={(e) => {
@@ -103,25 +117,31 @@ const GameMaker = (props) => {
 						</IconButton>
 					}
 				/>
-			</div>
-			<List>
-				{artists.map((artist) => (
-					<ListItem component={Link} to={`games/${artist.id}`}>
-						<ListItemAvatar>
-							<Avatar
-								src={artist.image_url}
-								alt={artist.name}
-								className={classNames(classes.artistAvatar)}
-							/>
-						</ListItemAvatar>
-						<ListItemText
-							primary={artist.name}
-							primaryTypographyProps={{ className: classes.artistName }}
-							inset
-						/>
-					</ListItem>
-				))}
-			</List>
+			</Grid>
+			<Grid item xs={12}>
+				<List>
+					<Divider className={classes.dividers} />
+					{artists.map((artist) => (
+						<Fragment>
+							<ListItem component={Link} to={`games/${artist.id}`} className={classes.artistLink}>
+								<ListItemAvatar>
+									<Avatar
+										src={artist.image_url}
+										alt={artist.name}
+										className={classNames(classes.artistAvatar)}
+									/>
+								</ListItemAvatar>
+								<ListItemText
+									primary={artist.name}
+									primaryTypographyProps={{ className: classes.artistName }}
+									inset
+								/>
+							</ListItem>
+							<Divider className={classes.dividers} />
+						</Fragment>
+					))}
+				</List>
+			</Grid>
 		</Grid>
 	);
 };
