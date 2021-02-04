@@ -92,24 +92,25 @@ const useStyles = makeStyles((theme) => {
 			minWidth: '100%',
 			height: '91vh', //TO-DO: Get it so that the MINIMUM height is 91vh, and it grows to cover the answer section on mobile
 		},
-		backgroundVideoBox: {
-			backgroundColor: 'rgba(0, 0, 0, 0.333)',
-		},
+		backgroundVideoBox: {},
 		whatIsAWordCloud: {
-			height: '91vh',
+			minHeight: '91vh',
 		},
 		questionSection: {
 			color: theme.palette.primary.contrastText,
 			padding: '1em',
 			zIndex: '2',
+			backgroundColor: 'rgba(0, 0, 0, 0.333)',
 		},
 		answerSection: {
-			marginTop: '2em',
-			marginBottom: '2em',
+			paddingTop: '2em',
+			paddingBottom: '2em',
 			padding: '1em',
-			minHeight: '72vh',
+			minHeight: '91vh',
 			lineHeight: '5em',
 			zIndex: '2',
+			textAlign: 'center',
+			backgroundColor: 'rgba(0, 0, 0, 0.333)',
 		},
 		explanationSection: {
 			marginTop: '2em',
@@ -175,9 +176,11 @@ const LandingPage = (props) => {
 					)}
 				>
 					<Grid item id="questionContainer">
-						<Typography variant="h1">What are</Typography>
+						<Typography variant="h1" className={classes.blueText}>
+							Welcome to
+						</Typography>
 						<Typography variant="h1">
-							<span className={classNames(classes.greyText, classes.bold)}>Rap Clouds</span>?
+							<span className={classNames(classes.greyText, classes.bold)}>RapClouds.com</span>
 						</Typography>
 					</Grid>
 				</Grid>
@@ -190,17 +193,12 @@ const LandingPage = (props) => {
 				>
 					<Grid>
 						<Typography variant="h3">
-							They're the <span className={classes.blueText}>lyrics</span> to your{' '}
-						</Typography>
-						<Typography variant="h3">
-							<span className={classes.blueText}>favorite song</span>...
+							Your favorite<span className={classes.blueText}> song lyrics</span> &{' '}
+							<span className={classes.blueText}> pictures</span>...
 						</Typography>
 						<br />
 						<Typography variant="h3">
-							...in a <span className={classes.blueText}>word cloud</span>,
-						</Typography>
-						<Typography variant="h3">
-							with your <span className={classes.blueText}>favorite picture</span>.
+							...in a <span className={classes.blueText}>word cloud</span>!
 						</Typography>
 					</Grid>
 				</Grid>
