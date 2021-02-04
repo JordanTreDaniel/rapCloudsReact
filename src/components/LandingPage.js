@@ -85,13 +85,23 @@ const useStyles = makeStyles((theme) => {
 			justifyContent: 'center',
 			alignItems: 'center',
 		},
+		backgroundVideo: {
+			position: 'absolute',
+			right: 0,
+			bottom: 0,
+			minWidth: '100%',
+			height: '91vh', //TO-DO: Get it so that the MINIMUM height is 91vh, and it grows to cover the answer section on mobile
+		},
+		backgroundVideoBox: {
+			backgroundColor: 'rgba(0, 0, 0, 0.333)',
+		},
 		whatIsAWordCloud: {
 			height: '91vh',
 		},
 		questionSection: {
-			backgroundColor: theme.palette.secondary.main,
 			color: theme.palette.primary.contrastText,
 			padding: '1em',
+			zIndex: '2',
 		},
 		answerSection: {
 			marginTop: '2em',
@@ -99,6 +109,7 @@ const useStyles = makeStyles((theme) => {
 			padding: '1em',
 			minHeight: '72vh',
 			lineHeight: '5em',
+			zIndex: '2',
 		},
 		explanationSection: {
 			marginTop: '2em',
@@ -116,7 +127,7 @@ const useStyles = makeStyles((theme) => {
 			fontWeight: theme.typography.fontWeightBold,
 		},
 		aWordCloudIs: {
-			backgroundColor: theme.palette.primary.main,
+			// backgroundColor: theme.palette.primary.main,
 			overflowY: 'fit-content',
 			height: 'fit-content',
 		},
@@ -146,6 +157,54 @@ const LandingPage = (props) => {
 	const [ imgZoomOpen, toggleImgZoom ] = useState(false);
 	return (
 		<Grid id="aboutPageContainer" container classes={{ root: classes.aboutPageContainer }} elevation={0}>
+			<Grid item container id="backgroundVideoBox" className={classes.backgroundVideoBox} xs={12}>
+				<video autoPlay muted loop className={classes.backgroundVideo}>
+					<source src={`${process.env.PUBLIC_URL}/flywithme2.mp4`} type="video/mp4" />
+				</video>
+				<Grid
+					id="questionSection"
+					item
+					// container
+					xs={12}
+					sm={6}
+					className={classNames(
+						classes.questionSection,
+						classes.fullSection,
+						classes.centeredColumn,
+						classes.whatIsAWordCloud,
+					)}
+				>
+					<Grid item id="questionContainer">
+						<Typography variant="h1">What are</Typography>
+						<Typography variant="h1">
+							<span className={classNames(classes.greyText, classes.bold)}>Rap Clouds</span>?
+						</Typography>
+					</Grid>
+				</Grid>
+				<Grid
+					id="answerSection"
+					item
+					xs={12}
+					sm={6}
+					className={classNames(classes.fullSection, classes.answerSection, classes.centeredColumn)}
+				>
+					<Grid>
+						<Typography variant="h3">
+							They're the <span className={classes.blueText}>lyrics</span> to your{' '}
+						</Typography>
+						<Typography variant="h3">
+							<span className={classes.blueText}>favorite song</span>...
+						</Typography>
+						<br />
+						<Typography variant="h3">
+							...in a <span className={classes.blueText}>word cloud</span>,
+						</Typography>
+						<Typography variant="h3">
+							with your <span className={classes.blueText}>favorite picture</span>.
+						</Typography>
+					</Grid>
+				</Grid>
+			</Grid>
 			<Grid
 				id="demoButtonsBox"
 				item
@@ -198,49 +257,7 @@ const LandingPage = (props) => {
 					Try It
 				</Button>
 			</Grid>
-			<Grid
-				id="questionSection"
-				item
-				// container
-				xs={12}
-				sm={6}
-				className={classNames(
-					classes.questionSection,
-					classes.fullSection,
-					classes.centeredColumn,
-					classes.whatIsAWordCloud,
-				)}
-			>
-				<Grid item id="questionContainer">
-					<Typography variant="h1">What are</Typography>
-					<Typography variant="h1">
-						<span className={classNames(classes.greyText, classes.bold)}>Rap Clouds</span>?
-					</Typography>
-				</Grid>
-			</Grid>
-			<Grid
-				id="answerSection"
-				item
-				xs={12}
-				sm={6}
-				className={classNames(classes.fullSection, classes.answerSection, classes.centeredColumn)}
-			>
-				<Grid>
-					<Typography variant="h3">
-						They're the <span className={classes.blueText}>lyrics</span> to your{' '}
-					</Typography>
-					<Typography variant="h3">
-						<span className={classes.blueText}>favorite song</span>...
-					</Typography>
-					<br />
-					<Typography variant="h3">
-						...in a <span className={classes.blueText}>word cloud</span>,
-					</Typography>
-					<Typography variant="h3">
-						with your <span className={classes.blueText}>favorite picture</span>.
-					</Typography>
-				</Grid>
-			</Grid>
+
 			<Grid
 				id="aWordCloudIs"
 				container
