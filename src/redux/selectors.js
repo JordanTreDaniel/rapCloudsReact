@@ -250,6 +250,7 @@ export const getCurrentMask = createSelector(
 	(masksById, cloudSettings) => masksById[cloudSettings.maskId],
 );
 export const getCloudsById = (state) => state.clouds.byId;
+export const getCloudsAsList = createSelector(getCloudsById, (cloudsById) => Object.values(cloudsById));
 export const getCloudFromId = createSelector(
 	getCloudsById,
 	(_, cloudId) => cloudId,
@@ -257,8 +258,9 @@ export const getCloudFromId = createSelector(
 		return cloudsById[cloudId];
 	},
 );
-export const getCloudsByArtistId = createSelector(getCloudsById, (cloudsById) => {
-	Object.values(cloudsById).reduce((cloudsByArtistId, cloud) => {
+
+export const getCloudsByArtistId = createSelector(getCloudsAsList, (cloudsList) => {
+	cloudsList.reduce((cloudsByArtistId, cloud) => {
 		const { artistIds } = cloud;
 		artistIds.forEach(
 			(artistId) =>
@@ -269,8 +271,9 @@ export const getCloudsByArtistId = createSelector(getCloudsById, (cloudsById) =>
 		return cloudsByArtistId;
 	}, {});
 });
-export const getCloudsBySongId = createSelector(getCloudsById, (cloudsById) => {
-	return Object.values(cloudsById).reduce((cloudsBySongId, cloud) => {
+
+export const getCloudsBySongId = createSelector(getCloudsAsList, (cloudsList) => {
+	return cloudsList.reduce((cloudsBySongId, cloud) => {
 		const { songIds } = cloud;
 		songIds.forEach(
 			(songId) =>
@@ -281,24 +284,24 @@ export const getCloudsBySongId = createSelector(getCloudsById, (cloudsById) => {
 });
 
 export const getCloudsForArtist = createSelector(
-	getCloudsById,
+	getCloudsAsList,
 	(_, artistId) => artistId,
 	getCurrentArtistId,
-	(cloudsById, artistId, currentArtistId) => {
+	(cloudsList, artistId, currentArtistId) => {
 		artistId = artistId ? artistId : currentArtistId;
 		if (!artistId) console.warn(`Warning, getCloudsForArtist called without necessary arguments.`);
-		return Object.values(cloudsById).filter((cloud) => cloud.artistIds.includes(artistId));
+		return cloudsList.filter((cloud) => cloud.artistIds.includes(artistId));
 	},
 );
 
 export const getCloudsForSong = createSelector(
-	getCloudsById,
+	getCloudsAsList,
 	(_, songId) => songId,
 	getCurrentSongId,
-	(cloudsById, songId, currentSongId) => {
+	(cloudsList, songId, currentSongId) => {
 		songId = songId ? String(songId) : String(currentSongId);
 		if (!songId) console.warn(`Warning, getCloudsForSong called without necessary arguments.`);
-		const matchingClouds = Object.values(cloudsById).filter(
+		const matchingClouds = cloudsList.filter(
 			(cloud) => cloud.songIds.includes(songId) && cloud.songIds.length === 1,
 		);
 		return matchingClouds;
@@ -308,6 +311,10 @@ export const getCloudsForSong = createSelector(
 export const getOfficalCloudForSong = createSelector(getCloudsForSong, (cloudsForSong) =>
 	cloudsForSong.find((cloud) => cloud.officialCloud && cloud.info),
 );
+
+export const getCloudsForUser = createSelector(getCloudsAsList, getUserMongoId, (cloudsList, userId) => {
+	return cloudsList.filter((cloud) => cloud.userId === userId);
+});
 
 //Clouds
 /********************************************************************* */
