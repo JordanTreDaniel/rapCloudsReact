@@ -11,6 +11,9 @@ import {
 	DialogTitle,
 	DialogActions,
 	Button,
+	List,
+	ListItem,
+	ListItemText,
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { classNames } from '../utils';
@@ -24,7 +27,7 @@ const useStyles = makeStyles((theme) => {
 			minWidth: '100%',
 			minHeight: '91vh',
 			maxWidth: '100vw',
-			backgroundColor: theme.palette.primary.main,
+			backgroundColor: theme.palette.primary.dark,
 		},
 		demoButtons: {
 			position: 'absolute',
@@ -74,7 +77,10 @@ const useStyles = makeStyles((theme) => {
 		fullSection: {
 			// minWidth: '100%',
 			// minHeight: '100%',//Why doesn't 100% work?
-			// height: '100vh',
+			minHeight: '91vh',
+			paddingLeft: '3em',
+			paddingRight: '3em',
+			padding: '1em',
 		},
 		centeredColumn: {
 			display: 'flex',
@@ -96,9 +102,7 @@ const useStyles = makeStyles((theme) => {
 			height: '91vh', //TO-DO: Get it so that the MINIMUM height is 91vh, and it grows to cover the answer section on mobile
 		},
 		backgroundVideoBox: {},
-		whatIsAWordCloud: {
-			minHeight: '91vh',
-		},
+		whatIsAWordCloud: {},
 		questionSection: {
 			color: theme.palette.primary.contrastText,
 			padding: '1em',
@@ -109,7 +113,7 @@ const useStyles = makeStyles((theme) => {
 			paddingTop: '2em',
 			paddingBottom: '2em',
 			padding: '1em',
-			minHeight: '91vh',
+			// minHeight: '91vh',
 			lineHeight: '5em',
 			zIndex: '2',
 			textAlign: 'center',
@@ -119,7 +123,7 @@ const useStyles = makeStyles((theme) => {
 			marginTop: '2em',
 			marginBottom: '2em',
 			padding: '1em',
-			minHeight: '72vh',
+			// minHeight: '72vh',
 		},
 		blueText: {
 			color: theme.palette.secondary.light,
@@ -155,6 +159,16 @@ const useStyles = makeStyles((theme) => {
 		flipped: {
 			transform: 'rotate(180deg)',
 		},
+		creativeThinkingBox: {
+			backgroundImage: `url("${process.env.PUBLIC_URL}/Creative Thinking.gif")`,
+			backgroundSize: 'contain',
+			backgroundPosition: 'center',
+			backgroundRepeat: 'no-repeat',
+			height: '100%',
+		},
+		rapCloudsContainer: {
+			height: '72vh',
+		},
 	};
 });
 const sampleCloudFiles = [ 'bodyToMe.png', 'rightHand.png', 'loveCycle.png' ];
@@ -162,6 +176,7 @@ const LandingPage = (props) => {
 	const { width, user } = props;
 	const classes = useStyles();
 	const [ imgZoomOpen, toggleImgZoom ] = useState(false);
+
 	return (
 		<Grid id="aboutPageContainer" container classes={{ root: classes.aboutPageContainer }} elevation={0}>
 			<Grid item container id="backgroundVideoBox" className={classes.backgroundVideoBox} xs={12}>
@@ -251,12 +266,14 @@ const LandingPage = (props) => {
 			<Grid
 				id="makeACloud"
 				container
-				className={classNames(classes.fullSection, classes.explanationSection, classes.aWordCloudIs)}
+				spacing={3}
+				justify="space-around"
+				alignItems="space-around"
+				alignContent="space-around"
+				direction="row-reverse"
+				className={classNames(classes.fullSection, classes.growVertically)}
 			>
-				<Grid item xs={12} sm={6}>
-					<Typography variant="h2">Make a RapCloud</Typography>
-				</Grid>
-				<Grid item xs={12} sm={6}>
+				<Grid item xs={12} sm={6} className={classes.rapCloudsContainer}>
 					<RapCloud
 						generateCloud={null}
 						cloudName={'Example Clouds'}
@@ -269,11 +286,28 @@ const LandingPage = (props) => {
 						showCloudActions={false}
 					/>
 				</Grid>
+				<Grid item container xs={12} sm={6} style={{ marginTop: '3em' }}>
+					<Grid item xs={12} className={classNames(classes.centeredColumn)}>
+						<Typography variant="h4">Use RapClouds to make custom word clouds.</Typography>
+						<br />
+						<List component="ol" dense>
+							<ListItem>
+								<ListItemText>1. Pick a song</ListItemText>
+							</ListItem>
+							<ListItem>
+								<ListItemText>2. Choose your picture, colors, and style</ListItemText>
+							</ListItem>
+							<ListItem>
+								<ListItemText>3. Download it for FREE 🤑</ListItemText>
+							</ListItem>
+						</List>
+					</Grid>
+				</Grid>
 			</Grid>
 			<Grid
 				id="aWordCloudIs"
 				container
-				className={classNames(classes.fullSection, classes.explanationSection, classes.aWordCloudIs)}
+				className={classNames(classes.fullSection, classes.explanationSection, classes.growVertically)}
 			>
 				<Grid
 					item
