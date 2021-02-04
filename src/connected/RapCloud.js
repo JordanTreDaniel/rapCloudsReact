@@ -120,6 +120,9 @@ const RapCloud = (props) => {
 		generateCloud,
 		isLoading,
 		deleteCloud,
+		allowDeletions = true,
+		allowCreation = true,
+		showCloudActions = true,
 	} = props;
 	const cloud = clouds[currentCloudIdx];
 	const { info, id: cloudId, officialCloud } = cloud || {};
@@ -183,7 +186,8 @@ const RapCloud = (props) => {
 						<NewTabIcon />
 					</IconButton>
 				</Tooltip>
-				{!officialCloud && (
+				{!officialCloud &&
+				allowDeletions && (
 					<Tooltip placement="bottom" title="Delete Your RapCloud!">
 						<IconButton
 							id="deleteBtn"
@@ -221,7 +225,7 @@ const RapCloud = (props) => {
 	};
 	return (
 		<Grid>
-			{cloud && renderCloudActions()}
+			{cloud && showCloudActions && renderCloudActions()}
 			{renderPagination(true)}
 			<Grid className={classNames(classes.wordCloudWrapper)}>
 				<LoadingBar loading={isLoading} />
@@ -248,15 +252,17 @@ const RapCloud = (props) => {
 					</React.Fragment>
 				) : null}
 
-				<Tooltip placement="bottom-start" title="Creat a Rap Cloud">
-					<IconButton
-						onClick={() => toggleSettings(true)}
-						className={classNames(classes.addCloudBtn, classes.attnGrabber)}
-						style={{ top, bottom, left, right }}
-					>
-						<AddIcon />
-					</IconButton>
-				</Tooltip>
+				{allowCreation && (
+					<Tooltip placement="bottom-start" title="Creat a Rap Cloud">
+						<IconButton
+							onClick={() => toggleSettings(true)}
+							className={classNames(classes.addCloudBtn, classes.attnGrabber)}
+							style={{ top, bottom, left, right }}
+						>
+							<AddIcon />
+						</IconButton>
+					</Tooltip>
+				)}
 			</Grid>
 			{settingsOpen && (
 				<RapCloudSettings
