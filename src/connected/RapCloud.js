@@ -20,15 +20,30 @@ import { deleteCloud } from '../redux/actions';
 
 const useStyles = makeStyles((theme) => {
 	return {
+		rapCloudsContainer: {
+			height: '100%',
+		},
 		wordCloud: {
 			margin: 'auto',
 			width: '100%',
+			height: '100%',
+			backgroundSize: 'cover',
+			backgroundPosition: 'center',
+			backgroundClip: 'border-box',
+			backgroundOrigin: 'center',
 		},
 		wordCloudWrapper: {
 			width: '100%',
+			height: '100%',
 			margin: 'auto',
 			position: 'relative',
 			textAlign: 'center',
+		},
+		paginationContainerTop: {
+			marginBottom: '.2em',
+		},
+		paginationContainerBottom: {
+			marginTop: '1em',
 		},
 		cloudActions: {
 			backgroundColor: theme.palette.primary.main,
@@ -205,7 +220,14 @@ const RapCloud = (props) => {
 	};
 	const renderPagination = (bottomSpace = false) => {
 		return (
-			<Grid id="paginationContainer" item container xs={12} justify="center">
+			<Grid
+				id="paginationContainer"
+				item
+				container
+				xs={12}
+				justify="center"
+				className={bottomSpace ? classes.paginationContainerBottom : classes.paginationContainerTop}
+			>
 				<Grid item>
 					{clouds.length ? (
 						<Pagination
@@ -216,7 +238,6 @@ const RapCloud = (props) => {
 							boundaryCount={1}
 							color="secondary"
 							onChange={(_, val) => setCurrentCloudIdx(val - 1)}
-							style={{ marginBottom: bottomSpace ? '.2em' : '0' }}
 						/>
 					) : null}
 				</Grid>
@@ -224,13 +245,14 @@ const RapCloud = (props) => {
 		);
 	};
 	return (
-		<Grid>
+		<Grid container id="rapCloudsContainer" className={classes.rapCloudsContainer}>
 			{cloud && showCloudActions && renderCloudActions()}
-			{renderPagination(true)}
-			<Grid className={classNames(classes.wordCloudWrapper)}>
+			{renderPagination(false)}
+			<Grid item container className={classNames(classes.wordCloudWrapper)}>
 				<LoadingBar loading={isLoading} />
-				<img
-					src={secure_url || `${process.env.PUBLIC_URL}/rapClouds.png`}
+				<Grid
+					item
+					style={{ backgroundImage: `url("${secure_url || `${process.env.PUBLIC_URL}/rapClouds.png`}")` }}
 					alt={'Rap Cloud'}
 					className={classes.wordCloud}
 					onClick={() => toggleFullScreenCloud(true)}
@@ -295,7 +317,7 @@ const RapCloud = (props) => {
 					</DialogContent>
 				</Dialog>
 			)}
-			{renderPagination()}
+			{renderPagination(true)}
 		</Grid>
 	);
 };
