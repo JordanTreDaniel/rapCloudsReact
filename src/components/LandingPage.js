@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import RightArrow from '@material-ui/icons/ArrowForward';
+import paths from '../paths';
 import {
 	withWidth,
 	Typography,
@@ -13,7 +13,9 @@ import {
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { classNames } from '../utils';
-import { Instagram } from '@material-ui/icons';
+import RightArrow from '@material-ui/icons/ArrowForward';
+import CloudQueue from '@material-ui/icons/CloudQueue';
+import { Instagram, Style } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => {
 	return {
@@ -24,11 +26,10 @@ const useStyles = makeStyles((theme) => {
 			backgroundColor: theme.palette.primary.main,
 		},
 		demoButtons: {
-			position: 'fixed',
+			position: 'absolute',
 			padding: '1em',
 			textAlign: 'center',
 			borderRadius: '6px',
-			// backgroundColor: 'rgb(66, 66, 66, 0.5)',
 		},
 		demoButtonsDesktop: {
 			padding: '1em',
@@ -49,6 +50,7 @@ const useStyles = makeStyles((theme) => {
 			marginLeft: '.5em',
 			boxShadow: 'none',
 			border: `1px solid ${theme.palette.primary.dark}`,
+			cursor: 'pointer',
 		},
 		tryItButton: {
 			backgroundColor: theme.palette.secondary.main,
@@ -149,6 +151,9 @@ const useStyles = makeStyles((theme) => {
 			color: theme.palette.primary.contrastText,
 			cursor: 'pointer',
 		},
+		flipped: {
+			transform: 'rotate(180deg)',
+		},
 	};
 });
 
@@ -202,60 +207,46 @@ const LandingPage = (props) => {
 						</Typography>
 					</Grid>
 				</Grid>
+				<Grid
+					id="demoButtonsBox"
+					item
+					container
+					xs={12}
+					sm={9}
+					direction="row"
+					wrap="wrap-reverse"
+					justify="flex-end"
+					className={classNames(
+						classes.demoButtons,
+						width === 'xs' ? classes.demoButtonsMobile : classes.demoButtonsDesktop,
+					)}
+				>
+					<Button
+						variant="contained"
+						item
+						component={Link}
+						to={user ? paths.play : paths.signIn}
+						color="primary"
+						disableElevation
+						endIcon={<Style className={classes.flipped} />}
+						className={classNames(classes.demoButton, classes.whatIsAButton)}
+					>
+						Play the Game
+					</Button>
+					<Button
+						variant="contained"
+						item
+						component={Link}
+						to={user ? paths.search : paths.signIn}
+						color="secondary"
+						disableElevation
+						endIcon={<CloudQueue />}
+						className={classNames(classes.demoButton, classes.tryItButton)}
+					>
+						Make a Cloud
+					</Button>
+				</Grid>
 			</Grid>
-			<Grid
-				id="demoButtonsBox"
-				item
-				container
-				xs={12}
-				sm={9}
-				direction="row"
-				wrap="wrap-reverse"
-				justify="flex-end"
-				className={classNames(
-					classes.demoButtons,
-					width === 'xs' ? classes.demoButtonsMobile : classes.demoButtonsDesktop,
-				)}
-			>
-				<Button
-					component={'a'}
-					item
-					href={'#aWordCloudIs'}
-					variant="outlined"
-					color="primary"
-					disableElevation
-					className={classNames(classes.demoButton, classes.whatIsAButton)}
-				>
-					What is a wordCloud?
-				</Button>
-				<Button
-					variant="contained"
-					item
-					component={'a'}
-					target="_blank"
-					rel="noopener noreferrer"
-					href={'https://www.instagram.com/therealrapclouds/'}
-					color="primary"
-					disableElevation
-					endIcon={<Instagram />}
-					className={classNames(classes.demoButton, classes.whatIsAButton)}
-				>
-					Examples
-				</Button>
-				<Button
-					variant="contained"
-					item
-					component={Link}
-					to={user ? '/search' : '/signin'}
-					color="secondary"
-					disableElevation
-					endIcon={<RightArrow />}
-					className={classNames(classes.demoButton, classes.tryItButton)}
-				>
-					Try It
-				</Button>
-			</Grid>
-
 			<Grid
 				id="aWordCloudIs"
 				container
