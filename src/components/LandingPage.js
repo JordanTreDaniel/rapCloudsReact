@@ -310,6 +310,7 @@ const LandingPage = (props) => {
 							disableElevation
 							endIcon={<Instagram />}
 							variant="contained"
+							className={classes.demoButton}
 						>
 							RapClouds Instagram
 						</Button>
@@ -321,6 +322,7 @@ const LandingPage = (props) => {
 							disableElevation
 							endIcon={<RightArrow />}
 							variant="contained"
+							className={classes.demoButton}
 						>
 							Search Songs
 						</Button>
