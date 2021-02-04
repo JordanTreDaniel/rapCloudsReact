@@ -292,15 +292,38 @@ const LandingPage = (props) => {
 						<br />
 						<List component="ol" dense>
 							<ListItem>
-								<ListItemText>1. Pick a song</ListItemText>
+								<ListItemText>1. Pick a song 🎵🎶</ListItemText>
 							</ListItem>
 							<ListItem>
-								<ListItemText>2. Choose your picture, colors, and style</ListItemText>
+								<ListItemText>2. Choose a picture, colors, and style 🎨🖌</ListItemText>
 							</ListItem>
 							<ListItem>
 								<ListItemText>3. Download it for FREE 🤑</ListItemText>
 							</ListItem>
 						</List>
+						<Button
+							component={'a'}
+							target="_blank"
+							rel="noopener noreferrer"
+							href={'https://www.instagram.com/therealrapclouds/'}
+							color="primary"
+							disableElevation
+							endIcon={<Instagram />}
+							variant="contained"
+						>
+							RapClouds Instagram
+						</Button>
+						<Button
+							id="demoButtonsBox"
+							component={Link}
+							to={user ? '/search' : '/signin'}
+							color="secondary"
+							disableElevation
+							endIcon={<RightArrow />}
+							variant="contained"
+						>
+							Search Songs
+						</Button>
 					</Grid>
 				</Grid>
 			</Grid>
