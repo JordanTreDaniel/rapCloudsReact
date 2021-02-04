@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import RapCloud from '../connected/RapCloud';
 import paths from '../paths';
 import {
 	withWidth,
@@ -156,7 +157,7 @@ const useStyles = makeStyles((theme) => {
 		},
 	};
 });
-
+const sampleCloudFiles = [ 'bodyToMe.png', 'loveCycle.png', 'rightHand.png' ];
 const LandingPage = (props) => {
 	const { width, user } = props;
 	const classes = useStyles();
@@ -245,6 +246,28 @@ const LandingPage = (props) => {
 					>
 						Make a Cloud
 					</Button>
+				</Grid>
+			</Grid>
+			<Grid
+				id="makeACloud"
+				container
+				className={classNames(classes.fullSection, classes.explanationSection, classes.aWordCloudIs)}
+			>
+				<Grid item xs={12} sm={6}>
+					<Typography variant="h2">Make a RapCloud</Typography>
+				</Grid>
+				<Grid item xs={12} sm={6}>
+					<RapCloud
+						generateCloud={null}
+						cloudName={'Example Clouds'}
+						clouds={sampleCloudFiles.map((fileName) => {
+							return { info: { secure_url: `${process.env.PUBLIC_URL}/${fileName}` } };
+						})}
+						isLoading={false}
+						allowDeletions={false}
+						allowCreation={false}
+						showCloudActions={false}
+					/>
 				</Grid>
 			</Grid>
 			<Grid
