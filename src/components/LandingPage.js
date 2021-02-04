@@ -165,7 +165,7 @@ const LandingPage = (props) => {
 				<Grid
 					id="questionSection"
 					item
-					// container
+					container
 					xs={12}
 					sm={6}
 					className={classNames(
@@ -180,7 +180,7 @@ const LandingPage = (props) => {
 							Welcome to
 						</Typography>
 						<Typography variant="h1">
-							<span className={classNames(classes.greyText, classes.bold)}>RapClouds.com</span>
+							<span className={classNames(classes.greyText, classes.bold)}>Rap Clouds</span>
 						</Typography>
 					</Grid>
 				</Grid>
