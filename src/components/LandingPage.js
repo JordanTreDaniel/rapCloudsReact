@@ -273,7 +273,7 @@ const LandingPage = (props) => {
 				direction="row-reverse"
 				className={classNames(classes.fullSection, classes.growVertically)}
 			>
-				<Grid item xs={12} sm={6} className={classes.rapCloudsContainer}>
+				<Grid item xs={12} sm={6} className={classNames(classes.rapCloudsContainer, classes.growVertically)}>
 					<RapCloud
 						generateCloud={null}
 						cloudName={'Example Clouds'}
@@ -288,7 +288,7 @@ const LandingPage = (props) => {
 				</Grid>
 				<Grid item container xs={12} sm={6} style={{ marginTop: '3em' }}>
 					<Grid item xs={12} className={classNames(classes.centeredColumn)}>
-						<Typography variant="h4">Use RapClouds to make custom word clouds.</Typography>
+						<Typography variant="h4">Make custom Rap Clouds</Typography>
 						<br />
 						<List component="ol" dense>
 							<ListItem>
