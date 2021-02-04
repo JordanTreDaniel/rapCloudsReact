@@ -157,7 +157,7 @@ const useStyles = makeStyles((theme) => {
 		},
 	};
 });
-const sampleCloudFiles = [ 'bodyToMe.png', 'loveCycle.png', 'rightHand.png' ];
+const sampleCloudFiles = [ 'bodyToMe.png', 'rightHand.png', 'loveCycle.png' ];
 const LandingPage = (props) => {
 	const { width, user } = props;
 	const classes = useStyles();
