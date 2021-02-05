@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import RapCloud from '../connected/RapCloud';
+import { QuizBox } from '../connected/ArtistGame';
 import paths from '../paths';
 import {
 	withWidth,
@@ -134,8 +135,7 @@ const useStyles = makeStyles((theme) => {
 		bold: {
 			fontWeight: theme.typography.fontWeightBold,
 		},
-		aWordCloudIs: {
-			// backgroundColor: theme.palette.primary.main,
+		growVertically: {
 			overflowY: 'fit-content',
 			height: 'fit-content',
 		},
@@ -169,12 +169,16 @@ const useStyles = makeStyles((theme) => {
 		rapCloudsContainer: {
 			height: '72vh',
 		},
+		playTheGameSection: {
+			backgroundColor: theme.palette.primary.main,
+		},
 	};
 });
 const sampleCloudFiles = [ 'bodyToMe.png', 'rightHand.png', 'loveCycle.png' ];
 const LandingPage = (props) => {
 	const { width, user } = props;
 	const classes = useStyles();
+	const [ sampleAnswerIdx, setSampleAnswerIdx ] = useState(null);
 	const [ imgZoomOpen, toggleImgZoom ] = useState(false);
 
 	return (
@@ -264,6 +268,69 @@ const LandingPage = (props) => {
 				</Grid>
 			</Grid>
 			<Grid
+				id="playTheGame"
+				container
+				spacing={3}
+				justify="space-around"
+				alignItems="space-around"
+				alignContent="space-around"
+				direction="row"
+				className={classNames(classes.fullSection, classes.growVertically, classes.playTheGameSection)}
+			>
+				<Grid item container xs={12} sm={4} style={{ marginTop: '3em' }}>
+					<Grid item xs={12} className={classNames(classes.centeredColumn)}>
+						<Typography variant="h4">Test your lyrical knowledge</Typography>
+						<br />
+						<List component="ol" dense>
+							<ListItem>
+								<ListItemText>1. Pick an artist 🎤🎙</ListItemText>
+							</ListItem>
+							<ListItem>
+								<ListItemText>2. Look at the RapCloud 🧐</ListItemText>
+							</ListItem>
+							<ListItem>
+								<ListItemText>3. Guess the right answer before time runs out! 🤓✅</ListItemText>
+							</ListItem>
+						</List>
+						<Button
+							id="demoButtonsBox"
+							component={Link}
+							to={user ? '/play' : '/signin'}
+							color="secondary"
+							disableElevation
+							endIcon={<Style className={classes.flipped} />}
+							variant="contained"
+							className={classes.demoButton}
+						>
+							Play
+						</Button>
+					</Grid>
+				</Grid>
+				<Grid item xs={12} sm={8} className={classNames(classes.gameDemoContainer, classes.growVertically)}>
+					<QuizBox
+						questions={[
+							{
+								answers: [
+									{ correct: false, title: `Marvin's Room by Drake` },
+									{ correct: false, title: `Right Hand by Drake` },
+									{ correct: true, title: `God's Plan by Drake` },
+									{ correct: false, title: `Hotline Bling by Drake` },
+								],
+								answerIdx: sampleAnswerIdx,
+							},
+						]}
+						gameId={null}
+						questionIdx={0}
+						fetchSongDetails={() => null}
+						updateQuestionIdx={() => null}
+						answerQuestion={(_, __, i) => setSampleAnswerIdx(i)}
+						gameOver={false}
+						song={{ id: 3315890, title: `God's Plan by Drake` }}
+						cloud={{ info: { secure_url: `${process.env.PUBLIC_URL}/godsPlan.png` } }}
+					/>
+				</Grid>
+			</Grid>
+			<Grid
 				id="makeACloud"
 				container
 				spacing={3}
@@ -273,20 +340,7 @@ const LandingPage = (props) => {
 				direction="row-reverse"
 				className={classNames(classes.fullSection, classes.growVertically)}
 			>
-				<Grid item xs={12} sm={6} className={classNames(classes.rapCloudsContainer, classes.growVertically)}>
-					<RapCloud
-						generateCloud={null}
-						cloudName={'Example Clouds'}
-						clouds={sampleCloudFiles.map((fileName) => {
-							return { info: { secure_url: `${process.env.PUBLIC_URL}/${fileName}` } };
-						})}
-						isLoading={false}
-						allowDeletions={false}
-						allowCreation={false}
-						showCloudActions={false}
-					/>
-				</Grid>
-				<Grid item container xs={12} sm={6} style={{ marginTop: '3em' }}>
+				<Grid item container xs={12} sm={4} style={{ marginTop: '3em' }}>
 					<Grid item xs={12} className={classNames(classes.centeredColumn)}>
 						<Typography variant="h4">Make custom Rap Clouds</Typography>
 						<br />
@@ -327,6 +381,19 @@ const LandingPage = (props) => {
 							Search Songs
 						</Button>
 					</Grid>
+				</Grid>
+				<Grid item xs={12} sm={8} className={classNames(classes.rapCloudsContainer, classes.growVertically)}>
+					<RapCloud
+						generateCloud={null}
+						cloudName={'Example Clouds'}
+						clouds={sampleCloudFiles.map((fileName) => {
+							return { info: { secure_url: `${process.env.PUBLIC_URL}/${fileName}` } };
+						})}
+						isLoading={false}
+						allowDeletions={false}
+						allowCreation={false}
+						showCloudActions={false}
+					/>
 				</Grid>
 			</Grid>
 			<Grid
