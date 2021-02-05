@@ -177,7 +177,7 @@ export const QuizBox = (props) => {
 							</Typography>
 						) : (
 							<Typography align="center" variant="h6" style={{ marginBottom: '.9em' }}>
-								`Which song was this RapCloud made from?`
+								Which song was this RapCloud made from?
 							</Typography>
 						)}
 					</Grid>
@@ -196,7 +196,7 @@ export const QuizBox = (props) => {
 							{answers.map((a, i) => {
 								const thisAnswerChosen = answerIdx == i;
 								return (
-									<Grid item key={i} xs={12} sm={6}>
+									<Grid item key={i} xs={12} sm={6} lg={answersOnBottomOnly ? 6 : 12}>
 										<Box
 											className={classNames(
 												classes.answerChoice,
