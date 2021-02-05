@@ -115,7 +115,7 @@ const useStyles = makeStyles((theme) => {
 
 const ProfilePage = (props) => {
     const classes = useStyles();
-    const { cloudsLoading, user, fetchClouds } = props;
+    const { cloudsLoading, user, fetchClouds, clouds } = props;
     const [cloudExpanded, setCloudExpanded] = useState(true);
     const [songsExpanded, setSongsExpanded] = useState(true);
     const toggleCloudExpanded = () => setCloudExpanded(!cloudExpanded);
@@ -146,6 +146,12 @@ const ProfilePage = (props) => {
                         </Typography>
                     </div>
                 </Grid>
+                <RapCloud
+                    generateCloud={null}
+                    cloudName={"Your clouds"}
+                    clouds={clouds}
+                    isLoading={cloudsLoading}
+                />
                 {/* <Grid item xs={12} sm={6} classes={{ root: classes.mainContentChild }}>
                     <Paper elevation={0} className={classNames(classes.wordCloudPaper, classes.sectionPaper)}>
                         <IconButton className={classes.sectionToggleBtn} onClick={toggleCloudExpanded}>
@@ -182,7 +188,8 @@ const ProfilePage = (props) => {
 
 const mapState = (state) => ({
    user: selectors.getUser(state),
-   cloudsLoading: selectors.areCloudsLoading(state)
+   cloudsLoading: selectors.areCloudsLoading(state),
+    clouds: selectors.getCloudsForUser(state)
 });
 
 export default connect(mapState, { fetchClouds })(withWidth()(ProfilePage));

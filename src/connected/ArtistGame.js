@@ -90,7 +90,7 @@ const useStyles = makeStyles((theme) => {
 		answerChoice: {
 			margin: '.6em',
 			borderRadius: '21px',
-			padding: 'inherit',
+			padding: '.54em',
 			cursor: 'pointer',
 		},
 		scoreBoard: {
@@ -110,7 +110,7 @@ const useStyles = makeStyles((theme) => {
 	};
 });
 
-const _QuizBox = (props) => {
+export const QuizBox = (props) => {
 	const {
 		questions,
 		fetchSongDetails,
@@ -125,6 +125,7 @@ const _QuizBox = (props) => {
 		areSongLyricsLoading,
 		gameOver,
 		cloud,
+		answersOnBottomOnly = false,
 	} = props;
 	const question = questions[questionIdx];
 	const classes = useStyles();
@@ -176,19 +177,26 @@ const _QuizBox = (props) => {
 							</Typography>
 						) : (
 							<Typography align="center" variant="h6" style={{ marginBottom: '.9em' }}>
-								`Which song was this RapCloud made from?`
+								Which song was this RapCloud made from?
 							</Typography>
 						)}
 					</Grid>
-					<Grid item xs={12} lg={8} container direction="column">
+					<Grid item xs={12} lg={answersOnBottomOnly ? 12 : 8} container direction="column">
 						<img src={info && info.secure_url} className={classes.cloud} />
 					</Grid>
-					<Grid item xs={12} lg={4}>
-						<List>
+					<Grid item xs={12} lg={answersOnBottomOnly ? 12 : 4}>
+						<Grid
+							container
+							direction="row"
+							wrap="wrap"
+							justify="space-evenly"
+							alignItems="center"
+							alignContent="center"
+						>
 							{answers.map((a, i) => {
 								const thisAnswerChosen = answerIdx == i;
 								return (
-									<ListItem key={i}>
+									<Grid item key={i} xs={12} sm={6} lg={answersOnBottomOnly ? 6 : 12}>
 										<Box
 											className={classNames(
 												classes.answerChoice,
@@ -206,15 +214,15 @@ const _QuizBox = (props) => {
 												}, 900);
 											}}
 										>
-											<ListItemText>
+											<Typography>
 												<span className={classes.blueTxt}>{`${letters[i]}.) `}</span>
 												{`${a.title}`}
-											</ListItemText>
+											</Typography>
 										</Box>
-									</ListItem>
+									</Grid>
 								);
 							})}
-						</List>
+						</Grid>
 					</Grid>
 				</Grid>
 			) : isSongDetailLoading || isWordCloudLoading || areSongLyricsLoading ? (
@@ -242,7 +250,7 @@ const mapStateQB = (state, ownProps) => {
 		areSongLyricsLoading: selectors.areSongLyricsLoading(state),
 	};
 };
-const QuizBox = connect(mapStateQB, { fetchSongDetails, answerQuestion })(withWidth()(_QuizBox));
+const ConnectedQuizBox = connect(mapStateQB, { fetchSongDetails, answerQuestion })(withWidth()(QuizBox));
 
 const ArtistGame = (props) => {
 	const classes = useStyles();
@@ -343,7 +351,7 @@ const ArtistGame = (props) => {
 					})}
 				</Grid>
 				<Grid item xs={10} className={classes.quizBoxWrapper}>
-					<QuizBox
+					<ConnectedQuizBox
 						questions={questions}
 						gameId={game.id}
 						questionIdx={questionIdx}

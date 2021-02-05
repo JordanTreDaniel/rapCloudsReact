@@ -56,22 +56,24 @@ const App = (props) => {
 		() => {
 			initializeReactGA();
 			//Creating the uploadWidget here for performance. Fast for UX, & not creating extra widgets on re-renders.
-			window.uploadWidget = window.cloudinary.createUploadWidget(
-				{
-					cloudName: 'rap-clouds',
-					uploadPreset: process.env.NODE_ENV === 'development' ? 'reactMasksDev' : 'reactMasks',
-				},
-				(error, result) => {
-					if (!error && result && result.event === 'success') {
-						// console.log('Done! Here is the image info: ', result.info);
-						const mask = {
-							userId: mongoUserId,
-							cloudinaryInfo: result.info,
-						};
-						addCustomMask(mask);
-					}
-				},
-			);
+			window.uploadWidget = window.cloudinary
+				? window.cloudinary.createUploadWidget(
+						{
+							cloudName: 'rap-clouds',
+							uploadPreset: process.env.NODE_ENV === 'development' ? 'reactMasksDev' : 'reactMasks',
+						},
+						(error, result) => {
+							if (!error && result && result.event === 'success') {
+								// console.log('Done! Here is the image info: ', result.info);
+								const mask = {
+									userId: mongoUserId,
+									cloudinaryInfo: result.info,
+								};
+								addCustomMask(mask);
+							}
+						},
+					)
+				: null;
 			window.openWidget = async () => {
 				window.uploadWidget.open();
 			};
@@ -147,7 +149,7 @@ const App = (props) => {
 					paddingBottom: '.5em',
 				}}
 			>
-				@RapClouds 2020
+				@RapClouds 2021
 			</Paper>
 		</Paper>
 	) : (
