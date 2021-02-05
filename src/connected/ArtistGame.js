@@ -125,6 +125,7 @@ export const QuizBox = (props) => {
 		areSongLyricsLoading,
 		gameOver,
 		cloud,
+		answersOnBottomOnly = false,
 	} = props;
 	const question = questions[questionIdx];
 	const classes = useStyles();
@@ -180,11 +181,18 @@ export const QuizBox = (props) => {
 							</Typography>
 						)}
 					</Grid>
-					<Grid item xs={12} lg={8} container direction="column">
+					<Grid item xs={12} lg={answersOnBottomOnly ? 12 : 8} container direction="column">
 						<img src={info && info.secure_url} className={classes.cloud} />
 					</Grid>
-					<Grid item xs={12} lg={4}>
-						<Grid container direction="row" wrap="wrap" justify="space-evenly">
+					<Grid item xs={12} lg={answersOnBottomOnly ? 12 : 4}>
+						<Grid
+							container
+							direction="row"
+							wrap="wrap"
+							justify="space-evenly"
+							alignItems="center"
+							alignContent="center"
+						>
 							{answers.map((a, i) => {
 								const thisAnswerChosen = answerIdx == i;
 								return (
