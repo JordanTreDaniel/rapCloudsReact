@@ -126,8 +126,11 @@ const useStyles = makeStyles((theme) => {
 			padding: '1em',
 			// minHeight: '72vh',
 		},
-		blueText: {
+		lightBlueTxt: {
 			color: theme.palette.secondary.light,
+		},
+		mainBlueText: {
+			color: theme.palette.secondary.main,
 		},
 		greyText: {
 			color: theme.palette.primary.main,
@@ -201,7 +204,7 @@ const LandingPage = (props) => {
 					)}
 				>
 					<Grid item id="questionContainer">
-						<Typography variant="h1" className={classes.blueText}>
+						<Typography variant="h1" className={classes.lightBlueTxt}>
 							Welcome to
 						</Typography>
 						<Typography variant="h1">
@@ -218,12 +221,12 @@ const LandingPage = (props) => {
 				>
 					<Grid>
 						<Typography variant="h3">
-							Your favorite<span className={classes.blueText}> song lyrics</span> &{' '}
-							<span className={classes.blueText}> pictures</span>...
+							Your favorite<span className={classes.lightBlueTxt}> song lyrics</span> &{' '}
+							<span className={classes.lightBlueTxt}> pictures</span>...
 						</Typography>
 						<br />
 						<Typography variant="h3">
-							...in a <span className={classes.blueText}>word cloud</span>!
+							...in a <span className={classes.lightBlueTxt}>word cloud</span>!
 						</Typography>
 					</Grid>
 				</Grid>
@@ -278,8 +281,10 @@ const LandingPage = (props) => {
 				className={classNames(classes.fullSection, classes.growVertically, classes.playTheGameSection)}
 			>
 				<Grid item container xs={12} sm={4} style={{ marginTop: '3em' }}>
-					<Grid item xs={12} className={classNames(classes.centeredColumn)}>
-						<Typography variant="h4">Test your lyrical knowledge</Typography>
+					<Grid item container xs={12} alignItems="flex-start" alignContent="flex-start" justify="flex-start">
+						<Typography variant="h4" className={classNames(classes.bold, classes.lightBlueTxt)}>
+							Test your lyrical knowledge
+						</Typography>
 						<br />
 						<List component="ol" dense>
 							<ListItem>
@@ -302,7 +307,7 @@ const LandingPage = (props) => {
 							variant="contained"
 							className={classes.demoButton}
 						>
-							Play
+							Play the Game
 						</Button>
 					</Grid>
 				</Grid>
@@ -327,6 +332,7 @@ const LandingPage = (props) => {
 						gameOver={false}
 						song={{ id: 3315890, title: `God's Plan by Drake` }}
 						cloud={{ info: { secure_url: `${process.env.PUBLIC_URL}/godsPlan.png` } }}
+						answersOnBottomOnly={true}
 					/>
 				</Grid>
 			</Grid>
@@ -341,15 +347,17 @@ const LandingPage = (props) => {
 				className={classNames(classes.fullSection, classes.growVertically)}
 			>
 				<Grid item container xs={12} sm={4} style={{ marginTop: '3em' }}>
-					<Grid item xs={12} className={classNames(classes.centeredColumn)}>
-						<Typography variant="h4">Make custom Rap Clouds</Typography>
+					<Grid item xs={12} alignItems="flex-start" alignContent="flex-start" justify="flex-start">
+						<Typography variant="h4" className={classNames(classes.bold, classes.mainBlueText)}>
+							Make custom Rap Clouds
+						</Typography>
 						<br />
 						<List component="ol" dense>
 							<ListItem>
 								<ListItemText>1. Pick a song 🎵🎶</ListItemText>
 							</ListItem>
 							<ListItem>
-								<ListItemText>2. Choose a picture, colors, and style 🎨🖌</ListItemText>
+								<ListItemText>2. Choose a picture, some colors, and style 🎨🖌</ListItemText>
 							</ListItem>
 							<ListItem>
 								<ListItemText>3. Download it for FREE 🤑</ListItemText>
@@ -395,98 +403,6 @@ const LandingPage = (props) => {
 						showCloudActions={false}
 					/>
 				</Grid>
-			</Grid>
-			<Grid
-				id="aWordCloudIs"
-				container
-				className={classNames(classes.fullSection, classes.explanationSection, classes.growVertically)}
-			>
-				<Grid
-					item
-					xs={12}
-					sm={6}
-					style={{
-						flexGrow: 1,
-						padding: '1em',
-					}}
-					className={classNames(classes.centeredColumn)}
-				>
-					<Typography variant="h4">
-						A word cloud is a way to visualize which words appear most often in any given text.
-					</Typography>
-					<br />
-					<Typography variant="h6">The words that appear most often will appear the largest.</Typography>
-					<Typography variant="body1" className={classNames(classes.blueText)} style={{ paddingTop: '3em' }}>
-						This is a RapCloud made from Mary Mary's wonderful song, "Heaven".
-					</Typography>
-					<br />
-					<Grid container alignItems="center">
-						<Typography item component={Link} to={`/clouds/1376209`} className={classes.plainLink}>
-							Go here for the full lyrics
-						</Typography>
-						<RightArrow item />
-					</Grid>
-				</Grid>
-				<Grid
-					item
-					xs={12}
-					sm={6}
-					style={{
-						flexGrow: 1,
-					}}
-					// className={classNames(classes.exampleCloud)}
-					onClick={() => toggleImgZoom(true)}
-				>
-					<img
-						alt="Heaven Rap Cloud"
-						src={`${process.env.PUBLIC_URL}/Heaven Rap Cloud.png`}
-						style={{ width: '100%' }}
-					/>
-				</Grid>
-				{imgZoomOpen && (
-					<Dialog open={imgZoomOpen} onClose={() => toggleImgZoom(false)} fullScreen={width === 'xs'}>
-						<DialogTitle>
-							<Typography variant="body1" className={classNames(classes.blueText)}>
-								This is a RapCloud made from Mary Mary's wonderful song, "Heaven". The chorus goes like
-								this..
-							</Typography>
-						</DialogTitle>
-						<DialogContent className={classes.fullScreenExample}>
-							<Grid>
-								<div>
-									<div className={classes.lyricQuote}>
-										<Typography variant="caption">
-											{`"I gotta get myself together, cuz I got someplace to go \n And I'm praying when I
-										get there, I see everyone I know \n I wanna go to heaven, \n I wanna go to heaven \n Said
-										I wanna go to heaven, \n I wanna go to heaven \n Do you wanna go?"`}
-										</Typography>
-										<br />
-										<Grid container alignItems="center">
-											<Typography
-												item
-												component={Link}
-												to={`/clouds/1376209`}
-												className={classes.plainLink}
-											>
-												Go here for the full lyrics
-											</Typography>
-											<RightArrow item />
-										</Grid>
-									</div>
-								</div>
-
-								<img
-									alt="Heaven Rap Cloud"
-									src={`${process.env.PUBLIC_URL}/Heaven Rap Cloud.png`}
-									style={{ width: '100%' }}
-								/>
-							</Grid>
-						</DialogContent>
-						<DialogActions>
-							<Button onClick={() => toggleImgZoom(false)}>Close</Button>
-						</DialogActions>
-					</Dialog>
-				)}
 			</Grid>
 		</Grid>
 	);
