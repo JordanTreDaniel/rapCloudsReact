@@ -56,6 +56,7 @@ const useStyles = makeStyles((theme) => {
 			boxShadow: 'none',
 			border: `1px solid ${theme.palette.primary.dark}`,
 			cursor: 'pointer',
+			zIndex: '3',
 		},
 		tryItButton: {
 			backgroundColor: theme.palette.secondary.main,
@@ -174,6 +175,9 @@ const useStyles = makeStyles((theme) => {
 		},
 		playTheGameSection: {
 			backgroundColor: theme.palette.primary.main,
+		},
+		makeACloudSection: {
+			paddingBottom: '6em',
 		},
 	};
 });
@@ -344,7 +348,7 @@ const LandingPage = (props) => {
 				alignItems="space-around"
 				alignContent="space-around"
 				direction="row-reverse"
-				className={classNames(classes.fullSection, classes.growVertically)}
+				className={classNames(classes.fullSection, classes.growVertically, classes.makeACloudSection)}
 			>
 				<Grid item container xs={12} sm={4} style={{ marginTop: '3em' }}>
 					<Grid item xs={12} alignItems="flex-start" alignContent="flex-start" justify="flex-start">
