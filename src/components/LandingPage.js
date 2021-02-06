@@ -58,22 +58,21 @@ const useStyles = makeStyles((theme) => {
 			cursor: 'pointer',
 			zIndex: '3',
 		},
-		tryItButton: {
-			backgroundColor: theme.palette.secondary.main,
-			color: theme.palette.secondary.contrastText,
-			border: `1px solid ${theme.palette.primary.contrastText}`,
-			'&:hover': {
-				backgroundColor: theme.palette.secondary.light,
-				color: theme.palette.secondary.contrastText,
-			},
-		},
-		whatIsAButton: {
+		makeACloudBtn: {
 			backgroundColor: theme.palette.primary.main,
 			color: theme.palette.primary.contrastText,
-			opacity: '.8',
 			'&:hover': {
 				backgroundColor: theme.palette.primary.light,
 				color: theme.palette.primary.contrastText,
+			},
+		},
+		playTheGameBtn: {
+			backgroundColor: theme.palette.secondary.main,
+			color: theme.palette.secondary.contrastText,
+			opacity: '.8',
+			'&:hover': {
+				backgroundColor: theme.palette.secondary.light,
+				color: theme.palette.secondary.contrastText,
 			},
 		},
 		fullSection: {
@@ -198,39 +197,16 @@ const LandingPage = (props) => {
 					id="questionSection"
 					item
 					container
+					alignItems={width === 'xs' ? 'flex-start' : 'center'}
 					xs={12}
-					sm={6}
-					className={classNames(
-						classes.questionSection,
-						classes.fullSection,
-						classes.centeredColumn,
-						classes.whatIsAWordCloud,
-					)}
+					className={classNames(classes.questionSection, classes.fullSection, classes.whatIsAWordCloud)}
 				>
 					<Grid item id="questionContainer">
-						<Typography variant="h1" className={classes.lightBlueTxt}>
+						<Typography variant="h2" className={classes.lightBlueTxt}>
 							Welcome to
 						</Typography>
 						<Typography variant="h1">
 							<span className={classNames(classes.greyText, classes.bold)}>Rap Clouds</span>
-						</Typography>
-					</Grid>
-				</Grid>
-				<Grid
-					id="answerSection"
-					item
-					xs={12}
-					sm={6}
-					className={classNames(classes.fullSection, classes.answerSection, classes.centeredColumn)}
-				>
-					<Grid>
-						<Typography variant="h3">
-							Your favorite<span className={classes.lightBlueTxt}> song lyrics</span> &{' '}
-							<span className={classes.lightBlueTxt}> pictures</span>...
-						</Typography>
-						<br />
-						<Typography variant="h3">
-							...in a <span className={classes.lightBlueTxt}>word cloud</span>!
 						</Typography>
 					</Grid>
 				</Grid>
@@ -241,7 +217,7 @@ const LandingPage = (props) => {
 					xs={12}
 					sm={9}
 					direction="row"
-					wrap="wrap-reverse"
+					wrap="wrap"
 					justify="flex-end"
 					className={classNames(
 						classes.demoButtons,
@@ -256,7 +232,7 @@ const LandingPage = (props) => {
 						color="primary"
 						disableElevation
 						endIcon={<Style className={classes.flipped} />}
-						className={classNames(classes.demoButton, classes.whatIsAButton)}
+						className={classNames(classes.demoButton, classes.playTheGameBtn)}
 					>
 						Play the Game
 					</Button>
@@ -268,7 +244,7 @@ const LandingPage = (props) => {
 						color="secondary"
 						disableElevation
 						endIcon={<CloudQueue />}
-						className={classNames(classes.demoButton, classes.tryItButton)}
+						className={classNames(classes.demoButton, classes.makeACloudBtn)}
 					>
 						Make a Cloud
 					</Button>
