@@ -102,7 +102,7 @@ const useStyles = makeStyles((theme) => {
 			minWidth: '100%',
 			height: '91vh', //TO-DO: Get it so that the MINIMUM height is 91vh, and it grows to cover the answer section on mobile
 		},
-		backgroundVideoBox: {},
+		backgroundVideoBox: { position: 'relative' },
 		whatIsAWordCloud: {},
 		questionSection: {
 			color: theme.palette.primary.contrastText,
@@ -185,12 +185,17 @@ const LandingPage = (props) => {
 	const { width, user } = props;
 	const classes = useStyles();
 	const [ sampleAnswerIdx, setSampleAnswerIdx ] = useState(null);
-	const [ imgZoomOpen, toggleImgZoom ] = useState(false);
 
 	return (
 		<Grid id="aboutPageContainer" container classes={{ root: classes.aboutPageContainer }} elevation={0}>
 			<Grid item container id="backgroundVideoBox" className={classes.backgroundVideoBox} xs={12}>
-				<video autoPlay muted loop className={classes.backgroundVideo}>
+				<video
+					autoPlay
+					muted
+					loop
+					className={classes.backgroundVideo}
+					style={{ height: width === 'xs' ? '91vh' : 'auto' }}
+				>
 					<source src={`${process.env.PUBLIC_URL}/flywithme2.mp4`} type="video/mp4" />
 				</video>
 				<Grid
@@ -201,8 +206,8 @@ const LandingPage = (props) => {
 					xs={12}
 					className={classNames(classes.questionSection, classes.fullSection, classes.whatIsAWordCloud)}
 				>
-					<Grid item id="questionContainer">
-						<Typography variant="h2" className={classes.lightBlueTxt}>
+					<Grid item id="welcomeMsgContainer">
+						<Typography variant="h2" className={classes.lightBlueTxt} style={{ marginTop: '1em' }}>
 							Welcome to
 						</Typography>
 						<Typography variant="h1">
