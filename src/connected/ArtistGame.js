@@ -85,7 +85,7 @@ const useStyles = makeStyles((theme) => {
 			margin: 'auto',
 		},
 		decoyAnswer: {
-			border: `3px solid ${theme.palette.secondary.main}`,
+			border: `3px solid ${theme.palette.primary.light}`,
 		},
 		answerChoice: {
 			margin: '.6em',
@@ -166,7 +166,7 @@ export const QuizBox = (props) => {
 	return (
 		<Grid container direction="column" className={classes.quizBoxContainer}>
 			{info ? (
-				<Grid item container>
+				<Grid item container justify="space-evenly">
 					<Grid item xs={12} container direction="column">
 						{isAnswered ? (
 							<Typography align="center" variant="h6" style={{ marginBottom: '.9em' }}>
@@ -181,22 +181,23 @@ export const QuizBox = (props) => {
 							</Typography>
 						)}
 					</Grid>
-					<Grid item xs={12} lg={answersOnBottomOnly ? 12 : 8} container direction="column">
+					<Grid item xs={12} md={answersOnBottomOnly ? 12 : 7} container direction="column">
 						<img src={info && info.secure_url} className={classes.cloud} />
 					</Grid>
-					<Grid item xs={12} lg={answersOnBottomOnly ? 12 : 4}>
+					<Grid item xs={12} md={answersOnBottomOnly ? 12 : 4}>
 						<Grid
 							container
 							direction="row"
 							wrap="wrap"
 							justify="space-evenly"
 							alignItems="center"
-							alignContent="center"
+							alignContent="space-around"
+							style={{ height: '100%' }}
 						>
 							{answers.map((a, i) => {
 								const thisAnswerChosen = answerIdx == i;
 								return (
-									<Grid item key={i} xs={12} sm={6} lg={answersOnBottomOnly ? 6 : 12}>
+									<Grid item key={i} xs={12} sm={6} md={answersOnBottomOnly ? 6 : 12}>
 										<Box
 											className={classNames(
 												classes.answerChoice,
