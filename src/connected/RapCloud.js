@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { IconButton, Grid, withWidth, Tooltip, Paper, Dialog, DialogContent } from '@material-ui/core';
+import { IconButton, Grid, withWidth, Tooltip, Paper, Dialog, DialogContent, useMediaQuery } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Pagination from '@material-ui/lab/Pagination';
 import RapCloudSettings from './RapCloudSettings';
@@ -28,10 +28,10 @@ const useStyles = makeStyles((theme) => {
 			width: '100%',
 			height: '100%',
 			minHeight: '27vh',
-			backgroundSize: 'cover',
+			backgroundRepeat: 'no-repeat',
 			backgroundPosition: 'center',
 			backgroundClip: 'border-box',
-			backgroundOrigin: 'center',
+			backgroundOrigin: 'border-box',
 		},
 		wordCloudWrapper: {
 			width: '100%',
@@ -125,6 +125,7 @@ const RapCloud = (props) => {
 	const [ settingsOpen, toggleSettings ] = useState(false);
 	const [ currentCloudIdx, setCurrentCloudIdx ] = React.useState(0);
 	const [ fullScreenCloud, toggleFullScreenCloud ] = useState(false);
+	const biggerThanXS = useMediaQuery((theme) => theme.breakpoints.up('sm'));
 	const {
 		cloudName,
 		clouds,
@@ -253,7 +254,10 @@ const RapCloud = (props) => {
 				<LoadingBar loading={isLoading} />
 				<Grid
 					item
-					style={{ backgroundImage: `url("${secure_url || `${process.env.PUBLIC_URL}/rapClouds.png`}")` }}
+					style={{
+						backgroundImage: `url("${secure_url || `${process.env.PUBLIC_URL}/rapClouds.png`}")`,
+						backgroundSize: biggerThanXS ? 'contain' : 'cover',
+					}}
 					alt={'Rap Cloud'}
 					className={classes.wordCloud}
 					onClick={() => toggleFullScreenCloud(true)}
