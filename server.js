@@ -4,6 +4,7 @@ const favicon = require('express-favicon');
 const path = require('path');
 const port = process.env.PORT || 8080;
 const app = express();
+const requireDotIo = require('prerender-node');
 if (process.env.NODE_ENV === 'production') {
 	app.use((req, res, next) => {
 		if (req.header('x-forwarded-proto') !== 'https') res.redirect(`https://${req.header('host')}${req.url}`);
@@ -20,4 +21,6 @@ app.get('/ping', function(req, res) {
 app.get('/*', function(req, res) {
 	res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
+console.log('Starting the server', { prKey: process.env.PRERENDER_TOKEN });
+app.use(requireDotIo.set('prerenderToken', process.env.PRERENDER_TOKEN));
 app.listen(port);
