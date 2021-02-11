@@ -1,4 +1,4 @@
-import { ADD_ARTISTS, FETCH_ARTIST, GEN_ARTIST_CLOUD, FETCH_ARTIST_SONGS } from '../actionTypes';
+import { ADD_ARTISTS, FETCH_ARTIST, GEN_ARTIST_CLOUD, FETCH_ARTIST_SONGS, MODIFY_ARTIST } from '../actionTypes';
 
 const initialState = {
 	byId: {},
@@ -26,6 +26,17 @@ const addArtist = (state, action) => {
 	return { ...state, byId: { ...artistsById, [id]: artist }, artistLoading: false };
 };
 
+const modifyArtist = (state, action) => {
+	const { artist } = action;
+	const { id } = artist;
+	if (!artist || !id) return state;
+	const artistsById = state.byId;
+	const oldArtist = artistsById[id];
+	if (!oldArtist) return state;
+	const newArtist = { ...oldArtist, ...artist };
+	return { ...state, byId: { ...artistsById, [id]: newArtist } };
+};
+
 const addArtists = (state, action) => {
 	const { artists } = action;
 	if (!artists) return state;
@@ -41,6 +52,7 @@ Object.values(FETCH_ARTIST_SONGS).forEach((actionType) => (handlers[actionType] 
 // Note: Be sure to over-write the .success variations of FETCH actions, like below.
 handlers[FETCH_ARTIST.success] = addArtist;
 handlers[ADD_ARTISTS] = addArtists;
+handlers[MODIFY_ARTIST] = modifyArtist;
 
 export default (state = initialState, action) => {
 	const handle = handlers[action.type];

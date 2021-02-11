@@ -9,6 +9,7 @@ const actionNamesForProcess = (baseName) => {
 export const SET_USER = 'SET_USER';
 export const ADD_SONGS = 'ADD_SONGS';
 export const ADD_ARTISTS = 'ADD_ARTISTS';
+export const MODIFY_ARTIST = 'MODIFY_ARTIST';
 export const ADD_CLOUD = 'ADD_CLOUD';
 export const ADD_CLOUDS = 'ADD_CLOUDS';
 export const SEARCH_SONGS = actionNamesForProcess('SEARCH_SONGS');

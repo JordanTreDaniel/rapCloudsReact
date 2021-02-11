@@ -5,6 +5,7 @@ import {
 	FETCH_SONG_DETAILS,
 	GEN_SONG_CLOUD,
 	FETCH_SONG_LYRICS,
+	FETCH_ARTIST_SONGS,
 } from '../actionTypes';
 
 const initialState = {
@@ -75,6 +76,7 @@ Object.values(FETCH_SONG_LYRICS).forEach((actionType) => (handlers[actionType] =
 Object.values(FETCH_SONG_DETAILS).forEach((actionType) => (handlers[actionType] = setLoading));
 Object.values(SEARCH_SONGS).forEach((actionType) => (handlers[actionType] = setLoading));
 handlers[ADD_SONGS] = addSongs;
+handlers[FETCH_ARTIST_SONGS.success] = addSongs;
 handlers[SET_SONG_SEARCH_TERM] = setSearchTerm;
 handlers[FETCH_SONG_DETAILS.success] = addSongDetails;
 handlers[FETCH_SONG_LYRICS.success] = addLyrics;
