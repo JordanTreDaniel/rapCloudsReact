@@ -328,9 +328,11 @@ export const getArtistGame = createSelector(
 	getGames,
 	getSongsById,
 	getCloudsBySongId,
-	(artist, games, songsById, cloudsBySongId) => {
+	getMatchParams,
+	(artist, games, songsById, cloudsBySongId, matchParams) => {
+		const { level } = matchParams;
 		if (!artist) return null;
-		const rawGame = games.find((game) => game.artistId == artist.id);
+		const rawGame = games.find((game) => game.artistId == artist.id && game.level == level);
 		if (!rawGame) return null;
 		const cookedGame = {
 			...rawGame,

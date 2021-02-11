@@ -261,12 +261,16 @@ const ConnectedQuizBox = connect(mapStateQB, { fetchSongDetails, answerQuestion 
 
 const ArtistGame = (props) => {
 	const classes = useStyles();
-	const { artistId } = useParams();
+	const { artistId, level } = useParams();
 	const [ questionIdx, updateQuestionIdx ] = useState(0);
 	const { fetchArtistGame, fetchSongDetails, game, artistLoading } = props;
-	useEffect(() => {
-		if (!(game && game.id)) fetchArtistGame(artistId);
-	});
+	const { id: gameId } = game || {};
+	useEffect(
+		() => {
+			if (!game) fetchArtistGame(artistId, level);
+		},
+		[ gameId ],
+	);
 	const { questions = [], artist } = game || {};
 	let prevAnswered = false,
 		correctAnswers = 0,
@@ -300,19 +304,27 @@ const ArtistGame = (props) => {
 							Game Over!
 						</Typography>
 						<Typography align="center" style={{ width: '100%' }}>
-							You got {correctAnswers} out of {questions.length} of {artist.name} RapClouds right!
+							You got {parseInt(correctAnswers * 100 / questions.length)}% of RapClouds on {artist.name}
+							Level {game.level}
 						</Typography>
 						<Typography align="center" style={{ width: '100%' }}>
-							That's {parseInt(correctAnswers * 100 / questions.length)}%!
-						</Typography>
-						<Typography align="center" style={{ width: '100%' }}>
+							{game.nextLevel ? (
+								<Button
+									variant="contained"
+									component={Link}
+									to={`/games/${artist.id}/${game.nextLevel}`}
+									className={classes.playAgainLink}
+								>
+									Level {game.nextLevel}
+								</Button>
+							) : null}
 							<Button
 								variant="contained"
 								component={Link}
 								to={paths.play}
 								className={classes.playAgainLink}
 							>
-								Play Again?
+								New Artist
 							</Button>
 						</Typography>
 					</Grid>

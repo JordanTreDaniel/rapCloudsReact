@@ -133,7 +133,7 @@ const GameMaker = (props) => {
 					<Divider className={classes.dividers} />
 					{artists.map((artist, idx) => (
 						<Grid key={idx}>
-							<ListItem component={Link} to={`games/${artist.id}`} className={classes.artistLink}>
+							<ListItem component={Link} to={`/games/${artist.id}/1`} className={classes.artistLink}>
 								<ListItemAvatar>
 									<Avatar
 										src={artist.image_url}
