@@ -155,9 +155,13 @@ export const QuizBox = (props) => {
 			if (questionIdx == 0) {
 				if (!info) fetchSongDetails(question.songId);
 			}
-			const nextQuestion = questions[questionIdx + 1];
-			if (nextQuestion) {
-				fetchSongDetails(nextQuestion.songId);
+			const secondQuestion = questions[questionIdx + 1];
+			if (secondQuestion) {
+				fetchSongDetails(secondQuestion.songId);
+			}
+			const thirdQuestion = questions[questionIdx + 2];
+			if (thirdQuestion) {
+				fetchSongDetails(thirdQuestion.songId);
 			}
 		},
 		[ questionIdx ],
@@ -251,6 +255,7 @@ const mapStateQB = (state, ownProps) => {
 		areSongLyricsLoading: selectors.areSongLyricsLoading(state),
 	};
 };
+
 const ConnectedQuizBox = connect(mapStateQB, { fetchSongDetails, answerQuestion })(withWidth()(QuizBox));
 
 const ArtistGame = (props) => {
