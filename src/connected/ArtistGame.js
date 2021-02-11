@@ -154,10 +154,10 @@ export const QuizBox = (props) => {
 		() => {
 			if (questionIdx == 0) {
 				if (!info) fetchSongDetails(question.songId);
-			}
-			const secondQuestion = questions[questionIdx + 1];
-			if (secondQuestion) {
-				fetchSongDetails(secondQuestion.songId);
+				const secondQuestion = questions[questionIdx + 1];
+				if (secondQuestion) {
+					fetchSongDetails(secondQuestion.songId);
+				}
 			}
 			const thirdQuestion = questions[questionIdx + 2];
 			if (thirdQuestion) {
