@@ -152,6 +152,7 @@ export const QuizBox = (props) => {
 	}, []);
 	useEffect(
 		() => {
+			//TO-DO: Find a more intelligent way to fetch the songs
 			if (questionIdx == 0) {
 				if (!info) fetchSongDetails(question.songId);
 				const secondQuestion = questions[questionIdx + 1];
@@ -302,7 +303,7 @@ const ArtistGame = (props) => {
 							You got {correctAnswers} out of {questions.length} of {artist.name} RapClouds right!
 						</Typography>
 						<Typography align="center" style={{ width: '100%' }}>
-							That's {correctAnswers * 100 / questions.length}%!
+							That's {parseInt(correctAnswers * 100 / questions.length)}%!
 						</Typography>
 						<Typography align="center" style={{ width: '100%' }}>
 							<Button
