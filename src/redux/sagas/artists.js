@@ -35,7 +35,7 @@ const apiFetchArtist = async (artistId, accessToken) => {
 	return { error: { status, statusText } };
 };
 
-const apiFetchArtistSongs = async (artistId, page, accessToken) => {
+const apiFetchArtistSongs = async (artistId, page = 1, accessToken) => {
 	const res = await axios({
 		method: 'get',
 		url: `${REACT_APP_SERVER_ROOT}/getArtistSongs/${artistId}/${page}`,
@@ -79,13 +79,13 @@ export function* fetchArtist(action) {
 		return error;
 	} else {
 		yield put({ type: FETCH_ARTIST.success, artist });
-		if (fetchSongsToo) yield put({ type: FETCH_ARTIST_SONGS, artistId, fetchCloudToo: true, nextPage: 1 });
+		if (fetchSongsToo) yield put({ type: FETCH_ARTIST_SONGS, artistId, fetchCloudToo: true });
 		return { artist };
 	}
 }
 
 export function* fetchArtistSongs(action) {
-	const { artistId, fetchCloudToo = false } = action;
+	const { artistId, fetchCloudToo = false, level } = action;
 	const accessToken = yield select(getAccessToken);
 	if (!accessToken) {
 		console.error(`Could not fetch artist without access token `, { accessToken });
@@ -98,15 +98,21 @@ export function* fetchArtistSongs(action) {
 		yield cancel();
 	}
 	const artist = yield select(getArtistFromId, artistId) || {};
-	const { nextPage: page = 1 } = artist;
-	if (page === null) {
+	//NOTE: Both level & nextPage exist to maintain indices for game levels & actual pages, which are both based on pages.
+	const { nextPage: page } = artist;
+	if (!level && page === null) {
 		yield put({ type: FETCH_ARTIST_SONGS.cancellation, artistId, reason: "Next page doesn't exist." });
 	}
-	const { songs = [], nextPage, error } = yield call(apiFetchArtistSongs, artistId, page, accessToken);
+	const { songs = [], nextPage = null, error } = yield call(
+		apiFetchArtistSongs,
+		artistId,
+		level || page,
+		accessToken,
+	);
 	if (error) {
 		yield put({ type: FETCH_ARTIST_SONGS.failure, artistId });
 	} else {
-		yield put({ type: MODIFY_ARTIST, artist: { nextPage: nextPage || null, id: artistId } });
+		if (!level) yield put({ type: MODIFY_ARTIST, artist: { nextPage: nextPage, id: artistId } });
 		if (songs.length) yield put({ type: FETCH_ARTIST_SONGS.success, songs });
 		if (fetchCloudToo) {
 			yield put({
@@ -115,7 +121,7 @@ export function* fetchArtistSongs(action) {
 				artistId,
 			});
 		}
-		return { songs, nextPage: nextPage || null, page };
+		return { songs, nextPage: nextPage, nextLevel: nextPage };
 	}
 }
 
@@ -173,11 +179,11 @@ export function* genArtistCloud(action) {
 //TO-DO: Move this to games sagas when created.
 export function* fetchArtistGame(action) {
 	try {
-		const { artistId, fetchArtistToo = false } = action;
+		const { artistId, fetchArtistToo = false, level = 1 } = action;
 		if (fetchArtistToo) {
 			yield put({ type: FETCH_ARTIST.start, artistId });
 		}
-		const { songs, page, nextPage, error } = yield call(fetchArtistSongs, { artistId });
+		const { songs, nextLevel, error } = yield call(fetchArtistSongs, { artistId, level });
 		const genAnswers = (song) => {
 			const { full_title, id: songId } = song;
 			let answers = [ { title: full_title, correct: true, songId: song.id } ],
@@ -207,7 +213,8 @@ export function* fetchArtistGame(action) {
 			//put a bunch of requests to get the songs here
 			//const dummySongs = yield select get songs for artist
 			const game = {
-				level: page,
+				level,
+				nextLevel,
 				artistId,
 				questions: songs.map((song) => ({ songId: song.id, answers: genAnswers(song) })),
 			};
