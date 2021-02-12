@@ -112,11 +112,8 @@ const useStyles = makeStyles((theme) => {
 
 export const QuizBox = (props) => {
 	const {
-		questions,
-		fetchSongDetails,
+		question,
 		answerQuestion,
-		song,
-		clouds,
 		gameId,
 		questionIdx,
 		updateQuestionIdx,
@@ -124,49 +121,13 @@ export const QuizBox = (props) => {
 		isWordCloudLoading,
 		areSongLyricsLoading,
 		gameOver,
-		cloud,
 		answersOnBottomOnly = false,
 	} = props;
-	const question = questions[questionIdx];
 	const classes = useStyles();
-	const { answers, answerIdx } = question || {};
+	const { answers, answerIdx, cloud, song } = question || {};
 	const { info } = cloud || {};
 	const isAnswered = answerIdx == 0 || answerIdx;
 	const letters = [ 'A', 'B', 'C', 'D' ];
-	useEffect(() => {
-		let newIdx = questionIdx + 1;
-		if (isAnswered) {
-			let nextQuestion = questions[newIdx];
-			let nextQuestionAnswered = nextQuestion.answerIdx == 0 || nextQuestion.answerIdx;
-			while (nextQuestionAnswered) {
-				newIdx++;
-				if (newIdx > questions.length - 1) {
-					newIdx--;
-					break;
-				}
-				nextQuestion = questions[newIdx];
-				nextQuestionAnswered = nextQuestion.answerIdx == 0 || nextQuestion.answerIdx;
-			}
-			updateQuestionIdx(newIdx);
-		}
-	}, []);
-	useEffect(
-		() => {
-			//TO-DO: Find a more intelligent way to fetch the songs
-			if (questionIdx == 0) {
-				if (!info) fetchSongDetails(question.songId);
-				const secondQuestion = questions[questionIdx + 1];
-				if (secondQuestion) {
-					fetchSongDetails(secondQuestion.songId);
-				}
-			}
-			const thirdQuestion = questions[questionIdx + 2];
-			if (thirdQuestion) {
-				fetchSongDetails(thirdQuestion.songId);
-			}
-		},
-		[ questionIdx ],
-	);
 
 	return (
 		<Grid container direction="column" className={classes.quizBoxContainer}>
@@ -244,13 +205,7 @@ export const QuizBox = (props) => {
 };
 
 const mapStateQB = (state, ownProps) => {
-	const { questions, questionIdx } = ownProps;
-	const question = questions[questionIdx] || {};
-	const { songId } = question;
-	//NOTE: The props here are very similar to SongDetail. Maybe make HOC?
 	return {
-		song: selectors.getSongFromId(state, songId), // Possibly not needed. Just using for song Id
-		cloud: selectors.getOfficalCloudForSong(state, songId),
 		isSongDetailLoading: selectors.isSongDetailLoading(state),
 		isWordCloudLoading: selectors.isWordCloudLoading(state),
 		areSongLyricsLoading: selectors.areSongLyricsLoading(state),
@@ -263,31 +218,55 @@ const ArtistGame = (props) => {
 	const classes = useStyles();
 	const { artistId, level } = useParams();
 	const [ questionIdx, updateQuestionIdx ] = useState(0);
-	const { fetchArtistGame, fetchSongDetails, game, artistLoading } = props;
-	const { id: gameId } = game || {};
+	const { fetchArtistGame, fetchSongDetails, game, artistLoading, cloud } = props;
+	const { questions = [], artist, id: gameId, gameOver, percentageRight } = game || {};
+	const question = questions[questionIdx];
+	const { answerIdx } = question || {};
+	const isAnswered = answerIdx == 0 || answerIdx;
+	const { info } = cloud || {};
 	useEffect(
 		() => {
 			if (!game) fetchArtistGame(artistId, level);
 		},
 		[ gameId ],
 	);
-	const { questions = [], artist } = game || {};
-	let prevAnswered = false,
-		correctAnswers = 0,
-		incorrectAnswers = 0;
-	questions.forEach((question) => {
-		const { answerIdx } = question;
-		if (answerIdx !== 0 && !answerIdx) {
-			return;
+
+	let prevAnswered = false;
+	useEffect(() => {
+		if (isAnswered) {
+			let newIdx = questionIdx + 1;
+			let nextQuestion = questions[newIdx];
+			let nextQuestionAnswered = nextQuestion.answerIdx == 0 || nextQuestion.answerIdx;
+			while (nextQuestionAnswered) {
+				newIdx++;
+				if (newIdx > questions.length - 1) {
+					newIdx--;
+					break;
+				}
+				nextQuestion = questions[newIdx];
+				nextQuestionAnswered = nextQuestion.answerIdx == 0 || nextQuestion.answerIdx;
+			}
+			updateQuestionIdx(newIdx);
 		}
-		const answer = question.answers[answerIdx];
-		if (answer.correct) {
-			correctAnswers++;
-		} else {
-			incorrectAnswers++;
-		}
-	});
-	const gameOver = correctAnswers + incorrectAnswers === questions.length;
+	}, []);
+	useEffect(
+		() => {
+			//TO-DO: Find a more intelligent way to fetch the songs
+			if (questionIdx == 0) {
+				if (!info) fetchSongDetails(question.songId);
+				const secondQuestion = questions[questionIdx + 1];
+				if (secondQuestion) {
+					fetchSongDetails(secondQuestion.songId);
+				}
+			}
+			const thirdQuestion = questions[questionIdx + 2];
+			if (thirdQuestion) {
+				fetchSongDetails(thirdQuestion.songId);
+			}
+		},
+		[ questionIdx ],
+	);
+
 	const content =
 		!questions.length || !artist ? (
 			<Grid xs={12}>
@@ -304,7 +283,7 @@ const ArtistGame = (props) => {
 							Game Over!
 						</Typography>
 						<Typography align="center" style={{ width: '100%' }}>
-							You got {parseInt(correctAnswers * 100 / questions.length)}% of RapClouds on {artist.name}
+							You got {percentageRight}% of RapClouds on {artist.name}
 							Level {game.level}
 						</Typography>
 						<Typography align="center" style={{ width: '100%' }}>
@@ -371,7 +350,7 @@ const ArtistGame = (props) => {
 				</Grid>
 				<Grid item xs={10} className={classes.quizBoxWrapper}>
 					<ConnectedQuizBox
-						questions={questions}
+						question={question}
 						gameId={game.id}
 						questionIdx={questionIdx}
 						fetchSongDetails={fetchSongDetails}
