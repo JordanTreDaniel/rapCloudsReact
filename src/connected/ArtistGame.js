@@ -1,23 +1,6 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import {
-	Typography,
-	AppBar,
-	Toolbar,
-	Grid,
-	Avatar,
-	Tooltip,
-	Paper,
-	IconButton,
-	withWidth,
-	Input,
-	List,
-	ListItem,
-	ListItemAvatar,
-	ListItemText,
-	Box,
-	Button,
-} from '@material-ui/core';
+import { Typography, Grid, Avatar, Tooltip, Paper, IconButton, withWidth, Input, Box, Button } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import CloudDone from '@material-ui/icons/CloudDone';
 import CloudQueue from '@material-ui/icons/CloudQueue';
@@ -28,7 +11,7 @@ import ArtistSongList from './ArtistSongList';
 import BackButton from '../components/BackButton';
 import RapCloud from './RapCloud';
 import * as selectors from '../redux/selectors';
-import { searchSongs, setSongSearchTerm, fetchArtistGame, fetchSongDetails, answerQuestion } from '../redux/actions';
+import { fetchArtistGame, fetchSongDetails, answerQuestion } from '../redux/actions';
 import { connect } from 'react-redux';
 import paths from '../paths';
 import { classNames } from '../utils';
@@ -212,24 +195,17 @@ const mapStateQB = (state, ownProps) => {
 	};
 };
 
-const ConnectedQuizBox = connect(mapStateQB, { fetchSongDetails, answerQuestion })(withWidth()(QuizBox));
+const ConnectedQuizBox = connect(mapStateQB, { answerQuestion })(withWidth()(QuizBox));
 
 const ArtistGame = (props) => {
 	const classes = useStyles();
-	const { artistId, level } = useParams();
 	const [ questionIdx, updateQuestionIdx ] = useState(0);
-	const { fetchArtistGame, fetchSongDetails, game, artistLoading, cloud } = props;
+	const { fetchSongDetails, game, artistLoading, cloud } = props;
 	const { questions = [], artist, id: gameId, gameOver, percentageRight } = game || {};
 	const question = questions[questionIdx];
 	const { answerIdx } = question || {};
 	const isAnswered = answerIdx == 0 || answerIdx;
 	const { info } = cloud || {};
-	useEffect(
-		() => {
-			if (!game) fetchArtistGame(artistId, level);
-		},
-		[ gameId ],
-	);
 
 	let prevAnswered = false;
 	useEffect(() => {
@@ -381,6 +357,23 @@ const mapState = (state) => ({
 	artistLoading: selectors.isArtistLoading(state), //TO-DO: Read from the gameLoading property instead. Need to update sagas/reducers to do that.
 });
 
-export default connect(mapState, { searchSongs, setSongSearchTerm, fetchArtistGame, fetchSongDetails })(
-	withWidth()(ArtistGame),
-);
+const ConnectedArtistGame = connect(mapState, { fetchSongDetails })(withWidth()(ArtistGame));
+
+const _ArtistGameLoadingGate = (props) => {
+	const { game, fetchArtistGame } = props;
+	const { artistId, level } = useParams();
+	const { gameId = null } = game || {};
+	useEffect(
+		() => {
+			if (!game) fetchArtistGame(artistId, level);
+		},
+		[ gameId ],
+	);
+
+	if (game) {
+		return <ConnectedArtistGame />;
+	} else {
+		return <h1>Loading</h1>;
+	}
+};
+export default connect(mapState, { fetchArtistGame })(withWidth()(_ArtistGameLoadingGate));
