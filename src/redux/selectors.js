@@ -342,7 +342,7 @@ export const getArtistGame = createSelector(
 			const { answerIdx, songId, answers } = question;
 			const isAnswered = answerIdx == 0 || answerIdx;
 			if (isAnswered) {
-				const answer = answers[answerIdx];
+				const answer = answers[answerIdx] || {};
 				if (answer.correct) {
 					correctAnswers++;
 				} else {

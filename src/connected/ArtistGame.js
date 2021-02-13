@@ -107,11 +107,32 @@ export const QuizBox = (props) => {
 		answersOnBottomOnly = false,
 	} = props;
 	const classes = useStyles();
+	const [ seconds, setSeconds ] = useState(0);
 	const { answers, answerIdx, cloud, song } = question || {};
 	const { info } = cloud || {};
 	const isAnswered = answerIdx == 0 || answerIdx;
 	const letters = [ 'A', 'B', 'C', 'D' ];
-
+	useEffect(
+		() => {
+			const { answerIdx } = question;
+			const isAnswered = answerIdx == 0 || !!answerIdx;
+			if (!isAnswered) {
+				setSeconds(10);
+				const questionTimer = setInterval(() => {
+					setSeconds((s) => {
+						const newSeconds = s - 1;
+						if (newSeconds < 0) {
+							answerQuestion(gameId, questionIdx, -1);
+							clearInterval(questionTimer);
+							updateQuestionIdx(questionIdx + 1);
+						}
+						return newSeconds;
+					});
+				}, 1000);
+			}
+		},
+		[ questionIdx ],
+	);
 	return (
 		<Grid container direction="column" className={classes.quizBoxContainer}>
 			{info ? (
@@ -130,7 +151,17 @@ export const QuizBox = (props) => {
 							</Typography>
 						)}
 					</Grid>
-					<Grid item xs={12} md={answersOnBottomOnly ? 12 : 7} container direction="column">
+					<Grid
+						item
+						xs={12}
+						md={answersOnBottomOnly ? 12 : 7}
+						container
+						direction="column"
+						style={{ position: 'relative' }}
+					>
+						<Typography variant="h3" style={{ position: 'absolute', top: 0, right: 0 }}>
+							{seconds}
+						</Typography>
 						<img src={info && info.secure_url} className={classes.cloud} />
 					</Grid>
 					<Grid item xs={12} md={answersOnBottomOnly ? 12 : 4}>
@@ -217,6 +248,16 @@ const ArtistGame = (props) => {
 			updateQuestionIdx(newIdx);
 		}
 	}, []);
+	useEffect(
+		() => {
+			if (!info) {
+				const { songId } = question;
+				console.log('No info found for song. Fetching details', songId);
+				songId && fetchSongDetails(songId);
+			}
+		},
+		[ questionIdx ],
+	);
 	const content =
 		!questions.length || !artist ? (
 			<Grid xs={12}>
@@ -262,9 +303,10 @@ const ArtistGame = (props) => {
 					{questions.map((question, index) => {
 						let children;
 						const { answerIdx } = question;
-						const answer = question.answers[answerIdx];
+						const isAnswered = answerIdx == 0 || answerIdx;
+						const answer = question.answers[answerIdx] || {};
 						const classesArr = [];
-						if (!answer) {
+						if (!isAnswered) {
 							classesArr.push(classes.unanswered);
 							children = (
 								<CloudQueue
@@ -286,7 +328,7 @@ const ArtistGame = (props) => {
 								/>
 							);
 						}
-						prevAnswered = answerIdx == 0 || answerIdx;
+						prevAnswered = isAnswered;
 						if (index == questionIdx) classesArr.push(classes.currentMiniCloud);
 						return (
 							<Grid item key={index} className={classNames(classes.miniCloud, ...classesArr)} xs={2}>
