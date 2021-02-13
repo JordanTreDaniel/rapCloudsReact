@@ -156,6 +156,7 @@ export function* fetchSongDetails(action) {
 	if (error) {
 		yield put({ type: FETCH_SONG_DETAILS.failure });
 		console.error('Something went wrong', error);
+		return { error };
 	} else {
 		const { path: songPath } = song;
 		yield put({ type: FETCH_SONG_DETAILS.success, song });
@@ -168,6 +169,7 @@ export function* fetchSongDetails(action) {
 				generateCloud: generateCloud && !hasOfficialCloud,
 			});
 		}
+		return { song };
 	}
 }
 
@@ -189,16 +191,18 @@ export function* fetchSongLyrics(action) {
 		if (error) {
 			yield put({ type: FETCH_SONG_LYRICS.failure, songId, songPath });
 			console.error('Something went wrong', error);
+			return { error };
 		} else {
 			yield put({ type: FETCH_SONG_LYRICS.success, songId, lyrics });
 			if (generateCloud) {
 				const normalizedLyrics = normalizeLyrics(lyrics);
 				yield put({ type: GEN_SONG_CLOUD.start, lyricString: normalizedLyrics, songId, officialCloud: true });
 			}
-			return lyrics;
+			return { lyrics };
 		}
 	} catch (err) {
 		console.log('Something went wrong in fetchSongLyrics', err);
+		return { error: err };
 	}
 }
 
@@ -240,6 +244,28 @@ export function* genSongCloud(action) {
 		yield put({ type: GEN_SONG_CLOUD.failure, err });
 		console.log('Something went wrong in fetch song cloud', err);
 	}
+}
+
+/*NOTE: Instead of using this saga, which ties everything together; 
+I could use the pre-existing chain, but call the sagas directly from within the others
+ instead of releasing .start actions*/
+export function* fetchSongEverything(action) {
+	const { songId } = action;
+	if (!songId) yield cancel();
+	const { song, error: detailsErr } = yield call(fetchSongDetails, {
+		songId,
+		fetchLyrics: false,
+		generateCloud: false,
+	});
+	const { path: songPath } = song;
+	const { lyrics, error: lyricsErr } = yield call(fetchSongLyrics, { songId, generateCloud: false, songPath });
+	const normalizedLyrics = normalizeLyrics(lyrics);
+	const { finishedCloud, error: cloudErr } = yield call(genSongCloud, {
+		lyricString: normalizedLyrics,
+		songId,
+		officialCloud: true,
+	});
+	return { song, lyrics, finishedCloud, detailsErr, lyricsErr, cloudErr };
 }
 
 function* watchSearchSongs() {

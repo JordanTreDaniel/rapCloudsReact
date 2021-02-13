@@ -1,7 +1,6 @@
-import { put, takeEvery, takeLatest, call, select, cancel, all } from 'redux-saga/effects';
+import { put, takeEvery, call, select, cancel, all } from 'redux-saga/effects';
 import {
 	FETCH_ARTIST,
-	ADD_SONGS,
 	SIGN_OUT,
 	FETCH_SONG_LYRICS,
 	GEN_ARTIST_CLOUD,
@@ -10,7 +9,7 @@ import {
 	MODIFY_ARTIST,
 } from '../actionTypes';
 import { getAccessToken, getArtistFromId, getCloudsForArtist, getArtistsSongs } from '../selectors';
-import { fetchSongLyrics } from './songs';
+import { fetchSongLyrics, fetchSongEverything } from './songs';
 import { generateCloud } from './clouds';
 import axios from 'axios';
 import normalizeLyrics from '../utils/normalizeLyrics';
@@ -219,6 +218,11 @@ export function* fetchArtistGame(action) {
 				questions: songs.map((song) => ({ songId: song.id, answers: genAnswers(song) })),
 			};
 			yield put({ type: FETCH_ARTIST_GAME.success, game });
+			for (let songIdx in songs) {
+				if (songIdx == 0) continue;
+				const song = songs[songIdx];
+				yield call(fetchSongEverything, { songId: song.id });
+			}
 			return game;
 		}
 	} catch (err) {

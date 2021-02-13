@@ -175,35 +175,27 @@ export const QuizBox = (props) => {
 						</Grid>
 					</Grid>
 				</Grid>
-			) : isSongDetailLoading || isWordCloudLoading || areSongLyricsLoading ? (
+			) : (
 				<Grid>
 					<Typography variant="h3" align="center" className={classes.textPlaceholder}>
 						Loading...
 					</Typography>
-					<LoadingBar loading={isSongDetailLoading || isWordCloudLoading || areSongLyricsLoading} />
+					<LoadingBar />
 				</Grid>
-			) : null}
+			)}
 		</Grid>
 	);
 };
 
-const mapStateQB = (state, ownProps) => {
-	return {
-		isSongDetailLoading: selectors.isSongDetailLoading(state),
-		isWordCloudLoading: selectors.isWordCloudLoading(state),
-		areSongLyricsLoading: selectors.areSongLyricsLoading(state),
-	};
-};
-
-const ConnectedQuizBox = connect(mapStateQB, { answerQuestion })(withWidth()(QuizBox));
+const ConnectedQuizBox = connect(null, { answerQuestion })(withWidth()(QuizBox));
 
 const ArtistGame = (props) => {
 	const classes = useStyles();
 	const [ questionIdx, updateQuestionIdx ] = useState(0);
-	const { fetchSongDetails, game, artistLoading, cloud } = props;
+	const { fetchSongDetails, game, artistLoading } = props;
 	const { questions = [], artist, id: gameId, gameOver, percentageRight } = game || {};
 	const question = questions[questionIdx];
-	const { answerIdx } = question || {};
+	const { answerIdx, cloud } = question || {};
 	const isAnswered = answerIdx == 0 || answerIdx;
 	const { info } = cloud || {};
 
@@ -225,24 +217,6 @@ const ArtistGame = (props) => {
 			updateQuestionIdx(newIdx);
 		}
 	}, []);
-	useEffect(
-		() => {
-			//TO-DO: Find a more intelligent way to fetch the songs
-			if (questionIdx == 0) {
-				if (!info) fetchSongDetails(question.songId);
-				const secondQuestion = questions[questionIdx + 1];
-				if (secondQuestion) {
-					fetchSongDetails(secondQuestion.songId);
-				}
-			}
-			const thirdQuestion = questions[questionIdx + 2];
-			if (thirdQuestion) {
-				fetchSongDetails(thirdQuestion.songId);
-			}
-		},
-		[ questionIdx ],
-	);
-
 	const content =
 		!questions.length || !artist ? (
 			<Grid xs={12}>
@@ -325,14 +299,16 @@ const ArtistGame = (props) => {
 					})}
 				</Grid>
 				<Grid item xs={10} className={classes.quizBoxWrapper}>
-					<ConnectedQuizBox
-						question={question}
-						gameId={game.id}
-						questionIdx={questionIdx}
-						fetchSongDetails={fetchSongDetails}
-						updateQuestionIdx={updateQuestionIdx}
-						gameOver={gameOver}
-					/>
+					{info && (
+						<ConnectedQuizBox
+							question={question}
+							gameId={game.id}
+							questionIdx={questionIdx}
+							fetchSongDetails={fetchSongDetails}
+							updateQuestionIdx={updateQuestionIdx}
+							gameOver={gameOver}
+						/>
+					)}
 				</Grid>
 			</Fragment>
 		);
@@ -355,6 +331,9 @@ const ArtistGame = (props) => {
 const mapState = (state) => ({
 	game: selectors.getArtistGame(state),
 	artistLoading: selectors.isArtistLoading(state), //TO-DO: Read from the gameLoading property instead. Need to update sagas/reducers to do that.
+	isSongDetailLoading: selectors.isSongDetailLoading(state),
+	isWordCloudLoading: selectors.isWordCloudLoading(state),
+	areSongLyricsLoading: selectors.areSongLyricsLoading(state),
 });
 
 const ConnectedArtistGame = connect(mapState, { fetchSongDetails })(withWidth()(ArtistGame));
