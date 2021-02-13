@@ -184,7 +184,7 @@ export function* fetchSongLyrics(action) {
 				const normalizedLyrics = normalizeLyrics(song.lyrics);
 				yield put({ type: GEN_SONG_CLOUD.start, lyricString: normalizedLyrics, songId, officialCloud: true });
 			}
-			return song.lyrics;
+			return { lyrics: song.lyrics };
 		}
 		const { lyrics: newLyrics, error } = yield call(apiFetchSongLyrics, songPath, songId);
 		lyrics = newLyrics;
@@ -250,22 +250,26 @@ export function* genSongCloud(action) {
 I could use the pre-existing chain, but call the sagas directly from within the others
  instead of releasing .start actions*/
 export function* fetchSongEverything(action) {
-	const { songId } = action;
-	if (!songId) yield cancel();
-	const { song, error: detailsErr } = yield call(fetchSongDetails, {
-		songId,
-		fetchLyrics: false,
-		generateCloud: false,
-	});
-	const { path: songPath } = song;
-	const { lyrics, error: lyricsErr } = yield call(fetchSongLyrics, { songId, generateCloud: false, songPath });
-	const normalizedLyrics = normalizeLyrics(lyrics);
-	const { finishedCloud, error: cloudErr } = yield call(genSongCloud, {
-		lyricString: normalizedLyrics,
-		songId,
-		officialCloud: true,
-	});
-	return { song, lyrics, finishedCloud, detailsErr, lyricsErr, cloudErr };
+	try {
+		const { songId } = action;
+		if (!songId) yield cancel();
+		const { song, error: detailsErr } = yield call(fetchSongDetails, {
+			songId,
+			fetchLyrics: false,
+			generateCloud: false,
+		});
+		const { path: songPath } = song;
+		const { lyrics, error: lyricsErr } = yield call(fetchSongLyrics, { songId, generateCloud: false, songPath });
+		const normalizedLyrics = normalizeLyrics(lyrics);
+		const { finishedCloud, error: cloudErr } = yield call(genSongCloud, {
+			lyricString: normalizedLyrics,
+			songId,
+			officialCloud: true,
+		});
+		return { song, lyrics, finishedCloud, detailsErr, lyricsErr, cloudErr };
+	} catch (error) {
+		console.log('problem during fetchSongEverything', error);
+	}
 }
 
 function* watchSearchSongs() {
