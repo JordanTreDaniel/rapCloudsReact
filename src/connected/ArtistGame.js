@@ -97,7 +97,13 @@ const useStyles = makeStyles((theme) => {
 		},
 	};
 });
-
+let questionTimer,
+	setQuestionTimer = (cb, ms = 1000) => {
+		if (questionTimer) {
+			clearInterval(questionTimer);
+		}
+		questionTimer = setInterval(cb, ms);
+	};
 export const QuizBox = (props) => {
 	const {
 		question,
@@ -128,7 +134,7 @@ export const QuizBox = (props) => {
 			const isAnswered = answerIdx == 0 || !!answerIdx;
 			if (!isAnswered) {
 				setSeconds(10);
-				const questionTimer = setInterval(() => {
+				setQuestionTimer(() => {
 					setSeconds((s) => {
 						const newSeconds = s - 1;
 						if (newSeconds < 0) {
@@ -138,7 +144,7 @@ export const QuizBox = (props) => {
 						}
 						return newSeconds;
 					});
-				}, 1000);
+				});
 			}
 		},
 		[ questionIdx ],
