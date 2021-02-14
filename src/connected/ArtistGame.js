@@ -358,7 +358,6 @@ const ArtistGame = (props) => {
 							question={question}
 							gameId={game.id}
 							questionIdx={questionIdx}
-							fetchSongDetails={fetchSongDetails}
 							updateQuestionIdx={updateQuestionIdx}
 							gameOver={gameOver}
 						/>
