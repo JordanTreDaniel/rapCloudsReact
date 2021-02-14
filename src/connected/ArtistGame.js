@@ -159,9 +159,12 @@ export const QuizBox = (props) => {
 						direction="column"
 						style={{ position: 'relative' }}
 					>
-						<Typography variant="h3" style={{ position: 'absolute', top: 0, right: 0 }}>
-							{seconds}
-						</Typography>
+						{!isAnswered && (
+							<Typography variant="h3" style={{ position: 'absolute', top: 0, right: 0 }}>
+								{seconds}
+							</Typography>
+						)}
+
 						<img src={info && info.secure_url} className={classes.cloud} />
 					</Grid>
 					<Grid item xs={12} md={answersOnBottomOnly ? 12 : 4}>
