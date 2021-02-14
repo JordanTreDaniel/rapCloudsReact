@@ -119,7 +119,7 @@ const Navbar = (props) => {
 		<React.Fragment>
 			<AppBar color="inherit" position="static">
 				<Toolbar className={classes.toolBar}>
-					<Link className={classNames(classes.whiteLink)} to={userName ? paths.search : paths.signIn}>
+					<Link className={classNames(classes.whiteLink)} to={paths.about}>
 						<img
 							alt="Rap Clouds Logo"
 							src={process.env.PUBLIC_URL + '/rapClouds.png'}

@@ -18,9 +18,9 @@ const setLoading = (state, action) => {
 
 const addGame = (state, action) => {
 	const { game } = action;
-	const { artistId } = game;
+	const { artistId, level } = game;
 	if (!game || !artistId) return state;
-	const id = `${artistId}-${Date.now()}`;
+	const id = `${artistId}-${level}`;
 	game.id = id;
 	const gamesById = state.byId;
 	return { ...state, byId: { ...gamesById, [id]: game }, gameLoading: false };

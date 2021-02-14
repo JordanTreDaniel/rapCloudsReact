@@ -6,6 +6,6 @@ export default {
 	artistPage: '/cloudmakers/:artistId',
 	about: '/about',
 	profile: '/me',
-	game: '/games/:artistId',
+	game: '/games/:artistId/:level',
 	play: '/play',
 };

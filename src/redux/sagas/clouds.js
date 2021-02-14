@@ -1,6 +1,13 @@
 import { call, select, takeLatest, put, takeEvery, cancel, all } from 'redux-saga/effects';
 import axios from 'axios';
-import { getCloudSettingsForFlight, getUserMongoId, getCloudFromId, getMaskFromId, getSongFromId } from '../selectors';
+import {
+	getCloudSettingsForFlight,
+	getUserMongoId,
+	getCloudFromId,
+	getMaskFromId,
+	getSongFromId,
+	getAccessToken,
+} from '../selectors';
 import {
 	FETCH_MASKS,
 	ADD_CUSTOM_MASK,
@@ -8,6 +15,8 @@ import {
 	FETCH_CLOUDS,
 	DELETE_CLOUD,
 	FETCH_SONG_DETAILS,
+	ADD_CLOUDS,
+	ADD_CLOUD,
 } from '../actionTypes';
 import { getConnectedSocket } from '../../utils';
 const REACT_APP_SERVER_ROOT =
@@ -337,6 +346,56 @@ export function* fetchClouds(action) {
 		console.log('Something went wrong', err);
 		yield put({ type: FETCH_CLOUDS.failure, err });
 		return { error: err };
+	}
+}
+
+const apiFetchSongClouds = async (songId, accessToken, userId) => {
+	if (!songId || !accessToken || !userId) {
+		console.error(`Could not fetch song clouds without access token, user id, & song id`, { songId, accessToken });
+		return { error: `Could not fetch song clouds without access token, user id, & song id` };
+	}
+	const res = await axios({
+		method: 'get',
+		url: `${REACT_APP_SERVER_ROOT}/getSongClouds/${songId}/${userId}`,
+	});
+	const { status, statusText, data } = res;
+	const { officialCloud, userMadeClouds } = data;
+	if (status === 200) {
+		return { officialCloud, userMadeClouds };
+	}
+
+	return { error: { status, statusText } };
+};
+
+export function* fetchSongClouds(action) {
+	try {
+		const accessToken = yield select(getAccessToken);
+		const userId = yield select(getUserMongoId);
+		const { songId } = action;
+		const { officialCloud, userMadeClouds, error: cloudsError } = yield call(
+			apiFetchSongClouds,
+			songId,
+			accessToken,
+			userId,
+		);
+
+		if (cloudsError) {
+			yield put({ type: FETCH_SONG_DETAILS.failure });
+			console.error('Something went wrong in fetchSongClouds', cloudsError);
+			return { error: cloudsError };
+		} else {
+			//TO-DO: Handle possible cloudsError
+			if (userMadeClouds && userMadeClouds.length) {
+				yield put({ type: ADD_CLOUDS, clouds: userMadeClouds });
+			}
+			if (officialCloud) {
+				yield put({ type: ADD_CLOUD, finishedCloud: officialCloud });
+			}
+			return { officialCloud, userMadeClouds };
+		}
+	} catch (error) {
+		console.log('Something went wrong in fetchSongClouds', error);
+		yield cancel();
 	}
 }
 

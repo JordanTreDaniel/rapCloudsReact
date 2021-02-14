@@ -5,8 +5,10 @@ import { makeStyles, Button, Grid, IconButton, Typography, Avatar } from '@mater
 import ArrowIcon from '@material-ui/icons/ArrowForward';
 // import "./SignIn.css"; //Don't think we need this
 import { setUser, addSongs, updateUser, fetchClouds } from '../redux/actions';
+import * as selectors from '../redux/selectors';
 import { classNames, getConnectedSocket } from '../utils';
 import paths from '../paths';
+import { Redirect } from 'react-router-dom';
 const API_URL =
 	process.env.NODE_ENV === 'development' ? 'http://localhost:3333' : 'https://rap-clouds-server.herokuapp.com';
 
@@ -92,7 +94,8 @@ const SignIn = (props) => {
 	let socket;
 	const [ popUpOpen, togglePopUp ] = useState(false);
 	const classes = useStyles();
-
+	const { userId } = props;
+	if (userId) return <Redirect to={paths.about} />;
 	// Routinely checks the popup to re-enable the login button
 	// if the user closes the popup without authenticating.
 	const checkPopup = () => {
@@ -400,4 +403,9 @@ const SignIn = (props) => {
 	);
 };
 
-export default connect(null, { setUser, fetchClouds, addSongs, updateUser })(SignIn);
+export default connect((state) => ({ userId: selectors.getUserMongoId(state) }), {
+	setUser,
+	fetchClouds,
+	addSongs,
+	updateUser,
+})(SignIn);

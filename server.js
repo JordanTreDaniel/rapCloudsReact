@@ -11,6 +11,11 @@ if (process.env.NODE_ENV === 'production') {
 		else next();
 	});
 }
+app.use(
+	requireDotIo
+		// .set('prerenderServiceUrl', 'http://localhost:9999/')
+		.set('prerenderToken', process.env.PRERENDER_TOKEN),
+);
 app.use(favicon(__dirname + '/build/favicon.ico'));
 // the __dirname is the current directory from where the script is running
 app.use(express.static(__dirname));
@@ -21,6 +26,5 @@ app.get('/ping', function(req, res) {
 app.get('/*', function(req, res) {
 	res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
-console.log('Starting the server', { prKey: process.env.PRERENDER_TOKEN });
-app.use(requireDotIo.set('prerenderToken', process.env.PRERENDER_TOKEN));
+
 app.listen(port);

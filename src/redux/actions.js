@@ -100,8 +100,8 @@ export const resetCloudDefaults = () => {
 	return { type: RESET_CLOUD_DEFAULTS };
 };
 
-export const fetchArtistGame = (artistId) => {
-	return { type: FETCH_ARTIST_GAME.start, artistId };
+export const fetchArtistGame = (artistId, level) => {
+	return { type: FETCH_ARTIST_GAME.start, artistId, level };
 };
 
 export const answerQuestion = (gameId, questionIdx, answerIdx) => {

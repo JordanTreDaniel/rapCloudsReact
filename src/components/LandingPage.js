@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import RapCloud from '../connected/RapCloud';
 import { QuizBox } from '../connected/ArtistGame';
+import FlyWithMe from '../components/FlyWithMe';
 import paths from '../paths';
 import {
 	withWidth,
@@ -188,16 +189,7 @@ const LandingPage = (props) => {
 
 	return (
 		<Grid id="aboutPageContainer" container classes={{ root: classes.aboutPageContainer }} elevation={0}>
-			<Grid item container id="backgroundVideoBox" className={classes.backgroundVideoBox} xs={12}>
-				<video
-					autoPlay
-					muted
-					loop
-					className={classes.backgroundVideo}
-					style={{ height: width === 'xs' ? '91vh' : 'auto' }}
-				>
-					<source src={`${process.env.PUBLIC_URL}/flywithme2.mp4`} type="video/mp4" />
-				</video>
+			<FlyWithMe>
 				<Grid
 					id="questionSection"
 					item
@@ -254,7 +246,7 @@ const LandingPage = (props) => {
 						Make a Cloud
 					</Button>
 				</Grid>
-			</Grid>
+			</FlyWithMe>
 			<Grid
 				id="playTheGame"
 				container
@@ -298,25 +290,21 @@ const LandingPage = (props) => {
 				</Grid>
 				<Grid item xs={12} sm={8} className={classNames(classes.gameDemoContainer, classes.growVertically)}>
 					<QuizBox
-						questions={[
-							{
-								answers: [
-									{ correct: false, title: `Marvin's Room by Drake` },
-									{ correct: false, title: `Right Hand by Drake` },
-									{ correct: true, title: `God's Plan by Drake` },
-									{ correct: false, title: `Hotline Bling by Drake` },
-								],
-								answerIdx: sampleAnswerIdx,
-							},
-						]}
+						question={{
+							answers: [
+								{ correct: false, title: `Marvin's Room by Drake` },
+								{ correct: false, title: `Right Hand by Drake` },
+								{ correct: true, title: `God's Plan by Drake` },
+								{ correct: false, title: `Hotline Bling by Drake` },
+							],
+							answerIdx: sampleAnswerIdx,
+							song: { id: 3315890, title: `God's Plan by Drake` },
+							cloud: { info: { secure_url: `${process.env.PUBLIC_URL}/godsPlan.png` } },
+						}}
 						gameId={null}
 						questionIdx={0}
-						fetchSongDetails={() => null}
 						updateQuestionIdx={() => null}
 						answerQuestion={(_, __, i) => setSampleAnswerIdx(i)}
-						gameOver={false}
-						song={{ id: 3315890, title: `God's Plan by Drake` }}
-						cloud={{ info: { secure_url: `${process.env.PUBLIC_URL}/godsPlan.png` } }}
 						answersOnBottomOnly={true}
 					/>
 				</Grid>
