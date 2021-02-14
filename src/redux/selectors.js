@@ -339,7 +339,7 @@ export const getArtistGame = createSelector(
 		let correctAnswers = 0,
 			incorrectAnswers = 0;
 		const cookedQuestions = questions.map((question) => {
-			const { answerIdx, songId, answers } = question;
+			const { answerIdx, songId, answers = [] } = question;
 			const isAnswered = answerIdx == 0 || answerIdx;
 			if (isAnswered) {
 				const answer = answers[answerIdx] || {};
