@@ -7,11 +7,9 @@ import {
 	SIGN_OUT,
 	GEN_SONG_CLOUD,
 	ADD_ARTISTS,
-	ADD_CLOUD,
-	ADD_CLOUDS,
 } from '../actionTypes';
-import { generateCloud } from './clouds';
-import { getAccessToken, getSearchTerm, getSongFromId, getUserMongoId, getOfficalCloudForSong } from '../selectors';
+import { generateCloud, fetchSongClouds } from './clouds';
+import { getAccessToken, getSearchTerm, getSongFromId, getOfficalCloudForSong } from '../selectors';
 import normalizeLyrics from '../utils/normalizeLyrics';
 import axios from 'axios';
 
@@ -81,24 +79,6 @@ const apiFetchSongDetails = async (songId, accessToken) => {
 	return { error: { status, statusText } };
 };
 
-const apiFetchSongClouds = async (songId, accessToken, userId) => {
-	if (!songId || !accessToken || !userId) {
-		console.error(`Could not fetch song clouds without access token, user id, & song id`, { songId, accessToken });
-		return { error: `Could not fetch song clouds without access token, user id, & song id` };
-	}
-	const res = await axios({
-		method: 'get',
-		url: `${REACT_APP_SERVER_ROOT}/getSongClouds/${songId}/${userId}`,
-	});
-	const { status, statusText, data } = res;
-	const { officialCloud, userMadeClouds } = data;
-	if (status === 200) {
-		return { officialCloud, userMadeClouds };
-	}
-
-	return { error: { status, statusText } };
-};
-
 const apiFetchSongLyrics = async (songPath, songId) => {
 	if (!songPath || !songId) {
 		console.error(`Could not fetch song lyrics without song path/song id.`, { songPath, songId });
@@ -126,24 +106,13 @@ const apiFetchSongLyrics = async (songPath, songId) => {
 
 export function* fetchSongDetails(action) {
 	const accessToken = yield select(getAccessToken);
-	const userId = yield select(getUserMongoId);
 	const { songId, fetchLyrics = true, generateCloud = true, fetchClouds = true } = action;
-	let hasOfficialCloud = false;
+	let officialCloud, userMadeClouds, cloudsErr;
 	if (fetchClouds) {
-		const { officialCloud, userMadeClouds, error: cloudsError } = yield call(
-			apiFetchSongClouds,
-			songId,
-			accessToken,
-			userId,
-		);
-		//TO-DO: Handle possible cloudsError
-		if (userMadeClouds && userMadeClouds.length) {
-			yield put({ type: ADD_CLOUDS, clouds: userMadeClouds });
-		}
-		if (officialCloud) {
-			hasOfficialCloud = true;
-			yield put({ type: ADD_CLOUD, finishedCloud: officialCloud });
-		}
+		const { officialCloud: oC, userMadeClouds: uMC, error } = yield call(fetchSongClouds, { songId });
+		officialCloud = oC;
+		userMadeClouds = uMC;
+		cloudsErr = error;
 	}
 	const existingSong = yield select(getSongFromId, songId);
 	const officialCloudForSong = yield select(getOfficalCloudForSong, songId);
@@ -166,7 +135,7 @@ export function* fetchSongDetails(action) {
 				type: FETCH_SONG_LYRICS.start,
 				songId,
 				songPath,
-				generateCloud: generateCloud && !hasOfficialCloud,
+				generateCloud: generateCloud && !officialCloud,
 			});
 		}
 		return { song };
