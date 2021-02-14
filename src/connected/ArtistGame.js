@@ -149,89 +149,79 @@ export const QuizBox = (props) => {
 		},
 		[ questionIdx ],
 	);
+	if (!cloud || !answers) return null;
 	return (
-		<Fragment>
-			{!!info ? (
-				<Grid item container justify="space-evenly">
-					<Grid item xs={12} container direction="column">
-						{isAnswered ? (
-							<Typography align="center" variant="h6" style={{ marginBottom: '.9em' }}>
-								This RapCloud was made from{' '}
-								<Link className={classes.blueTxt} to={`/clouds/${song.id}`}>
-									{song.title}
-								</Link>
-							</Typography>
-						) : (
-							<Typography align="center" variant="h6" style={{ marginBottom: '.9em' }}>
-								Which song was this RapCloud made from?
-							</Typography>
-						)}
-					</Grid>
-					<Grid
-						item
-						xs={12}
-						md={answersOnBottomOnly ? 12 : 7}
-						container
-						direction="column"
-						style={{ position: 'relative' }}
-					>
-						{!isAnswered && (
-							<Typography variant="h3" style={{ position: 'absolute', top: 0, right: 0 }}>
-								{seconds}
-							</Typography>
-						)}
-
-						<img src={info && info.secure_url} className={classes.cloud} />
-					</Grid>
-					<Grid item xs={12} md={answersOnBottomOnly ? 12 : 4}>
-						<Grid
-							container
-							direction="row"
-							wrap="wrap"
-							justify="space-evenly"
-							alignItems="center"
-							alignContent="space-around"
-							style={{ height: '100%' }}
-						>
-							{answers.map((a, i) => {
-								const thisAnswerChosen = answerIdx == i;
-								return (
-									<Grid item key={i} xs={12} sm={6} md={answersOnBottomOnly ? 6 : 12}>
-										<Box
-											className={classNames(
-												classes.answerChoice,
-												isAnswered
-													? a.correct
-														? classes.correctAnswer
-														: thisAnswerChosen ? classes.incorrectAnswer : classes.decoyAnswer
-													: classes.decoyAnswer,
-											)}
-											onClick={() => {
-												if (isAnswered) return;
-												answerQuestion(gameId, questionIdx, i);
-												updateQuestionIdxDelayed(questionIdx + 1);
-											}}
-										>
-											<Typography>
-												<span className={classes.blueTxt}>{`${letters[i]}.) `}</span>
-												{`${a.title}`}
-											</Typography>
-										</Box>
-									</Grid>
-								);
-							})}
-						</Grid>
-					</Grid>
-				</Grid>
-			) : (
-				<Grid>
-					<Typography variant="h3" align="center" className={classes.textPlaceholder}>
-						Loading...
+		<Grid item container justify="space-evenly" className={classes.quizBoxContainer}>
+			<Grid item xs={12} container direction="column">
+				{isAnswered ? (
+					<Typography align="center" variant="h6" style={{ marginBottom: '.9em' }}>
+						This RapCloud was made from{' '}
+						<Link className={classes.blueTxt} to={`/clouds/${song.id}`}>
+							{song.title}
+						</Link>
 					</Typography>
-					<LoadingBar />
+				) : (
+					<Typography align="center" variant="h6" style={{ marginBottom: '.9em' }}>
+						Which song was this RapCloud made from?
+					</Typography>
+				)}
+			</Grid>
+			<Grid
+				item
+				xs={12}
+				md={answersOnBottomOnly ? 12 : 7}
+				container
+				direction="column"
+				style={{ position: 'relative' }}
+			>
+				{!isAnswered && (
+					<Typography variant="h3" style={{ position: 'absolute', top: 0, right: 0 }}>
+						{seconds}
+					</Typography>
+				)}
+
+				<img src={info && info.secure_url} className={classes.cloud} />
+			</Grid>
+			<Grid item xs={12} md={answersOnBottomOnly ? 12 : 4}>
+				<Grid
+					container
+					direction="row"
+					wrap="wrap"
+					justify="space-evenly"
+					alignItems="center"
+					alignContent="space-around"
+					style={{ height: '100%' }}
+				>
+					{answers.map((a, i) => {
+						const thisAnswerChosen = answerIdx == i;
+						return (
+							<Grid item key={i} xs={12} sm={6} md={answersOnBottomOnly ? 6 : 12}>
+								<Box
+									className={classNames(
+										classes.answerChoice,
+										isAnswered
+											? a.correct
+												? classes.correctAnswer
+												: thisAnswerChosen ? classes.incorrectAnswer : classes.decoyAnswer
+											: classes.decoyAnswer,
+									)}
+									onClick={() => {
+										if (isAnswered) return;
+										answerQuestion(gameId, questionIdx, i);
+										updateQuestionIdxDelayed(questionIdx + 1);
+									}}
+								>
+									<Typography>
+										<span className={classes.blueTxt}>{`${letters[i]}.) `}</span>
+										{`${a.title}`}
+									</Typography>
+								</Box>
+							</Grid>
+						);
+					})}
 				</Grid>
-			)}
-		</Fragment>
+			</Grid>
+		</Grid>
 	);
 };
 
@@ -275,104 +265,103 @@ const ArtistGame = (props) => {
 		},
 		[ questionIdx ],
 	);
-	const content =
-		!questions.length || !artist ? (
-			<Grid xs={12}>
-				<FlyWithMe />
-			</Grid>
-		) : (
-			<Fragment>
-				{gameOver && (
-					<Grid container item justify="center" className={classes.gameOverGrid} xs={11}>
-						<Typography align="center" variant="h5" className={classes.blueTxt} style={{ width: '100%' }}>
-							Game Over!
-						</Typography>
-						<Typography align="center" style={{ width: '100%' }}>
-							You got {percentageRight}% of RapClouds on {artist.name}
-							Level {game.level}
-						</Typography>
-						<Typography align="center" style={{ width: '100%' }}>
-							{game.nextLevel ? (
-								<Button
-									variant="contained"
-									component={Link}
-									to={`/games/${artist.id}/${game.nextLevel}`}
-									className={classes.playAgainLink}
-								>
-									Level {game.nextLevel}
-								</Button>
-							) : null}
+	const content = (
+		<Grid container item xs={12} justify="center">
+			{gameOver && (
+				<Grid container item justify="center" className={classes.gameOverGrid} xs={11}>
+					<Typography align="center" variant="h5" className={classes.blueTxt} style={{ width: '100%' }}>
+						Game Over!
+					</Typography>
+					<Typography align="center" style={{ width: '100%' }}>
+						You got {percentageRight}% of RapClouds on {artist.name}
+						Level {game.level}
+					</Typography>
+					<Typography align="center" style={{ width: '100%' }}>
+						{game.nextLevel ? (
 							<Button
 								variant="contained"
 								component={Link}
-								to={paths.play}
+								to={`/games/${artist.id}/${game.nextLevel}`}
 								className={classes.playAgainLink}
 							>
-								New Artist
+								Level {game.nextLevel}
 							</Button>
-						</Typography>
-					</Grid>
-				)}
-				<Grid className={classes.scoreBoard} container item xs={11} direction="row" wrap="nowrap">
-					{questions.map((question, index) => {
-						let children;
-						const { answerIdx } = question;
-						const isAnswered = answerIdx == 0 || answerIdx;
-						const answer = question.answers[answerIdx] || {};
-						const classesArr = [];
-						if (!isAnswered) {
-							classesArr.push(classes.unanswered);
-							children = (
-								<CloudQueue
-									onClick={
-										gameOver && (prevAnswered || index == 0) ? () => updateQuestionIdx(index) : null
-									}
-								/>
-							);
-						} else if (answer.correct) {
-							classesArr.push(classes.green);
-							children = (
-								<CloudDone
-									onClick={
-										gameOver && (prevAnswered || index == 0) ? () => updateQuestionIdx(index) : null
-									}
-								/>
-							);
-						} else {
-							classesArr.push(classes.red);
-							children = (
-								<CloudOff
-									onClick={
-										gameOver && (prevAnswered || index == 0) ? () => updateQuestionIdx(index) : null
-									}
-								/>
-							);
-						}
-						prevAnswered = isAnswered;
-						if (index == questionIdx) classesArr.push(classes.currentMiniCloud);
-						return (
-							<Grid item key={index} className={classNames(classes.miniCloud, ...classesArr)} xs={2}>
-								{children}
-								<Typography align="center" variant="h6" className={classes.blackTxt}>
-									{index + 1}
-								</Typography>
-							</Grid>
+						) : null}
+						<Button variant="contained" component={Link} to={paths.play} className={classes.playAgainLink}>
+							New Artist
+						</Button>
+					</Typography>
+				</Grid>
+			)}
+			<Grid className={classes.scoreBoard} container item xs={11} direction="row" wrap="nowrap">
+				{questions.map((question, index) => {
+					let children;
+					const { answerIdx } = question;
+					const isAnswered = answerIdx == 0 || answerIdx;
+					const answer = question.answers[answerIdx] || {};
+					const classesArr = [];
+					if (!isAnswered) {
+						classesArr.push(classes.unanswered);
+						children = (
+							<CloudQueue
+								onClick={
+									gameOver && (prevAnswered || index == 0) ? () => updateQuestionIdx(index) : null
+								}
+							/>
 						);
-					})}
-				</Grid>
-				<Grid item xs={10} className={classes.quizBoxWrapper}>
-					{info && (
-						<ConnectedQuizBox
-							question={question}
-							gameId={game.id}
-							questionIdx={questionIdx}
-							updateQuestionIdx={updateQuestionIdx}
-							gameOver={gameOver}
-						/>
-					)}
-				</Grid>
-			</Fragment>
-		);
+					} else if (answer.correct) {
+						classesArr.push(classes.green);
+						children = (
+							<CloudDone
+								onClick={
+									gameOver && (prevAnswered || index == 0) ? () => updateQuestionIdx(index) : null
+								}
+							/>
+						);
+					} else {
+						classesArr.push(classes.red);
+						children = (
+							<CloudOff
+								onClick={
+									gameOver && (prevAnswered || index == 0) ? () => updateQuestionIdx(index) : null
+								}
+							/>
+						);
+					}
+					prevAnswered = isAnswered;
+					if (index == questionIdx) classesArr.push(classes.currentMiniCloud);
+					return (
+						<Grid item key={index} className={classNames(classes.miniCloud, ...classesArr)} xs={2}>
+							{children}
+							<Typography align="center" variant="h6" className={classes.blackTxt}>
+								{index + 1}
+							</Typography>
+						</Grid>
+					);
+				})}
+			</Grid>
+			<Grid item xs={10} className={classes.quizBoxWrapper}>
+				{!!info || gameOver ? (
+					<ConnectedQuizBox
+						question={question}
+						gameId={game.id}
+						questionIdx={questionIdx}
+						updateQuestionIdx={updateQuestionIdx}
+						gameOver={gameOver}
+					/>
+				) : (
+					<FlyWithMe includeRightZero={false}>
+						<Typography variant="h3" style={{ zIndex: 2, width: '100%' }}>
+							How can we ask you this?
+						</Typography>
+						<Typography variant="h5" style={{ zIndex: 2, width: '100%' }}>
+							Right! With a RapCloud, of course.
+						</Typography>
+					</FlyWithMe>
+				)}
+			</Grid>
+		</Grid>
+	);
 
 	return content;
 };
