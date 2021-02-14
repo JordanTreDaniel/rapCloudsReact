@@ -4,6 +4,7 @@ import { withWidth, Grid } from '@material-ui/core';
 const useStyles = makeStyles({
 	backgroundVideoBox: {
 		position: 'relative',
+		height: '91vh',
 	},
 	backgroundVideo: {
 		position: 'absolute',
@@ -18,7 +19,16 @@ const FlyWithMe = (props) => {
 	const classes = useStyles();
 	const { children, width } = props;
 	return (
-		<Grid item container id="backgroundVideoBox" className={classes.backgroundVideoBox} xs={12}>
+		<Grid
+			item
+			container
+			justify="center"
+			alignItems="center"
+			alignContent="center"
+			id="backgroundVideoBox"
+			className={classes.backgroundVideoBox}
+			xs={12}
+		>
 			<video
 				autoPlay
 				muted

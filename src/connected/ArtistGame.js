@@ -1,21 +1,18 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Typography, Grid, Avatar, Tooltip, Paper, IconButton, withWidth, Input, Box, Button } from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
 import CloudDone from '@material-ui/icons/CloudDone';
 import CloudQueue from '@material-ui/icons/CloudQueue';
 import CloudOff from '@material-ui/icons/CloudOff';
 
 import { makeStyles } from '@material-ui/core/styles';
-import ArtistSongList from './ArtistSongList';
-import BackButton from '../components/BackButton';
-import RapCloud from './RapCloud';
 import * as selectors from '../redux/selectors';
 import { fetchArtistGame, fetchSongDetails, answerQuestion } from '../redux/actions';
 import { connect } from 'react-redux';
 import paths from '../paths';
 import { classNames } from '../utils';
 import LoadingBar from '../components/LoadingBar';
+import FlyWithMe from '../components/FlyWithMe';
 import DebouncedInput from '../components/DebouncedInput';
 const DebouncedTextField = DebouncedInput(Input, { timeout: 639 });
 
@@ -90,6 +87,14 @@ const useStyles = makeStyles((theme) => {
 			textDecoration: 'none',
 			color: theme.palette.secondary.main,
 		},
+		loadingFrame: {
+			backgroundColor: 'rgba(0, 0, 0, 0.333)',
+			zIndex: 1,
+			padding: '1.5em',
+		},
+		artistAvatar: {
+			margin: 'auto',
+		},
 	};
 });
 
@@ -139,8 +144,8 @@ export const QuizBox = (props) => {
 		[ questionIdx ],
 	);
 	return (
-		<Grid container direction="column" className={classes.quizBoxContainer}>
-			{info ? (
+		<Fragment>
+			{!!info ? (
 				<Grid item container justify="space-evenly">
 					<Grid item xs={12} container direction="column">
 						{isAnswered ? (
@@ -220,7 +225,7 @@ export const QuizBox = (props) => {
 					<LoadingBar />
 				</Grid>
 			)}
-		</Grid>
+		</Fragment>
 	);
 };
 
@@ -267,10 +272,7 @@ const ArtistGame = (props) => {
 	const content =
 		!questions.length || !artist ? (
 			<Grid xs={12}>
-				<Typography align="center" variant="h1" className={classes.textPlaceholder}>
-					{!questions.length || !artist ? 'Loading' : null}
-				</Typography>
-				<LoadingBar loading={artistLoading} />
+				<FlyWithMe />
 			</Grid>
 		) : (
 			<Fragment>
@@ -366,6 +368,33 @@ const ArtistGame = (props) => {
 			</Fragment>
 		);
 
+	return content;
+};
+
+const mapState = (state) => ({
+	game: selectors.getArtistGame(state),
+	artist: selectors.getCurrentArtist(state),
+	artistLoading: selectors.isArtistLoading(state), //TO-DO: Read from the gameLoading property instead. Need to update sagas/reducers to do that.
+	isSongDetailLoading: selectors.isSongDetailLoading(state),
+	isWordCloudLoading: selectors.isWordCloudLoading(state),
+	areSongLyricsLoading: selectors.areSongLyricsLoading(state),
+});
+
+const ConnectedArtistGame = connect(mapState, { fetchSongDetails })(withWidth()(ArtistGame));
+
+const _ArtistGameLoadingGate = (props) => {
+	const { game, fetchArtistGame, artist, width } = props;
+	const { artistId, level } = useParams();
+	const { gameId = null } = game || {};
+	const classes = useStyles();
+
+	useEffect(
+		() => {
+			if (!gameId) fetchArtistGame(artistId, level);
+		},
+		[ artistId, level ],
+	);
+	const { header_image_url, name } = artist;
 	return (
 		<Grid
 			className={classes.artistGamePage}
@@ -376,36 +405,39 @@ const ArtistGame = (props) => {
 			alignContent="flex-start"
 			justify="center"
 		>
-			{content}
+			{!!game ? (
+				<ConnectedArtistGame />
+			) : (
+				<FlyWithMe>
+					<Grid
+						item
+						container
+						justify="center"
+						direction="column"
+						spacing={2}
+						xs={12}
+						className={classes.loadingFrame}
+					>
+						<Typography align="center" variant="h4" style={{ marginBottom: '.5em' }}>
+							{name}
+						</Typography>
+						<Avatar
+							item
+							alt={name}
+							src={header_image_url}
+							imgProps={null}
+							className={classes.artistAvatar}
+							style={
+								width === 'xs' ? { width: '50vw', height: '50vw' } : { width: '50vh', height: '50vh' }
+							}
+						/>
+						<Typography align="center" variant="h5" style={{ marginTop: '.5em' }}>
+							Level {level}
+						</Typography>
+					</Grid>
+				</FlyWithMe>
+			)}
 		</Grid>
 	);
-};
-
-const mapState = (state) => ({
-	game: selectors.getArtistGame(state),
-	artistLoading: selectors.isArtistLoading(state), //TO-DO: Read from the gameLoading property instead. Need to update sagas/reducers to do that.
-	isSongDetailLoading: selectors.isSongDetailLoading(state),
-	isWordCloudLoading: selectors.isWordCloudLoading(state),
-	areSongLyricsLoading: selectors.areSongLyricsLoading(state),
-});
-
-const ConnectedArtistGame = connect(mapState, { fetchSongDetails })(withWidth()(ArtistGame));
-
-const _ArtistGameLoadingGate = (props) => {
-	const { game, fetchArtistGame } = props;
-	const { artistId, level } = useParams();
-	const { gameId = null } = game || {};
-	useEffect(
-		() => {
-			if (!gameId) fetchArtistGame(artistId, level);
-		},
-		[ artistId, level ],
-	);
-
-	if (game) {
-		return <ConnectedArtistGame />;
-	} else {
-		return <h1>Loading</h1>;
-	}
 };
 export default connect(mapState, { fetchArtistGame })(withWidth()(_ArtistGameLoadingGate));
