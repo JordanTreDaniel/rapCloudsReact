@@ -112,6 +112,11 @@ export const QuizBox = (props) => {
 	const { info } = cloud || {};
 	const isAnswered = answerIdx == 0 || answerIdx;
 	const letters = [ 'A', 'B', 'C', 'D' ];
+	const updateQuestionIdxDelayed = (newIdx) => {
+		setTimeout(() => {
+			updateQuestionIdx(newIdx);
+		}, 900);
+	};
 	useEffect(
 		() => {
 			const { answerIdx } = question;
@@ -124,7 +129,7 @@ export const QuizBox = (props) => {
 						if (newSeconds < 0) {
 							answerQuestion(gameId, questionIdx, -1);
 							clearInterval(questionTimer);
-							updateQuestionIdx(questionIdx + 1);
+							updateQuestionIdxDelayed(questionIdx + 1);
 						}
 						return newSeconds;
 					});
@@ -193,9 +198,7 @@ export const QuizBox = (props) => {
 											onClick={() => {
 												if (isAnswered) return;
 												answerQuestion(gameId, questionIdx, i);
-												setTimeout(() => {
-													updateQuestionIdx(questionIdx + 1);
-												}, 900);
+												updateQuestionIdxDelayed(questionIdx + 1);
 											}}
 										>
 											<Typography>
@@ -228,8 +231,8 @@ const ArtistGame = (props) => {
 	const [ questionIdx, updateQuestionIdx ] = useState(0);
 	const { fetchSongDetails, game, artistLoading } = props;
 	const { questions = [], artist, id: gameId, gameOver, percentageRight } = game || {};
-	const question = questions[questionIdx];
-	const { answerIdx, cloud } = question || {};
+	const question = questions[questionIdx] || {};
+	const { answerIdx, cloud } = question;
 	const isAnswered = answerIdx == 0 || answerIdx;
 	const { info } = cloud || {};
 
@@ -313,21 +316,27 @@ const ArtistGame = (props) => {
 							classesArr.push(classes.unanswered);
 							children = (
 								<CloudQueue
-									onClick={prevAnswered || index == 0 ? () => updateQuestionIdx(index) : null}
+									onClick={
+										gameOver && (prevAnswered || index == 0) ? () => updateQuestionIdx(index) : null
+									}
 								/>
 							);
 						} else if (answer.correct) {
 							classesArr.push(classes.green);
 							children = (
 								<CloudDone
-									onClick={prevAnswered || index == 0 ? () => updateQuestionIdx(index) : null}
+									onClick={
+										gameOver && (prevAnswered || index == 0) ? () => updateQuestionIdx(index) : null
+									}
 								/>
 							);
 						} else {
 							classesArr.push(classes.red);
 							children = (
 								<CloudOff
-									onClick={prevAnswered || index == 0 ? () => updateQuestionIdx(index) : null}
+									onClick={
+										gameOver && (prevAnswered || index == 0) ? () => updateQuestionIdx(index) : null
+									}
 								/>
 							);
 						}
@@ -389,9 +398,9 @@ const _ArtistGameLoadingGate = (props) => {
 	const { gameId = null } = game || {};
 	useEffect(
 		() => {
-			if (!game) fetchArtistGame(artistId, level);
+			if (!gameId) fetchArtistGame(artistId, level);
 		},
-		[ gameId ],
+		[ artistId, level ],
 	);
 
 	if (game) {
