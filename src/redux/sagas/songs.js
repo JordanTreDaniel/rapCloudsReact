@@ -234,7 +234,7 @@ export function* genSongCloud(action) {
 		}
 		const { finishedCloud, error } = yield call(generateCloud, { lyricString, cloud });
 		if (error) {
-			yield put({ type: GEN_SONG_CLOUD.failure });
+			yield put({ type: GEN_SONG_CLOUD.failure, songId, officialCloud });
 			console.log('Something went wrong in fetch song cloud', error);
 		} else {
 			yield put({ type: GEN_SONG_CLOUD.success, finishedCloud });
