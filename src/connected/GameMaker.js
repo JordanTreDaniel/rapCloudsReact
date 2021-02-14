@@ -84,7 +84,7 @@ const useStyles = makeStyles((theme) => {
 
 const GameMaker = (props) => {
 	const classes = useStyles();
-	const { setSongSearchTerm, searchTerm, searchSongs, artists } = props;
+	const { setSongSearchTerm, searchTerm, searchSongs, artists, songSearchLoading } = props;
 	const search = () => {
 		searchSongs(searchTerm);
 	};
@@ -127,6 +127,9 @@ const GameMaker = (props) => {
 						</IconButton>
 					}
 				/>
+			</Grid>
+			<Grid item xs={12} className={classes.artistListGrid}>
+				<LoadingBar loading={songSearchLoading} />
 			</Grid>
 			<Grid item xs={12} className={classes.artistListGrid}>
 				<List>
