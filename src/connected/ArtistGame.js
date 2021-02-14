@@ -95,6 +95,13 @@ const useStyles = makeStyles((theme) => {
 		artistAvatar: {
 			margin: 'auto',
 		},
+		countDown: {
+			position: 'absolute',
+			top: '-.45em',
+			right: '-.45em',
+			color: 'rgba(245, 245, 255, 0.555)',
+			fontWeight: theme.typography.fontWeightBold,
+		},
 	};
 });
 let questionTimer,
@@ -175,7 +182,7 @@ export const QuizBox = (props) => {
 				style={{ position: 'relative' }}
 			>
 				{!isAnswered && (
-					<Typography variant="h3" style={{ position: 'absolute', top: 0, right: 0 }}>
+					<Typography variant="h2" className={classes.countDown}>
 						{seconds}
 					</Typography>
 				)}
@@ -229,13 +236,19 @@ const ConnectedQuizBox = connect(null, { answerQuestion })(withWidth()(QuizBox))
 
 const ArtistGame = (props) => {
 	const classes = useStyles();
-	const [ questionIdx, updateQuestionIdx ] = useState(0);
 	const { fetchSongDetails, game, artistLoading } = props;
 	const { questions = [], artist, id: gameId, gameOver, percentageRight } = game || {};
+	const [ questionIdx, updateQuestionIdx ] = useState(0);
 	const question = questions[questionIdx] || {};
 	const { answerIdx, cloud } = question;
 	const isAnswered = answerIdx == 0 || answerIdx;
 	const { info } = cloud || {};
+	const updateQuestionIdxSafely = (newIdx) => {
+		if (newIdx >= questions.length) {
+			newIdx = questions.length - 1;
+		}
+		updateQuestionIdx(newIdx);
+	};
 
 	let prevAnswered = false;
 	useEffect(() => {
@@ -246,13 +259,12 @@ const ArtistGame = (props) => {
 			while (nextQuestionAnswered) {
 				newIdx++;
 				if (newIdx > questions.length - 1) {
-					newIdx--;
 					break;
 				}
 				nextQuestion = questions[newIdx];
 				nextQuestionAnswered = nextQuestion.answerIdx == 0 || nextQuestion.answerIdx;
 			}
-			updateQuestionIdx(newIdx);
+			updateQuestionIdxSafely(newIdx);
 		}
 	}, []);
 	useEffect(
@@ -305,7 +317,9 @@ const ArtistGame = (props) => {
 						children = (
 							<CloudQueue
 								onClick={
-									gameOver && (prevAnswered || index == 0) ? () => updateQuestionIdx(index) : null
+									gameOver && (prevAnswered || index == 0) ? (
+										() => updateQuestionIdxSafely(index)
+									) : null
 								}
 							/>
 						);
@@ -314,7 +328,9 @@ const ArtistGame = (props) => {
 						children = (
 							<CloudDone
 								onClick={
-									gameOver && (prevAnswered || index == 0) ? () => updateQuestionIdx(index) : null
+									gameOver && (prevAnswered || index == 0) ? (
+										() => updateQuestionIdxSafely(index)
+									) : null
 								}
 							/>
 						);
@@ -323,7 +339,9 @@ const ArtistGame = (props) => {
 						children = (
 							<CloudOff
 								onClick={
-									gameOver && (prevAnswered || index == 0) ? () => updateQuestionIdx(index) : null
+									gameOver && (prevAnswered || index == 0) ? (
+										() => updateQuestionIdxSafely(index)
+									) : null
 								}
 							/>
 						);
@@ -346,7 +364,7 @@ const ArtistGame = (props) => {
 						question={question}
 						gameId={game.id}
 						questionIdx={questionIdx}
-						updateQuestionIdx={updateQuestionIdx}
+						updateQuestionIdx={updateQuestionIdxSafely}
 						gameOver={gameOver}
 					/>
 				) : (
@@ -389,7 +407,7 @@ const _ArtistGameLoadingGate = (props) => {
 		},
 		[ artistId, level ],
 	);
-	const { header_image_url, name } = artist;
+	const { image_url, name } = artist;
 	return (
 		<Grid
 			className={classes.artistGamePage}
@@ -419,7 +437,7 @@ const _ArtistGameLoadingGate = (props) => {
 						<Avatar
 							item
 							alt={name}
-							src={header_image_url}
+							src={image_url}
 							imgProps={null}
 							className={classes.artistAvatar}
 							style={
