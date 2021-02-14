@@ -8,7 +8,7 @@ import {
 	FETCH_ARTIST_GAME,
 	MODIFY_ARTIST,
 } from '../actionTypes';
-import { getAccessToken, getArtistFromId, getCloudsForArtist, getArtistsSongs } from '../selectors';
+import { getAccessToken, getArtistFromId, getCloudsForArtist, getArtistsSongs, getArtistGame } from '../selectors';
 import { fetchSongLyrics, fetchSongEverything } from './songs';
 import { generateCloud } from './clouds';
 import axios from 'axios';
@@ -179,6 +179,15 @@ export function* genArtistCloud(action) {
 export function* fetchArtistGame(action) {
 	try {
 		const { artistId, fetchArtistToo = false, level = 1 } = action;
+		const game = yield select(getArtistGame);
+		if (game) {
+			const { questions } = game;
+			const gameOver = questions.filter((q) => q.answerIdx == 0 || q.answerIdx).length === questions.length;
+			if (gameOver) {
+				yield put({ type: FETCH_ARTIST_GAME.cancellation, artistId, fetchArtistToo, level });
+				yield cancel();
+			}
+		}
 		if (fetchArtistToo) {
 			yield put({ type: FETCH_ARTIST.start, artistId });
 		}
