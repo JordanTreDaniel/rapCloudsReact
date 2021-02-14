@@ -163,7 +163,7 @@ const ArtistPage = (props) => {
 	if (!artistId) return <Redirect to={paths.search} />;
 	if (!artist && !isArtistLoading) return null;
 
-	const { name, path } = artist || {};
+	const { name, path, nextPage } = artist || {};
 
 	return (
 		<Grid className={classes.artistPage}>
@@ -224,12 +224,9 @@ const ArtistPage = (props) => {
 						<LoadingBar loading={isArtistLoading} />
 						{songsExpanded && !isArtistLoading && <ArtistSongList artistId={artistId} />}
 						{songsExpanded &&
-						artist.nextPage && (
+						nextPage && (
 							<Grid container justify="center">
-								<Button
-									className={classes.loadMoreSongsBtn}
-									onClick={() => fetchArtistSongs(artist.id)}
-								>
+								<Button className={classes.loadMoreSongsBtn} onClick={() => fetchArtistSongs(artistId)}>
 									Load More Songs
 								</Button>
 							</Grid>
