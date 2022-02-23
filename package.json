@@ -58,6 +58,7 @@
     ]
   },
   "devDependencies": {
-    "redux-devtools-extension": "^2.13.8"
+    "redux-devtools-extension": "^2.13.8",
+    "node-pre-gyp": "0.12.0"
   }
 }
