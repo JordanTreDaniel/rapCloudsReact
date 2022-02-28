@@ -11,13 +11,13 @@ import { PersistGate } from 'redux-persist/es/integration/react';
 import { history } from './redux/store';
 import SplashScreen from './components/SplashScreen';
 import ErrorBoundary from './components/ErrorBoundary';
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
-import { Paper } from '@material-ui/core';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { Paper } from '@mui/material';
 
 if (process.env.NODE_ENV === 'development') {
 	//NOTE: Why am I doing this with the store?
 	window.store = store;
-}
+} 
 
 const onBeforeLift = () => {
 	// take some action before the gate lifts
@@ -26,7 +26,7 @@ const onBeforeLift = () => {
 /**
  * Should I go for a scheme based of #9e9e9e & #0064ff?
  */
-const theme = createMuiTheme({
+const theme = createTheme({
 	background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
 	palette: {
 		primary: {

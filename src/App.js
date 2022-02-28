@@ -13,7 +13,8 @@ import { setUser, addCustomMask } from './redux/actions'; //TO-DO: is setUser ne
 import { Redirect } from 'react-router-dom';
 import * as selectors from './redux/selectors';
 import { connect } from 'react-redux';
-import { Paper, makeStyles } from '@material-ui/core';
+import { Paper } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import paths from './paths.js';
 import ReactGA from 'react-ga';
 import { history } from './redux/store';
