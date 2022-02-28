@@ -65,7 +65,7 @@ const Search = (props) => {
           fullWidth
           placeholder="Search..."
           inputProps={{ className: classes.mainSearchInput }}
-          rowsMax={1}
+          multiline={false}
           autoFocus
           endAdornment={
             <IconButton

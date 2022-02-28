@@ -1,28 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { Redirect, useParams } from "react-router-dom";
-import {
-  Typography,
-  AppBar,
-  Toolbar,
-  Grid,
-  Avatar,
-  Tooltip,
-  Paper,
-  IconButton,
-} from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import MinusIcon from "@mui/icons-material/Remove";
+import React, { useEffect } from "react";
+import { Typography, AppBar, Toolbar, Grid, Avatar } from "@mui/material";
 
 import { makeStyles } from "@mui/styles";
-import ArtistSongList from "./ArtistSongList";
 import BackButton from "../components/BackButton";
 import RapCloud from "./RapCloud";
 import * as selectors from "../redux/selectors";
 import { fetchClouds } from "../redux/actions";
 import { connect } from "react-redux";
-import paths from "../paths";
-import { classNames } from "../utils";
-import LoadingBar from "../components/LoadingBar";
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -125,10 +109,6 @@ const useStyles = makeStyles((theme) => {
 const ProfilePage = (props) => {
   const classes = useStyles();
   const { cloudsLoading, user, fetchClouds, clouds } = props;
-  const [cloudExpanded, setCloudExpanded] = useState(true);
-  const [songsExpanded, setSongsExpanded] = useState(true);
-  const toggleCloudExpanded = () => setCloudExpanded(!cloudExpanded);
-  const toggleSongsExpanded = () => setSongsExpanded(!songsExpanded);
   useEffect(() => {
     fetchClouds();
   }, [fetchClouds]);

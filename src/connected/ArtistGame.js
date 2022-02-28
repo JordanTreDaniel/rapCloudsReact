@@ -1,16 +1,6 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import {
-  Typography,
-  Grid,
-  Avatar,
-  Tooltip,
-  Paper,
-  IconButton,
-  Input,
-  Box,
-  Button,
-} from "@mui/material";
+import { Typography, Grid, Avatar, Box, Button } from "@mui/material";
 import CloudDone from "@mui/icons-material/CloudDone";
 import CloudQueue from "@mui/icons-material/CloudQueue";
 import CloudOff from "@mui/icons-material/CloudOff";
@@ -25,10 +15,7 @@ import {
 import { connect } from "react-redux";
 import paths from "../paths";
 import { classNames, useWidth } from "../utils";
-import LoadingBar from "../components/LoadingBar";
 import FlyWithMe from "../components/FlyWithMe";
-import DebouncedInput from "../components/DebouncedInput";
-const DebouncedTextField = DebouncedInput(Input, { timeout: 639 });
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -41,6 +28,7 @@ const useStyles = makeStyles((theme) => {
     artistAvatar: {
       width: "3.3em",
       height: "3.3em",
+      margin: "auto",
     },
     artistName: {
       fontSize: "2.4em",
@@ -106,9 +94,6 @@ const useStyles = makeStyles((theme) => {
       zIndex: 1,
       padding: "1.5em",
     },
-    artistAvatar: {
-      margin: "auto",
-    },
     countDown: {
       position: "absolute",
       top: "-.45em",
@@ -132,17 +117,13 @@ export const QuizBox = (props) => {
     gameId,
     questionIdx,
     updateQuestionIdx,
-    isSongDetailLoading,
-    isWordCloudLoading,
-    areSongLyricsLoading,
-    gameOver,
     answersOnBottomOnly = false,
   } = props;
   const classes = useStyles();
   const [seconds, setSeconds] = useState(0);
   const { answers, answerIdx, cloud, song } = question || {};
   const { info } = cloud || {};
-  const isAnswered = answerIdx == 0 || answerIdx;
+  const isAnswered = answerIdx === 0 || answerIdx;
   const letters = ["A", "B", "C", "D"];
   const updateQuestionIdxDelayed = (newIdx) => {
     setTimeout(() => {
@@ -151,7 +132,7 @@ export const QuizBox = (props) => {
   };
   useEffect(() => {
     const { answerIdx } = question;
-    const isAnswered = answerIdx == 0 || !!answerIdx;
+    const isAnswered = answerIdx === 0 || !!answerIdx;
     if (!isAnswered) {
       setSeconds(10);
       setQuestionTimer(() => {
@@ -224,7 +205,7 @@ export const QuizBox = (props) => {
           style={{ height: "100%" }}
         >
           {answers.map((a, i) => {
-            const thisAnswerChosen = answerIdx == i;
+            const thisAnswerChosen = answerIdx === i;
             return (
               <Grid
                 item
@@ -270,18 +251,12 @@ const ConnectedQuizBox = connect(null, { answerQuestion })(QuizBox);
 
 const ArtistGame = (props) => {
   const classes = useStyles();
-  const { fetchSongDetails, game, artistLoading } = props;
-  const {
-    questions = [],
-    artist,
-    id: gameId,
-    gameOver,
-    percentageRight,
-  } = game || {};
+  const { fetchSongDetails, game } = props;
+  const { questions = [], artist, gameOver, percentageRight } = game || {};
   const [questionIdx, updateQuestionIdx] = useState(0);
   const question = questions[questionIdx] || {};
   const { answerIdx, cloud } = question;
-  const isAnswered = answerIdx == 0 || answerIdx;
+  const isAnswered = answerIdx === 0 || answerIdx;
   const { info } = cloud || {};
   const updateQuestionIdxSafely = (newIdx) => {
     if (newIdx >= questions.length) {
@@ -296,7 +271,7 @@ const ArtistGame = (props) => {
       let newIdx = questionIdx + 1;
       let nextQuestion = questions[newIdx];
       let nextQuestionAnswered =
-        nextQuestion.answerIdx == 0 || nextQuestion.answerIdx;
+        nextQuestion.answerIdx === 0 || nextQuestion.answerIdx;
       while (nextQuestionAnswered) {
         newIdx++;
         if (newIdx > questions.length - 1) {
@@ -304,7 +279,7 @@ const ArtistGame = (props) => {
         }
         nextQuestion = questions[newIdx];
         nextQuestionAnswered =
-          nextQuestion.answerIdx == 0 || nextQuestion.answerIdx;
+          nextQuestion.answerIdx === 0 || nextQuestion.answerIdx;
       }
       updateQuestionIdxSafely(newIdx);
     }
@@ -371,7 +346,7 @@ const ArtistGame = (props) => {
         {questions.map((question, index) => {
           let children;
           const { answerIdx } = question;
-          const isAnswered = answerIdx == 0 || answerIdx;
+          const isAnswered = answerIdx === 0 || answerIdx;
           const answer = question.answers[answerIdx] || {};
           const classesArr = [];
           if (!isAnswered) {
@@ -379,7 +354,7 @@ const ArtistGame = (props) => {
             children = (
               <CloudQueue
                 onClick={
-                  gameOver && (prevAnswered || index == 0)
+                  gameOver && (prevAnswered || index === 0)
                     ? () => updateQuestionIdxSafely(index)
                     : null
                 }
@@ -390,7 +365,7 @@ const ArtistGame = (props) => {
             children = (
               <CloudDone
                 onClick={
-                  gameOver && (prevAnswered || index == 0)
+                  gameOver && (prevAnswered || index === 0)
                     ? () => updateQuestionIdxSafely(index)
                     : null
                 }
@@ -401,7 +376,7 @@ const ArtistGame = (props) => {
             children = (
               <CloudOff
                 onClick={
-                  gameOver && (prevAnswered || index == 0)
+                  gameOver && (prevAnswered || index === 0)
                     ? () => updateQuestionIdxSafely(index)
                     : null
                 }
@@ -409,7 +384,7 @@ const ArtistGame = (props) => {
             );
           }
           prevAnswered = isAnswered;
-          if (index == questionIdx) classesArr.push(classes.currentMiniCloud);
+          if (index === questionIdx) classesArr.push(classes.currentMiniCloud);
           return (
             <Grid
               item

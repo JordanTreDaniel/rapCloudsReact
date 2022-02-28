@@ -1,13 +1,9 @@
-import React, { useState, useEffect, Fragment } from "react";
-import { Redirect, useParams, Link } from "react-router-dom";
+import React from "react";
+import { Link } from "react-router-dom";
 import {
   Typography,
-  AppBar,
-  Toolbar,
   Grid,
   Avatar,
-  Tooltip,
-  Paper,
   IconButton,
   Input,
   List,
@@ -16,19 +12,12 @@ import {
   ListItemText,
   Divider,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import MinusIcon from "@mui/icons-material/Remove";
 import SearchIcon from "@mui/icons-material/Search";
-
 import { makeStyles } from "@mui/styles";
-import ArtistSongList from "./ArtistSongList";
-import BackButton from "../components/BackButton";
-import RapCloud from "./RapCloud";
 import * as selectors from "../redux/selectors";
 import { searchSongs, setSongSearchTerm } from "../redux/actions";
 import { connect } from "react-redux";
-import paths from "../paths";
-import { classNames, useWidth } from "../utils";
+import { classNames } from "../utils";
 import LoadingBar from "../components/LoadingBar";
 import DebouncedInput from "../components/DebouncedInput";
 const DebouncedTextField = DebouncedInput(Input, { timeout: 639 });
@@ -119,7 +108,7 @@ const GameMaker = (props) => {
           fullWidth
           placeholder="Search..."
           inputProps={{ className: classes.mainSearchInput }}
-          rowsMax={1}
+          multiline={false}
           autoFocus
           endAdornment={
             <IconButton

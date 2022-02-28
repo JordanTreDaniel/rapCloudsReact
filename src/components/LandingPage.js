@@ -7,10 +7,6 @@ import paths from "../paths";
 import {
   Typography,
   Grid,
-  DialogContent,
-  Dialog,
-  DialogTitle,
-  DialogActions,
   Button,
   List,
   ListItem,
@@ -296,14 +292,27 @@ const LandingPage = (props) => {
             <br />
             <List component="ol" dense>
               <ListItem>
-                <ListItemText>1. Pick an artist 🎤🎙</ListItemText>
-              </ListItem>
-              <ListItem>
-                <ListItemText>2. Look at the RapCloud 🧐</ListItemText>
+                <ListItemText>
+                  1. Pick an artist{" "}
+                  <span role="img" aria-label="Pick artist emoji">
+                    🎤🎙
+                  </span>
+                </ListItemText>
               </ListItem>
               <ListItem>
                 <ListItemText>
-                  3. Guess the right answer before time runs out! 🤓✅
+                  2. Look at the RapCloud
+                  <span role="img" aria-label="Look at rapCloud emoji">
+                    🧐
+                  </span>
+                </ListItemText>
+              </ListItem>
+              <ListItem>
+                <ListItemText>
+                  3. Guess the right answer before time runs out!
+                  <span role="img" aria-label="Guess the song emojis">
+                    🤓✅
+                  </span>
                 </ListItemText>
               </ListItem>
             </List>
@@ -383,15 +392,28 @@ const LandingPage = (props) => {
             <br />
             <List component="ol" dense>
               <ListItem>
-                <ListItemText>1. Pick a song 🎵🎶</ListItemText>
-              </ListItem>
-              <ListItem>
                 <ListItemText>
-                  2. Choose a picture, some colors, and style 🎨🖌
+                  1. Pick a song
+                  <span role="img" aria-label="Pick a song emojis">
+                    🎵🎶
+                  </span>
                 </ListItemText>
               </ListItem>
               <ListItem>
-                <ListItemText>3. Download it for FREE 🤑</ListItemText>
+                <ListItemText>
+                  2. Choose a picture, some colors, and style
+                  <span role="img" aria-label="Choose your styling emojis">
+                    🎨🖌
+                  </span>
+                </ListItemText>
+              </ListItem>
+              <ListItem>
+                <ListItemText>
+                  3. Download it for FREE
+                  <span role="img" aria-label="Download it free emojis">
+                    🤑
+                  </span>
+                </ListItemText>
               </ListItem>
             </List>
             <Button

@@ -174,7 +174,7 @@ const RapCloudSettings = (props) => {
   } = props;
   useEffect(() => {
     if (!masks.length) fetchMasks();
-  }, []);
+  }, [masks, fetchMasks]);
 
   const [fullScreenMask, toggleFullScreenMask] = useState(false);
   const [uploadingCustomMask, toggleUploadDialog] = useState(false);
