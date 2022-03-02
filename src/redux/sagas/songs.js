@@ -15,6 +15,7 @@ import {
   SIGN_OUT,
   GEN_SONG_CLOUD,
   ADD_ARTISTS,
+  SET_SONG_LYRICS,
 } from "../actionTypes";
 import { generateCloud, fetchSongClouds } from "./clouds";
 import {
@@ -97,6 +98,33 @@ const apiFetchSongDetails = async (songId, accessToken) => {
     url: `${REACT_APP_SERVER_ROOT}/getSongDetails/${songId}`,
     headers: {
       Authorization: accessToken,
+    },
+  });
+  const { status, statusText, data } = res;
+  const { song } = data;
+  if (status === 200) {
+    return { song };
+  }
+
+  return { error: { status, statusText } };
+};
+
+const apiSetSongLyrics = async (songId, newLyrics, accessToken) => {
+  if (!songId || !accessToken) {
+    console.error(`Could not fetch song without access token & song id`, {
+      songId,
+      accessToken,
+    });
+    return { error: `Could not fetch song without access token & song id` };
+  }
+  const res = await axios({
+    method: "post",
+    url: `${REACT_APP_SERVER_ROOT}/setSongLyrics/${songId}`,
+    headers: {
+      Authorization: accessToken,
+    },
+    data: {
+      newLyrics,
     },
   });
   const { status, statusText, data } = res;
@@ -314,6 +342,26 @@ export function* fetchSongEverything(action) {
   }
 }
 
+export function* setSongLyrics(action) {
+  try {
+    const { songId, newLyrics } = action;
+    if (!songId) yield cancel();
+    const accessToken = yield select(getAccessToken);
+
+    const response = yield call(
+      apiSetSongLyrics,
+      songId,
+      newLyrics,
+      accessToken
+    );
+    const { song } = response;
+    yield put({ type: SET_SONG_LYRICS.success, songId, lyrics: song.lyrics });
+    return { song };
+  } catch (error) {
+    console.log("problem during setSongLyrics", error);
+  }
+}
+
 function* watchSearchSongs() {
   yield takeLatest(SEARCH_SONGS.start, searchSongs);
 }
@@ -330,9 +378,14 @@ function* watchFetchSongLyrics() {
   yield takeEvery(FETCH_SONG_LYRICS.start, fetchSongLyrics);
 }
 
+function* watchSetSongLyrics() {
+  yield takeEvery(SET_SONG_LYRICS.start, setSongLyrics);
+}
+
 export default [
   watchSearchSongs,
   watchFetchSongDetails,
   watchGenSongCloud,
   watchFetchSongLyrics,
+  watchSetSongLyrics,
 ];

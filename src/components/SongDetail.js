@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, Fragment } from "react";
 import { Redirect, useParams, Link } from "react-router-dom";
 import {
   Typography,
@@ -9,6 +9,8 @@ import {
   Tooltip,
   Paper,
   IconButton,
+  Input,
+  Button,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import MinusIcon from "@mui/icons-material/Remove";
@@ -18,6 +20,7 @@ import {
   fetchSongDetails,
   genSongCloud,
   fetchSongLyrics,
+  setSongLyrics,
 } from "../redux/actions";
 import { connect } from "react-redux";
 import paths from "../paths";
@@ -27,6 +30,9 @@ import YoutubeVideo from "./YoutubeVideo";
 import RapCloud from "../connected/RapCloud";
 import { classNames } from "../utils";
 import { Refresh } from "@mui/icons-material";
+import DebouncedInput from "./DebouncedInput";
+const DebouncedTextField = DebouncedInput(Input, { timeout: 639 });
+
 const useStyles = makeStyles((theme) => {
   return {
     songDetailContainer: {
@@ -50,6 +56,7 @@ const useStyles = makeStyles((theme) => {
     lyrics: {
       whiteSpace: "pre-line",
       textAlign: "center",
+      marginTop: "2.22em",
     },
     loadingDiv: {
       width: "100%",
@@ -135,6 +142,11 @@ const useStyles = makeStyles((theme) => {
       // bottom: '2em',
       // left: '5em',
     },
+    lyricTextArea: {
+      backgroundColor: theme.palette.common.white,
+      width: "100%",
+      color: theme.palette.primary.dark,
+    },
   };
 });
 
@@ -149,6 +161,7 @@ const SongDetail = (props) => {
     fetchSongLyrics,
     areSongLyricsLoading,
     clouds,
+    setSongLyrics,
   } = props;
   const { songId } = useParams();
   const [lyricsExpanded, setLyricsExpanded] = React.useState(false);
@@ -157,6 +170,8 @@ const SongDetail = (props) => {
   const toggleLyricsExpanded = () => setLyricsExpanded(!lyricsExpanded);
   const toggleCloudExpanded = () => setCloudExpanded(!cloudExpanded);
   const toggleMediaExpanded = () => setMediaExpanded(!mediaExpanded);
+  const [newLyrics, setNewLyrics] = useState("");
+  const [userSettingLyrics, toggleUserSettingLyrics] = useState(false);
   useEffect(() => {
     if (songId) {
       fetchSongDetails(songId);
@@ -325,9 +340,45 @@ const SongDetail = (props) => {
             </Typography>
             <LoadingBar loading={areSongLyricsLoading} />
             {lyricsExpanded && (
-              <Typography variant="body1" classes={{ root: classes.lyrics }}>
-                {lyrics}
-              </Typography>
+              <Fragment>
+                {userSettingLyrics ? (
+                  <Fragment>
+                    <DebouncedTextField
+                      className={classes.lyricTextArea}
+                      multiline={true}
+                      disableUnderline={true}
+                      value={newLyrics}
+                      type="textarea"
+                      onChange={(e) => setNewLyrics(e.target.value)}
+                      rows={6}
+                      fullWidth
+                      placeholder="Place new lyrics here..."
+                      startAdornment={
+                        <span role="img" aria-label="New Lyrics Emojis">
+                          🎤🎙
+                        </span>
+                      }
+                    >
+                      {newLyrics}
+                    </DebouncedTextField>
+                  </Fragment>
+                ) : null}
+                <Button
+                  color="secondary"
+                  variant="contained"
+                  fullWidth={true}
+                  onClick={() =>
+                    userSettingLyrics
+                      ? setSongLyrics(songId, newLyrics)
+                      : toggleUserSettingLyrics(!userSettingLyrics)
+                  }
+                >
+                  Manually Set Lyrics
+                </Button>
+                <Typography variant="body1" classes={{ root: classes.lyrics }}>
+                  {lyrics}
+                </Typography>
+              </Fragment>
             )}
           </Paper>
         </Grid>
@@ -348,4 +399,5 @@ export default connect(mapState, {
   fetchSongDetails,
   genSongCloud,
   fetchSongLyrics,
+  setSongLyrics,
 })(SongDetail);
