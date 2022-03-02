@@ -361,17 +361,27 @@ const SongDetail = (props) => {
                     >
                       {newLyrics}
                     </DebouncedTextField>
+                    <Button
+                      color="warning"
+                      fullWidth
+                      variant="outlined"
+                      onClick={() => toggleUserSettingLyrics(false)}
+                    >
+                      Cancel
+                    </Button>
                   </Fragment>
                 ) : null}
                 <Button
-                  color="secondary"
+                  color={userSettingLyrics ? "secondary" : "primary"}
                   variant="contained"
-                  fullWidth={true}
-                  onClick={() =>
-                    userSettingLyrics
-                      ? setSongLyrics(songId, newLyrics)
-                      : toggleUserSettingLyrics(!userSettingLyrics)
-                  }
+                  fullWidth
+                  onClick={() => {
+                    if (userSettingLyrics) {
+                      setSongLyrics(songId, newLyrics);
+                      setNewLyrics("");
+                    }
+                    toggleUserSettingLyrics(!userSettingLyrics);
+                  }}
                 >
                   Manually Set Lyrics
                 </Button>
