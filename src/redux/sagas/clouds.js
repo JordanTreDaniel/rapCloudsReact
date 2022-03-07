@@ -11,20 +11,21 @@ import axios from "axios";
 import {
   getCloudSettingsForFlight,
   getUserMongoId,
-  getCloudFromId,
   getMaskFromId,
   getSongFromId,
   getAccessToken,
+  getCloudsAsList,
 } from "../selectors";
 import {
   FETCH_MASKS,
   ADD_CUSTOM_MASK,
   DELETE_MASK,
   FETCH_CLOUDS,
-  DELETE_CLOUD,
+  DELETE_CLOUDS,
   FETCH_SONG_DETAILS,
   ADD_CLOUDS,
   ADD_CLOUD,
+  PRUNE_BAD_CLOUDS,
 } from "../actionTypes";
 import { getConnectedSocket } from "../../utils";
 const REACT_APP_SERVER_ROOT =
@@ -106,17 +107,16 @@ export function* generateCloud(action) {
   }
 }
 
-const apiDeleteCloud = async (cloudId, public_id) => {
+const apiDeleteClouds = async (cloudIds) => {
   try {
     const res = await axios({
       method: "post",
-      url: `${REACT_APP_SERVER_ROOT}/deleteCloud`,
+      url: `${REACT_APP_SERVER_ROOT}/deleteClouds`,
       headers: {
         "Content-Type": "application/json",
       },
       data: {
-        cloudId,
-        public_id,
+        cloudIds,
       },
     });
     const { status, statusText, data } = res;
@@ -127,32 +127,29 @@ const apiDeleteCloud = async (cloudId, public_id) => {
 
     return { error: { status, statusText } };
   } catch (error) {
-    console.error("Couldn't delete the cloud", { cloudId, error });
+    console.error("Couldn't delete the clouds", { cloudIds, error });
     return { error };
   }
 };
 
-export function* deleteCloud(action) {
+export function* deleteClouds(action) {
   try {
-    const { cloudId } = action;
-    let { cloud } = action;
-    if (!cloudId) {
-      yield put({ type: DELETE_CLOUD.cancellation, cloudId });
+    const { cloudIds } = action;
+    if (!cloudIds) {
+      yield put({ type: DELETE_CLOUDS.cancellation, cloudIds });
       yield cancel();
     }
-    cloud = cloud ? cloud : yield select(getCloudFromId, cloudId);
-    const { public_id } = cloud.info || {};
-    const { error } = yield call(apiDeleteCloud, cloudId, public_id);
+    const { error } = yield call(apiDeleteClouds, cloudIds);
     if (error) {
-      console.log("Something went wrong in deleteCloud", error);
+      console.log("Something went wrong in deleteClouds", error);
       return { error };
     } else {
-      yield put({ type: DELETE_CLOUD.success, cloudId });
-      return cloudId;
+      yield put({ type: DELETE_CLOUDS.success, cloudIds });
+      return cloudIds;
     }
   } catch (err) {
     console.log("Something went wrong", err);
-    yield put({ type: DELETE_CLOUD.failure, err });
+    yield put({ type: DELETE_CLOUDS.failure, err });
     return { error: err };
   }
 }
@@ -335,7 +332,7 @@ export function* fetchClouds(action) {
         if (!cloud.info) {
           //TO-DO: Roll the deletions together into one call
           console.log("Got cloud with no info. Deleting", cloud);
-          yield put({ type: DELETE_CLOUD.start, cloudId: cloud.id, cloud });
+          yield put({ type: DELETE_CLOUDS.start, cloudId: cloud.id, cloud });
         }
         for (let songId of cloud.songIds) {
           const matchingSong = yield select(getSongFromId, songId);
@@ -363,6 +360,40 @@ export function* fetchClouds(action) {
     yield put({ type: FETCH_CLOUDS.failure, err });
     return { error: err };
   }
+}
+
+export function* pruneBadClouds() {
+  try {
+    const cloudsList = yield select(getCloudsAsList);
+    const cloudsToDelete = [];
+    cloudsList.forEach((cloud) => {
+      const { info, createdAt: _createdAt, id } = cloud;
+      if (!_createdAt) {
+        cloudsToDelete.push(id);
+        return;
+      }
+      const createdAt = new Date(_createdAt);
+      if (info) return;
+      const thirtyMinAfterCreation = new Date(
+        createdAt.getTime() + 30 * 60 * 1000
+      );
+      const difference = createdAt.getTime() - thirtyMinAfterCreation.getTime();
+      const isOlderThanThirtyMin = difference < 0;
+      console.log({
+        createdAt: createdAt.toUTCString(),
+        thirtyMinAfterCreation: thirtyMinAfterCreation.toUTCString(),
+        isOlderThanThirtyMin,
+      });
+      console.log({ cloudsToDelete });
+      if (isOlderThanThirtyMin && !info) {
+        //delete cloudinary resource?
+        cloudsToDelete.push(id);
+      }
+    });
+    if (cloudsToDelete.length) {
+      yield put({ type: DELETE_CLOUDS.start, cloudIds: cloudsToDelete });
+    }
+  } catch (err) {}
 }
 
 const apiFetchSongClouds = async (songId, accessToken, userId) => {
@@ -423,8 +454,11 @@ function* watchFetchClouds() {
   yield takeLatest(FETCH_CLOUDS.start, fetchClouds);
 }
 
-function* watchDeleteCloud() {
-  yield takeEvery(DELETE_CLOUD.start, deleteCloud);
+function* watchdeleteClouds() {
+  yield takeEvery(DELETE_CLOUDS.start, deleteClouds);
+}
+function* watchPruneClouds() {
+  yield takeEvery(PRUNE_BAD_CLOUDS.start, pruneBadClouds);
 }
 
 export default [
@@ -432,5 +466,6 @@ export default [
   watchAddCustomMask,
   watchDeleteMask,
   watchFetchClouds,
-  watchDeleteCloud,
+  watchdeleteClouds,
+  watchPruneClouds,
 ];

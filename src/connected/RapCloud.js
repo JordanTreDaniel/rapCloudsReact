@@ -30,7 +30,7 @@ import Delete from "@mui/icons-material/Delete";
 // import FacebookIcon from '@mui/icons-material/Facebook';
 // import InstagramIcon from '@mui/icons-material/Instagram';
 // import TwitterIcon from '@mui/icons-material/Twitter';
-import { deleteCloud } from "../redux/actions";
+import { deleteClouds } from "../redux/actions";
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -151,7 +151,7 @@ const RapCloud = (props) => {
     right,
     generateCloud,
     isLoading,
-    deleteCloud,
+    deleteClouds,
     allowDeletions = true,
     allowCreation = true,
     showCloudActions = true,
@@ -226,7 +226,7 @@ const RapCloud = (props) => {
             <IconButton
               id="deleteBtn"
               onClick={() => {
-                deleteCloud(cloudId);
+                deleteClouds([cloudId]);
               }}
               className={classNames(classes.cloudAction, classes.attnGrabber)}
             >
@@ -363,4 +363,4 @@ const RapCloud = (props) => {
   );
 };
 
-export default connect(null, { deleteCloud })(RapCloud);
+export default connect(null, { deleteClouds })(RapCloud);

@@ -16,11 +16,12 @@ import {
   FETCH_SONG_LYRICS,
   UPDATE_USER,
   FETCH_CLOUDS,
-  DELETE_CLOUD,
+  DELETE_CLOUDS,
   FETCH_ARTIST_SONGS,
   FETCH_ARTIST_GAME,
   ANSWER_QUESTION,
   SET_SONG_LYRICS,
+  PRUNE_BAD_CLOUDS,
 } from "./actionTypes";
 import normalizeLyrics from "./utils/normalizeLyrics";
 
@@ -78,8 +79,8 @@ export const genSongCloud = (songId, songLyrics) => {
   };
 };
 
-export const deleteCloud = (cloudId) => {
-  return { type: DELETE_CLOUD.start, cloudId };
+export const deleteClouds = (cloudIds) => {
+  return { type: DELETE_CLOUDS.start, cloudIds };
 };
 
 export const updateCloudSettings = (key, val) => {
@@ -116,4 +117,8 @@ export const answerQuestion = (gameId, questionIdx, answerIdx) => {
 
 export const setSongLyrics = (songId, newLyrics) => {
   return { type: SET_SONG_LYRICS.start, songId, newLyrics };
+};
+
+export const pruneBadClouds = () => {
+  return { type: PRUNE_BAD_CLOUDS.start };
 };
