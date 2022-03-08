@@ -240,10 +240,13 @@ export function* fetchSongLyrics(action) {
       songId
     );
     lyrics = newLyrics;
-    if (error) {
+    if (error || !newLyrics) {
       yield put({ type: FETCH_SONG_LYRICS.failure, songId, songPath });
-      console.error("Something went wrong", error);
-      return { error };
+      console.error("Something went wrong while fetching lyrics", {
+        error,
+        newLyrics,
+      });
+      return { error, newLyrics };
     } else {
       yield put({ type: FETCH_SONG_LYRICS.success, songId, lyrics });
       if (generateCloud) {
@@ -301,10 +304,11 @@ export function* genSongCloud(action) {
     });
     if (error) {
       yield put({ type: GEN_SONG_CLOUD.failure, songId, officialCloud });
-      console.log("Something went wrong in fetch song cloud", error);
+      console.log("Something went wrong while generating song cloud", error);
+      return { error };
     } else {
       yield put({ type: GEN_SONG_CLOUD.success, finishedCloud });
-      return finishedCloud;
+      return { finishedCloud };
     }
   } catch (err) {
     yield put({ type: GEN_SONG_CLOUD.failure, err });

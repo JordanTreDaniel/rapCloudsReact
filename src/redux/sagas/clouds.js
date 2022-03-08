@@ -141,14 +141,14 @@ export function* deleteClouds(action) {
     }
     const { error } = yield call(apiDeleteClouds, cloudIds);
     if (error) {
-      console.log("Something went wrong in deleteClouds", error);
+      console.error("Something went wrong in deleteClouds", error);
       return { error };
     } else {
       yield put({ type: DELETE_CLOUDS.success, cloudIds });
       return cloudIds;
     }
   } catch (err) {
-    console.log("Something went wrong", err);
+    console.error("Something went wrong", err);
     yield put({ type: DELETE_CLOUDS.failure, err });
     return { error: err };
   }
