@@ -160,14 +160,13 @@ export function* genArtistCloud(action) {
       artistIds = [artistId];
     const allLyrics = yield all(
       songs.map((song) => {
-        const { id: songId, path: songPath } = song;
+        const { id: songId } = song;
         songIds.push(songId);
         //TO-DO: Add artistIds from each artist of the song.artists
         // artistIds.push(artistId);
         return fetchSongLyrics({
           type: FETCH_SONG_LYRICS.start,
           songId,
-          songPath,
           generateCloud: false,
         });
       })

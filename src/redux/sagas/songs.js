@@ -136,10 +136,9 @@ const apiSetSongLyrics = async (songId, newLyrics, accessToken) => {
   return { error: { status, statusText } };
 };
 
-const apiFetchSongLyrics = async (songPath, songId) => {
-  if (!songPath || !songId) {
-    console.error(`Could not fetch song lyrics without song path/song id.`, {
-      songPath,
+const apiFetchSongLyrics = async (songId, accessToken) => {
+  if (!songId) {
+    console.error(`Could not fetch song lyrics without song id.`, {
       songId,
     });
     return { error: `Could not fetch song lyrics without song path/song id.` };
@@ -149,9 +148,9 @@ const apiFetchSongLyrics = async (songPath, songId) => {
     url: `${REACT_APP_SERVER_ROOT}/getSongLyrics`,
     headers: {
       "Content-Type": "application/json",
+      Authorization: accessToken,
     },
     data: {
-      songPath,
       songId,
     },
   });
@@ -201,14 +200,12 @@ export function* fetchSongDetails(action) {
     console.error("Something went wrong", error);
     return { error };
   } else {
-    const { path: songPath } = song;
     yield put({ type: FETCH_SONG_DETAILS.success, song });
     if (fetchLyrics) {
       yield delay(500);
       yield put({
         type: FETCH_SONG_LYRICS.start,
         songId,
-        songPath,
         generateCloud: generateCloud && !officialCloud,
       });
     }
@@ -217,8 +214,10 @@ export function* fetchSongDetails(action) {
 }
 
 export function* fetchSongLyrics(action) {
-  const { songPath, songId, generateCloud = true, forceFetch = false } = action;
+  const { songId, generateCloud = true, forceFetch = false } = action;
   const song = yield select(getSongFromId, songId);
+  const accessToken = yield select(getAccessToken);
+
   let lyrics = song.lyrics;
   try {
     if (song.lyrics && !forceFetch) {
@@ -236,12 +235,12 @@ export function* fetchSongLyrics(action) {
     }
     const { lyrics: newLyrics, error } = yield call(
       apiFetchSongLyrics,
-      songPath,
-      songId
+      songId,
+      accessToken
     );
     lyrics = newLyrics;
     if (error || !newLyrics) {
-      yield put({ type: FETCH_SONG_LYRICS.failure, songId, songPath });
+      yield put({ type: FETCH_SONG_LYRICS.failure, songId });
       console.error("Something went wrong while fetching lyrics", {
         error,
         newLyrics,
@@ -328,11 +327,9 @@ export function* fetchSongEverything(action) {
       fetchLyrics: false,
       generateCloud: false,
     });
-    const { path: songPath } = song;
     const { lyrics, error: lyricsErr } = yield call(fetchSongLyrics, {
       songId,
       generateCloud: false,
-      songPath,
     });
     const normalizedLyrics = normalizeLyrics(lyrics);
     const { finishedCloud, error: cloudErr } = yield call(genSongCloud, {

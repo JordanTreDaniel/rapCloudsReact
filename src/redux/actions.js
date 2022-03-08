@@ -41,8 +41,8 @@ export const searchSongs = (searchTerm = null) => {
   return { type: SEARCH_SONGS.start, searchTerm };
 };
 
-export const fetchSongLyrics = (songId, songPath) => {
-  return { type: FETCH_SONG_LYRICS.start, songId, songPath, forceFetch: true };
+export const fetchSongLyrics = (songId) => {
+  return { type: FETCH_SONG_LYRICS.start, songId, forceFetch: true };
 };
 
 export const setSongSearchTerm = (searchTerm = "") => {
