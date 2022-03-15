@@ -241,7 +241,7 @@ const ArtistPage = (props) => {
               <ArtistSongList artistId={artistId} />
             )}
             {songsExpanded && nextPage && (
-              <Grid container justify="center">
+              <Grid container justifyContent="center">
                 <Button
                   className={classes.loadMoreSongsBtn}
                   onClick={() => fetchArtistSongs(artistId)}

@@ -158,7 +158,7 @@ const Navbar = (props) => {
                   container
                   direction="row"
                   wrap="nowrap"
-                  justify="center"
+                  justifyContent="center"
                   component={Link}
                   to={paths.play}
                   className={classNames(classes.whiteLink, classes.drawerItem)}
@@ -174,7 +174,7 @@ const Navbar = (props) => {
                   container
                   direction="row"
                   wrap="nowrap"
-                  justify="center"
+                  justifyContent="center"
                   component={Link}
                   to={paths.search}
                   className={classNames(classes.whiteLink, classes.drawerItem)}
@@ -190,7 +190,7 @@ const Navbar = (props) => {
                   container
                   direction="row"
                   wrap="nowrap"
-                  justify="center"
+                  justifyContent="center"
                   component={Link}
                   to={paths.profile}
                   className={classNames(classes.whiteLink, classes.drawerItem)}
@@ -217,7 +217,7 @@ const Navbar = (props) => {
               container
               direction="row"
               wrap="nowrap"
-              justify="center"
+              justifyContent="center"
               component={Link}
               to={paths.about}
               className={classNames(classes.whiteLink, classes.drawerItem)}
@@ -236,7 +236,7 @@ const Navbar = (props) => {
               component={userName ? "div" : Link}
               direction="row"
               wrap="nowrap"
-              justify="center"
+              justifyContent="center"
               onClick={userName ? () => toggleLogOutDialog(true) : null}
               to={userName ? null : paths.signIn}
               className={classNames(classes.whiteLink, classes.drawerItem)}
@@ -254,7 +254,7 @@ const Navbar = (props) => {
               container
               direction="row"
               wrap="wrap"
-              justify="space-around"
+              justifyContent="space-around"
               className={classNames(classes.whiteLink, classes.drawerItem)}
             >
               <a

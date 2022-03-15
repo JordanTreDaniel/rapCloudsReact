@@ -244,7 +244,7 @@ const RapCloud = (props) => {
         item
         container
         xs={12}
-        justify="center"
+        justifyContent="center"
         className={
           bottomSpace
             ? classes.paginationContainerBottom
@@ -337,7 +337,7 @@ const RapCloud = (props) => {
             <Grid
               container
               direction="row"
-              justify="center"
+              justifyContent="center"
               alignItems="center"
               wrap="nowrap"
               style={{ height: "100%", position: "relative" }}
@@ -347,7 +347,8 @@ const RapCloud = (props) => {
                 onClick={() => toggleFullScreenCloud(false)}
               />
               <Grid item xs={12} style={{ textAlign: "center" }}>
-                <img
+                <Grid
+                  component="img"
                   item
                   src={secure_url || `${process.env.PUBLIC_URL}/rapClouds.png`}
                   alt={cloudName}

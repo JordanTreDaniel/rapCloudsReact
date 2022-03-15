@@ -22,7 +22,7 @@ const HelpTooltip = (props) => {
       item
       container
       direction="row"
-      justify="flex-start"
+      justifyContent="flex-start"
       wrap="nowrap"
       alignItems="center"
       {...rest}
@@ -39,7 +39,6 @@ const HelpTooltip = (props) => {
         placement={placement}
         enterTouchDelay={0}
         enterNextDelay={222}
-        interactive
         leaveDelay={999}
         arrow
       >

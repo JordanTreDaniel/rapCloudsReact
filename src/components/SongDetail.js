@@ -227,7 +227,7 @@ const SongDetail = (props) => {
               direction="row"
               wrap="nowrap"
               alignItems="center"
-              justify="flex-end"
+              justifyContent="flex-end"
               className={classes.artistBubbles}
             >
               {artists.map((artist, idx) => {

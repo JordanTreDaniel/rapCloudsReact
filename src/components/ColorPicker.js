@@ -89,7 +89,7 @@ const ColorPicker = (props) => {
             Choose a color
           </DialogTitle>
           <DialogContent>
-            <Grid container justify="center" alignItems="center">
+            <Grid container justifyContent="center" alignItems="center">
               <SketchPicker
                 item
                 color={newColor}

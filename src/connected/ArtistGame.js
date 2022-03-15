@@ -153,13 +153,13 @@ export const QuizBox = (props) => {
     <Grid
       item
       container
-      justify="space-evenly"
+      justifyContent="space-evenly"
       className={classes.quizBoxContainer}
     >
       <Grid item xs={12} container direction="column">
         {isAnswered ? (
           <Typography
-            align="center"
+            alignItems="center"
             variant="h6"
             style={{ marginBottom: ".9em" }}
           >
@@ -170,7 +170,7 @@ export const QuizBox = (props) => {
           </Typography>
         ) : (
           <Typography
-            align="center"
+            alignItems="center"
             variant="h6"
             style={{ marginBottom: ".9em" }}
           >
@@ -199,7 +199,7 @@ export const QuizBox = (props) => {
           container
           direction="row"
           wrap="wrap"
-          justify="space-evenly"
+          justifyContent="space-evenly"
           alignItems="center"
           alignContent="space-around"
           style={{ height: "100%" }}
@@ -292,28 +292,28 @@ const ArtistGame = (props) => {
     }
   }, [questionIdx]);
   const content = (
-    <Grid container item xs={12} justify="center">
+    <Grid container item xs={12} justifyContent="center">
       {gameOver && (
-        <Grid
+        <Grid 
           container
           item
-          justify="center"
+          justifyContent="center"
           className={classes.gameOverGrid}
           xs={11}
         >
           <Typography
-            align="center"
+            alignItems="center"
             variant="h5"
             className={classes.blueTxt}
             style={{ width: "100%" }}
           >
             Game Over!
           </Typography>
-          <Typography align="center" style={{ width: "100%" }}>
+          <Typography alignItems="center" style={{ width: "100%" }}>
             You got {percentageRight}% of RapClouds on {artist.name}
             Level {game.level}
           </Typography>
-          <Typography align="center" style={{ width: "100%" }}>
+          <Typography alignItems="center" style={{ width: "100%" }}>
             {game.nextLevel ? (
               <Button
                 variant="contained"
@@ -394,7 +394,7 @@ const ArtistGame = (props) => {
             >
               {children}
               <Typography
-                align="center"
+                alignItems="center"
                 variant="h6"
                 className={classes.blackTxt}
               >
@@ -460,7 +460,7 @@ const _ArtistGameLoadingGate = (props) => {
       wrap="wrap"
       alignItems="flex-start"
       alignContent="flex-start"
-      justify="center"
+      justifyContent="center"
     >
       {!!game ? (
         <ConnectedArtistGame />
@@ -469,14 +469,14 @@ const _ArtistGameLoadingGate = (props) => {
           <Grid
             item
             container
-            justify="center"
+            justifyContent="center"
             direction="column"
             spacing={2}
             xs={12}
             className={classes.loadingFrame}
           >
             <Typography
-              align="center"
+              alignItems="center"
               variant="h4"
               style={{ marginBottom: ".5em" }}
             >
@@ -495,7 +495,7 @@ const _ArtistGameLoadingGate = (props) => {
               }
             />
             <Typography
-              align="center"
+              alignItems="center"
               variant="h5"
               style={{ marginTop: ".5em" }}
             >

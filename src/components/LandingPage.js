@@ -226,7 +226,7 @@ const LandingPage = (props) => {
           sm={9}
           direction="row"
           wrap="wrap"
-          justify="flex-end"
+          justifyContent="flex-end"
           className={classNames(
             classes.demoButtons,
             width === "xs"
@@ -264,7 +264,7 @@ const LandingPage = (props) => {
         id="playTheGame"
         container
         spacing={3}
-        justify="space-around"
+        justifyContent="space-around"
         alignItems="space-around"
         alignContent="space-around"
         direction="row"
@@ -281,7 +281,7 @@ const LandingPage = (props) => {
             xs={12}
             alignItems="flex-start"
             alignContent="flex-start"
-            justify="flex-start"
+            justifyContent="flex-start"
           >
             <Typography
               variant="h4"
@@ -365,7 +365,7 @@ const LandingPage = (props) => {
         id="makeACloud"
         container
         spacing={3}
-        justify="space-around"
+        justifyContent="space-around"
         alignItems="space-around"
         alignContent="space-around"
         direction="row-reverse"
@@ -381,7 +381,7 @@ const LandingPage = (props) => {
             xs={12}
             alignItems="flex-start"
             alignContent="flex-start"
-            justify="flex-start"
+            justifyContent="flex-start"
           >
             <Typography
               variant="h4"

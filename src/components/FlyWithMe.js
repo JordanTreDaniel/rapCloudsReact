@@ -26,7 +26,7 @@ const FlyWithMe = (props) => {
     <Grid
       item
       container
-      justify="center"
+      justifyContent="center"
       alignItems="center"
       alignContent="center"
       id="backgroundVideoBox"

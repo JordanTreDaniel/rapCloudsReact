@@ -163,7 +163,7 @@ const SignIn = (props) => {
           classes.signInSignUpSection
         )}
         wrap="nowrap"
-        justify="space-evenly"
+        justifyContent="space-evenly"
         alignContent="center"
         alignItems="center"
         direction="column"
@@ -172,7 +172,7 @@ const SignIn = (props) => {
           id="pleaseSignInMsg"
           item
           container
-          justify="center"
+          justifyContent="center"
           alignContent="center"
           alignItems="center"
           direction="column"
@@ -181,7 +181,7 @@ const SignIn = (props) => {
           <Typography
             className={classNames(classes.pleaseSignInMsg)}
             color="primary"
-            align="center"
+            alignItems="center"
             variant="h4"
           >
             Welcome to Rap Clouds!
@@ -189,7 +189,7 @@ const SignIn = (props) => {
           <Typography
             className={classNames(classes.pleaseSignInMsg)}
             color="primary"
-            align="center"
+            alignItems="center"
             variant="h4"
           >
             Please Sign In
@@ -198,7 +198,7 @@ const SignIn = (props) => {
             className={classNames(classes.pleaseSignInMsg)}
             component={"a"}
             href={"#stepsSection"}
-            align="center"
+            alignItems="center"
             color="primary"
             variant="body2"
           >
@@ -211,7 +211,7 @@ const SignIn = (props) => {
           item
           container
           onClick={startAuth}
-          justify="center"
+          justifyContent="center"
           alignContent="center"
           alignItems="center"
           direction="row"
@@ -256,15 +256,15 @@ const SignIn = (props) => {
           xs={6}
           className={classNames(classes.signUpExplanation)}
           direction="column"
-          justify="center"
+          justifyContent="center"
           alignContent="center"
           alignItems="center"
         >
-          <Typography align="center" variant="h5">
+          <Typography alignItems="center" variant="h5">
             Why do I have to sign into Genius to use Rap Clouds?
           </Typography>
           <Typography
-            align="center"
+            alignItems="center"
             variant="body1"
             className={classNames(classes.whiteLetters)}
           >
@@ -292,7 +292,7 @@ const SignIn = (props) => {
           )}
           alignContent="stretch"
           alignItems="center"
-          justify="center"
+          justifyContent="center"
           direction="row"
         >
           <Grid item xs={2}>
@@ -314,7 +314,7 @@ const SignIn = (props) => {
             <Typography variant="body2">(1.5 sec) </Typography>
           </Grid>
 
-          <Grid item container xs={3} justify="center" alignItems="center">
+          <Grid item container xs={3} justifyContent="center" alignItems="center">
             <IconButton
               item="true"
               onClick={startAuth}
@@ -340,7 +340,7 @@ const SignIn = (props) => {
           )}
           alignContent="stretch"
           alignItems="center"
-          justify="center"
+          justifyContent="center"
           direction="row"
         >
           <Grid item xs={2}>
@@ -376,7 +376,7 @@ const SignIn = (props) => {
           )}
           alignContent="stretch"
           alignItems="center"
-          justify="center"
+          justifyContent="center"
           direction="row"
         >
           <Grid item xs={2}>
@@ -411,7 +411,7 @@ const SignIn = (props) => {
           )}
           alignContent="stretch"
           alignItems="center"
-          justify="center"
+          justifyContent="center"
           direction="row"
         >
           <Grid item xs={2}>

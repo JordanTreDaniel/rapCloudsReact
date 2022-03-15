@@ -85,13 +85,13 @@ const GameMaker = (props) => {
   return (
     <Grid
       className={classes.gameMaker}
-      justify="center"
+      justifyContent="center"
       container
       alignItems="flex-start"
       alignContent="flex-start"
     >
       <Grid item xs={12}>
-        <Typography variant="h3" align="center" style={{ marginTop: ".5em" }}>
+        <Typography variant="h3" alignItems="center" style={{ marginTop: ".5em" }}>
           Pick an artist
         </Typography>
       </Grid>

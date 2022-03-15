@@ -34,7 +34,7 @@ import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import Refresh from "@mui/icons-material/Refresh";
 import AddIcon from "@mui/icons-material/Add";
 import XIcon from "@mui/icons-material/Cancel";
-
+  
 const useStyles = makeStyles((theme) => {
   return {
     dialog: {
@@ -201,7 +201,7 @@ const RapCloudSettings = (props) => {
             item
             container
             direction="row"
-            justify="space-between"
+            justifyContent="space-between"
             wrap="nowrap"
             alignItems="center"
           >
@@ -274,7 +274,7 @@ const RapCloudSettings = (props) => {
               item
               container
               direction="row"
-              justify="space-between"
+              justifyContent="space-between"
             >
               <FormControlLabel
                 item="true"
@@ -321,7 +321,7 @@ const RapCloudSettings = (props) => {
                 wrap="wrap"
                 alignContent="center"
                 alignItems="center"
-                justify="flex-start"
+                justifyContent="flex-start"
               >
                 <ColorPicker
                   chooseColor={(hex) =>
@@ -367,7 +367,7 @@ const RapCloudSettings = (props) => {
             item
             container
             direction="row"
-            justify="space-between"
+            justifyContent="space-between"
             wrap="nowrap"
             alignItems="center"
           >
@@ -376,7 +376,7 @@ const RapCloudSettings = (props) => {
                 `This option determines if you will have a background, and how the background will look`,
               ]}
             >
-              <Typography variant="h6" align="left">
+              <Typography variant="h6" alignItems="left">
                 Background
               </Typography>
             </HelpTooltip>
@@ -386,14 +386,14 @@ const RapCloudSettings = (props) => {
             item
             container
             direction="column"
-            justify="space-evenly"
+            justifyContent="space-evenly"
           >
             <Grid
               item
               container
               direction="row"
               wrap="nowrap"
-              justify="flex-start"
+              justifyContent="flex-start"
               alignContent="center"
               alignItems="center"
             >
@@ -442,7 +442,7 @@ const RapCloudSettings = (props) => {
               container
               direction="row"
               wrap="wrap"
-              justify="flex-start"
+              justifyContent="flex-start"
               alignContent="center"
               alignItems="center"
             >
@@ -477,7 +477,7 @@ const RapCloudSettings = (props) => {
               container
               direction="row"
               wrap="wrap"
-              justify="flex-start"
+              justifyContent="flex-start"
               alignContent="center"
               alignItems="center"
             >
@@ -524,7 +524,7 @@ const RapCloudSettings = (props) => {
             item
             container
             direction="row"
-            justify="space-between"
+            justifyContent="space-between"
             wrap="nowrap"
             alignItems="center"
           >
@@ -564,7 +564,7 @@ const RapCloudSettings = (props) => {
               container
               direction="column"
               wrap="wrap"
-              justify="flex-start"
+              justifyContent="flex-start"
               alignContent="center"
               alignItems="center"
             >
@@ -576,13 +576,13 @@ const RapCloudSettings = (props) => {
                 className={classNames(classes.maskSelections)}
                 direction="row"
                 wrap="nowrap"
-                justify="space-between"
+                justifyContent="space-between"
                 alignContent="center"
                 alignItems="center"
               >
                 <Grid
                   container
-                  justify="center"
+                  justifyContent="center"
                   alignContent="center"
                   className={classNames(classes.maskThumbnail)}
                   onClick={window.openWidget}
@@ -713,7 +713,7 @@ const RapCloudSettings = (props) => {
                   item
                   container
                   direction="column"
-                  justify="center"
+                  justifyContent="center"
                   alignItems="center"
                   className={classNames(
                     classes.chosenMaskSection,
@@ -727,7 +727,7 @@ const RapCloudSettings = (props) => {
                     container
                     direction="row"
                     wrap="wrap"
-                    justify="space-evenly"
+                    justifyContent="space-evenly"
                     alignItems="center"
                   >
                     <Tooltip title="Show Fullscreen View" placement="right">
@@ -879,7 +879,7 @@ const RapCloudSettings = (props) => {
                       item
                       container
                       direction="row"
-                      justify="space-between"
+                      justifyContent="space-between"
                       wrap="nowrap"
                       alignItems="center"
                     >
@@ -932,7 +932,7 @@ const RapCloudSettings = (props) => {
                           container
                           direction="row"
                           wrap="wrap"
-                          justify="flex-start"
+                          justifyContent="flex-start"
                           alignContent="center"
                           alignItems="center"
                         >
@@ -1011,7 +1011,7 @@ const RapCloudSettings = (props) => {
             <HelpTooltip
               titles={[`General settings applied to your Rap Cloud`]}
             >
-              <Typography variant="h6" align="left">
+              <Typography variant="h6" alignItems="left">
                 General
               </Typography>
             </HelpTooltip>
