@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { Input, IconButton } from "@mui/material";
-import { searchSongs, setSongSearchTerm } from "../redux/actions";
+import { searchSongs, setSongSearchTerm, fetchGoogleFonts } from "../redux/actions";
 import * as selectors from "../redux/selectors";
 import SearchSongList from "./SearchSongList";
 import { makeStyles } from "@mui/styles";
@@ -40,10 +40,17 @@ const Search = (props) => {
     songSearchLoading,
     searchSongs,
     songs,
+    fonts,
+    fetchGoogleFonts
   } = props;
   const search = () => {
     searchSongs(searchTerm);
   };
+  useEffect(() => {
+    if (!fonts.length) {
+      fetchGoogleFonts()
+    }
+  }, [])
   useEffect(() => {
     if (!songs.length && !searchTerm.length) {
       searchSongs("drake");
@@ -89,6 +96,7 @@ const mapState = (state) => ({
   songs: selectors.getSongsList(state),
   searchTerm: selectors.getSearchTerm(state),
   songSearchLoading: selectors.isSongSearchLoading(state),
+  fonts: selectors.getFonts(state)
 });
 
 Search.defaultProps = {
@@ -97,4 +105,4 @@ Search.defaultProps = {
   songs: [],
   searchTerm: "No search term provided.",
 };
-export default connect(mapState, { searchSongs, setSongSearchTerm })(Search);
+export default connect(mapState, { searchSongs, setSongSearchTerm, fetchGoogleFonts })(Search);

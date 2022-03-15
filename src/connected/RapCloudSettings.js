@@ -23,6 +23,7 @@ import {
   fetchMasks,
   deleteMask,
   resetCloudDefaults,
+  fetchGoogleFonts
 } from "../redux/actions";
 import ColorPicker from "../components/ColorPicker";
 import LoadingBar from "../components/LoadingBar";
@@ -171,7 +172,12 @@ const RapCloudSettings = (props) => {
     generateCloud,
     resetCloudDefaults,
     currentMask,
+    fonts,
+    fetchGoogleFonts
   } = props;
+  useEffect(() => {
+    if (!fonts.length) fetchGoogleFonts()
+  })
   useEffect(() => {
     if (!masks.length) fetchMasks();
   }, [masks, fetchMasks]);
@@ -1193,6 +1199,7 @@ const mapState = (state) => ({
   currentMask: selectors.getCurrentMask(state),
   masksLoading: selectors.areMasksLoading(state),
   mongoUserId: selectors.getUserMongoId(state),
+  fonts: selectors.getFonts(state)
 });
 
 export default connect(mapState, {
@@ -1200,4 +1207,5 @@ export default connect(mapState, {
   fetchMasks,
   deleteMask,
   resetCloudDefaults,
+  fetchGoogleFonts
 })(RapCloudSettings);

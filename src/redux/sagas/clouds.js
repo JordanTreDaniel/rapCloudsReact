@@ -26,6 +26,7 @@ import {
   ADD_CLOUDS,
   ADD_CLOUD,
   PRUNE_BAD_CLOUDS,
+  FETCH_GOOGLE_FONTS,
 } from "../actionTypes";
 import { getConnectedSocket } from "../../utils";
 const REACT_APP_SERVER_ROOT =
@@ -396,6 +397,37 @@ export function* pruneBadClouds() {
   } catch (err) {}
 }
 
+const apiFetchGoogleFonts = async () => {
+  try {
+    const res = await axios({
+      method: "get",
+      url: `${REACT_APP_SERVER_ROOT}/getGoogleFonts`,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const { status, statusText, data } = res;
+    if (status === 200) {
+      return data
+    }
+    return { error: { status, statusText } };
+  } catch (error) {
+    console.error("Couldn't delete the clouds", {  error });
+    return { error };
+  }
+}
+
+export function* fetchGoogleFonts() {
+  try {
+    const {fonts} = yield call(apiFetchGoogleFonts)
+    yield put({type: FETCH_GOOGLE_FONTS.success, fonts})
+  } catch (error) {
+    yield put({type: FETCH_GOOGLE_FONTS.failure, error})
+    console.error("Something went wrong during fetchGoogleFonts", error);
+
+  }
+}
+
 const apiFetchSongClouds = async (songId, accessToken, userId) => {
   if (!songId || !accessToken || !userId) {
     console.error(
@@ -460,6 +492,9 @@ function* watchdeleteClouds() {
 function* watchPruneClouds() {
   yield takeEvery(PRUNE_BAD_CLOUDS.start, pruneBadClouds);
 }
+function* watchFetchFonts() {
+  yield takeEvery(FETCH_GOOGLE_FONTS.start, fetchGoogleFonts);
+}
 
 export default [
   watchFetchMasks,
@@ -468,4 +503,5 @@ export default [
   watchFetchClouds,
   watchdeleteClouds,
   watchPruneClouds,
+  watchFetchFonts
 ];

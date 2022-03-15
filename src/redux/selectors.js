@@ -256,7 +256,7 @@ export const getCloudSettingsForFlight = createSelector(
     };
   }
 );
-
+export const getFonts = state => state.clouds.fonts || []
 export const getMasksById = (state) => state.clouds.masksById;
 export const areMasksLoading = (state) => state.clouds.masksLoading;
 export const areCloudsLoading = (state) => state.clouds.cloudsLoading;
@@ -372,6 +372,7 @@ export const getCloudsForUser = createSelector(
     return cloudsList.filter((cloud) => cloud.userId === userId);
   }
 );
+
 
 //Clouds
 /********************************************************************* */

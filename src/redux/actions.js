@@ -22,6 +22,7 @@ import {
   ANSWER_QUESTION,
   SET_SONG_LYRICS,
   PRUNE_BAD_CLOUDS,
+  FETCH_GOOGLE_FONTS
 } from "./actionTypes";
 import normalizeLyrics from "./utils/normalizeLyrics";
 
@@ -93,6 +94,10 @@ export const fetchClouds = () => {
 
 export const fetchMasks = () => {
   return { type: FETCH_MASKS.start };
+};
+
+export const fetchGoogleFonts = () => {
+  return { type: FETCH_GOOGLE_FONTS.start };
 };
 
 export const addCustomMask = (newMask) => {

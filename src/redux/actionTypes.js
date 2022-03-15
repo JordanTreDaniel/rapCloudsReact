@@ -21,6 +21,7 @@ export const SET_HYDRATION_TRUE = "SET_HYDRATION_TRUE";
 export const FETCH_ARTIST = actionNamesForProcess("FETCH_ARTIST");
 export const FETCH_ARTIST_SONGS = actionNamesForProcess("FETCH_ARTIST_SONGS");
 export const FETCH_SONG_LYRICS = actionNamesForProcess("FETCH_SONG_LYRICS");
+export const FETCH_GOOGLE_FONTS = actionNamesForProcess("FETCH_GOOGLE_FONTS");
 export const FETCH_MASKS = actionNamesForProcess("FETCH_MASKS");
 export const ADD_CUSTOM_MASK = actionNamesForProcess("ADD_CUSTOM_MASK");
 export const DELETE_MASK = actionNamesForProcess("DELETE_MASK");

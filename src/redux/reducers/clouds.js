@@ -12,6 +12,7 @@ import {
   FETCH_CLOUDS,
   ADD_CLOUD,
   ADD_CLOUDS,
+  FETCH_GOOGLE_FONTS,
 } from "../actionTypes";
 
 export const initialState = {
@@ -19,6 +20,7 @@ export const initialState = {
   cloudsLoading: false,
   masksById: {},
   masksLoading: false,
+  fonts: [],
   settings: {
     backgroundColor: "#000000",
     collocations: true,
@@ -66,6 +68,11 @@ const setLoading = (state, action) => {
   const loadingProperty = loadingMap[type];
   return { ...state, [loadingProperty]: value };
 };
+
+const addGoogleFonts = (state, action) => {
+  const {fonts} = action;
+  return {...state, fonts}
+}
 
 const addCloud = (state, action) => {
   const { finishedCloud } = action;
@@ -230,6 +237,7 @@ handlers[DELETE_MASK.success] = deleteMask;
 handlers[RESET_CLOUD_DEFAULTS] = resetCloudDefaults;
 handlers[GEN_SONG_CLOUD.success] = addCloud;
 handlers[GEN_ARTIST_CLOUD.success] = addCloud;
+handlers[FETCH_GOOGLE_FONTS.success] = addGoogleFonts;
 handlers[ADD_CLOUD] = addCloud;
 handlers[DELETE_CLOUDS.success] = removeClouds;
 handlers[FETCH_CLOUDS.success] = replaceClouds;
