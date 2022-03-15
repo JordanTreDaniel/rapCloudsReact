@@ -13,6 +13,8 @@ import {
   ADD_CLOUD,
   ADD_CLOUDS,
   FETCH_GOOGLE_FONTS,
+  SET_FONT_SEARCH_TERM,
+  SET_CURRENT_FONT_NAME
 } from "../actionTypes";
 
 export const initialState = {
@@ -21,6 +23,8 @@ export const initialState = {
   masksById: {},
   masksLoading: false,
   fonts: [],
+  fontSearchTerm: "",
+  currentFontName: null,
   settings: {
     backgroundColor: "#000000",
     collocations: true,
@@ -35,7 +39,7 @@ export const initialState = {
     height: "200",
     includeNumbers: true,
     maskAsBackground: false,
-    maskDesired: true,
+    maskDesired: false,
     maskId: null,
     private: true,
     repeat: true,
@@ -72,6 +76,16 @@ const setLoading = (state, action) => {
 const addGoogleFonts = (state, action) => {
   const {fonts} = action;
   return {...state, fonts}
+}
+
+const setFontSearchTerm = (state, action) => {
+  const {searchTerm} = action;
+  return {...state, fontSearchTerm: searchTerm}
+}
+
+const setCurrentFontName = (state, action) => {
+  const {fontName} = action;
+  return {...state, currentFontName: fontName}
 }
 
 const addCloud = (state, action) => {
@@ -242,6 +256,9 @@ handlers[ADD_CLOUD] = addCloud;
 handlers[DELETE_CLOUDS.success] = removeClouds;
 handlers[FETCH_CLOUDS.success] = replaceClouds;
 handlers[ADD_CLOUDS] = addClouds;
+handlers[SET_FONT_SEARCH_TERM] = setFontSearchTerm;
+handlers[SET_CURRENT_FONT_NAME] = setCurrentFontName;
+
 
 export default (state = initialState, action) => {
   const handle = handlers[action.type];

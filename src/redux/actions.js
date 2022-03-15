@@ -22,7 +22,9 @@ import {
   ANSWER_QUESTION,
   SET_SONG_LYRICS,
   PRUNE_BAD_CLOUDS,
-  FETCH_GOOGLE_FONTS
+  FETCH_GOOGLE_FONTS,
+  SET_FONT_SEARCH_TERM,
+  SET_CURRENT_FONT_NAME
 } from "./actionTypes";
 import normalizeLyrics from "./utils/normalizeLyrics";
 
@@ -48,6 +50,14 @@ export const fetchSongLyrics = (songId) => {
 
 export const setSongSearchTerm = (searchTerm = "") => {
   return { type: SET_SONG_SEARCH_TERM, searchTerm };
+};
+
+export const setFontSearchTerm = (searchTerm = "") => {
+  return { type: SET_FONT_SEARCH_TERM, searchTerm };
+};
+
+export const setCurrentFontName = (fontName) => {
+  return { type: SET_CURRENT_FONT_NAME, fontName };
 };
 
 export const fetchSongDetails = (songId) => {

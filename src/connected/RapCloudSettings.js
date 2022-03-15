@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from "react";
 import {
+  Box,
   Button,
+  Chip,
   Dialog,
   DialogActions,
-  DialogTitle,
-  IconButton,
   DialogContent,
-  Grid,
-  Tooltip,
-  TextField,
-  Typography,
-  Chip,
-  Switch,
+  DialogTitle,
   FormControlLabel,
   FormGroup,
-  Box,
+  Grid,
+  IconButton,
+  Input,
+  Switch,
+  TextField,
+  Tooltip,
+  Typography,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import * as selectors from "../redux/selectors";
@@ -23,7 +24,9 @@ import {
   fetchMasks,
   deleteMask,
   resetCloudDefaults,
-  fetchGoogleFonts
+  fetchGoogleFonts,
+  setFontSearchTerm,
+  setCurrentFontName
 } from "../redux/actions";
 import ColorPicker from "../components/ColorPicker";
 import LoadingBar from "../components/LoadingBar";
@@ -32,10 +35,12 @@ import { connect } from "react-redux";
 import uniq from "lodash/uniq";
 import { classNames } from "../utils";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
+import SearchIcon from "@mui/icons-material/Search";
 import Refresh from "@mui/icons-material/Refresh";
 import AddIcon from "@mui/icons-material/Add";
 import XIcon from "@mui/icons-material/Cancel";
-  
+import DebouncedInput from "../components/DebouncedInput";
+const DebouncedTextField = DebouncedInput(Input, { timeout: 639 });
 const useStyles = makeStyles((theme) => {
   return {
     dialog: {
@@ -173,7 +178,11 @@ const RapCloudSettings = (props) => {
     resetCloudDefaults,
     currentMask,
     fonts,
-    fetchGoogleFonts
+    fetchGoogleFonts,
+    setFontSearchTerm,
+    fontSearchTerm,
+    currentFontName,
+    setCurrentFontName
   } = props;
   useEffect(() => {
     if (!fonts.length) fetchGoogleFonts()
@@ -196,6 +205,65 @@ const RapCloudSettings = (props) => {
         Cloud Customization Settings
       </DialogTitle>
       <DialogContent>
+        <Grid
+          id="fontsSection"
+          container
+          className={classNames(classes.formSection)}
+          direction="column"
+        >
+          <Grid
+            id="fontsSectionHead"
+            item
+            container
+            direction="row"
+            justifyContent="space-between"
+            wrap="nowrap"
+            alignItems="center"
+          >
+            <HelpTooltip
+              titles={[
+                "This option determines what font the words in your RapCloud will appear in.",
+              ]}
+            >
+              <Typography variant="h6">Fonts</Typography>
+            </HelpTooltip>
+          </Grid>
+          <Grid
+            id="fontsSectionBody"
+            item
+            container
+            direction="column"
+            wrap="nowrap"
+          >
+            <DebouncedTextField
+              type="text"
+              onChange={(e) => {
+                const { value: newSearchTerm } = e.target;
+                setFontSearchTerm(newSearchTerm);
+              }}
+              value={fontSearchTerm}
+              disableUnderline
+              fullWidth
+              placeholder="Search..."
+              inputProps={{ className: classes.mainSearchInput }}
+              multiline={false}
+              autoFocus
+              endAdornment={
+                <IconButton
+                  className={classes.searchIcon}
+                  aria-label="search-icon"
+                  component="span"
+                >
+                  <SearchIcon />
+                </IconButton>
+              }
+            />
+            {/* list of fonts filtered by input */}
+            <Grid container>
+              {fonts.map((font, idx) => (<Grid item component={Chip} key={idx} label={font} onClick={() => setCurrentFontName(font)} variant={font === currentFontName ? "filled" : "outlined"} />))}
+            </Grid>
+          </Grid>
+        </Grid>
         <Grid
           id="colorsSection"
           container
@@ -1199,7 +1267,10 @@ const mapState = (state) => ({
   currentMask: selectors.getCurrentMask(state),
   masksLoading: selectors.areMasksLoading(state),
   mongoUserId: selectors.getUserMongoId(state),
-  fonts: selectors.getFonts(state)
+  fonts: selectors.getSearchedFontList(state),
+  fontSearchTerm: selectors.getFontSearchTerm(state),
+  currentFontName: selectors.getFontSearchTerm(state),
+
 });
 
 export default connect(mapState, {
@@ -1207,5 +1278,7 @@ export default connect(mapState, {
   fetchMasks,
   deleteMask,
   resetCloudDefaults,
-  fetchGoogleFonts
+  fetchGoogleFonts,
+  setFontSearchTerm,
+  setCurrentFontName
 })(RapCloudSettings);
