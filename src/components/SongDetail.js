@@ -341,6 +341,9 @@ const SongDetail = (props) => {
             <LoadingBar loading={areSongLyricsLoading} />
             {lyricsExpanded && (
               <Fragment>
+                <Typography variant="body1" classes={{ root: classes.lyrics }}>
+                  {lyrics}
+                </Typography>
                 {userSettingLyrics ? (
                   <Fragment>
                     <DebouncedTextField
@@ -385,9 +388,6 @@ const SongDetail = (props) => {
                 >
                   Manually Set Lyrics
                 </Button>
-                <Typography variant="body1" classes={{ root: classes.lyrics }}>
-                  {lyrics}
-                </Typography>
               </Fragment>
             )}
           </Paper>

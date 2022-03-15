@@ -137,30 +137,34 @@ const apiSetSongLyrics = async (songId, newLyrics, accessToken) => {
 };
 
 const apiFetchSongLyrics = async (songId, accessToken) => {
-  if (!songId) {
-    console.error(`Could not fetch song lyrics without song id.`, {
-      songId,
+  try {
+    if (!songId) {
+      console.error(`Could not fetch song lyrics without song id.`, {
+        songId,
+      });
+      return { error: `Could not fetch song lyrics without song path/song id.` };
+    }
+    const res = await axios({
+      method: "post",
+      url: `${REACT_APP_SERVER_ROOT}/getSongLyrics`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: accessToken,
+      },
+      data: {
+        songId,
+      },
     });
-    return { error: `Could not fetch song lyrics without song path/song id.` };
+    const { status, data } = res;
+    const { lyrics } = data;
+    if (status === 200) {
+      return { lyrics };
+    }
+  } catch (err) {
+    return { error: err };
   }
-  const res = await axios({
-    method: "post",
-    url: `${REACT_APP_SERVER_ROOT}/getSongLyrics`,
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: accessToken,
-    },
-    data: {
-      songId,
-    },
-  });
-  const { status, statusText, data } = res;
-  const { lyrics } = data;
-  if (status === 200) {
-    return { lyrics };
-  }
+  
 
-  return { error: { status, statusText } };
 };
 
 export function* fetchSongDetails(action) {
@@ -168,7 +172,7 @@ export function* fetchSongDetails(action) {
   const {
     songId,
     fetchLyrics = true,
-    generateCloud = true,
+    generateCloud = false,
     fetchClouds = true,
   } = action;
   let officialCloud;
@@ -214,7 +218,7 @@ export function* fetchSongDetails(action) {
 }
 
 export function* fetchSongLyrics(action) {
-  const { songId, generateCloud = true, forceFetch = false } = action;
+  const { songId, generateCloud = false, forceFetch = false } = action;
   const song = yield select(getSongFromId, songId);
   const accessToken = yield select(getAccessToken);
 
@@ -240,7 +244,7 @@ export function* fetchSongLyrics(action) {
     );
     lyrics = newLyrics;
     if (error || !newLyrics) {
-      yield put({ type: FETCH_SONG_LYRICS.failure, songId });
+      yield put({ type: FETCH_SONG_LYRICS.failure, songId, error });
       console.error("Something went wrong while fetching lyrics", {
         error,
         newLyrics,
