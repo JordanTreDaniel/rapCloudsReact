@@ -306,7 +306,7 @@ const RapCloudSettings = (props) => {
 												component={Chip}
 												key={idx}
 												label={font}
-												color={isChosen ? "primary" : "secondary"}
+												color={"secondary"}
 												disabled={isChosen}
 												clickable={!isChosen}
 												onClick={() => setCurrentFontName(font)}
