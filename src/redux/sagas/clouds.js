@@ -14,7 +14,6 @@ import {
 	getMaskFromId,
 	getSongFromId,
 	getAccessToken,
-	getCloudsAsList,
 } from "../selectors";
 import {
 	FETCH_MASKS,
@@ -25,7 +24,6 @@ import {
 	FETCH_SONG_DETAILS,
 	ADD_CLOUDS,
 	ADD_CLOUD,
-	PRUNE_BAD_CLOUDS,
 	FETCH_GOOGLE_FONTS,
 } from "../actionTypes";
 import { getConnectedSocket } from "../../utils";
@@ -363,40 +361,6 @@ export function* fetchClouds(action) {
 	}
 }
 
-export function* pruneBadClouds() {
-	try {
-		const cloudsList = yield select(getCloudsAsList);
-		const cloudsToDelete = [];
-		cloudsList.forEach((cloud) => {
-			const { info, createdAt: _createdAt, id } = cloud;
-			if (!_createdAt) {
-				cloudsToDelete.push(id);
-				return;
-			}
-			const createdAt = new Date(_createdAt);
-			if (info) return;
-			const thirtyMinAfterCreation = new Date(
-				createdAt.getTime() + 30 * 60 * 1000
-			);
-			const difference = createdAt.getTime() - thirtyMinAfterCreation.getTime();
-			const isOlderThanThirtyMin = difference < 0;
-			console.log({
-				createdAt: createdAt.toUTCString(),
-				thirtyMinAfterCreation: thirtyMinAfterCreation.toUTCString(),
-				isOlderThanThirtyMin,
-			});
-			console.log({ cloudsToDelete });
-			if (isOlderThanThirtyMin && !info) {
-				//delete cloudinary resource?
-				cloudsToDelete.push(id);
-			}
-		});
-		if (cloudsToDelete.length) {
-			yield put({ type: DELETE_CLOUDS.start, cloudIds: cloudsToDelete });
-		}
-	} catch (err) {}
-}
-
 const apiFetchGoogleFonts = async () => {
 	try {
 		const res = await axios({
@@ -466,12 +430,34 @@ export function* fetchSongClouds(action) {
 			console.error("Something went wrong in fetchSongClouds", cloudsError);
 			return { error: cloudsError };
 		} else {
+			const cloudsThatWontMakeIt = {};
+			for (let cloud of userMadeClouds) {
+				const hasInfo = !!cloud.info;
+				if (!hasInfo) {
+					//TO-DO: Roll the deletions together into one call
+					console.log("Got cloud with no info. Deleting", cloud);
+					cloudsThatWontMakeIt[cloud.id] = true;
+					yield put({ type: DELETE_CLOUDS.start, cloudId: cloud.id, cloud });
+				}
+			}
 			//TO-DO: Handle possible cloudsError
 			if (userMadeClouds && userMadeClouds.length) {
-				yield put({ type: ADD_CLOUDS, clouds: userMadeClouds });
+				yield put({
+					type: ADD_CLOUDS,
+					clouds: userMadeClouds.filter(
+						(cloud) => !cloudsThatWontMakeIt[cloud.id]
+					),
+				});
 			}
 			if (officialCloud) {
-				yield put({ type: ADD_CLOUD, finishedCloud: officialCloud });
+				const hasInfo = !!officialCloud.info;
+				yield hasInfo
+					? put({ type: ADD_CLOUD, finishedCloud: officialCloud })
+					: put({
+							type: DELETE_CLOUDS.start,
+							cloudId: officialCloud.id,
+							cloud: officialCloud,
+					  });
 			}
 			return { officialCloud, userMadeClouds };
 		}
@@ -489,10 +475,6 @@ function* watchdeleteClouds() {
 	yield takeEvery(DELETE_CLOUDS.start, deleteClouds);
 }
 
-function* watchPruneClouds() {
-	yield takeEvery(PRUNE_BAD_CLOUDS.start, pruneBadClouds);
-}
-
 function* watchFetchFonts() {
 	yield takeEvery(FETCH_GOOGLE_FONTS.start, fetchGoogleFonts);
 }
@@ -503,6 +485,5 @@ export default [
 	watchDeleteMask,
 	watchFetchClouds,
 	watchdeleteClouds,
-	watchPruneClouds,
 	watchFetchFonts,
 ];

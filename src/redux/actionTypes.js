@@ -1,10 +1,10 @@
 const actionNamesForProcess = (baseName) => {
-  return {
-    failure: `${baseName}_FAILURE`,
-    success: `${baseName}_SUCCESS`,
-    start: `${baseName}_START`,
-    cancellation: `${baseName}_CANCELLATION`,
-  };
+	return {
+		failure: `${baseName}_FAILURE`,
+		success: `${baseName}_SUCCESS`,
+		start: `${baseName}_START`,
+		cancellation: `${baseName}_CANCELLATION`,
+	};
 };
 export const SET_USER = "SET_USER";
 export const ADD_SONGS = "ADD_SONGS";
@@ -30,7 +30,6 @@ export const FETCH_CLOUDS = actionNamesForProcess("FETCH_CLOUDS");
 export const DELETE_CLOUDS = actionNamesForProcess("DELETE_CLOUDS");
 export const FETCH_ARTIST_GAME = actionNamesForProcess("FETCH_ARTIST_GAME");
 export const SET_SONG_LYRICS = actionNamesForProcess("SET_SONG_LYRICS");
-export const PRUNE_BAD_CLOUDS = actionNamesForProcess("PRUNE_BAD_CLOUDS");
 export const SIGN_OUT = "SIGN_OUT";
 export const SET_FONT_SEARCH_TERM = "SET_FONT_SEARCH_TERM";
 export const SET_CURRENT_FONT_NAME = "SET_CURRENT_FONT_NAME";
