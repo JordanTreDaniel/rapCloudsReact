@@ -253,7 +253,7 @@ export const getSearchedFontList = createSelector(
 			  )
 			: fonts;
 		const listOfTen = filteredFonts.slice(0, 9);
-		return listOfTen.map((font) => font.family);
+		return listOfTen;
 	}
 );
 
@@ -284,7 +284,15 @@ export const getCloudSettingsForFlight = createSelector(
 			downSample: String(settings.downSample).length
 				? settings.downSample
 				: initialCloudSettings.downSample,
-			font: (settings.fontDesired || false) && currentFont ? currentFont : null,
+			font:
+				(settings.fontDesired || false) && currentFont
+					? {
+							name: currentFont.family,
+							addy: currentFont.files[
+								currentFont.variants[settings.currentFontVariantIdx || 0]
+							],
+					  }
+					: null,
 			preferHorizontal: parseFloat(settings.preferHorizontal / 100.0),
 		};
 	}

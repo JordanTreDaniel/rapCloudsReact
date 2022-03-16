@@ -7,16 +7,20 @@ import {
 	DialogActions,
 	DialogContent,
 	DialogTitle,
+	FormControl,
 	FormControlLabel,
 	FormGroup,
+	// FormLabel,
 	Grid,
 	IconButton,
 	Input,
+	Radio,
+	RadioGroup,
+	Slider,
 	Switch,
 	TextField,
 	Tooltip,
 	Typography,
-	Slider,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import * as selectors from "../redux/selectors";
@@ -191,9 +195,11 @@ const RapCloudSettings = (props) => {
 		fetchGoogleFonts,
 		setFontSearchTerm,
 		fontSearchTerm,
-		currentFontName,
+		currentFont,
 		setCurrentFontName,
 	} = props;
+	const { family: currentFontName, variants: currentFontVariants } =
+		currentFont || {};
 	useEffect(() => {
 		if (!fonts.length) fetchGoogleFonts();
 	}, []);
@@ -226,7 +232,7 @@ const RapCloudSettings = (props) => {
 						item
 						container
 						direction="row"
-						justifyContent="space-between"
+						justifyContent="flex-start"
 						wrap="nowrap"
 						alignItems="center"
 					>
@@ -242,26 +248,14 @@ const RapCloudSettings = (props) => {
 								"aria-label": "Toggle use of custom font in RapCloud",
 							}}
 						/>
-						<Grid
-							component={HelpTooltip}
-							item
-							xs={6}
+						<HelpTooltip
 							titles={[
 								"This option determines what font the words in your RapCloud will appear in.",
 								`The font is everything when it comes to making your RapCloud look the best.`,
 							]}
 						>
 							<Typography variant="h6">Font</Typography>
-						</Grid>
-						<Grid item xs={6}>
-							{cloudSettings.fontDesired &&
-								currentFontName &&
-								currentFontName.length && (
-									<Typography variant="h4" color="secondary">
-										{currentFontName}
-									</Typography>
-								)}
-						</Grid>
+						</HelpTooltip>
 					</Grid>
 					<Grid
 						id="fontsSectionBody"
@@ -270,66 +264,114 @@ const RapCloudSettings = (props) => {
 						direction="column"
 						wrap="nowrap"
 					>
-						{cloudSettings.fontDesired && (
-							<Fragment>
-								<Grid item xs={12}>
-									<DebouncedTextField
-										type="text"
-										onChange={(e) => {
-											const { value: newSearchTerm } = e.target;
-											setFontSearchTerm(newSearchTerm);
-										}}
-										value={fontSearchTerm}
-										disableUnderline
-										fullWidth
-										placeholder="Search..."
-										inputProps={{ className: classes.mainSearchInput }}
-										multiline={false}
-										autoFocus
-										endAdornment={
+						{cloudSettings.fontDesired &&
+							(currentFontName && currentFontName.length ? (
+								<Fragment>
+									<Grid item xs={6}>
+										<Typography variant="h5" color="secondary">
+											{currentFontName}
 											<IconButton
-												className={classes.searchIcon}
-												aria-label="search-icon"
-												component="span"
+												color="warning"
+												onClick={() => {
+													setCurrentFontName(null);
+													updateCloudSettings("currentFontVariantIdx", 0);
+												}}
 											>
-												<SearchIcon />
+												<XIcon></XIcon>
 											</IconButton>
-										}
-									/>
-								</Grid>
-								<Grid container id="fontListContainer">
-									{fonts.map((font, idx) => {
-										const isChosen = font === currentFontName;
-										return (
-											<Grid
-												item
-												component={Chip}
-												key={idx}
-												label={font}
-												color={"secondary"}
-												disabled={isChosen}
-												clickable={!isChosen}
-												onClick={() => setCurrentFontName(font)}
-												// className={isChosen ? classes.chosenFontChip : null}
-												variant={"filled"}
-											/>
-										);
-									})}
-								</Grid>
-								<small style={{ marginTop: "1.2em" }}>
-									Go to{" "}
-									<a
-										href="https://fonts.google.com"
-										aria-label="Google Fonts Link"
-										target="_blank"
-										rel="noopener noreferrer"
-									>
-										fonts.google.com
-									</a>{" "}
-									in order to see all available fonts.
-								</small>
-							</Fragment>
-						)}
+										</Typography>
+									</Grid>
+									<Grid id="fontVariantsSection" item xs={12}>
+										<FormControl>
+											{/* <FormLabel
+												id="font-variants-radio-btn-group"
+												color="primary"
+											>
+												Font Variant
+											</FormLabel> */}
+											<RadioGroup
+												aria-labelledby="font-variants-radio-btn-group"
+												value={cloudSettings.currentFontVariantIdx || 0}
+												name="currentFontVariantIdx"
+												row={true}
+												onChange={(e) =>
+													updateCloudSettings(e.target.name, e.target.value)
+												}
+											>
+												{currentFontVariants.map((variant, idx) => (
+													<FormControlLabel
+														key={idx}
+														value={idx}
+														control={<Radio />}
+														label={variant}
+														color="secondary"
+													/>
+												))}
+											</RadioGroup>
+										</FormControl>
+									</Grid>
+								</Fragment>
+							) : (
+								<Fragment>
+									<Grid item xs={12}>
+										<DebouncedTextField
+											type="text"
+											onChange={(e) => {
+												const { value: newSearchTerm } = e.target;
+												setFontSearchTerm(newSearchTerm);
+											}}
+											value={fontSearchTerm}
+											disableUnderline
+											fullWidth
+											placeholder="Search..."
+											inputProps={{ className: classes.mainSearchInput }}
+											multiline={false}
+											autoFocus
+											endAdornment={
+												<IconButton
+													className={classes.searchIcon}
+													aria-label="search-icon"
+													component="span"
+												>
+													<SearchIcon />
+												</IconButton>
+											}
+										/>
+									</Grid>
+									<Grid container id="fontListContainer">
+										{fonts.map((font, idx) => {
+											const { family: fontName } = font;
+											const isChosen = font === currentFontName;
+											return (
+												<Grid
+													item
+													component={Chip}
+													key={idx}
+													label={fontName}
+													color={"secondary"}
+													disabled={isChosen}
+													clickable={!isChosen}
+													onClick={() => setCurrentFontName(fontName)}
+													// className={isChosen ? classes.chosenFontChip : null}
+													variant={"filled"}
+												/>
+											);
+										})}
+									</Grid>
+									<small style={{ marginTop: "1.2em" }}>
+										Go to{" "}
+										<a
+											href="https://fonts.google.com"
+											aria-label="Google Fonts Link"
+											target="_blank"
+											rel="noopener noreferrer"
+										>
+											fonts.google.com
+										</a>{" "}
+										in order to see all available fonts.
+									</small>
+								</Fragment>
+							))}
 					</Grid>
 				</Grid>
 				<Grid
@@ -961,54 +1003,6 @@ const RapCloudSettings = (props) => {
 												name="whiteThreshold"
 											/>
 										</Grid>
-										<Grid
-											id="downsampleSettingsContainer"
-											item
-											container
-											direction="column"
-											xs={8}
-											className={classes.sliderUIGroup}
-											style={{ marginTop: "1.2em" }}
-										>
-											<Grid item container justifyContent="space-between">
-												<Grid
-													item
-													xs={9}
-													component={HelpTooltip}
-													titles={[
-														`Move this to the right (increase) to get a fast RapCloud. Move to left to get a detailed RapCloud.`,
-														`Downsampling is the process of making your mask image smaller by removing some of the definition/detail.`,
-														`Higher downsampling (like 3) will result in a less detailed image, but your Rap Cloud will be generated much more quickly`,
-														`Lower downsampling, (like 0 or 1) will result in a highly detailed Rap Cloud, but will take much longer.`,
-													]}
-												>
-													<Typography variant="overline">
-														Down Sample
-													</Typography>
-												</Grid>
-											</Grid>
-											<Slider
-												id="downsampleSlider"
-												aria-label="Downsample Slider"
-												max={3}
-												min={1}
-												step={1}
-												size="small"
-												value={parseInt(cloudSettings.downSample)}
-												valueLabelDisplay="auto"
-												marks={[
-													{ value: 1, label: 1 },
-													{ value: 2, label: 2 },
-													{ value: 3, label: 3 },
-												]}
-												onChange={(e) => {
-													updateCloudSettings(e.target.name, e.target.value);
-												}}
-												color="secondary"
-												name="downSample"
-											/>
-										</Grid>
-
 										<FormGroup item="true">
 											<FormControlLabel
 												control={
@@ -1363,6 +1357,51 @@ const RapCloudSettings = (props) => {
 							}
 						/>
 						<Grid
+							id="downsampleSettingsContainer"
+							item
+							container
+							direction="column"
+							xs={8}
+							className={classes.sliderUIGroup}
+							style={{ marginTop: "1.2em" }}
+						>
+							<Grid item container justifyContent="space-between">
+								<Grid
+									item
+									xs={9}
+									component={HelpTooltip}
+									titles={[
+										`Move this to the right (increase) to get a fast RapCloud. Move to left to get a detailed RapCloud.`,
+										`Downsampling is the process of making your mask image smaller by removing some of the definition/detail.`,
+										`Higher downsampling (like 3) will result in a less detailed image, but your Rap Cloud will be generated much more quickly`,
+										`Lower downsampling, (like 0 or 1) will result in a highly detailed Rap Cloud, but will take much longer.`,
+									]}
+								>
+									<Typography variant="overline">Down Sample</Typography>
+								</Grid>
+							</Grid>
+							<Slider
+								id="downsampleSlider"
+								aria-label="Downsample Slider"
+								max={3}
+								min={1}
+								step={1}
+								size="small"
+								value={parseInt(cloudSettings.downSample)}
+								valueLabelDisplay="auto"
+								marks={[
+									{ value: 1, label: 1 },
+									{ value: 2, label: 2 },
+									{ value: 3, label: 3 },
+								]}
+								onChange={(e) => {
+									updateCloudSettings(e.target.name, e.target.value);
+								}}
+								color="secondary"
+								name="downSample"
+							/>
+						</Grid>
+						<Grid
 							id="preferHorizontalSettingsContainer"
 							item
 							container
@@ -1451,7 +1490,7 @@ const mapState = (state) => ({
 	mongoUserId: selectors.getUserMongoId(state),
 	fonts: selectors.getSearchedFontList(state),
 	fontSearchTerm: selectors.getFontSearchTerm(state),
-	currentFontName: selectors.getCurrentFontName(state),
+	currentFont: selectors.getCurrentFont(state),
 });
 
 export default connect(mapState, {
