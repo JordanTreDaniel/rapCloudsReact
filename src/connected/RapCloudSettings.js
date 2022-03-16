@@ -7,11 +7,16 @@ import {
 	DialogActions,
 	DialogContent,
 	DialogTitle,
+	FormControl,
 	FormControlLabel,
 	FormGroup,
+	// FormLabel,
 	Grid,
 	IconButton,
 	Input,
+	Radio,
+	RadioGroup,
+	Slider,
 	Switch,
 	TextField,
 	Tooltip,
@@ -163,6 +168,11 @@ const useStyles = makeStyles((theme) => {
 			backgroundColor: theme.palette.primary.light,
 			color: theme.palette.primary.contrastText,
 		},
+		sliderUIGroup: {
+			border: `1.11px solid ${theme.palette.primary.light}`,
+			padding: "1.2em",
+			borderRadius: "6px",
+		},
 	};
 });
 
@@ -185,9 +195,11 @@ const RapCloudSettings = (props) => {
 		fetchGoogleFonts,
 		setFontSearchTerm,
 		fontSearchTerm,
-		currentFontName,
+		currentFont,
 		setCurrentFontName,
 	} = props;
+	const { family: currentFontName, variants: currentFontVariants } =
+		currentFont || {};
 	useEffect(() => {
 		if (!fonts.length) fetchGoogleFonts();
 	}, []);
@@ -220,7 +232,7 @@ const RapCloudSettings = (props) => {
 						item
 						container
 						direction="row"
-						justifyContent="space-between"
+						justifyContent="flex-start"
 						wrap="nowrap"
 						alignItems="center"
 					>
@@ -242,7 +254,7 @@ const RapCloudSettings = (props) => {
 								`The font is everything when it comes to making your RapCloud look the best.`,
 							]}
 						>
-							<Typography variant="h6">Fonts</Typography>
+							<Typography variant="h6">Font</Typography>
 						</HelpTooltip>
 					</Grid>
 					<Grid
@@ -252,66 +264,114 @@ const RapCloudSettings = (props) => {
 						direction="column"
 						wrap="nowrap"
 					>
-						{cloudSettings.fontDesired && (
-							<Fragment>
-								<DebouncedTextField
-									type="text"
-									onChange={(e) => {
-										const { value: newSearchTerm } = e.target;
-										setFontSearchTerm(newSearchTerm);
-									}}
-									value={fontSearchTerm}
-									disableUnderline
-									fullWidth
-									placeholder="Search..."
-									inputProps={{ className: classes.mainSearchInput }}
-									multiline={false}
-									autoFocus
-									endAdornment={
-										<IconButton
-											className={classes.searchIcon}
-											aria-label="search-icon"
-											component="span"
+						{cloudSettings.fontDesired &&
+							(currentFontName && currentFontName.length ? (
+								<Fragment>
+									<Grid item xs={6}>
+										<Typography variant="h5" color="secondary">
+											{currentFontName}
+											<IconButton
+												color="warning"
+												onClick={() => {
+													setCurrentFontName(null);
+													updateCloudSettings("currentFontVariantIdx", 0);
+												}}
+											>
+												<XIcon></XIcon>
+											</IconButton>
+										</Typography>
+									</Grid>
+									<Grid id="fontVariantsSection" item xs={12}>
+										<FormControl>
+											{/* <FormLabel
+												id="font-variants-radio-btn-group"
+												color="primary"
+											>
+												Font Variant
+											</FormLabel> */}
+											<RadioGroup
+												aria-labelledby="font-variants-radio-btn-group"
+												value={cloudSettings.currentFontVariantIdx || 0}
+												name="currentFontVariantIdx"
+												row={true}
+												onChange={(e) =>
+													updateCloudSettings(e.target.name, e.target.value)
+												}
+											>
+												{currentFontVariants.map((variant, idx) => (
+													<FormControlLabel
+														key={idx}
+														value={idx}
+														control={<Radio />}
+														label={variant}
+														color="secondary"
+													/>
+												))}
+											</RadioGroup>
+										</FormControl>
+									</Grid>
+								</Fragment>
+							) : (
+								<Fragment>
+									<Grid item xs={12}>
+										<DebouncedTextField
+											type="text"
+											onChange={(e) => {
+												const { value: newSearchTerm } = e.target;
+												setFontSearchTerm(newSearchTerm);
+											}}
+											value={fontSearchTerm}
+											disableUnderline
+											fullWidth
+											placeholder="Search..."
+											inputProps={{ className: classes.mainSearchInput }}
+											multiline={false}
+											autoFocus
+											endAdornment={
+												<IconButton
+													className={classes.searchIcon}
+													aria-label="search-icon"
+													component="span"
+												>
+													<SearchIcon />
+												</IconButton>
+											}
+										/>
+									</Grid>
+									<Grid container id="fontListContainer">
+										{fonts.map((font, idx) => {
+											const { family: fontName } = font;
+											const isChosen = font === currentFontName;
+											return (
+												<Grid
+													item
+													component={Chip}
+													key={idx}
+													label={fontName}
+													color={"secondary"}
+													disabled={isChosen}
+													clickable={!isChosen}
+													onClick={() => setCurrentFontName(fontName)}
+													// className={isChosen ? classes.chosenFontChip : null}
+													variant={"filled"}
+												/>
+											);
+										})}
+									</Grid>
+									<small style={{ marginTop: "1.2em" }}>
+										Go to{" "}
+										<a
+											href="https://fonts.google.com"
+											aria-label="Google Fonts Link"
+											target="_blank"
+											rel="noopener noreferrer"
 										>
-											<SearchIcon />
-										</IconButton>
-									}
-								/>
-
-								{/* list of fonts filtered by input */}
-								<Grid container id="fontListContainer">
-									{fonts.map((font, idx) => {
-										const isChosen = font === currentFontName;
-										return (
-											<Grid
-												item
-												component={Chip}
-												key={idx}
-												label={font}
-												color={isChosen ? "primary" : "secondary"}
-												disabled={isChosen}
-												clickable={!isChosen}
-												onClick={() => setCurrentFontName(font)}
-												// className={isChosen ? classes.chosenFontChip : null}
-												variant={"filled"}
-											/>
-										);
-									})}
-								</Grid>
-							</Fragment>
-						)}
-						<small style={{ marginTop: "1.2em" }}>
-							Go to{" "}
-							<a
-								href="https://fonts.google.com"
-								aria-label="Google Fonts Link"
-								target="_blank"
-								rel="noopener noreferrer"
-							>
-								fonts.google.com
-							</a>{" "}
-							in order to see all available fonts.
-						</small>
+											fonts.google.com
+										</a>{" "}
+										in order to see all available fonts.
+									</small>
+								</Fragment>
+							))}
 					</Grid>
 				</Grid>
 				<Grid
@@ -693,6 +753,7 @@ const RapCloudSettings = (props) => {
 							alignItems="center"
 						>
 							<LoadingBar loading={masksLoading} />
+
 							<Grid
 								id="maskSelections"
 								item
@@ -849,7 +910,7 @@ const RapCloudSettings = (props) => {
 										id="chosenMaskQuickSettings"
 										item
 										container
-										direction="row"
+										direction="column"
 										wrap="wrap"
 										justifyContent="space-evenly"
 										alignItems="center"
@@ -881,31 +942,68 @@ const RapCloudSettings = (props) => {
 												/>
 											</Box>
 										</Tooltip>
-										<FormGroup item="true">
-											<TextField
-												className={classNames(classes.oneEmMarginRight)}
+										<Grid
+											id="whiteThresholdUIContainer"
+											item
+											container
+											direction="column"
+											xs={8} //TO-DO: Make this grid fit a little more tightly into the	space provided
+											className={classes.sliderUIGroup}
+										>
+											<Grid item container justifyContent="space-between">
+												<Grid
+													item
+													xs={9}
+													component={HelpTooltip}
+													titles={[
+														`Words won't be drawn onto any parts of an image brighter than the indicator to the right.`,
+														`If you could set it to 0, it would consider everything too bright to draw on. But minimum is 1`,
+													]}
+												>
+													<Typography variant="overline">
+														Brightness Sensitivity
+													</Typography>
+												</Grid>
+												<Grid
+													item
+													container
+													xs={3}
+													justifyContent="center"
+													alignItems={"center"}
+												>
+													<Grid
+														component={Chip}
+														item
+														label={cloudSettings.whiteThreshold}
+														style={{
+															width: "55.5%",
+															backgroundColor: `rgb(${cloudSettings.whiteThreshold}, ${cloudSettings.whiteThreshold}, ${cloudSettings.whiteThreshold})`,
+														}}
+													></Grid>
+												</Grid>
+											</Grid>
+											<Slider
+												id="whiteThreshold"
+												aria-label="Brightness Sensitivity Slider"
+												max={255}
+												min={1}
+												step={1}
+												size="small"
+												value={parseInt(cloudSettings.whiteThreshold)}
+												valueLabelDisplay="auto"
+												marks={[
+													{ value: 1, label: 1 },
+													{ value: 125, label: 125 },
+													{ value: 255, label: 255 },
+												]}
 												onChange={(e) => {
-													let val = e.target.value;
-													if (val > 3) val = 3;
-													updateCloudSettings("downSample", val);
+													updateCloudSettings(e.target.name, e.target.value);
 												}}
-												label={
-													<HelpTooltip
-														titles={[
-															`Downsampling is the process of making your mask image smaller by removing some of the definition/detail.`,
-															`Higher downsampling (like 3) will result in a less detailed image, but your Rap Cloud will be generated much more quickly`,
-															`Lower downsampling, (like 0 or 1) will result in a highly detailed Rap Cloud, but will take much longer.`,
-														]}
-													>
-														Down Sample
-													</HelpTooltip>
-												}
-												id="downSample"
-												value={cloudSettings.downSample}
-												type="number"
-												autoComplete={"off"}
+												color="secondary"
+												name="whiteThreshold"
 											/>
-
+										</Grid>
+										<FormGroup item="true">
 											<FormControlLabel
 												control={
 													<Switch
@@ -1140,8 +1238,15 @@ const RapCloudSettings = (props) => {
 							</Typography>
 						</HelpTooltip>
 					</Grid>
-					<Grid item container direction="column">
+					<Grid
+						id="genSettingsSectionBody"
+						item
+						container
+						direction="column"
+						style={{ marginTop: "1.2em" }}
+					>
 						<TextField
+							id="cloudWidth"
 							item="true"
 							className={classNames(classes.oneEmMarginRight)}
 							onChange={(e) => {
@@ -1156,12 +1261,12 @@ const RapCloudSettings = (props) => {
 									Cloud Width
 								</HelpTooltip>
 							}
-							id="cloudWidth"
 							value={cloudSettings.width}
 							type="number"
 							autoComplete={"off"}
 						/>
 						<TextField
+							id="cloudHeight"
 							item="true"
 							className={classNames(classes.oneEmMarginRight)}
 							onChange={(e) => {
@@ -1176,35 +1281,11 @@ const RapCloudSettings = (props) => {
 									Cloud Height
 								</HelpTooltip>
 							}
-							id="cloudHeight"
 							value={cloudSettings.height}
 							type="number"
 							autoComplete={"off"}
 						/>
-						<TextField
-							item="true"
-							className={classNames(classes.oneEmMarginRight)}
-							onChange={(e) => {
-								let val = e.target.value;
-								if (val > 255) val = 255;
-								updateCloudSettings("whiteThreshold", val);
-							}}
-							label={
-								<HelpTooltip
-									titles={[
-										`Words are not supposed to be drawn onto white portions of a mask image.`,
-										`Lowering this number will cause the computer to lower the standard of what is considered white. 255 is pure white. 0 is black.`,
-										`Lower this number if your mask's background is off-white, grey, etc., and words are being drawn onto your "background"`,
-									]}
-								>
-									White Detection Threshold
-								</HelpTooltip>
-							}
-							id="whiteThreshold"
-							value={cloudSettings.whiteThreshold}
-							type="number"
-							autoComplete={"off"}
-						/>
+
 						<FormControlLabel
 							control={
 								<Switch
@@ -1275,6 +1356,96 @@ const RapCloudSettings = (props) => {
 								</HelpTooltip>
 							}
 						/>
+						<Grid
+							id="downsampleSettingsContainer"
+							item
+							container
+							direction="column"
+							xs={8}
+							className={classes.sliderUIGroup}
+							style={{ marginTop: "1.2em" }}
+						>
+							<Grid item container justifyContent="space-between">
+								<Grid
+									item
+									xs={9}
+									component={HelpTooltip}
+									titles={[
+										`Move this to the right (increase) to get a fast RapCloud. Move to left to get a detailed RapCloud.`,
+										`Downsampling is the process of making your mask image smaller by removing some of the definition/detail.`,
+										`Higher downsampling (like 3) will result in a less detailed image, but your Rap Cloud will be generated much more quickly`,
+										`Lower downsampling, (like 0 or 1) will result in a highly detailed Rap Cloud, but will take much longer.`,
+									]}
+								>
+									<Typography variant="overline">Down Sample</Typography>
+								</Grid>
+							</Grid>
+							<Slider
+								id="downsampleSlider"
+								aria-label="Downsample Slider"
+								max={3}
+								min={1}
+								step={1}
+								size="small"
+								value={parseInt(cloudSettings.downSample)}
+								valueLabelDisplay="auto"
+								marks={[
+									{ value: 1, label: 1 },
+									{ value: 2, label: 2 },
+									{ value: 3, label: 3 },
+								]}
+								onChange={(e) => {
+									updateCloudSettings(e.target.name, e.target.value);
+								}}
+								color="secondary"
+								name="downSample"
+							/>
+						</Grid>
+						<Grid
+							id="preferHorizontalSettingsContainer"
+							item
+							container
+							direction="column"
+							xs={8}
+							className={classes.sliderUIGroup}
+							style={{ marginTop: "1.2em" }}
+						>
+							<Grid item container justifyContent="space-between">
+								<Grid
+									item
+									xs={9}
+									component={HelpTooltip}
+									titles={[
+										`Placing this number at 100% words will come out horizontal only.`,
+										`Placing it at 10% means only 10% of the words will come out horizontal.`,
+									]}
+								>
+									<Typography variant="overline">
+										Horizontal-to-Vertical Ratio
+									</Typography>
+								</Grid>
+							</Grid>
+							<Slider
+								id="preferHorizontalSlider"
+								aria-label="Prefer Horizontal Slider"
+								max={100}
+								min={10}
+								step={10}
+								size="small"
+								value={parseFloat(cloudSettings.preferHorizontal)}
+								valueLabelDisplay="auto"
+								marks={[
+									{ value: 10, label: "10%" },
+									{ value: 50, label: "50%" },
+									{ value: 100, label: "100%" },
+								]}
+								onChange={(e) => {
+									updateCloudSettings(e.target.name, e.target.value);
+								}}
+								color="secondary"
+								name="preferHorizontal"
+							/>
+						</Grid>
 					</Grid>
 				</Grid>
 			</DialogContent>
@@ -1319,7 +1490,7 @@ const mapState = (state) => ({
 	mongoUserId: selectors.getUserMongoId(state),
 	fonts: selectors.getSearchedFontList(state),
 	fontSearchTerm: selectors.getFontSearchTerm(state),
-	currentFontName: selectors.getFontSearchTerm(state),
+	currentFont: selectors.getCurrentFont(state),
 });
 
 export default connect(mapState, {
