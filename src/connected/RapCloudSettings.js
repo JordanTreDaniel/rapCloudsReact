@@ -1349,6 +1349,51 @@ const RapCloudSettings = (props) => {
 								</HelpTooltip>
 							}
 						/>
+						<Grid
+							id="preferHorizontalSettingsContainer"
+							item
+							container
+							direction="column"
+							xs={8}
+							className={classes.sliderUIGroup}
+							style={{ marginTop: "1.2em" }}
+						>
+							<Grid item container justifyContent="space-between">
+								<Grid
+									item
+									xs={9}
+									component={HelpTooltip}
+									titles={[
+										`Placing this number at 100% words will come out horizontal only.`,
+										`Placing it at 10% means only 10% of the words will come out horizontal.`,
+									]}
+								>
+									<Typography variant="overline">
+										Horizontal-to-Vertical Ratio
+									</Typography>
+								</Grid>
+							</Grid>
+							<Slider
+								id="preferHorizontalSlider"
+								aria-label="Prefer Horizontal Slider"
+								max={100}
+								min={10}
+								step={10}
+								size="small"
+								value={parseFloat(cloudSettings.preferHorizontal)}
+								valueLabelDisplay="auto"
+								marks={[
+									{ value: 10, label: "10%" },
+									{ value: 50, label: "50%" },
+									{ value: 100, label: "100%" },
+								]}
+								onChange={(e) => {
+									updateCloudSettings(e.target.name, e.target.value);
+								}}
+								color="secondary"
+								name="preferHorizontal"
+							/>
+						</Grid>
 					</Grid>
 				</Grid>
 			</DialogContent>

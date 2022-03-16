@@ -288,9 +288,11 @@ export const getCloudSettingsForFlight = createSelector(
 				? settings.downSample
 				: initialCloudSettings.downSample,
 			font: (settings.fontDesired || false) && currentFont ? currentFont : null,
+			preferHorizontal: parseFloat(settings.preferHorizontal / 100.0),
 		};
 	}
 );
+
 export const getMasks = createSelector(getMasksById, (masksById) => {
 	const customMasks = [],
 		stockMasks = [];

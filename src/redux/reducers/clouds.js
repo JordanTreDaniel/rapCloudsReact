@@ -42,6 +42,7 @@ export const initialState = {
 		maskAsBackground: false,
 		maskDesired: false,
 		maskId: null,
+		preferHorizontal: 60,
 		private: true,
 		repeat: true,
 		stopWords: ["and", "but", "the", "to", "if", "it", "of", "at"],
