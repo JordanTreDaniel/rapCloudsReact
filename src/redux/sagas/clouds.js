@@ -126,7 +126,10 @@ const apiDeleteClouds = async (cloudIds) => {
 
 		return { error: { status, statusText } };
 	} catch (error) {
-		console.error("Couldn't delete the clouds", { cloudIds, error });
+		console.error("apiDeleteClouds - Couldn't delete the clouds", {
+			cloudIds,
+			error,
+		});
 		return { error };
 	}
 };
@@ -376,7 +379,7 @@ const apiFetchGoogleFonts = async () => {
 		}
 		return { error: { status, statusText } };
 	} catch (error) {
-		console.error("Couldn't delete the clouds", { error });
+		console.error("apiFetchGoogleFonts - Couldn't fetch the fonts", { error });
 		return { error };
 	}
 };
