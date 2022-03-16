@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import {
 	Box,
 	Button,
@@ -190,7 +190,7 @@ const RapCloudSettings = (props) => {
 	} = props;
 	useEffect(() => {
 		if (!fonts.length) fetchGoogleFonts();
-	});
+	}, []);
 	useEffect(() => {
 		if (!masks.length) fetchMasks();
 	}, [masks, fetchMasks]);
@@ -224,9 +224,22 @@ const RapCloudSettings = (props) => {
 						wrap="nowrap"
 						alignItems="center"
 					>
+						<Switch
+							checked={cloudSettings.fontDesired}
+							onChange={(e) => {
+								const { checked } = e.target;
+								updateCloudSettings(e.target.name, checked);
+							}}
+							color="secondary"
+							name="fontDesired"
+							inputProps={{
+								"aria-label": "Toggle use of custom font in RapCloud",
+							}}
+						/>
 						<HelpTooltip
 							titles={[
 								"This option determines what font the words in your RapCloud will appear in.",
+								`The font is everything when it comes to making your RapCloud look the best.`,
 							]}
 						>
 							<Typography variant="h6">Fonts</Typography>
@@ -239,49 +252,66 @@ const RapCloudSettings = (props) => {
 						direction="column"
 						wrap="nowrap"
 					>
-						<DebouncedTextField
-							type="text"
-							onChange={(e) => {
-								const { value: newSearchTerm } = e.target;
-								setFontSearchTerm(newSearchTerm);
-							}}
-							value={fontSearchTerm}
-							disableUnderline
-							fullWidth
-							placeholder="Search..."
-							inputProps={{ className: classes.mainSearchInput }}
-							multiline={false}
-							autoFocus
-							endAdornment={
-								<IconButton
-									className={classes.searchIcon}
-									aria-label="search-icon"
-									component="span"
-								>
-									<SearchIcon />
-								</IconButton>
-							}
-						/>
-						{/* list of fonts filtered by input */}
-						<Grid container id="fontListContainer">
-							{fonts.map((font, idx) => {
-								const isChosen = font === currentFontName;
-								return (
-									<Grid
-										item
-										component={Chip}
-										key={idx}
-										label={font}
-										color={isChosen ? "primary" : "secondary"}
-										disabled={isChosen}
-										clickable={!isChosen}
-										onClick={() => setCurrentFontName(font)}
-										// className={isChosen ? classes.chosenFontChip : null}
-										variant={"filled"}
-									/>
-								);
-							})}
-						</Grid>
+						{cloudSettings.fontDesired && (
+							<Fragment>
+								<DebouncedTextField
+									type="text"
+									onChange={(e) => {
+										const { value: newSearchTerm } = e.target;
+										setFontSearchTerm(newSearchTerm);
+									}}
+									value={fontSearchTerm}
+									disableUnderline
+									fullWidth
+									placeholder="Search..."
+									inputProps={{ className: classes.mainSearchInput }}
+									multiline={false}
+									autoFocus
+									endAdornment={
+										<IconButton
+											className={classes.searchIcon}
+											aria-label="search-icon"
+											component="span"
+										>
+											<SearchIcon />
+										</IconButton>
+									}
+								/>
+
+								{/* list of fonts filtered by input */}
+								<Grid container id="fontListContainer">
+									{fonts.map((font, idx) => {
+										const isChosen = font === currentFontName;
+										return (
+											<Grid
+												item
+												component={Chip}
+												key={idx}
+												label={font}
+												color={isChosen ? "primary" : "secondary"}
+												disabled={isChosen}
+												clickable={!isChosen}
+												onClick={() => setCurrentFontName(font)}
+												// className={isChosen ? classes.chosenFontChip : null}
+												variant={"filled"}
+											/>
+										);
+									})}
+								</Grid>
+							</Fragment>
+						)}
+						<small style={{ marginTop: "1.2em" }}>
+							Go to{" "}
+							<a
+								href="https://fonts.google.com"
+								aria-label="Google Fonts Link"
+								target="_blank"
+								rel="noopener noreferrer"
+							>
+								fonts.google.com
+							</a>{" "}
+							in order to see all available fonts.
+						</small>
 					</Grid>
 				</Grid>
 				<Grid

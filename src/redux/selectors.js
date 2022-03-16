@@ -227,9 +227,41 @@ export const getSearchedArtistList = createSelector(
 //Clouds
 /********************************************************************* */
 export const getCloudSettings = (state) => state.clouds.settings;
+
+export const getFonts = (state) => state.clouds.fonts || [];
+export const getFontSearchTerm = (state) => state.clouds.fontSearchTerm || "";
+export const getCurrentFontName = (state) => state.clouds.currentFontName || "";
+
+export const getMasksById = (state) => state.clouds.masksById;
+export const areMasksLoading = (state) => state.clouds.masksLoading;
+export const areCloudsLoading = (state) => state.clouds.cloudsLoading;
+export const getCurrentFont = createSelector(
+	getFonts,
+	getCurrentFontName,
+	(fonts, currentFontName) => {
+		return fonts.find((font) => font.family === currentFontName);
+	}
+);
+
+export const getSearchedFontList = createSelector(
+	getFonts,
+	getFontSearchTerm,
+	getCurrentFont,
+	(fonts, fontSearchTerm, currentFont) => {
+		const filteredFonts = fontSearchTerm.length
+			? fonts.filter((font) => font.family.match(fontSearchTerm))
+			: fonts;
+		const listOfTen = currentFont
+			? [currentFont, ...filteredFonts.slice(0, 8)]
+			: filteredFonts.slice(0, 9);
+		return listOfTen.map((font) => font.family);
+	}
+);
+
 export const getCloudSettingsForFlight = createSelector(
 	getCloudSettings,
-	(settings) => {
+	getCurrentFont,
+	(settings, currentFont) => {
 		// Object.entries(settings).map((key, val) => {
 		// 	const _type = typeof val;
 		// 	if ([ 'string', 'number' ].includes(_type)) {
@@ -253,41 +285,10 @@ export const getCloudSettingsForFlight = createSelector(
 			downSample: String(settings.downSample).length
 				? settings.downSample
 				: initialCloudSettings.downSample,
+			font: (settings.fontDesired || false) && currentFont ? currentFont : null,
 		};
 	}
 );
-export const getFonts = (state) => state.clouds.fonts || [];
-export const getFontSearchTerm = (state) => state.clouds.fontSearchTerm || "";
-export const getCurrentFontName = (state) => state.clouds.currentFontName || "";
-
-export const getMasksById = (state) => state.clouds.masksById;
-export const areMasksLoading = (state) => state.clouds.masksLoading;
-export const areCloudsLoading = (state) => state.clouds.cloudsLoading;
-export const getCurrentFont = createSelector(
-	getFonts,
-	getCurrentFontName,
-	(fonts, currentFontName) => {
-		return fonts.find((font) => font.family === currentFontName);
-	}
-);
-
-export const getSearchedFontList = createSelector(
-	getFonts,
-	getFontSearchTerm,
-	getCurrentFont,
-	(fonts, fontSearchTerm, currentFont) => {
-		console.log({ currentFont });
-		const filteredFonts = fontSearchTerm.length
-			? fonts.filter((font) => font.family.match(fontSearchTerm))
-			: fonts;
-		const listOfTen = currentFont
-			? [currentFont, ...filteredFonts.slice(0, 8)]
-			: filteredFonts.slice(0, 9);
-		console.log({ listOfTen });
-		return listOfTen.map((font) => font.family);
-	}
-);
-
 export const getMasks = createSelector(getMasksById, (masksById) => {
 	const customMasks = [],
 		stockMasks = [];
