@@ -249,7 +249,9 @@ export const getSearchedFontList = createSelector(
 	getCurrentFont,
 	(fonts, fontSearchTerm, currentFont) => {
 		const filteredFonts = fontSearchTerm.length
-			? fonts.filter((font) => font.family.match(fontSearchTerm))
+			? fonts.filter((font) =>
+					font.family.toLowerCase().match(fontSearchTerm.toLowerCase())
+			  )
 			: fonts;
 		const listOfTen = currentFont
 			? [currentFont, ...filteredFonts.slice(0, 8)]
