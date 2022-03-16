@@ -246,16 +246,13 @@ export const getCurrentFont = createSelector(
 export const getSearchedFontList = createSelector(
 	getFonts,
 	getFontSearchTerm,
-	getCurrentFont,
-	(fonts, fontSearchTerm, currentFont) => {
+	(fonts, fontSearchTerm) => {
 		const filteredFonts = fontSearchTerm.length
 			? fonts.filter((font) =>
 					font.family.toLowerCase().match(fontSearchTerm.toLowerCase())
 			  )
 			: fonts;
-		const listOfTen = currentFont
-			? [currentFont, ...filteredFonts.slice(0, 8)]
-			: filteredFonts.slice(0, 9);
+		const listOfTen = filteredFonts.slice(0, 9);
 		return listOfTen.map((font) => font.family);
 	}
 );

@@ -242,14 +242,26 @@ const RapCloudSettings = (props) => {
 								"aria-label": "Toggle use of custom font in RapCloud",
 							}}
 						/>
-						<HelpTooltip
+						<Grid
+							component={HelpTooltip}
+							item
+							xs={6}
 							titles={[
 								"This option determines what font the words in your RapCloud will appear in.",
 								`The font is everything when it comes to making your RapCloud look the best.`,
 							]}
 						>
-							<Typography variant="h6">Fonts</Typography>
-						</HelpTooltip>
+							<Typography variant="h6">Font</Typography>
+						</Grid>
+						<Grid item xs={6}>
+							{cloudSettings.fontDesired &&
+								currentFontName &&
+								currentFontName.length && (
+									<Typography variant="h4" color="secondary">
+										{currentFontName}
+									</Typography>
+								)}
+						</Grid>
 					</Grid>
 					<Grid
 						id="fontsSectionBody"
@@ -260,31 +272,31 @@ const RapCloudSettings = (props) => {
 					>
 						{cloudSettings.fontDesired && (
 							<Fragment>
-								<DebouncedTextField
-									type="text"
-									onChange={(e) => {
-										const { value: newSearchTerm } = e.target;
-										setFontSearchTerm(newSearchTerm);
-									}}
-									value={fontSearchTerm}
-									disableUnderline
-									fullWidth
-									placeholder="Search..."
-									inputProps={{ className: classes.mainSearchInput }}
-									multiline={false}
-									autoFocus
-									endAdornment={
-										<IconButton
-											className={classes.searchIcon}
-											aria-label="search-icon"
-											component="span"
-										>
-											<SearchIcon />
-										</IconButton>
-									}
-								/>
-
-								{/* list of fonts filtered by input */}
+								<Grid item xs={12}>
+									<DebouncedTextField
+										type="text"
+										onChange={(e) => {
+											const { value: newSearchTerm } = e.target;
+											setFontSearchTerm(newSearchTerm);
+										}}
+										value={fontSearchTerm}
+										disableUnderline
+										fullWidth
+										placeholder="Search..."
+										inputProps={{ className: classes.mainSearchInput }}
+										multiline={false}
+										autoFocus
+										endAdornment={
+											<IconButton
+												className={classes.searchIcon}
+												aria-label="search-icon"
+												component="span"
+											>
+												<SearchIcon />
+											</IconButton>
+										}
+									/>
+								</Grid>
 								<Grid container id="fontListContainer">
 									{fonts.map((font, idx) => {
 										const isChosen = font === currentFontName;
@@ -964,6 +976,7 @@ const RapCloudSettings = (props) => {
 													xs={9}
 													component={HelpTooltip}
 													titles={[
+														`Move this to the right (increase) to get a fast RapCloud. Move to left to get a detailed RapCloud.`,
 														`Downsampling is the process of making your mask image smaller by removing some of the definition/detail.`,
 														`Higher downsampling (like 3) will result in a less detailed image, but your Rap Cloud will be generated much more quickly`,
 														`Lower downsampling, (like 0 or 1) will result in a highly detailed Rap Cloud, but will take much longer.`,
@@ -1438,7 +1451,7 @@ const mapState = (state) => ({
 	mongoUserId: selectors.getUserMongoId(state),
 	fonts: selectors.getSearchedFontList(state),
 	fontSearchTerm: selectors.getFontSearchTerm(state),
-	currentFontName: selectors.getFontSearchTerm(state),
+	currentFontName: selectors.getCurrentFontName(state),
 });
 
 export default connect(mapState, {
