@@ -16,6 +16,7 @@ import {
 	TextField,
 	Tooltip,
 	Typography,
+	Slider,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import * as selectors from "../redux/selectors";
@@ -298,20 +299,20 @@ const RapCloudSettings = (props) => {
 										);
 									})}
 								</Grid>
+								<small style={{ marginTop: "1.2em" }}>
+									Go to{" "}
+									<a
+										href="https://fonts.google.com"
+										aria-label="Google Fonts Link"
+										target="_blank"
+										rel="noopener noreferrer"
+									>
+										fonts.google.com
+									</a>{" "}
+									in order to see all available fonts.
+								</small>
 							</Fragment>
 						)}
-						<small style={{ marginTop: "1.2em" }}>
-							Go to{" "}
-							<a
-								href="https://fonts.google.com"
-								aria-label="Google Fonts Link"
-								target="_blank"
-								rel="noopener noreferrer"
-							>
-								fonts.google.com
-							</a>{" "}
-							in order to see all available fonts.
-						</small>
 					</Grid>
 				</Grid>
 				<Grid
@@ -693,6 +694,60 @@ const RapCloudSettings = (props) => {
 							alignItems="center"
 						>
 							<LoadingBar loading={masksLoading} />
+							<Grid item container direction="column">
+								<Grid item container justifyContent="space-between">
+									<Grid
+										item
+										xs={9}
+										component={HelpTooltip}
+										titles={[
+											`Words won't be drawn onto any parts of an image brighter than the indicator to the right.`,
+											`If you could set it to 0, it would consider everything too bright to draw on. But minimum is 1`,
+										]}
+									>
+										<h6>Brightness Sensitivity</h6>
+									</Grid>
+									<Grid
+										item
+										container
+										xs={3}
+										justifyContent="center"
+										alignItems={"center"}
+									>
+										<Grid
+											component={Chip}
+											item
+											label={cloudSettings.whiteThreshold}
+											style={{
+												width: "55.5%",
+												// height: "1.2em",
+												// borderRadius: "50%",
+												backgroundColor: `rgb(${cloudSettings.whiteThreshold}, ${cloudSettings.whiteThreshold}, ${cloudSettings.whiteThreshold})`,
+											}}
+										></Grid>
+									</Grid>
+								</Grid>
+								<Slider
+									id="whiteThreshold"
+									aria-label="Brightness Sensitivity"
+									max={255}
+									min={1}
+									step={1}
+									value={parseInt(cloudSettings.whiteThreshold)}
+									valueLabelDisplay="auto"
+									marks={[
+										{ value: 1, label: 1 },
+										{ value: 125, label: 125 },
+										{ value: 255, label: 255 },
+									]}
+									onChange={(e) => {
+										console.log(e.target.name, e.target.value);
+										updateCloudSettings(e.target.name, e.target.value);
+									}}
+									color="secondary"
+									name="whiteThreshold"
+								/>
+							</Grid>
 							<Grid
 								id="maskSelections"
 								item
@@ -1140,8 +1195,15 @@ const RapCloudSettings = (props) => {
 							</Typography>
 						</HelpTooltip>
 					</Grid>
-					<Grid item container direction="column">
+					<Grid
+						id="genSettingsSectionBody"
+						item
+						container
+						direction="column"
+						style={{ marginTop: "1.2em" }}
+					>
 						<TextField
+							id="cloudWidth"
 							item="true"
 							className={classNames(classes.oneEmMarginRight)}
 							onChange={(e) => {
@@ -1156,12 +1218,12 @@ const RapCloudSettings = (props) => {
 									Cloud Width
 								</HelpTooltip>
 							}
-							id="cloudWidth"
 							value={cloudSettings.width}
 							type="number"
 							autoComplete={"off"}
 						/>
 						<TextField
+							id="cloudHeight"
 							item="true"
 							className={classNames(classes.oneEmMarginRight)}
 							onChange={(e) => {
@@ -1176,35 +1238,11 @@ const RapCloudSettings = (props) => {
 									Cloud Height
 								</HelpTooltip>
 							}
-							id="cloudHeight"
 							value={cloudSettings.height}
 							type="number"
 							autoComplete={"off"}
 						/>
-						<TextField
-							item="true"
-							className={classNames(classes.oneEmMarginRight)}
-							onChange={(e) => {
-								let val = e.target.value;
-								if (val > 255) val = 255;
-								updateCloudSettings("whiteThreshold", val);
-							}}
-							label={
-								<HelpTooltip
-									titles={[
-										`Words are not supposed to be drawn onto white portions of a mask image.`,
-										`Lowering this number will cause the computer to lower the standard of what is considered white. 255 is pure white. 0 is black.`,
-										`Lower this number if your mask's background is off-white, grey, etc., and words are being drawn onto your "background"`,
-									]}
-								>
-									White Detection Threshold
-								</HelpTooltip>
-							}
-							id="whiteThreshold"
-							value={cloudSettings.whiteThreshold}
-							type="number"
-							autoComplete={"off"}
-						/>
+
 						<FormControlLabel
 							control={
 								<Switch
