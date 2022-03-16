@@ -164,6 +164,11 @@ const useStyles = makeStyles((theme) => {
 			backgroundColor: theme.palette.primary.light,
 			color: theme.palette.primary.contrastText,
 		},
+		sliderUIGroup: {
+			border: `1.11px solid ${theme.palette.primary.light}`,
+			padding: "1.2em",
+			borderRadius: "6px",
+		},
 	};
 });
 
@@ -694,60 +699,7 @@ const RapCloudSettings = (props) => {
 							alignItems="center"
 						>
 							<LoadingBar loading={masksLoading} />
-							<Grid item container direction="column">
-								<Grid item container justifyContent="space-between">
-									<Grid
-										item
-										xs={9}
-										component={HelpTooltip}
-										titles={[
-											`Words won't be drawn onto any parts of an image brighter than the indicator to the right.`,
-											`If you could set it to 0, it would consider everything too bright to draw on. But minimum is 1`,
-										]}
-									>
-										<h6>Brightness Sensitivity</h6>
-									</Grid>
-									<Grid
-										item
-										container
-										xs={3}
-										justifyContent="center"
-										alignItems={"center"}
-									>
-										<Grid
-											component={Chip}
-											item
-											label={cloudSettings.whiteThreshold}
-											style={{
-												width: "55.5%",
-												// height: "1.2em",
-												// borderRadius: "50%",
-												backgroundColor: `rgb(${cloudSettings.whiteThreshold}, ${cloudSettings.whiteThreshold}, ${cloudSettings.whiteThreshold})`,
-											}}
-										></Grid>
-									</Grid>
-								</Grid>
-								<Slider
-									id="whiteThreshold"
-									aria-label="Brightness Sensitivity"
-									max={255}
-									min={1}
-									step={1}
-									value={parseInt(cloudSettings.whiteThreshold)}
-									valueLabelDisplay="auto"
-									marks={[
-										{ value: 1, label: 1 },
-										{ value: 125, label: 125 },
-										{ value: 255, label: 255 },
-									]}
-									onChange={(e) => {
-										console.log(e.target.name, e.target.value);
-										updateCloudSettings(e.target.name, e.target.value);
-									}}
-									color="secondary"
-									name="whiteThreshold"
-								/>
-							</Grid>
+
 							<Grid
 								id="maskSelections"
 								item
@@ -904,7 +856,7 @@ const RapCloudSettings = (props) => {
 										id="chosenMaskQuickSettings"
 										item
 										container
-										direction="row"
+										direction="column"
 										wrap="wrap"
 										justifyContent="space-evenly"
 										alignItems="center"
@@ -936,31 +888,115 @@ const RapCloudSettings = (props) => {
 												/>
 											</Box>
 										</Tooltip>
-										<FormGroup item="true">
-											<TextField
-												className={classNames(classes.oneEmMarginRight)}
+										<Grid
+											id="whiteThresholdUIContainer"
+											item
+											container
+											direction="column"
+											xs={8} //TO-DO: Make this grid fit a little more tightly into the	space provided
+											className={classes.sliderUIGroup}
+										>
+											<Grid item container justifyContent="space-between">
+												<Grid
+													item
+													xs={9}
+													component={HelpTooltip}
+													titles={[
+														`Words won't be drawn onto any parts of an image brighter than the indicator to the right.`,
+														`If you could set it to 0, it would consider everything too bright to draw on. But minimum is 1`,
+													]}
+												>
+													<Typography variant="overline">
+														Brightness Sensitivity
+													</Typography>
+												</Grid>
+												<Grid
+													item
+													container
+													xs={3}
+													justifyContent="center"
+													alignItems={"center"}
+												>
+													<Grid
+														component={Chip}
+														item
+														label={cloudSettings.whiteThreshold}
+														style={{
+															width: "55.5%",
+															backgroundColor: `rgb(${cloudSettings.whiteThreshold}, ${cloudSettings.whiteThreshold}, ${cloudSettings.whiteThreshold})`,
+														}}
+													></Grid>
+												</Grid>
+											</Grid>
+											<Slider
+												id="whiteThreshold"
+												aria-label="Brightness Sensitivity Slider"
+												max={255}
+												min={1}
+												step={1}
+												size="small"
+												value={parseInt(cloudSettings.whiteThreshold)}
+												valueLabelDisplay="auto"
+												marks={[
+													{ value: 1, label: 1 },
+													{ value: 125, label: 125 },
+													{ value: 255, label: 255 },
+												]}
 												onChange={(e) => {
-													let val = e.target.value;
-													if (val > 3) val = 3;
-													updateCloudSettings("downSample", val);
+													updateCloudSettings(e.target.name, e.target.value);
 												}}
-												label={
-													<HelpTooltip
-														titles={[
-															`Downsampling is the process of making your mask image smaller by removing some of the definition/detail.`,
-															`Higher downsampling (like 3) will result in a less detailed image, but your Rap Cloud will be generated much more quickly`,
-															`Lower downsampling, (like 0 or 1) will result in a highly detailed Rap Cloud, but will take much longer.`,
-														]}
-													>
-														Down Sample
-													</HelpTooltip>
-												}
-												id="downSample"
-												value={cloudSettings.downSample}
-												type="number"
-												autoComplete={"off"}
+												color="secondary"
+												name="whiteThreshold"
 											/>
+										</Grid>
+										<Grid
+											id="downsampleSettingsContainer"
+											item
+											container
+											direction="column"
+											xs={8}
+											className={classes.sliderUIGroup}
+											style={{ marginTop: "1.2em" }}
+										>
+											<Grid item container justifyContent="space-between">
+												<Grid
+													item
+													xs={9}
+													component={HelpTooltip}
+													titles={[
+														`Downsampling is the process of making your mask image smaller by removing some of the definition/detail.`,
+														`Higher downsampling (like 3) will result in a less detailed image, but your Rap Cloud will be generated much more quickly`,
+														`Lower downsampling, (like 0 or 1) will result in a highly detailed Rap Cloud, but will take much longer.`,
+													]}
+												>
+													<Typography variant="overline">
+														Down Sample
+													</Typography>
+												</Grid>
+											</Grid>
+											<Slider
+												id="downsampleSlider"
+												aria-label="Downsample Slider"
+												max={3}
+												min={1}
+												step={1}
+												size="small"
+												value={parseInt(cloudSettings.downSample)}
+												valueLabelDisplay="auto"
+												marks={[
+													{ value: 1, label: 1 },
+													{ value: 2, label: 2 },
+													{ value: 3, label: 3 },
+												]}
+												onChange={(e) => {
+													updateCloudSettings(e.target.name, e.target.value);
+												}}
+												color="secondary"
+												name="downSample"
+											/>
+										</Grid>
 
+										<FormGroup item="true">
 											<FormControlLabel
 												control={
 													<Switch
