@@ -434,11 +434,12 @@ const ArtistGame = (props) => {
 					/>
 				) : (
 					<FlyWithMe includeRightZero={false}>
-						<Typography variant="h3" style={{ zIndex: 2, width: "100%" }}>
-							How can we ask you this?
-						</Typography>
-						<Typography variant="h5" style={{ zIndex: 2, width: "100%" }}>
-							Right! With a RapCloud, of course.
+						<Typography
+							variant="h3"
+							style={{ zIndex: 2, width: "100%" }}
+							color="secondary"
+						>
+							Just getting some things ready for you!
 						</Typography>
 					</FlyWithMe>
 				)}
@@ -966,6 +967,7 @@ const ConnectedArtistGame = connect(mapState, { fetchSongDetails })(ArtistGame);
 
 const _ArtistGameLoadingGate = (props) => {
 	const { game, fetchArtistGame, artist } = props;
+	console.log(game);
 	const { artistId, level } = useParams();
 	const { gameId = null, gameOver } = game || {};
 	const classes = useStyles();

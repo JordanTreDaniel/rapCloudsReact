@@ -427,7 +427,6 @@ export const getArtistGame = createSelector(
 	getCloudsBySongId,
 	getMatchParams,
 	(artist, games, songsById, cloudsBySongId, matchParams) => {
-		console.log({ artist, games, songsById, cloudsBySongId, matchParams });
 		//TO-DO: Abstract matchParams away so that this selector doesn't run so much
 		const { level } = matchParams;
 		if (!artist) return null;
@@ -436,38 +435,41 @@ export const getArtistGame = createSelector(
 				String(game.artistId) === String(artist.id) &&
 				parseInt(game.level) === parseInt(level)
 		);
-		console.log({ rawGame });
 		if (!rawGame) return null;
 
 		const { questions } = rawGame;
 		let correctAnswers = 0,
 			incorrectAnswers = 0;
-		const cookedQuestions = questions.map((question) => {
-			const { answerIdx, songId, answers = [] } = question;
-			const isAnswered = answerIdx === 0 || answerIdx;
-			if (isAnswered) {
-				const answer = answers[answerIdx] || {};
-				if (answer.correct) {
-					correctAnswers++;
-				} else {
-					incorrectAnswers++;
+		const cookedQuestions = questions
+			.map((question) => {
+				const { answerIdx, songId, answers = [] } = question;
+				const isAnswered = answerIdx === 0 || answerIdx;
+				if (isAnswered) {
+					const answer = answers[answerIdx] || {};
+					if (answer.correct) {
+						correctAnswers++;
+					} else {
+						incorrectAnswers++;
+					}
 				}
-			}
 
-			return {
-				...question,
-				cloud: (cloudsBySongId[songId] || []).find(
-					(cloud) => cloud.officialCloud
-				),
-				song: songsById[songId],
-			};
-		});
+				return {
+					...question,
+					cloud: (cloudsBySongId[songId] || []).find(
+						(cloud) => cloud.officialCloud
+					),
+					song: songsById[songId],
+				};
+			})
+			.filter((q) => !!q.cloud);
 		const cookedGame = {
 			...rawGame,
 			artist: { ...artist },
 			questions: cookedQuestions,
-			gameOver: correctAnswers + incorrectAnswers === questions.length,
-			percentageRight: parseInt((correctAnswers * 100) / questions.length),
+			gameOver: correctAnswers + incorrectAnswers >= cookedQuestions.length,
+			percentageRight: parseInt(
+				(correctAnswers * 100) / cookedQuestions.length
+			),
 		};
 		console.log(cookedGame);
 		return cookedGame;
