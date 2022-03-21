@@ -427,13 +427,18 @@ export const getArtistGame = createSelector(
 	getCloudsBySongId,
 	getMatchParams,
 	(artist, games, songsById, cloudsBySongId, matchParams) => {
+		console.log({ artist, games, songsById, cloudsBySongId, matchParams });
 		//TO-DO: Abstract matchParams away so that this selector doesn't run so much
 		const { level } = matchParams;
 		if (!artist) return null;
 		const rawGame = games.find(
-			(game) => game.artistId === artist.id && game.level === level
+			(game) =>
+				String(game.artistId) === String(artist.id) &&
+				parseInt(game.level) === parseInt(level)
 		);
+		console.log({ rawGame });
 		if (!rawGame) return null;
+
 		const { questions } = rawGame;
 		let correctAnswers = 0,
 			incorrectAnswers = 0;
@@ -464,6 +469,7 @@ export const getArtistGame = createSelector(
 			gameOver: correctAnswers + incorrectAnswers === questions.length,
 			percentageRight: parseInt((correctAnswers * 100) / questions.length),
 		};
+		console.log(cookedGame);
 		return cookedGame;
 	}
 );
