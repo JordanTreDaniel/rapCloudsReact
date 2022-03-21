@@ -281,9 +281,9 @@ export const getCloudSettingsForFlight = createSelector(
 			whiteThreshold: String(settings.whiteThreshold).length
 				? settings.whiteThreshold
 				: initialCloudSettings.whiteThreshold,
-			downSample: String(settings.downSample).length
-				? settings.downSample
-				: initialCloudSettings.downSample,
+			downsample: String(settings.downsample).length
+				? settings.downsample
+				: initialCloudSettings.downsample,
 			font:
 				(settings.fontDesired || false) && currentFont
 					? {
@@ -294,6 +294,7 @@ export const getCloudSettingsForFlight = createSelector(
 					  }
 					: null,
 			preferHorizontal: parseFloat(settings.preferHorizontal / 100.0),
+			relativeScaling: parseFloat(settings.relativeScaling / 100.0),
 		};
 	}
 );

@@ -495,7 +495,7 @@ const gameCoverQuestion = {
 			contourColor: "#ffffff",
 			contourWidth: "0",
 			detectEdges: true,
-			downSample: "3",
+			downsample: "3",
 			height: "200",
 			includeNumbers: true,
 			maskAsBackground: false,

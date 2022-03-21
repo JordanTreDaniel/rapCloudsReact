@@ -1332,7 +1332,7 @@ const RapCloudSettings = (props) => {
 						style={{ marginTop: "1.2em" }}
 					>
 						<Grid
-							id="minFontSizeSettingsContainer"
+							id="downsampleSettingsContainer"
 							item
 							container
 							direction="column"
@@ -1352,17 +1352,17 @@ const RapCloudSettings = (props) => {
 										`Lower downsampling, (like 0 or 1) will result in a highly detailed Rap Cloud, but will take much longer.`,
 									]}
 								>
-									<Typography variant="overline">Down Sample</Typography>
+									<Typography variant="overline">Detailed vs. Fast</Typography>
 								</Grid>
 							</Grid>
 							<Slider
-								id="minFontSizeSlider"
-								aria-label="minFontSize Slider"
+								id="downsampleSlider"
+								aria-label="Downsample Slider"
 								max={3}
 								min={1}
 								step={1}
 								size="small"
-								value={parseInt(cloudSettings.minFontSize)}
+								value={parseInt(cloudSettings.downsample)}
 								valueLabelDisplay="auto"
 								marks={[
 									{ value: 1, label: 1 },
@@ -1373,7 +1373,7 @@ const RapCloudSettings = (props) => {
 									updateCloudSettings(e.target.name, e.target.value);
 								}}
 								color="secondary"
-								name="minFontSize"
+								name="downsample"
 							/>
 						</Grid>
 						<Grid
@@ -1419,6 +1419,49 @@ const RapCloudSettings = (props) => {
 								}}
 								color="secondary"
 								name="preferHorizontal"
+							/>
+						</Grid>
+						<Grid
+							id="relativeScalingSettingsContainer"
+							item
+							container
+							direction="column"
+							xs={8}
+							className={classes.sliderUIGroup}
+							style={{ marginTop: "1.2em" }}
+						>
+							<Grid item container justifyContent="space-between">
+								<Grid
+									item
+									xs={9}
+									component={HelpTooltip}
+									titles={[
+										`Placing this number at 100 means that a word that is twice as frequent will have twice the size.`,
+										`Placing this nubmer at 0 means only word-ranks are considered.`,
+									]}
+								>
+									<Typography variant="overline">Relative Scaling</Typography>
+								</Grid>
+							</Grid>
+							<Slider
+								id="relativeScalingSlider"
+								aria-label="Prefer Horizontal Slider"
+								max={100}
+								min={0}
+								step={10}
+								size="small"
+								value={parseFloat(cloudSettings.relativeScaling)}
+								valueLabelDisplay="auto"
+								marks={[
+									{ value: 0, label: "0%" },
+									{ value: 50, label: "50%" },
+									{ value: 100, label: "100%" },
+								]}
+								onChange={(e) => {
+									updateCloudSettings(e.target.name, e.target.value);
+								}}
+								color="secondary"
+								name="relativeScaling"
 							/>
 						</Grid>
 						<TextField
