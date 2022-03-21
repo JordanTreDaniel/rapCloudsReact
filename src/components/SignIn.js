@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Button, Grid, IconButton, Typography, Avatar } from "@mui/material";
 import { makeStyles } from "@mui/styles";
@@ -92,63 +92,49 @@ const useStyles = makeStyles((theme) => {
 });
 
 const SignIn = (props) => {
-	let popup = null;
-	let socket;
-	const [popUpOpen, togglePopUp] = useState(false);
+	const [socket, setSocket] = useState(null);
 	const classes = useStyles();
 	const { userId } = props;
-	if (userId) return <Redirect to={paths.about} />;
-	// Routinely checks the popup to re-enable the login button
-	// if the user closes the popup without authenticating.
-	const checkPopup = () => {
-		const check = setInterval(() => {
-			if (props.userId) {
-				popup.close();
-			}
-			if (!popup || popup.closed || popup.closed === undefined) {
-				clearInterval(check);
-				togglePopUp(false);
-			}
-		}, 1000);
-	};
-
-	// Launches the popup on the server and passes along the socket id so it
-	// can be used to send back user data to the appropriate socket on
-	// the connected client.
-	const openPopup = () => {
-		const width = 600,
-			height = 600;
-		const left = window.innerWidth / 2 - width / 2;
-		const top = window.innerHeight / 2 - height / 2;
-
-		const url = `${API_URL}/authorize/genius?socketId=${socket.id}`;
-		togglePopUp(true);
-		return window.open(
-			url,
-			"",
-			`toolbar=no, location=no, directories=no, status=no, menubar=no, 
-      scrollbars=no, resizable=no, copyhistory=no, width=${width}, 
-      height=${height}, top=${top}, left=${left}`
-		);
-	};
-
 	// Kicks off the processes of opening the popup on the server and listening
 	// to the popup. It also disables the login button so the user can not
 	// attempt to login to the provider twice.
-	const startAuth = async () => {
-		socket = await getConnectedSocket();
-		if (!popUpOpen) {
-			popup = openPopup();
-			checkPopup();
-			socket.on("genius", async (user) => {
-				popup.close();
-				props.setUser(user);
-				props.fetchClouds();
-				socket.close();
-				props.history.push(paths.about);
-			});
+	const openSocket = async () => {
+		const _socket = await getConnectedSocket();
+		_socket.on("genius", async (user) => {
+			console.info("You're a genius!", user);
+			props.setUser(user);
+			props.fetchClouds();
+			_socket.close();
+			setSocket(null);
+			props.history.push(paths.about);
+		});
+		setSocket(_socket);
+	};
+	const closeSocket = async () => {
+		console.log("Attempting to close the socket now");
+		if (socket) {
+			socket.close();
 		}
 	};
+	const getSocketURL = () => {
+		const url = socket
+			? `${API_URL}/authorize/genius?socketId=${socket.id}`
+			: null;
+		return url;
+	};
+	console.log(getSocketURL());
+
+	useEffect(() => {
+		openSocket();
+	}, []);
+	useEffect(
+		() => () => {
+			console.log("closing socket");
+			closeSocket();
+		},
+		[]
+	);
+	if (userId) return <Redirect to={paths.about} />;
 
 	return (
 		<Grid className={classNames(classes.signInWrapper)} container>
@@ -207,10 +193,13 @@ const SignIn = (props) => {
 				</Grid>
 				<Grid
 					id="partnerShipAvatars"
+					component="a"
+					href={getSocketURL()}
+					disabled={!!!getSocketURL()}
+					target="_blank"
 					className={classNames(classes.partnerShipAvatars)}
 					item
 					container
-					onClick={startAuth}
 					justifyContent="center"
 					alignContent="center"
 					alignItems="center"
@@ -240,12 +229,10 @@ const SignIn = (props) => {
 						)}
 					/>
 				</Grid>
-				<Grid item>
+				<Grid item component="a" href={getSocketURL()} target="_blank">
 					<Button
-						onClick={startAuth}
-						className={`twitter ${popUpOpen && "disabled"} ${
-							classes.secondaryMainBacking
-						} ${classes.whiteLetters} ${classes.signInBtn}`}
+						className={`twitter ${classes.secondaryMainBacking} ${classes.whiteLetters} ${classes.signInBtn}`}
+						disabled={!!!getSocketURL()}
 					>
 						Sign In / Sign Up
 					</Button>
@@ -323,7 +310,10 @@ const SignIn = (props) => {
 					>
 						<IconButton
 							item="true"
-							onClick={startAuth}
+							component="a"
+							href={getSocketURL()}
+							disabled={!!!getSocketURL()}
+							target="_blank"
 							className={classNames(
 								classes.stepNumber,
 								classes.whiteLetters,
