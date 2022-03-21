@@ -372,6 +372,92 @@ const RapCloudSettings = (props) => {
 									</small>
 								</Fragment>
 							))}
+						<Grid
+							id="minFontSizeSettingsContainer"
+							item
+							container
+							direction="column"
+							xs={8}
+							className={classes.sliderUIGroup}
+							style={{ marginTop: "1.2em" }}
+						>
+							<Grid item container justifyContent="space-between">
+								<Grid
+									item
+									xs={9}
+									component={HelpTooltip}
+									titles={[
+										`This controls how small the words in your RapCloud can be`,
+									]}
+								>
+									<Typography variant="overline">Mininum Font Size</Typography>
+								</Grid>
+							</Grid>
+							<Slider
+								id="minFontSizeSlider"
+								aria-label="Minium FontSize Slider"
+								max={
+									cloudSettings.maxFontSize ? cloudSettings.maxFontSize - 1 : 60
+								}
+								min={1}
+								step={1}
+								size="small"
+								value={parseInt(cloudSettings.minFontSize) || 4}
+								valueLabelDisplay="auto"
+								marks={[
+									{ value: 1, label: 1 },
+									{ value: 30, label: 30 },
+									{ value: 60, label: 60 },
+								]}
+								onChange={(e) => {
+									updateCloudSettings(e.target.name, e.target.value);
+								}}
+								color="secondary"
+								name="minFontSize"
+							/>
+						</Grid>
+						<Grid
+							id="maxFontSizeSettingsContainer"
+							item
+							container
+							direction="column"
+							xs={8}
+							className={classes.sliderUIGroup}
+							style={{ marginTop: "1.2em" }}
+						>
+							<Grid item container justifyContent="space-between">
+								<Grid
+									item
+									xs={9}
+									component={HelpTooltip}
+									titles={[
+										`This controls how large the words in your RapCloud can be`,
+									]}
+								>
+									<Typography variant="overline">Maxiumum Font Size</Typography>
+								</Grid>
+							</Grid>
+							<Slider
+								id="maxFontSizeSlider"
+								aria-label="Maximum FontSize Slider"
+								max={60}
+								min={cloudSettings.minFontSize + 1}
+								step={1}
+								size="small"
+								value={parseInt(cloudSettings.maxFontSize) || 60}
+								valueLabelDisplay="auto"
+								marks={[
+									{ value: 1, label: 1 },
+									{ value: 30, label: 30 },
+									{ value: 60, label: 60 },
+								]}
+								onChange={(e) => {
+									updateCloudSettings(e.target.name, e.target.value);
+								}}
+								color="secondary"
+								name="maxFontSize"
+							/>
+						</Grid>
 					</Grid>
 				</Grid>
 				<Grid
@@ -1246,7 +1332,7 @@ const RapCloudSettings = (props) => {
 						style={{ marginTop: "1.2em" }}
 					>
 						<Grid
-							id="downsampleSettingsContainer"
+							id="minFontSizeSettingsContainer"
 							item
 							container
 							direction="column"
@@ -1270,13 +1356,13 @@ const RapCloudSettings = (props) => {
 								</Grid>
 							</Grid>
 							<Slider
-								id="downsampleSlider"
-								aria-label="Downsample Slider"
+								id="minFontSizeSlider"
+								aria-label="minFontSize Slider"
 								max={3}
 								min={1}
 								step={1}
 								size="small"
-								value={parseInt(cloudSettings.downSample)}
+								value={parseInt(cloudSettings.minFontSize)}
 								valueLabelDisplay="auto"
 								marks={[
 									{ value: 1, label: 1 },
@@ -1287,7 +1373,7 @@ const RapCloudSettings = (props) => {
 									updateCloudSettings(e.target.name, e.target.value);
 								}}
 								color="secondary"
-								name="downSample"
+								name="minFontSize"
 							/>
 						</Grid>
 						<Grid
