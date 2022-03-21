@@ -471,7 +471,6 @@ export const getArtistGame = createSelector(
 				(correctAnswers * 100) / cookedQuestions.length
 			),
 		};
-		console.log(cookedGame);
 		return cookedGame;
 	}
 );
