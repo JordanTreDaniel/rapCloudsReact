@@ -335,6 +335,8 @@ const RapCloud = (props) => {
 			{fullScreenCloud && (
 				<Dialog fullScreen open={true}>
 					<DialogContent classes={{ root: classes.darkBacking }}>
+						{renderPagination(false)}
+
 						<Grid
 							container
 							direction="row"
@@ -347,7 +349,12 @@ const RapCloud = (props) => {
 								className={classes.closeFullCloud}
 								onClick={() => toggleFullScreenCloud(false)}
 							/>
-							<Grid item xs={12} style={{ textAlign: "center" }}>
+							<Grid
+								id="fullScreenapCloudImage"
+								item
+								xs={12}
+								style={{ textAlign: "center" }}
+							>
 								<Grid
 									component="img"
 									item
@@ -355,6 +362,28 @@ const RapCloud = (props) => {
 									alt={cloudName}
 									style={{ width: "90%" }}
 								/>
+								{clouds.length > 1 ? (
+									<React.Fragment>
+										<IconButton
+											onClick={() => cycleClouds("left")}
+											className={classNames(
+												classes.cycleCloudsBtn,
+												classes.cycleCloudsLeft
+											)}
+										>
+											<ChevronLeft />
+										</IconButton>
+										<IconButton
+											onClick={() => cycleClouds("right")}
+											className={classNames(
+												classes.cycleCloudsBtn,
+												classes.cycleCloudsRight
+											)}
+										>
+											<ChevronRight />
+										</IconButton>
+									</React.Fragment>
+								) : null}
 							</Grid>
 						</Grid>
 					</DialogContent>

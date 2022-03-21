@@ -254,7 +254,7 @@ const RapCloudSettings = (props) => {
 								`The font is everything when it comes to making your RapCloud look the best.`,
 							]}
 						>
-							<Typography variant="h6">Font</Typography>
+							<Typography variant="h6">Custom Font</Typography>
 						</HelpTooltip>
 					</Grid>
 					<Grid
@@ -1245,6 +1245,96 @@ const RapCloudSettings = (props) => {
 						direction="column"
 						style={{ marginTop: "1.2em" }}
 					>
+						<Grid
+							id="downsampleSettingsContainer"
+							item
+							container
+							direction="column"
+							xs={8}
+							className={classes.sliderUIGroup}
+							style={{ marginTop: "1.2em" }}
+						>
+							<Grid item container justifyContent="space-between">
+								<Grid
+									item
+									xs={9}
+									component={HelpTooltip}
+									titles={[
+										`Move this to the right (increase) to get a fast RapCloud. Move to left to get a detailed RapCloud.`,
+										`Downsampling is the process of making your mask image smaller by removing some of the definition/detail.`,
+										`Higher downsampling (like 3) will result in a less detailed image, but your Rap Cloud will be generated much more quickly`,
+										`Lower downsampling, (like 0 or 1) will result in a highly detailed Rap Cloud, but will take much longer.`,
+									]}
+								>
+									<Typography variant="overline">Down Sample</Typography>
+								</Grid>
+							</Grid>
+							<Slider
+								id="downsampleSlider"
+								aria-label="Downsample Slider"
+								max={3}
+								min={1}
+								step={1}
+								size="small"
+								value={parseInt(cloudSettings.downSample)}
+								valueLabelDisplay="auto"
+								marks={[
+									{ value: 1, label: 1 },
+									{ value: 2, label: 2 },
+									{ value: 3, label: 3 },
+								]}
+								onChange={(e) => {
+									updateCloudSettings(e.target.name, e.target.value);
+								}}
+								color="secondary"
+								name="downSample"
+							/>
+						</Grid>
+						<Grid
+							id="preferHorizontalSettingsContainer"
+							item
+							container
+							direction="column"
+							xs={8}
+							className={classes.sliderUIGroup}
+							style={{ marginTop: "1.2em" }}
+						>
+							<Grid item container justifyContent="space-between">
+								<Grid
+									item
+									xs={9}
+									component={HelpTooltip}
+									titles={[
+										`Placing this number at 100% words will come out horizontal only.`,
+										`Placing it at 10% means only 10% of the words will come out horizontal.`,
+									]}
+								>
+									<Typography variant="overline">
+										Horizontal-to-Vertical Ratio
+									</Typography>
+								</Grid>
+							</Grid>
+							<Slider
+								id="preferHorizontalSlider"
+								aria-label="Prefer Horizontal Slider"
+								max={100}
+								min={10}
+								step={10}
+								size="small"
+								value={parseFloat(cloudSettings.preferHorizontal)}
+								valueLabelDisplay="auto"
+								marks={[
+									{ value: 10, label: "10%" },
+									{ value: 50, label: "50%" },
+									{ value: 100, label: "100%" },
+								]}
+								onChange={(e) => {
+									updateCloudSettings(e.target.name, e.target.value);
+								}}
+								color="secondary"
+								name="preferHorizontal"
+							/>
+						</Grid>
 						<TextField
 							id="cloudWidth"
 							item="true"
@@ -1356,96 +1446,6 @@ const RapCloudSettings = (props) => {
 								</HelpTooltip>
 							}
 						/>
-						<Grid
-							id="downsampleSettingsContainer"
-							item
-							container
-							direction="column"
-							xs={8}
-							className={classes.sliderUIGroup}
-							style={{ marginTop: "1.2em" }}
-						>
-							<Grid item container justifyContent="space-between">
-								<Grid
-									item
-									xs={9}
-									component={HelpTooltip}
-									titles={[
-										`Move this to the right (increase) to get a fast RapCloud. Move to left to get a detailed RapCloud.`,
-										`Downsampling is the process of making your mask image smaller by removing some of the definition/detail.`,
-										`Higher downsampling (like 3) will result in a less detailed image, but your Rap Cloud will be generated much more quickly`,
-										`Lower downsampling, (like 0 or 1) will result in a highly detailed Rap Cloud, but will take much longer.`,
-									]}
-								>
-									<Typography variant="overline">Down Sample</Typography>
-								</Grid>
-							</Grid>
-							<Slider
-								id="downsampleSlider"
-								aria-label="Downsample Slider"
-								max={3}
-								min={1}
-								step={1}
-								size="small"
-								value={parseInt(cloudSettings.downSample)}
-								valueLabelDisplay="auto"
-								marks={[
-									{ value: 1, label: 1 },
-									{ value: 2, label: 2 },
-									{ value: 3, label: 3 },
-								]}
-								onChange={(e) => {
-									updateCloudSettings(e.target.name, e.target.value);
-								}}
-								color="secondary"
-								name="downSample"
-							/>
-						</Grid>
-						<Grid
-							id="preferHorizontalSettingsContainer"
-							item
-							container
-							direction="column"
-							xs={8}
-							className={classes.sliderUIGroup}
-							style={{ marginTop: "1.2em" }}
-						>
-							<Grid item container justifyContent="space-between">
-								<Grid
-									item
-									xs={9}
-									component={HelpTooltip}
-									titles={[
-										`Placing this number at 100% words will come out horizontal only.`,
-										`Placing it at 10% means only 10% of the words will come out horizontal.`,
-									]}
-								>
-									<Typography variant="overline">
-										Horizontal-to-Vertical Ratio
-									</Typography>
-								</Grid>
-							</Grid>
-							<Slider
-								id="preferHorizontalSlider"
-								aria-label="Prefer Horizontal Slider"
-								max={100}
-								min={10}
-								step={10}
-								size="small"
-								value={parseFloat(cloudSettings.preferHorizontal)}
-								valueLabelDisplay="auto"
-								marks={[
-									{ value: 10, label: "10%" },
-									{ value: 50, label: "50%" },
-									{ value: 100, label: "100%" },
-								]}
-								onChange={(e) => {
-									updateCloudSettings(e.target.name, e.target.value);
-								}}
-								color="secondary"
-								name="preferHorizontal"
-							/>
-						</Grid>
 					</Grid>
 				</Grid>
 			</DialogContent>
