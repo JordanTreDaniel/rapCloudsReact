@@ -1404,7 +1404,7 @@ const RapCloudSettings = (props) => {
 								id="preferHorizontalSlider"
 								aria-label="Prefer Horizontal Slider"
 								max={100}
-								min={10}
+								min={0}
 								step={10}
 								size="small"
 								value={parseFloat(cloudSettings.preferHorizontal)}
