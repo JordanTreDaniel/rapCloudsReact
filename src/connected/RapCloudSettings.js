@@ -1422,6 +1422,48 @@ const RapCloudSettings = (props) => {
 							/>
 						</Grid>
 						<Grid
+							id="marginSettingsContainer"
+							item
+							container
+							direction="column"
+							xs={8}
+							className={classes.sliderUIGroup}
+							style={{ marginTop: "1.2em" }}
+						>
+							<Grid item container justifyContent="space-between">
+								<Grid
+									item
+									xs={9}
+									component={HelpTooltip}
+									titles={[
+										`Increasing margin will put more space between words. Decreasing will result in a more packed image, but takes longer.`,
+									]}
+								>
+									<Typography variant="overline">Margin</Typography>
+								</Grid>
+							</Grid>
+							<Slider
+								id="marginSlider"
+								aria-label="Margin Slider"
+								max={15}
+								min={0}
+								step={1}
+								size="small"
+								value={parseInt(cloudSettings.margin)}
+								valueLabelDisplay="auto"
+								marks={[
+									{ value: 0, label: 0 },
+									{ value: 7, label: 7 },
+									{ value: 16, label: 16 },
+								]}
+								onChange={(e) => {
+									updateCloudSettings(e.target.name, e.target.value);
+								}}
+								color="secondary"
+								name="margin"
+							/>
+						</Grid>
+						<Grid
 							id="relativeScalingSettingsContainer"
 							item
 							container

@@ -293,8 +293,14 @@ export const getCloudSettingsForFlight = createSelector(
 							],
 					  }
 					: null,
-			preferHorizontal: parseFloat(settings.preferHorizontal / 100.0),
-			relativeScaling: parseFloat(settings.relativeScaling / 100.0),
+			preferHorizontal:
+				parseFloat(settings.preferHorizontal / 100.0) ||
+				parseFloat(initialCloudSettings.preferHorizontal / 100.0),
+			relativeScaling:
+				parseFloat(settings.relativeScaling / 100.0) ||
+				parseFloat(initialCloudSettings.relativeScaling / 100.0),
+			margin:
+				parseInt(settings.margin) || parseInt(initialCloudSettings.margin),
 		};
 	}
 );

@@ -43,6 +43,7 @@ export const initialState = {
 		maskAsBackground: false,
 		maskDesired: false,
 		maskId: null,
+		margin: 2,
 		minFontSize: 4,
 		maxFontSize: 60,
 		preferHorizontal: 60,
