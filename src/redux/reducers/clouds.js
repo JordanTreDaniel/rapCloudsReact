@@ -26,6 +26,7 @@ export const initialState = {
 	fontSearchTerm: "",
 	currentFontName: null,
 	settings: {
+		addWatermark: true,
 		backgroundColor: "#000000",
 		collocations: true,
 		coloredBackground: true,
@@ -40,12 +41,13 @@ export const initialState = {
 		fontDesired: false,
 		height: "200",
 		includeNumbers: true,
+		margin: 2,
 		maskAsBackground: false,
 		maskDesired: false,
 		maskId: null,
-		margin: 2,
-		minFontSize: 4,
+		maskOpacity: 255,
 		maxFontSize: 60,
+		minFontSize: 4,
 		preferHorizontal: 60,
 		private: true,
 		relativeScaling: 50,
@@ -56,6 +58,7 @@ export const initialState = {
 		useRandomColors: false,
 		whiteThreshold: "240",
 		width: "400",
+		wordOpacity: 255,
 	},
 };
 

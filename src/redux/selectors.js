@@ -293,14 +293,12 @@ export const getCloudSettingsForFlight = createSelector(
 							],
 					  }
 					: null,
-			preferHorizontal:
-				parseFloat(settings.preferHorizontal / 100.0) ||
-				parseFloat(initialCloudSettings.preferHorizontal / 100.0),
-			relativeScaling:
-				parseFloat(settings.relativeScaling / 100.0) ||
-				parseFloat(initialCloudSettings.relativeScaling / 100.0),
-			margin:
-				parseInt(settings.margin) || parseInt(initialCloudSettings.margin),
+			preferHorizontal: parseFloat(settings.preferHorizontal / 100.0),
+			relativeScaling: parseFloat(settings.relativeScaling / 100.0),
+			margin: parseInt(settings.margin),
+			addWatermark: true,
+			wordOpacity: 255,
+			maskOpacity: 255,
 		};
 	}
 );
@@ -329,7 +327,9 @@ export const getCurrentMask = createSelector(
 	getCloudSettings,
 	(masksById, cloudSettings) => masksById[cloudSettings.maskId]
 );
+
 export const getCloudsById = (state) => state.clouds.byId;
+
 export const getCloudsAsList = createSelector(getCloudsById, (cloudsById) =>
 	Object.values(cloudsById)
 );
