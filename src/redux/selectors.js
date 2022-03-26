@@ -297,7 +297,7 @@ export const getCloudSettingsForFlight = createSelector(
 			relativeScaling: parseFloat(settings.relativeScaling / 100.0),
 			margin: parseInt(settings.margin),
 			addWatermark: true,
-			wordOpacity: 255,
+			wordOpacity: parseInt(settings.wordOpacity),
 			maskOpacity: 255,
 		};
 	}

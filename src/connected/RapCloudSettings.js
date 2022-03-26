@@ -1506,6 +1506,48 @@ const RapCloudSettings = (props) => {
 								name="relativeScaling"
 							/>
 						</Grid>
+						<Grid
+							id="wordOpacitySettingsContainer"
+							item
+							container
+							direction="column"
+							xs={8}
+							className={classes.sliderUIGroup}
+							style={{ marginTop: "1.2em" }}
+						>
+							<Grid item container justifyContent="space-between">
+								<Grid
+									item
+									xs={9}
+									component={HelpTooltip}
+									titles={[
+										`Decreasing Word Opacity will make the words in the Rap Cloud more transparent.`,
+									]}
+								>
+									<Typography variant="overline">Word Opacity</Typography>
+								</Grid>
+							</Grid>
+							<Slider
+								id="wordOpacitySlider"
+								aria-label="Word Opacity Slider"
+								max={255}
+								min={0}
+								step={1}
+								size="small"
+								value={parseInt(cloudSettings.wordOpacity)}
+								valueLabelDisplay="auto"
+								marks={[
+									{ value: 0, label: 0 },
+									{ value: 125, label: 125 },
+									{ value: 255, label: 255 },
+								]}
+								onChange={(e) => {
+									updateCloudSettings(e.target.name, e.target.value);
+								}}
+								color="secondary"
+								name="wordOpacity"
+							/>
+						</Grid>
 						<TextField
 							id="cloudWidth"
 							item="true"
