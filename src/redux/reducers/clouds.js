@@ -26,7 +26,7 @@ export const initialState = {
 	fontSearchTerm: "",
 	currentFontName: null,
 	settings: {
-		addWatermark: true,
+		addWatermark: false,
 		backgroundColor: "#000000",
 		collocations: true,
 		coloredBackground: true,
