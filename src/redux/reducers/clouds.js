@@ -50,7 +50,7 @@ export const initialState = {
 		minFontSize: 4,
 		preferHorizontal: 60,
 		private: true,
-		relativeScaling: 50,
+		relativeScaling: 0,
 		repeat: true,
 		stopWords: ["and", "but", "the", "to", "if", "it", "of", "at"],
 		transparentBackground: false,
