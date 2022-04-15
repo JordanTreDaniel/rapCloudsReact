@@ -39,6 +39,7 @@ import HelpTooltip from "../components/HelpTooltip";
 import { connect } from "react-redux";
 import uniq from "lodash/uniq";
 import { classNames } from "../utils";
+import MinusIcon from "@mui/icons-material/Remove";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import SearchIcon from "@mui/icons-material/Search";
 import Refresh from "@mui/icons-material/Refresh";
@@ -81,6 +82,22 @@ const useStyles = makeStyles((theme) => {
 			paddingTop: ".3em",
 			border: `1px solid ${theme.palette.primary.dark}`,
 			borderRadius: "6px",
+			position: "relative",
+		},
+		sectionToggleBtn: {
+			top: "-1em",
+			right: "-1em",
+			backgroundColor: theme.palette.primary.dark,
+			color: theme.palette.secondary.main,
+			margin: ".5em",
+			width: "2em",
+			height: "2em",
+			position: "absolute",
+			zIndex: 2,
+			"&:hover": {
+				backgroundColor: theme.palette.primary.light,
+				color: theme.palette.primary.dark,
+			},
 		},
 		nestedFormSection: {
 			marginBottom: ".5em",
@@ -198,6 +215,11 @@ const RapCloudSettings = (props) => {
 		currentFont,
 		setCurrentFontName,
 	} = props;
+	const [fontsExpanded, toggleFontsExpanded] = useState(false);
+	const [colorsExpanded, toggleColorsExpanded] = useState(false);
+	const [backgroundExpanded, toggleBackgroundExpanded] = useState(false);
+	const [maskExpanded, toggleMaskExpanded] = useState(false);
+	const [genSettingsExpanded, toggleGenExpanded] = useState(false);
 	const { family: currentFontName, variants: currentFontVariants } =
 		currentFont || {};
 	useEffect(() => {
@@ -227,6 +249,12 @@ const RapCloudSettings = (props) => {
 					className={classNames(classes.formSection)}
 					direction="column"
 				>
+					<IconButton
+						className={classNames(classes.sectionToggleBtn)}
+						onClick={() => toggleFontsExpanded(!fontsExpanded)}
+					>
+						{fontsExpanded ? <MinusIcon /> : <AddIcon />}
+					</IconButton>
 					<Grid
 						id="fontsSectionHead"
 						item
@@ -257,208 +285,216 @@ const RapCloudSettings = (props) => {
 							<Typography variant="h6">Custom Font</Typography>
 						</HelpTooltip>
 					</Grid>
-					<Grid
-						id="fontsSectionBody"
-						item
-						container
-						direction="column"
-						wrap="nowrap"
-					>
-						{cloudSettings.fontDesired &&
-							(currentFontName && currentFontName.length ? (
-								<Fragment>
-									<Grid item xs={6}>
-										<Typography variant="h5" color="secondary">
-											{currentFontName}
-											<IconButton
-												color="warning"
-												onClick={() => {
-													setCurrentFontName(null);
-													updateCloudSettings("currentFontVariantIdx", 0);
-												}}
-											>
-												<XIcon></XIcon>
-											</IconButton>
-										</Typography>
-									</Grid>
-									<Grid id="fontVariantsSection" item xs={12}>
-										<FormControl>
-											{/* <FormLabel
+					{fontsExpanded && (
+						<Grid
+							id="fontsSectionBody"
+							item
+							container
+							direction="column"
+							wrap="nowrap"
+						>
+							{cloudSettings.fontDesired &&
+								(currentFontName && currentFontName.length ? (
+									<Fragment>
+										<Grid item xs={6}>
+											<Typography variant="h5" color="secondary">
+												{currentFontName}
+												<IconButton
+													color="warning"
+													onClick={() => {
+														setCurrentFontName(null);
+														updateCloudSettings("currentFontVariantIdx", 0);
+													}}
+												>
+													<XIcon></XIcon>
+												</IconButton>
+											</Typography>
+										</Grid>
+										<Grid id="fontVariantsSection" item xs={12}>
+											<FormControl>
+												{/* <FormLabel
 												id="font-variants-radio-btn-group"
 												color="primary"
 											>
 												Font Variant
 											</FormLabel> */}
-											<RadioGroup
-												aria-labelledby="font-variants-radio-btn-group"
-												value={cloudSettings.currentFontVariantIdx || 0}
-												name="currentFontVariantIdx"
-												row={true}
-												onChange={(e) =>
-													updateCloudSettings(e.target.name, e.target.value)
-												}
-											>
-												{currentFontVariants.map((variant, idx) => (
-													<FormControlLabel
-														key={idx}
-														value={idx}
-														control={<Radio />}
-														label={variant}
-														color="secondary"
-													/>
-												))}
-											</RadioGroup>
-										</FormControl>
-									</Grid>
-								</Fragment>
-							) : (
-								<Fragment>
-									<Grid item xs={12}>
-										<DebouncedTextField
-											type="text"
-											onChange={(e) => {
-												const { value: newSearchTerm } = e.target;
-												setFontSearchTerm(newSearchTerm);
-											}}
-											value={fontSearchTerm}
-											disableUnderline
-											fullWidth
-											placeholder="Search..."
-											inputProps={{ className: classes.mainSearchInput }}
-											multiline={false}
-											autoFocus
-											endAdornment={
-												<IconButton
-													className={classes.searchIcon}
-													aria-label="search-icon"
-													component="span"
+												<RadioGroup
+													aria-labelledby="font-variants-radio-btn-group"
+													value={cloudSettings.currentFontVariantIdx || 0}
+													name="currentFontVariantIdx"
+													row={true}
+													onChange={(e) =>
+														updateCloudSettings(e.target.name, e.target.value)
+													}
 												>
-													<SearchIcon />
-												</IconButton>
-											}
-										/>
+													{currentFontVariants.map((variant, idx) => (
+														<FormControlLabel
+															key={idx}
+															value={idx}
+															control={<Radio />}
+															label={variant}
+															color="secondary"
+														/>
+													))}
+												</RadioGroup>
+											</FormControl>
+										</Grid>
+									</Fragment>
+								) : (
+									<Fragment>
+										<Grid item xs={12}>
+											<DebouncedTextField
+												type="text"
+												onChange={(e) => {
+													const { value: newSearchTerm } = e.target;
+													setFontSearchTerm(newSearchTerm);
+												}}
+												value={fontSearchTerm}
+												disableUnderline
+												fullWidth
+												placeholder="Search..."
+												inputProps={{ className: classes.mainSearchInput }}
+												multiline={false}
+												autoFocus
+												endAdornment={
+													<IconButton
+														className={classes.searchIcon}
+														aria-label="search-icon"
+														component="span"
+													>
+														<SearchIcon />
+													</IconButton>
+												}
+											/>
+										</Grid>
+										<Grid container id="fontListContainer">
+											{fonts.map((font, idx) => {
+												const { family: fontName } = font;
+												const isChosen = font === currentFontName;
+												return (
+													<Grid
+														item
+														component={Chip}
+														key={idx}
+														label={fontName}
+														color={"secondary"}
+														disabled={isChosen}
+														clickable={!isChosen}
+														onClick={() => setCurrentFontName(fontName)}
+														// className={isChosen ? classes.chosenFontChip : null}
+														variant={"filled"}
+													/>
+												);
+											})}
+										</Grid>
+										<small style={{ marginTop: "1.2em" }}>
+											Go to{" "}
+											<a
+												href="https://fonts.google.com"
+												aria-label="Google Fonts Link"
+												target="_blank"
+												rel="noopener noreferrer"
+											>
+												fonts.google.com
+											</a>{" "}
+											in order to see all available fonts.
+										</small>
+									</Fragment>
+								))}
+							<Grid
+								id="minFontSizeSettingsContainer"
+								item
+								container
+								direction="column"
+								xs={8}
+								className={classes.sliderUIGroup}
+								style={{ marginTop: "1.2em" }}
+							>
+								<Grid item container justifyContent="space-between">
+									<Grid
+										item
+										xs={9}
+										component={HelpTooltip}
+										titles={[
+											`This controls how small the words in your RapCloud can be`,
+										]}
+									>
+										<Typography variant="overline">
+											Mininum Font Size
+										</Typography>
 									</Grid>
-									<Grid container id="fontListContainer">
-										{fonts.map((font, idx) => {
-											const { family: fontName } = font;
-											const isChosen = font === currentFontName;
-											return (
-												<Grid
-													item
-													component={Chip}
-													key={idx}
-													label={fontName}
-													color={"secondary"}
-													disabled={isChosen}
-													clickable={!isChosen}
-													onClick={() => setCurrentFontName(fontName)}
-													// className={isChosen ? classes.chosenFontChip : null}
-													variant={"filled"}
-												/>
-											);
-										})}
+								</Grid>
+								<Slider
+									id="minFontSizeSlider"
+									aria-label="Minium FontSize Slider"
+									max={
+										cloudSettings.maxFontSize
+											? cloudSettings.maxFontSize - 1
+											: 60
+									}
+									min={1}
+									step={1}
+									size="small"
+									value={parseInt(cloudSettings.minFontSize) || 4}
+									valueLabelDisplay="auto"
+									marks={[
+										{ value: 1, label: 1 },
+										{ value: 30, label: 30 },
+										{ value: 60, label: 60 },
+									]}
+									onChange={(e) => {
+										updateCloudSettings(e.target.name, e.target.value);
+									}}
+									color="secondary"
+									name="minFontSize"
+								/>
+							</Grid>
+							<Grid
+								id="maxFontSizeSettingsContainer"
+								item
+								container
+								direction="column"
+								xs={8}
+								className={classes.sliderUIGroup}
+								style={{ marginTop: "1.2em" }}
+							>
+								<Grid item container justifyContent="space-between">
+									<Grid
+										item
+										xs={9}
+										component={HelpTooltip}
+										titles={[
+											`This controls how large the words in your RapCloud can be`,
+										]}
+									>
+										<Typography variant="overline">
+											Maxiumum Font Size
+										</Typography>
 									</Grid>
-									<small style={{ marginTop: "1.2em" }}>
-										Go to{" "}
-										<a
-											href="https://fonts.google.com"
-											aria-label="Google Fonts Link"
-											target="_blank"
-											rel="noopener noreferrer"
-										>
-											fonts.google.com
-										</a>{" "}
-										in order to see all available fonts.
-									</small>
-								</Fragment>
-							))}
-						<Grid
-							id="minFontSizeSettingsContainer"
-							item
-							container
-							direction="column"
-							xs={8}
-							className={classes.sliderUIGroup}
-							style={{ marginTop: "1.2em" }}
-						>
-							<Grid item container justifyContent="space-between">
-								<Grid
-									item
-									xs={9}
-									component={HelpTooltip}
-									titles={[
-										`This controls how small the words in your RapCloud can be`,
-									]}
-								>
-									<Typography variant="overline">Mininum Font Size</Typography>
 								</Grid>
-							</Grid>
-							<Slider
-								id="minFontSizeSlider"
-								aria-label="Minium FontSize Slider"
-								max={
-									cloudSettings.maxFontSize ? cloudSettings.maxFontSize - 1 : 60
-								}
-								min={1}
-								step={1}
-								size="small"
-								value={parseInt(cloudSettings.minFontSize) || 4}
-								valueLabelDisplay="auto"
-								marks={[
-									{ value: 1, label: 1 },
-									{ value: 30, label: 30 },
-									{ value: 60, label: 60 },
-								]}
-								onChange={(e) => {
-									updateCloudSettings(e.target.name, e.target.value);
-								}}
-								color="secondary"
-								name="minFontSize"
-							/>
-						</Grid>
-						<Grid
-							id="maxFontSizeSettingsContainer"
-							item
-							container
-							direction="column"
-							xs={8}
-							className={classes.sliderUIGroup}
-							style={{ marginTop: "1.2em" }}
-						>
-							<Grid item container justifyContent="space-between">
-								<Grid
-									item
-									xs={9}
-									component={HelpTooltip}
-									titles={[
-										`This controls how large the words in your RapCloud can be`,
+								<Slider
+									id="maxFontSizeSlider"
+									aria-label="Maximum FontSize Slider"
+									max={60}
+									min={cloudSettings.minFontSize + 1}
+									step={1}
+									size="small"
+									value={parseInt(cloudSettings.maxFontSize) || 60}
+									valueLabelDisplay="auto"
+									marks={[
+										{ value: 1, label: 1 },
+										{ value: 30, label: 30 },
+										{ value: 60, label: 60 },
 									]}
-								>
-									<Typography variant="overline">Maxiumum Font Size</Typography>
-								</Grid>
+									onChange={(e) => {
+										updateCloudSettings(e.target.name, e.target.value);
+									}}
+									color="secondary"
+									name="maxFontSize"
+								/>
 							</Grid>
-							<Slider
-								id="maxFontSizeSlider"
-								aria-label="Maximum FontSize Slider"
-								max={60}
-								min={cloudSettings.minFontSize + 1}
-								step={1}
-								size="small"
-								value={parseInt(cloudSettings.maxFontSize) || 60}
-								valueLabelDisplay="auto"
-								marks={[
-									{ value: 1, label: 1 },
-									{ value: 30, label: 30 },
-									{ value: 60, label: 60 },
-								]}
-								onChange={(e) => {
-									updateCloudSettings(e.target.name, e.target.value);
-								}}
-								color="secondary"
-								name="maxFontSize"
-							/>
 						</Grid>
-					</Grid>
+					)}
 				</Grid>
 				<Grid
 					id="colorsSection"
@@ -466,6 +502,12 @@ const RapCloudSettings = (props) => {
 					className={classNames(classes.formSection)}
 					direction="column"
 				>
+					<IconButton
+						className={classNames(classes.sectionToggleBtn)}
+						onClick={() => toggleColorsExpanded(!colorsExpanded)}
+					>
+						{colorsExpanded ? <MinusIcon /> : <AddIcon />}
+					</IconButton>
 					<Grid
 						id="colorsSectionHead"
 						item
@@ -483,148 +525,153 @@ const RapCloudSettings = (props) => {
 							<Typography variant="h6">Colors</Typography>
 						</HelpTooltip>
 					</Grid>
-					<Grid
-						id="colorsSectionBody"
-						item
-						container
-						direction="column"
-						wrap="nowrap"
-					>
-						<FormControlLabel
-							item="true"
-							control={
-								<Switch
-									checked={cloudSettings.useRandomColors}
-									onChange={(e) => {
-										updateCloudSettings(e.target.name, e.target.checked);
-									}}
-									color="secondary"
-									name="useRandomColors"
-									inputProps={{ "aria-label": "Toggle Random Colors" }}
-								/>
-							}
-							label={
-								<HelpTooltip
-									titles={["Randomly chosen colors from the `Viridis` set"]}
-								>
-									Random Colors
-								</HelpTooltip>
-							}
-						/>
-						<FormControlLabel
-							item="true"
-							control={
-								<Switch
-									checked={cloudSettings.colorFromMask}
-									onChange={(e) => {
-										const { checked } = e.target;
-										updateCloudSettings(e.target.name, checked);
-									}}
-									disabled={!cloudSettings.maskDesired || !cloudSettings.maskId}
-									color="secondary"
-									name="colorFromMask"
-									inputProps={{ "aria-label": "Toggle Color from Mask" }}
-								/>
-							}
-							label={
-								<HelpTooltip
-									titles={[
-										`Choose this option in order to have the Rap Cloud resemble your mask
-												image in color, not just shape.`,
-										`Each word will take the average color of whatever space it occupies on
-												your mask image.`,
-									]}
-								>
-									Color from Mask
-								</HelpTooltip>
-							}
-						/>
+					{colorsExpanded && (
 						<Grid
-							id="customColorsLabelBox"
+							id="colorsSectionBody"
 							item
 							container
-							direction="row"
-							justifyContent="space-between"
+							direction="column"
+							wrap="nowrap"
 						>
 							<FormControlLabel
 								item="true"
 								control={
 									<Switch
-										checked={cloudSettings.useCustomColors}
+										checked={cloudSettings.useRandomColors}
+										onChange={(e) => {
+											updateCloudSettings(e.target.name, e.target.checked);
+										}}
+										color="secondary"
+										name="useRandomColors"
+										inputProps={{ "aria-label": "Toggle Random Colors" }}
+									/>
+								}
+								label={
+									<HelpTooltip
+										titles={["Randomly chosen colors from the `Viridis` set"]}
+									>
+										Random Colors
+									</HelpTooltip>
+								}
+							/>
+							<FormControlLabel
+								item="true"
+								control={
+									<Switch
+										checked={cloudSettings.colorFromMask}
 										onChange={(e) => {
 											const { checked } = e.target;
 											updateCloudSettings(e.target.name, checked);
 										}}
+										disabled={
+											!cloudSettings.maskDesired || !cloudSettings.maskId
+										}
 										color="secondary"
-										name="useCustomColors"
-										inputProps={{ "aria-label": "Toggle Use Custom Colors" }}
+										name="colorFromMask"
+										inputProps={{ "aria-label": "Toggle Color from Mask" }}
 									/>
 								}
 								label={
 									<HelpTooltip
 										titles={[
 											`Choose this option in order to have the Rap Cloud resemble your mask
-													image in color, not just shape.`,
-											`Each word will take the average color of whatever space it occupies
-													on your mask image.`,
+												image in color, not just shape.`,
+											`Each word will take the average color of whatever space it occupies on
+												your mask image.`,
 										]}
 									>
-										Choose Custom Colors
+										Color from Mask
 									</HelpTooltip>
 								}
 							/>
-							{cloudSettings.useCustomColors && !!cloudSettings.colors.length && (
-								<IconButton
-									item="true"
-									onClick={() => updateCloudSettings("colors", [])}
-									color="secondary"
-								>
-									<XIcon />
-								</IconButton>
-							)}
-						</Grid>
-						{cloudSettings.useCustomColors && (
 							<Grid
+								id="customColorsLabelBox"
 								item
 								container
 								direction="row"
-								wrap="wrap"
-								alignContent="center"
-								alignItems="center"
-								justifyContent="flex-start"
+								justifyContent="space-between"
 							>
-								<ColorPicker
-									chooseColor={(hex) =>
-										updateCloudSettings(
-											"colors",
-											uniq([hex, ...cloudSettings.colors])
-										)
+								<FormControlLabel
+									item="true"
+									control={
+										<Switch
+											checked={cloudSettings.useCustomColors}
+											onChange={(e) => {
+												const { checked } = e.target;
+												updateCloudSettings(e.target.name, checked);
+											}}
+											color="secondary"
+											name="useCustomColors"
+											inputProps={{ "aria-label": "Toggle Use Custom Colors" }}
+										/>
 									}
-									disabled={
-										cloudSettings.colorFromMask ||
-										!cloudSettings.useCustomColors
+									label={
+										<HelpTooltip
+											titles={[
+												`Choose this option in order to have the Rap Cloud resemble your mask
+													image in color, not just shape.`,
+												`Each word will take the average color of whatever space it occupies
+													on your mask image.`,
+											]}
+										>
+											Choose Custom Colors
+										</HelpTooltip>
 									}
 								/>
-								{cloudSettings.colors.map((hex, idx) => (
-									<Chip
-										label={hex}
-										key={idx}
-										className={classNames(classes.colorChip)}
-										style={{ backgroundColor: hex }}
-										onDelete={() => {
-											const newColors = [...cloudSettings.colors];
-											newColors.splice(idx, 1);
-											updateCloudSettings("colors", newColors);
-										}}
+								{cloudSettings.useCustomColors &&
+									!!cloudSettings.colors.length && (
+										<IconButton
+											item="true"
+											onClick={() => updateCloudSettings("colors", [])}
+											color="secondary"
+										>
+											<XIcon />
+										</IconButton>
+									)}
+							</Grid>
+							{cloudSettings.useCustomColors && (
+								<Grid
+									item
+									container
+									direction="row"
+									wrap="wrap"
+									alignContent="center"
+									alignItems="center"
+									justifyContent="flex-start"
+								>
+									<ColorPicker
+										chooseColor={(hex) =>
+											updateCloudSettings(
+												"colors",
+												uniq([hex, ...cloudSettings.colors])
+											)
+										}
 										disabled={
 											cloudSettings.colorFromMask ||
 											!cloudSettings.useCustomColors
 										}
 									/>
-								))}
-							</Grid>
-						)}
-					</Grid>
+									{cloudSettings.colors.map((hex, idx) => (
+										<Chip
+											label={hex}
+											key={idx}
+											className={classNames(classes.colorChip)}
+											style={{ backgroundColor: hex }}
+											onDelete={() => {
+												const newColors = [...cloudSettings.colors];
+												newColors.splice(idx, 1);
+												updateCloudSettings("colors", newColors);
+											}}
+											disabled={
+												cloudSettings.colorFromMask ||
+												!cloudSettings.useCustomColors
+											}
+										/>
+									))}
+								</Grid>
+							)}
+						</Grid>
+					)}
 				</Grid>
 				<Grid
 					id="backgroundSection"
@@ -632,6 +679,12 @@ const RapCloudSettings = (props) => {
 					className={classNames(classes.formSection)}
 					direction="column"
 				>
+					<IconButton
+						className={classNames(classes.sectionToggleBtn)}
+						onClick={() => toggleBackgroundExpanded(!backgroundExpanded)}
+					>
+						{backgroundExpanded ? <MinusIcon /> : <AddIcon />}
+					</IconButton>
 					<Grid
 						id="backgroundSectionHead"
 						item
@@ -651,136 +704,138 @@ const RapCloudSettings = (props) => {
 							</Typography>
 						</HelpTooltip>
 					</Grid>
-					<Grid
-						id="backgroundSectionBody"
-						item
-						container
-						direction="column"
-						justifyContent="space-evenly"
-					>
+					{backgroundExpanded && (
 						<Grid
+							id="backgroundSectionBody"
 							item
 							container
-							direction="row"
-							wrap="nowrap"
-							justifyContent="flex-start"
-							alignContent="center"
-							alignItems="center"
+							direction="column"
+							justifyContent="space-evenly"
 						>
-							<FormControlLabel
-								item="true"
-								control={
-									<Switch
-										checked={cloudSettings.coloredBackground}
-										onChange={(e) => {
-											updateCloudSettings(e.target.name, e.target.checked);
-										}}
-										color="secondary"
-										name="coloredBackground"
-										inputProps={{ "aria-label": "Toggle Colored Background" }}
-									/>
-								}
-								label={
-									<HelpTooltip
-										titles={[
-											`Background will be a solid color of your choice.`,
-											`This choice defaults to black`,
-										]}
-									>
-										Colored
-									</HelpTooltip>
-								}
-							/>
-							<ColorPicker
-								item="true"
-								disabled={!cloudSettings.coloredBackground}
-								anchorStyles={{
-									backgroundColor: cloudSettings.backgroundColor,
-									color: "#f5f5f5",
-								}}
-								chooseColor={(hex) => {
-									updateCloudSettings("backgroundColor", hex);
-								}}
-								title={"Choose a background color"}
-								initialColor="#000000"
-								label={cloudSettings.backgroundColor}
-							/>
-						</Grid>
+							<Grid
+								item
+								container
+								direction="row"
+								wrap="nowrap"
+								justifyContent="flex-start"
+								alignContent="center"
+								alignItems="center"
+							>
+								<FormControlLabel
+									item="true"
+									control={
+										<Switch
+											checked={cloudSettings.coloredBackground}
+											onChange={(e) => {
+												updateCloudSettings(e.target.name, e.target.checked);
+											}}
+											color="secondary"
+											name="coloredBackground"
+											inputProps={{ "aria-label": "Toggle Colored Background" }}
+										/>
+									}
+									label={
+										<HelpTooltip
+											titles={[
+												`Background will be a solid color of your choice.`,
+												`This choice defaults to black`,
+											]}
+										>
+											Colored
+										</HelpTooltip>
+									}
+								/>
+								<ColorPicker
+									item="true"
+									disabled={!cloudSettings.coloredBackground}
+									anchorStyles={{
+										backgroundColor: cloudSettings.backgroundColor,
+										color: "#f5f5f5",
+									}}
+									chooseColor={(hex) => {
+										updateCloudSettings("backgroundColor", hex);
+									}}
+									title={"Choose a background color"}
+									initialColor="#000000"
+									label={cloudSettings.backgroundColor}
+								/>
+							</Grid>
 
-						<Grid
-							item
-							container
-							direction="row"
-							wrap="wrap"
-							justifyContent="flex-start"
-							alignContent="center"
-							alignItems="center"
-						>
-							<FormControlLabel
-								item="true"
-								control={
-									<Switch
-										checked={cloudSettings.transparentBackground}
-										onChange={(e) => {
-											updateCloudSettings(e.target.name, e.target.checked);
-										}}
-										color="secondary"
-										name="transparentBackground"
-										inputProps={{
-											"aria-label": "Toggle Transparent Background",
-										}}
-									/>
-								}
-								label={
-									<HelpTooltip
-										titles={[
-											`The background will not be there! Completely see-through`,
-										]}
-									>
-										Transparent
-									</HelpTooltip>
-								}
-							/>
+							<Grid
+								item
+								container
+								direction="row"
+								wrap="wrap"
+								justifyContent="flex-start"
+								alignContent="center"
+								alignItems="center"
+							>
+								<FormControlLabel
+									item="true"
+									control={
+										<Switch
+											checked={cloudSettings.transparentBackground}
+											onChange={(e) => {
+												updateCloudSettings(e.target.name, e.target.checked);
+											}}
+											color="secondary"
+											name="transparentBackground"
+											inputProps={{
+												"aria-label": "Toggle Transparent Background",
+											}}
+										/>
+									}
+									label={
+										<HelpTooltip
+											titles={[
+												`The background will not be there! Completely see-through`,
+											]}
+										>
+											Transparent
+										</HelpTooltip>
+									}
+								/>
+							</Grid>
+							<Grid
+								item
+								container
+								direction="row"
+								wrap="wrap"
+								justifyContent="flex-start"
+								alignContent="center"
+								alignItems="center"
+							>
+								<FormControlLabel
+									item="true"
+									control={
+										<Switch
+											checked={cloudSettings.maskAsBackground}
+											onChange={(e) => {
+												updateCloudSettings(e.target.name, e.target.checked);
+											}}
+											disabled={
+												!cloudSettings.maskDesired || !cloudSettings.maskId
+											}
+											color="secondary"
+											name="maskAsBackground"
+											inputProps={{
+												"aria-label": "Toggle Use Mask as Background",
+											}}
+										/>
+									}
+									label={
+										<HelpTooltip
+											titles={[
+												`The background will be the original mask image chosen`,
+											]}
+										>
+											Mask as Background
+										</HelpTooltip>
+									}
+								/>
+							</Grid>
 						</Grid>
-						<Grid
-							item
-							container
-							direction="row"
-							wrap="wrap"
-							justifyContent="flex-start"
-							alignContent="center"
-							alignItems="center"
-						>
-							<FormControlLabel
-								item="true"
-								control={
-									<Switch
-										checked={cloudSettings.maskAsBackground}
-										onChange={(e) => {
-											updateCloudSettings(e.target.name, e.target.checked);
-										}}
-										disabled={
-											!cloudSettings.maskDesired || !cloudSettings.maskId
-										}
-										color="secondary"
-										name="maskAsBackground"
-										inputProps={{
-											"aria-label": "Toggle Use Mask as Background",
-										}}
-									/>
-								}
-								label={
-									<HelpTooltip
-										titles={[
-											`The background will be the original mask image chosen`,
-										]}
-									>
-										Mask as Background
-									</HelpTooltip>
-								}
-							/>
-						</Grid>
-					</Grid>
+					)}
 				</Grid>
 
 				<Grid
@@ -789,6 +844,17 @@ const RapCloudSettings = (props) => {
 					className={classNames(classes.formSection)}
 					direction="column"
 				>
+					<IconButton
+						className={classNames(classes.sectionToggleBtn)}
+						onClick={() => {
+							if (!maskExpanded) {
+								updateCloudSettings("maskDesired", true);
+							}
+							toggleMaskExpanded(!maskExpanded);
+						}}
+					>
+						{maskExpanded ? <MinusIcon /> : <AddIcon />}
+					</IconButton>
 					<Grid
 						id="maskSectionHead"
 						item
@@ -798,36 +864,35 @@ const RapCloudSettings = (props) => {
 						wrap="nowrap"
 						alignItems="center"
 					>
-						<FormControlLabel
-							item="true"
-							control={
-								<Switch
-									checked={cloudSettings.maskDesired}
-									onChange={(e) => {
-										updateCloudSettings(e.target.name, e.target.checked);
-									}}
-									color="secondary"
-									name="maskDesired"
-									inputProps={{ "aria-label": "Toggle Use of Mask" }}
-								/>
-							}
-							label={
-								<HelpTooltip
-									titles={[
-										`A mask is a picture that you can use to shape and/or color your RapCloud!`,
-										`Click the blue, "Add Mask" (+) button to learn more about masks.`,
-									]}
-									onClick={() => toggleUploadDialog(true)}
-								>
-									Mask
-								</HelpTooltip>
-							}
+						<Switch
+							checked={cloudSettings.maskDesired}
+							onChange={(e) => {
+								const { checked } = e.target;
+								if (!checked) {
+									toggleMaskExpanded(false);
+								}
+								updateCloudSettings(e.target.name, checked);
+							}}
+							color="secondary"
+							name="maskDesired"
+							inputProps={{ "aria-label": "Toggle Use of Mask" }}
 						/>
-						<IconButton onClick={fetchMasks} color="secondary">
-							<Refresh />
-						</IconButton>
+						<HelpTooltip
+							titles={[
+								`A mask is a picture that you can use to shape and/or color your RapCloud!`,
+								`Click the blue, "Add Mask" (+) button to learn more about masks.`,
+							]}
+						>
+							<Typography variant="h6">Make RapCloud from Image</Typography>
+						</HelpTooltip>
+						{cloudSettings.maskDesired && maskExpanded ? (
+							<IconButton onClick={fetchMasks} color="secondary">
+								<Refresh />
+							</IconButton>
+						) : null}
+						<Grid item xs={1}></Grid>
 					</Grid>
-					{cloudSettings.maskDesired ? (
+					{cloudSettings.maskDesired && maskExpanded ? (
 						<Grid
 							id="maskSectionBody"
 							item
@@ -1315,6 +1380,12 @@ const RapCloudSettings = (props) => {
 					className={classNames(classes.formSection)}
 					direction="column"
 				>
+					<IconButton
+						className={classNames(classes.sectionToggleBtn)}
+						onClick={() => toggleGenExpanded(!genSettingsExpanded)}
+					>
+						{genSettingsExpanded ? <MinusIcon /> : <AddIcon />}
+					</IconButton>
 					<Grid id="genSettingsSectionHead">
 						<HelpTooltip
 							titles={[`General settings applied to your Rap Cloud`]}
@@ -1324,369 +1395,373 @@ const RapCloudSettings = (props) => {
 							</Typography>
 						</HelpTooltip>
 					</Grid>
-					<Grid
-						id="genSettingsSectionBody"
-						item
-						container
-						direction="column"
-						style={{ marginTop: "1.2em" }}
-					>
+					{genSettingsExpanded && (
 						<Grid
-							id="downsampleSettingsContainer"
+							id="genSettingsSectionBody"
 							item
 							container
 							direction="column"
-							xs={8}
-							className={classes.sliderUIGroup}
 							style={{ marginTop: "1.2em" }}
 						>
-							<Grid item container justifyContent="space-between">
-								<Grid
-									item
-									xs={9}
-									component={HelpTooltip}
-									titles={[
-										`Move this to the right (increase) to get a fast RapCloud. Move to left to get a detailed RapCloud.`,
-										`Downsampling is the process of making your mask image smaller by removing some of the definition/detail.`,
-										`Higher downsampling (like 3) will result in a less detailed image, but your Rap Cloud will be generated much more quickly`,
-										`Lower downsampling, (like 0 or 1) will result in a highly detailed Rap Cloud, but will take much longer.`,
-									]}
-								>
-									<Typography variant="overline">Detailed vs. Fast</Typography>
+							<Grid
+								id="downsampleSettingsContainer"
+								item
+								container
+								direction="column"
+								xs={8}
+								className={classes.sliderUIGroup}
+								style={{ marginTop: "1.2em" }}
+							>
+								<Grid item container justifyContent="space-between">
+									<Grid
+										item
+										xs={9}
+										component={HelpTooltip}
+										titles={[
+											`Move this to the right (increase) to get a fast RapCloud. Move to left to get a detailed RapCloud.`,
+											`Downsampling is the process of making your mask image smaller by removing some of the definition/detail.`,
+											`Higher downsampling (like 3) will result in a less detailed image, but your Rap Cloud will be generated much more quickly`,
+											`Lower downsampling, (like 0 or 1) will result in a highly detailed Rap Cloud, but will take much longer.`,
+										]}
+									>
+										<Typography variant="overline">
+											Detailed vs. Fast
+										</Typography>
+									</Grid>
 								</Grid>
-							</Grid>
-							<Slider
-								id="downsampleSlider"
-								aria-label="Downsample Slider"
-								max={3}
-								min={1}
-								step={1}
-								size="small"
-								value={parseInt(cloudSettings.downsample)}
-								valueLabelDisplay="auto"
-								marks={[
-									{ value: 1, label: 1 },
-									{ value: 2, label: 2 },
-									{ value: 3, label: 3 },
-								]}
-								onChange={(e) => {
-									updateCloudSettings(e.target.name, e.target.value);
-								}}
-								color="secondary"
-								name="downsample"
-							/>
-						</Grid>
-						<Grid
-							id="preferHorizontalSettingsContainer"
-							item
-							container
-							direction="column"
-							xs={8}
-							className={classes.sliderUIGroup}
-							style={{ marginTop: "1.2em" }}
-						>
-							<Grid item container justifyContent="space-between">
-								<Grid
-									item
-									xs={9}
-									component={HelpTooltip}
-									titles={[
-										`Placing this number at 100% words will come out horizontal only.`,
-										`Placing it at 10% means only 10% of the words will come out horizontal.`,
-									]}
-								>
-									<Typography variant="overline">
-										Horizontal-to-Vertical Ratio
-									</Typography>
-								</Grid>
-							</Grid>
-							<Slider
-								id="preferHorizontalSlider"
-								aria-label="Prefer Horizontal Slider"
-								max={100}
-								min={0}
-								step={10}
-								size="small"
-								value={parseFloat(cloudSettings.preferHorizontal)}
-								valueLabelDisplay="auto"
-								marks={[
-									{ value: 10, label: "10%" },
-									{ value: 50, label: "50%" },
-									{ value: 100, label: "100%" },
-								]}
-								onChange={(e) => {
-									updateCloudSettings(e.target.name, e.target.value);
-								}}
-								color="secondary"
-								name="preferHorizontal"
-							/>
-						</Grid>
-						<Grid
-							id="marginSettingsContainer"
-							item
-							container
-							direction="column"
-							xs={8}
-							className={classes.sliderUIGroup}
-							style={{ marginTop: "1.2em" }}
-						>
-							<Grid item container justifyContent="space-between">
-								<Grid
-									item
-									xs={9}
-									component={HelpTooltip}
-									titles={[
-										`Increasing margin will put more space between words. Decreasing will result in a more packed image, but takes longer.`,
-									]}
-								>
-									<Typography variant="overline">Margin</Typography>
-								</Grid>
-							</Grid>
-							<Slider
-								id="marginSlider"
-								aria-label="Margin Slider"
-								max={15}
-								min={0}
-								step={1}
-								size="small"
-								value={parseInt(cloudSettings.margin)}
-								valueLabelDisplay="auto"
-								marks={[
-									{ value: 0, label: 0 },
-									{ value: 7, label: 7 },
-									{ value: 16, label: 16 },
-								]}
-								onChange={(e) => {
-									updateCloudSettings(e.target.name, e.target.value);
-								}}
-								color="secondary"
-								name="margin"
-							/>
-						</Grid>
-						<Grid
-							id="relativeScalingSettingsContainer"
-							item
-							container
-							direction="column"
-							xs={8}
-							className={classes.sliderUIGroup}
-							style={{ marginTop: "1.2em" }}
-						>
-							<Grid item container justifyContent="space-between">
-								<Grid
-									item
-									xs={9}
-									component={HelpTooltip}
-									titles={[
-										`Placing this number at 100 means that a word that is twice as frequent will have twice the size.`,
-										`Placing this nubmer at 0 means only word-ranks are considered.`,
-									]}
-								>
-									<Typography variant="overline">Relative Scaling</Typography>
-								</Grid>
-							</Grid>
-							<Slider
-								id="relativeScalingSlider"
-								aria-label="Prefer Horizontal Slider"
-								max={100}
-								min={0}
-								step={10}
-								size="small"
-								value={parseFloat(cloudSettings.relativeScaling)}
-								valueLabelDisplay="auto"
-								marks={[
-									{ value: 0, label: "0%" },
-									{ value: 50, label: "50%" },
-									{ value: 100, label: "100%" },
-								]}
-								onChange={(e) => {
-									updateCloudSettings(e.target.name, e.target.value);
-								}}
-								color="secondary"
-								name="relativeScaling"
-							/>
-						</Grid>
-						<Grid
-							id="maskOpacitySettingsContainer"
-							item
-							container
-							direction="column"
-							xs={8}
-							className={classes.sliderUIGroup}
-							style={{ marginTop: "1.2em" }}
-						>
-							<Grid item container justifyContent="space-between">
-								<Grid
-									item
-									xs={9}
-									component={HelpTooltip}
-									titles={[
-										`Decreasing Cloud Opacity will make the Rap Cloud more transparent.`,
-									]}
-								>
-									<Typography variant="overline">Cloud Opacity</Typography>
-								</Grid>
-								<FormControlLabel
-									item="true"
-									control={
-										<Switch
-											checked={cloudSettings.fadeCloud}
-											onChange={(e) => {
-												updateCloudSettings(e.target.name, e.target.checked);
-											}}
-											color="secondary"
-											name="fadeCloud"
-											inputProps={{
-												"aria-label": "Toggle Cloud Fading",
-											}}
-										/>
-									}
-									label={
-										<HelpTooltip
-											titles={[
-												`Choose whether you want the cloud to be partially transparent`,
-											]}
-										>
-											Fade Mask
-										</HelpTooltip>
-									}
-								/>
-							</Grid>
-							{cloudSettings.fadeCloud && (
 								<Slider
-									id="maskOpacitySlider"
-									aria-label="Cloud Opacity Slider"
-									max={255}
-									min={0}
+									id="downsampleSlider"
+									aria-label="Downsample Slider"
+									max={3}
+									min={1}
 									step={1}
 									size="small"
-									value={parseInt(cloudSettings.cloudOpacity)}
+									value={parseInt(cloudSettings.downsample)}
 									valueLabelDisplay="auto"
 									marks={[
-										{ value: 0, label: 0 },
-										{ value: 125, label: 125 },
-										{ value: 255, label: 255 },
+										{ value: 1, label: 1 },
+										{ value: 2, label: 2 },
+										{ value: 3, label: 3 },
 									]}
 									onChange={(e) => {
 										updateCloudSettings(e.target.name, e.target.value);
 									}}
 									color="secondary"
-									name="cloudOpacity"
+									name="downsample"
 								/>
-							)}
-						</Grid>
-						<TextField
-							id="cloudWidth"
-							item="true"
-							className={classNames(classes.oneEmMarginRight)}
-							onChange={(e) => {
-								let val = e.target.value;
-								if (val > 2000) val = 2000;
-								updateCloudSettings("width", val);
-							}}
-							label={
-								<HelpTooltip
-									titles={[`The width of the Rap Cloud to be generated`]}
-								>
-									Cloud Width
-								</HelpTooltip>
-							}
-							value={cloudSettings.width}
-							type="number"
-							autoComplete={"off"}
-						/>
-						<TextField
-							id="cloudHeight"
-							item="true"
-							className={classNames(classes.oneEmMarginRight)}
-							onChange={(e) => {
-								let val = e.target.value;
-								if (val > 2000) val = 2000;
-								updateCloudSettings("height", val);
-							}}
-							label={
-								<HelpTooltip
-									titles={[`The height of the Rap Cloud to be generated`]}
-								>
-									Cloud Height
-								</HelpTooltip>
-							}
-							value={cloudSettings.height}
-							type="number"
-							autoComplete={"off"}
-						/>
+							</Grid>
+							<Grid
+								id="preferHorizontalSettingsContainer"
+								item
+								container
+								direction="column"
+								xs={8}
+								className={classes.sliderUIGroup}
+								style={{ marginTop: "1.2em" }}
+							>
+								<Grid item container justifyContent="space-between">
+									<Grid
+										item
+										xs={9}
+										component={HelpTooltip}
+										titles={[
+											`Placing this number at 100% words will come out horizontal only.`,
+											`Placing it at 10% means only 10% of the words will come out horizontal.`,
+										]}
+									>
+										<Typography variant="overline">
+											Horizontal-to-Vertical Ratio
+										</Typography>
+									</Grid>
+								</Grid>
+								<Slider
+									id="preferHorizontalSlider"
+									aria-label="Prefer Horizontal Slider"
+									max={100}
+									min={0}
+									step={10}
+									size="small"
+									value={parseFloat(cloudSettings.preferHorizontal)}
+									valueLabelDisplay="auto"
+									marks={[
+										{ value: 10, label: "10%" },
+										{ value: 50, label: "50%" },
+										{ value: 100, label: "100%" },
+									]}
+									onChange={(e) => {
+										updateCloudSettings(e.target.name, e.target.value);
+									}}
+									color="secondary"
+									name="preferHorizontal"
+								/>
+							</Grid>
+							<Grid
+								id="marginSettingsContainer"
+								item
+								container
+								direction="column"
+								xs={8}
+								className={classes.sliderUIGroup}
+								style={{ marginTop: "1.2em" }}
+							>
+								<Grid item container justifyContent="space-between">
+									<Grid
+										item
+										xs={9}
+										component={HelpTooltip}
+										titles={[
+											`Increasing margin will put more space between words. Decreasing will result in a more packed image, but takes longer.`,
+										]}
+									>
+										<Typography variant="overline">Margin</Typography>
+									</Grid>
+								</Grid>
+								<Slider
+									id="marginSlider"
+									aria-label="Margin Slider"
+									max={15}
+									min={0}
+									step={1}
+									size="small"
+									value={parseInt(cloudSettings.margin)}
+									valueLabelDisplay="auto"
+									marks={[
+										{ value: 0, label: 0 },
+										{ value: 7, label: 7 },
+										{ value: 16, label: 16 },
+									]}
+									onChange={(e) => {
+										updateCloudSettings(e.target.name, e.target.value);
+									}}
+									color="secondary"
+									name="margin"
+								/>
+							</Grid>
+							<Grid
+								id="relativeScalingSettingsContainer"
+								item
+								container
+								direction="column"
+								xs={8}
+								className={classes.sliderUIGroup}
+								style={{ marginTop: "1.2em" }}
+							>
+								<Grid item container justifyContent="space-between">
+									<Grid
+										item
+										xs={9}
+										component={HelpTooltip}
+										titles={[
+											`Placing this number at 100 means that a word that is twice as frequent will have twice the size.`,
+											`Placing this nubmer at 0 means only word-ranks are considered.`,
+										]}
+									>
+										<Typography variant="overline">Relative Scaling</Typography>
+									</Grid>
+								</Grid>
+								<Slider
+									id="relativeScalingSlider"
+									aria-label="Prefer Horizontal Slider"
+									max={100}
+									min={0}
+									step={10}
+									size="small"
+									value={parseFloat(cloudSettings.relativeScaling)}
+									valueLabelDisplay="auto"
+									marks={[
+										{ value: 0, label: "0%" },
+										{ value: 50, label: "50%" },
+										{ value: 100, label: "100%" },
+									]}
+									onChange={(e) => {
+										updateCloudSettings(e.target.name, e.target.value);
+									}}
+									color="secondary"
+									name="relativeScaling"
+								/>
+							</Grid>
+							<Grid
+								id="maskOpacitySettingsContainer"
+								item
+								container
+								direction="column"
+								xs={8}
+								className={classes.sliderUIGroup}
+								style={{ marginTop: "1.2em" }}
+							>
+								<Grid item container justifyContent="space-between">
+									<Grid
+										item
+										xs={9}
+										component={HelpTooltip}
+										titles={[
+											`Decreasing Cloud Opacity will make the Rap Cloud more transparent.`,
+										]}
+									>
+										<Typography variant="overline">Cloud Opacity</Typography>
+									</Grid>
+									<FormControlLabel
+										item="true"
+										control={
+											<Switch
+												checked={cloudSettings.fadeCloud}
+												onChange={(e) => {
+													updateCloudSettings(e.target.name, e.target.checked);
+												}}
+												color="secondary"
+												name="fadeCloud"
+												inputProps={{
+													"aria-label": "Toggle Cloud Fading",
+												}}
+											/>
+										}
+										label={
+											<HelpTooltip
+												titles={[
+													`Choose whether you want the cloud to be partially transparent`,
+												]}
+											>
+												Fade Mask
+											</HelpTooltip>
+										}
+									/>
+								</Grid>
+								{cloudSettings.fadeCloud && (
+									<Slider
+										id="maskOpacitySlider"
+										aria-label="Cloud Opacity Slider"
+										max={255}
+										min={0}
+										step={1}
+										size="small"
+										value={parseInt(cloudSettings.cloudOpacity)}
+										valueLabelDisplay="auto"
+										marks={[
+											{ value: 0, label: 0 },
+											{ value: 125, label: 125 },
+											{ value: 255, label: 255 },
+										]}
+										onChange={(e) => {
+											updateCloudSettings(e.target.name, e.target.value);
+										}}
+										color="secondary"
+										name="cloudOpacity"
+									/>
+								)}
+							</Grid>
+							<TextField
+								id="cloudWidth"
+								item="true"
+								className={classNames(classes.oneEmMarginRight)}
+								onChange={(e) => {
+									let val = e.target.value;
+									if (val > 2000) val = 2000;
+									updateCloudSettings("width", val);
+								}}
+								label={
+									<HelpTooltip
+										titles={[`The width of the Rap Cloud to be generated`]}
+									>
+										Cloud Width
+									</HelpTooltip>
+								}
+								value={cloudSettings.width}
+								type="number"
+								autoComplete={"off"}
+							/>
+							<TextField
+								id="cloudHeight"
+								item="true"
+								className={classNames(classes.oneEmMarginRight)}
+								onChange={(e) => {
+									let val = e.target.value;
+									if (val > 2000) val = 2000;
+									updateCloudSettings("height", val);
+								}}
+								label={
+									<HelpTooltip
+										titles={[`The height of the Rap Cloud to be generated`]}
+									>
+										Cloud Height
+									</HelpTooltip>
+								}
+								value={cloudSettings.height}
+								type="number"
+								autoComplete={"off"}
+							/>
 
-						<FormControlLabel
-							control={
-								<Switch
-									checked={cloudSettings.collocations}
-									onChange={(e) => {
-										updateCloudSettings(e.target.name, e.target.checked);
-									}}
-									color="secondary"
-									name="collocations"
-									inputProps={{ "aria-label": "toggle include numbers" }}
-								/>
-							}
-							label={
-								<HelpTooltip
-									titles={[
-										`Allows pairs of words commonly seen together to stay together.`,
-										`So if "I got five on it" is repeated many times, you will see "I got", "got five", "five on", etc.`,
-										`Turn this off if you want all words to stand alone, or if you're actually trying to see which words were used the most.`,
-									]}
-								>
-									Collocations
-								</HelpTooltip>
-							}
-						/>
-						<FormControlLabel
-							control={
-								<Switch
-									checked={cloudSettings.repeat}
-									onChange={(e) => {
-										updateCloudSettings(e.target.name, e.target.checked);
-									}}
-									color="secondary"
-									name="repeat"
-									inputProps={{ "aria-label": "toggle include numbers" }}
-								/>
-							}
-							label={
-								<HelpTooltip
-									titles={[
-										`Once all words have been assigned a place, words can be used again until the entire drawable area is covered.`,
-										`We recommend on, esp if using a mask image.`,
-									]}
-								>
-									Repeat Words to Fill Picture
-								</HelpTooltip>
-							}
-						/>
-						<FormControlLabel
-							control={
-								<Switch
-									checked={cloudSettings.includeNumbers}
-									onChange={(e) => {
-										updateCloudSettings(e.target.name, e.target.checked);
-									}}
-									color="secondary"
-									name="includeNumbers"
-									inputProps={{ "aria-label": "toggle include numbers" }}
-								/>
-							}
-							label={
-								<HelpTooltip
-									titles={[
-										`Numbers technically aren't words, but we will still included them in you want us to`,
-										`We recommend keeping this option on`,
-									]}
-								>
-									Include Numbers
-								</HelpTooltip>
-							}
-						/>
-					</Grid>
+							<FormControlLabel
+								control={
+									<Switch
+										checked={cloudSettings.collocations}
+										onChange={(e) => {
+											updateCloudSettings(e.target.name, e.target.checked);
+										}}
+										color="secondary"
+										name="collocations"
+										inputProps={{ "aria-label": "toggle include numbers" }}
+									/>
+								}
+								label={
+									<HelpTooltip
+										titles={[
+											`Allows pairs of words commonly seen together to stay together.`,
+											`So if "I got five on it" is repeated many times, you will see "I got", "got five", "five on", etc.`,
+											`Turn this off if you want all words to stand alone, or if you're actually trying to see which words were used the most.`,
+										]}
+									>
+										Collocations
+									</HelpTooltip>
+								}
+							/>
+							<FormControlLabel
+								control={
+									<Switch
+										checked={cloudSettings.repeat}
+										onChange={(e) => {
+											updateCloudSettings(e.target.name, e.target.checked);
+										}}
+										color="secondary"
+										name="repeat"
+										inputProps={{ "aria-label": "toggle include numbers" }}
+									/>
+								}
+								label={
+									<HelpTooltip
+										titles={[
+											`Once all words have been assigned a place, words can be used again until the entire drawable area is covered.`,
+											`We recommend on, esp if using a mask image.`,
+										]}
+									>
+										Repeat Words to Fill Picture
+									</HelpTooltip>
+								}
+							/>
+							<FormControlLabel
+								control={
+									<Switch
+										checked={cloudSettings.includeNumbers}
+										onChange={(e) => {
+											updateCloudSettings(e.target.name, e.target.checked);
+										}}
+										color="secondary"
+										name="includeNumbers"
+										inputProps={{ "aria-label": "toggle include numbers" }}
+									/>
+								}
+								label={
+									<HelpTooltip
+										titles={[
+											`Numbers technically aren't words, but we will still included them in you want us to`,
+											`We recommend keeping this option on`,
+										]}
+									>
+										Include Numbers
+									</HelpTooltip>
+								}
+							/>
+						</Grid>
+					)}
 				</Grid>
 			</DialogContent>
 			<DialogActions>
