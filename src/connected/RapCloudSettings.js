@@ -1507,7 +1507,7 @@ const RapCloudSettings = (props) => {
 							/>
 						</Grid>
 						<Grid
-							id="wordOpacitySettingsContainer"
+							id="maskOpacitySettingsContainer"
 							item
 							container
 							direction="column"
@@ -1521,32 +1521,59 @@ const RapCloudSettings = (props) => {
 									xs={9}
 									component={HelpTooltip}
 									titles={[
-										`Decreasing Word Opacity will make the words in the Rap Cloud more transparent.`,
+										`Decreasing Cloud Opacity will make the Rap Cloud more transparent.`,
 									]}
 								>
-									<Typography variant="overline">Word Opacity</Typography>
+									<Typography variant="overline">Cloud Opacity</Typography>
 								</Grid>
+								<FormControlLabel
+									item="true"
+									control={
+										<Switch
+											checked={cloudSettings.fadeCloud}
+											onChange={(e) => {
+												updateCloudSettings(e.target.name, e.target.checked);
+											}}
+											color="secondary"
+											name="fadeCloud"
+											inputProps={{
+												"aria-label": "Toggle Cloud Fading",
+											}}
+										/>
+									}
+									label={
+										<HelpTooltip
+											titles={[
+												`Choose whether you want the cloud to be partially transparent`,
+											]}
+										>
+											Fade Mask
+										</HelpTooltip>
+									}
+								/>
 							</Grid>
-							<Slider
-								id="wordOpacitySlider"
-								aria-label="Word Opacity Slider"
-								max={255}
-								min={0}
-								step={1}
-								size="small"
-								value={parseInt(cloudSettings.wordOpacity)}
-								valueLabelDisplay="auto"
-								marks={[
-									{ value: 0, label: 0 },
-									{ value: 125, label: 125 },
-									{ value: 255, label: 255 },
-								]}
-								onChange={(e) => {
-									updateCloudSettings(e.target.name, e.target.value);
-								}}
-								color="secondary"
-								name="wordOpacity"
-							/>
+							{cloudSettings.fadeCloud && (
+								<Slider
+									id="maskOpacitySlider"
+									aria-label="Cloud Opacity Slider"
+									max={255}
+									min={0}
+									step={1}
+									size="small"
+									value={parseInt(cloudSettings.cloudOpacity)}
+									valueLabelDisplay="auto"
+									marks={[
+										{ value: 0, label: 0 },
+										{ value: 125, label: 125 },
+										{ value: 255, label: 255 },
+									]}
+									onChange={(e) => {
+										updateCloudSettings(e.target.name, e.target.value);
+									}}
+									color="secondary"
+									name="cloudOpacity"
+								/>
+							)}
 						</Grid>
 						<TextField
 							id="cloudWidth"
