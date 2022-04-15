@@ -1,31 +1,36 @@
 const normalizeLyrics = (songLyrics) => {
 	if (!songLyrics || !songLyrics.length) return [];
 	songLyrics = songLyrics.toLowerCase();
-	const sections = songLyrics.split('\n\n');
+	const sections = songLyrics.split("\n\n");
 	const rawWords = sections.reduce((_rawWords, section) => {
 		//set multiplier to influence weight
 		const markerMatchingRegEx = /\[.+\]/;
 		const marker = section.match(markerMatchingRegEx);
-		const isChorus = marker && marker[0] && [ 'chorus', 'refrain' ].some((tag) => marker[0].match(tag));
+		const isChorus =
+			marker &&
+			marker[0] &&
+			["chorus", "refrain"].some((tag) => marker[0].match(tag));
 		const multiplier = isChorus ? 3 : 1;
 
 		//trim punctuation, markers, & later, whitespace
-		section = section.replace(markerMatchingRegEx, '');
-		const punctuationMatchingRegEx = new RegExp('[.,/#!$%^*;:{}=`~()"\']', 'g');
-		section = section.replace(punctuationMatchingRegEx, '');
+		section = section.replace(markerMatchingRegEx, "");
+		const punctuationMatchingRegEx = new RegExp("[.,/#!$%^*;:{}=`~()\"']", "g");
+		section = section.replace(punctuationMatchingRegEx, "");
 
 		const whiteSpaceRegEx = /\s+/g;
-		const rawSectionWords = section.split(whiteSpaceRegEx); // Markers undetectable after this point.
 
 		//multiply words to influence weight
 		if (isChorus) {
-			for (let i = 1; i < multiplier; i++) {
-				_rawWords.push(...rawSectionWords);
+			let multiplication = 1;
+			while (multiplication < multiplier) {
+				section += " " + section;
+				multiplication++;
 			}
-			return _rawWords;
 		}
 
-		return [ ..._rawWords, ...rawSectionWords ];
+		const rawSectionWords = section.split(whiteSpaceRegEx); // Markers undetectable after this point.
+
+		return [..._rawWords, ...rawSectionWords];
 	}, []);
 
 	if (rawWords) {
@@ -40,7 +45,7 @@ const normalizeLyrics = (songLyrics) => {
 		// const normalizedLyrics = Object.entries(wordCount).map(([ word, count ]) => {
 		// 	return { text: word, size: 10 + count };
 		// });
-		return rawWords.join(' ');
+		return rawWords.join(" ");
 	}
 };
 
