@@ -28,6 +28,7 @@ export const initialState = {
 	settings: {
 		addWatermark: false,
 		backgroundColor: "#ffffff",
+		blackoutThreshold: 0,
 		collocations: true,
 		coloredBackground: true,
 		colorFromMask: false,

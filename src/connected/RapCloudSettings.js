@@ -228,7 +228,6 @@ const RapCloudSettings = (props) => {
 	useEffect(() => {
 		if (!masks.length) fetchMasks();
 	}, [masks, fetchMasks]);
-
 	const [fullScreenMask, toggleFullScreenMask] = useState(false);
 	const [uploadingCustomMask, toggleUploadDialog] = useState(false);
 
@@ -243,6 +242,7 @@ const RapCloudSettings = (props) => {
 				Cloud Customization Settings
 			</DialogTitle>
 			<DialogContent>
+				{/* Font Section */}
 				<Grid
 					id="fontsSection"
 					container
@@ -496,6 +496,7 @@ const RapCloudSettings = (props) => {
 						</Grid>
 					)}
 				</Grid>
+				{/* Colors Section  */}
 				<Grid
 					id="colorsSection"
 					container
@@ -673,6 +674,7 @@ const RapCloudSettings = (props) => {
 						</Grid>
 					)}
 				</Grid>
+				{/* Background Section */}
 				<Grid
 					id="backgroundSection"
 					container
@@ -837,7 +839,7 @@ const RapCloudSettings = (props) => {
 						</Grid>
 					)}
 				</Grid>
-
+				{/* Mask Section */}
 				<Grid
 					id="maskSection"
 					container
@@ -1104,7 +1106,7 @@ const RapCloudSettings = (props) => {
 											<Grid item container justifyContent="space-between">
 												<Grid
 													item
-													xs={9}
+													xs={8}
 													component={HelpTooltip}
 													titles={[
 														`Words won't be drawn onto any parts of an image brighter than the indicator to the right.`,
@@ -1118,16 +1120,26 @@ const RapCloudSettings = (props) => {
 												<Grid
 													item
 													container
-													xs={3}
+													xs={4}
 													justifyContent="center"
 													alignItems={"center"}
 												>
 													<Grid
 														component={Chip}
 														item
+														xs={5}
+														label={cloudSettings.blackoutThreshold}
+														style={{
+															backgroundColor: `rgb(${cloudSettings.blackoutThreshold}, ${cloudSettings.blackoutThreshold}, ${cloudSettings.blackoutThreshold})`,
+														}}
+													></Grid>
+													<Grid item xs={2}></Grid>
+													<Grid
+														component={Chip}
+														item
+														xs={5}
 														label={cloudSettings.whiteThreshold}
 														style={{
-															width: "55.5%",
 															backgroundColor: `rgb(${cloudSettings.whiteThreshold}, ${cloudSettings.whiteThreshold}, ${cloudSettings.whiteThreshold})`,
 														}}
 													></Grid>
@@ -1136,11 +1148,14 @@ const RapCloudSettings = (props) => {
 											<Slider
 												id="whiteThreshold"
 												aria-label="Brightness Sensitivity Slider"
-												max={255}
-												min={1}
+												max={256}
+												min={0}
 												step={1}
 												size="small"
-												value={parseInt(cloudSettings.whiteThreshold)}
+												value={[
+													parseInt(cloudSettings.blackoutThreshold),
+													parseInt(cloudSettings.whiteThreshold),
+												]}
 												valueLabelDisplay="auto"
 												marks={[
 													{ value: 1, label: 1 },
@@ -1148,7 +1163,13 @@ const RapCloudSettings = (props) => {
 													{ value: 255, label: 255 },
 												]}
 												onChange={(e) => {
-													updateCloudSettings(e.target.name, e.target.value);
+													const [blackoutThreshold, whiteThreshold] =
+														e.target.value;
+													updateCloudSettings(
+														"blackoutThreshold",
+														blackoutThreshold
+													);
+													updateCloudSettings("whiteThreshold", whiteThreshold);
 												}}
 												color="secondary"
 												name="whiteThreshold"
@@ -1374,6 +1395,7 @@ const RapCloudSettings = (props) => {
 						</Dialog>
 					)}
 				</Grid>
+				{/* General Settings */}
 				<Grid
 					id="genSettingsSection"
 					container

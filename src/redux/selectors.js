@@ -299,6 +299,7 @@ export const getCloudSettingsForFlight = createSelector(
 			addWatermark: false,
 			cloudOpacity: parseInt(settings.cloudOpacity),
 			fadeCloud: !!settings.fadeCloud,
+			blackoutThreshold: parseInt(settings.blackoutThreshold) || 0,
 		};
 	}
 );
