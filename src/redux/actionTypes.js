@@ -31,6 +31,7 @@ export const DELETE_CLOUDS = actionNamesForProcess("DELETE_CLOUDS");
 export const FETCH_ARTIST_GAME = actionNamesForProcess("FETCH_ARTIST_GAME");
 export const SET_SONG_LYRICS = actionNamesForProcess("SET_SONG_LYRICS");
 export const SIGN_OUT = "SIGN_OUT";
+export const COPY_CLOUD_SETTINGS = "COPY_CLOUD_SETTINGS";
 export const SET_FONT_SEARCH_TERM = "SET_FONT_SEARCH_TERM";
 export const SET_CURRENT_FONT_NAME = "SET_CURRENT_FONT_NAME";
 export const DO_NOTHING = "DO_NOTHING";

@@ -15,6 +15,7 @@ import {
 	FETCH_GOOGLE_FONTS,
 	SET_FONT_SEARCH_TERM,
 	SET_CURRENT_FONT_NAME,
+	COPY_CLOUD_SETTINGS,
 } from "../actionTypes";
 
 export const initialState = {
@@ -24,7 +25,7 @@ export const initialState = {
 	masksLoading: false,
 	fonts: [],
 	fontSearchTerm: "",
-	currentFontName: "Finger Paint",
+
 	settings: {
 		addWatermark: false,
 		backgroundColor: "#ffffff",
@@ -36,6 +37,7 @@ export const initialState = {
 		contour: false,
 		contourColor: "#ffffff",
 		contourWidth: "1",
+		currentFontName: "Finger Paint",
 		currentFontVariantIdx: 0,
 		detectEdges: true,
 		downsample: "3",
@@ -96,7 +98,10 @@ const setFontSearchTerm = (state, action) => {
 
 const setCurrentFontName = (state, action) => {
 	const { fontName } = action;
-	return { ...state, currentFontName: fontName };
+	return {
+		...state,
+		settings: { ...state.settings, currentFontName: fontName },
+	};
 };
 
 const addCloud = (state, action) => {
@@ -194,6 +199,20 @@ const updateCloudSettings = (state, action) => {
 	return { ...state, settings: newSettings };
 };
 
+const copyCloudSettings = (state, action) => {
+	const { cloudSettings } = action;
+	if (!cloudSettings) return state;
+	return {
+		...state,
+		settings: {
+			...initialState.settings,
+			...cloudSettings,
+			preferHorizontal: parseFloat(cloudSettings.preferHorizontal * 100),
+			relativeScaling: parseFloat(cloudSettings.relativeScaling * 100),
+		},
+	};
+};
+
 const deleteMask = (state, action) => {
 	const { maskId } = action;
 	if (!maskId) return state;
@@ -270,6 +289,7 @@ handlers[FETCH_CLOUDS.success] = replaceClouds;
 handlers[ADD_CLOUDS] = addClouds;
 handlers[SET_FONT_SEARCH_TERM] = setFontSearchTerm;
 handlers[SET_CURRENT_FONT_NAME] = setCurrentFontName;
+handlers[COPY_CLOUD_SETTINGS] = copyCloudSettings;
 
 export default (state = initialState, action) => {
 	const handle = handlers[action.type];

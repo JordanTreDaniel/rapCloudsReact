@@ -230,7 +230,8 @@ export const getCloudSettings = (state) => state.clouds.settings;
 
 export const getFonts = (state) => state.clouds.fonts || [];
 export const getFontSearchTerm = (state) => state.clouds.fontSearchTerm || "";
-export const getCurrentFontName = (state) => state.clouds.currentFontName || "";
+export const getCurrentFontName = (state) =>
+	state.clouds.settings.currentFontName || "";
 
 export const getMasksById = (state) => state.clouds.masksById;
 export const areMasksLoading = (state) => state.clouds.masksLoading;

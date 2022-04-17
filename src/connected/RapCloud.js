@@ -27,10 +27,12 @@ import XIcon from "@mui/icons-material/Cancel";
 import ChevronLeft from "@mui/icons-material/ChevronLeft";
 import ChevronRight from "@mui/icons-material/ChevronRight";
 import Delete from "@mui/icons-material/Delete";
+import CopyIcon from "@mui/icons-material/CopyAll";
+import SettingsIcon from "@mui/icons-material/Settings";
 // import FacebookIcon from '@mui/icons-material/Facebook';
 // import InstagramIcon from '@mui/icons-material/Instagram';
 // import TwitterIcon from '@mui/icons-material/Twitter';
-import { deleteClouds } from "../redux/actions";
+import { copyCloudSettings, deleteClouds } from "../redux/actions";
 
 const useStyles = makeStyles((theme) => {
 	return {
@@ -155,6 +157,7 @@ const RapCloud = (props) => {
 		allowDeletions = true,
 		allowCreation = true,
 		showCloudActions = true,
+		copyCloudSettings,
 	} = props;
 	const cloud = clouds[currentCloudIdx];
 	const { info, id: cloudId, officialCloud } = cloud || {};
@@ -210,6 +213,19 @@ const RapCloud = (props) => {
 						className={classNames(classes.cloudAction, classes.attnGrabber)}
 					>
 						<DownloadIcon />
+					</IconButton>
+				</Tooltip>
+				<Tooltip placement="bottom" title="Copy RapCloud Settings">
+					<IconButton
+						id="copySettingsBtn"
+						onClick={() => {
+							const { settings } = cloud;
+							copyCloudSettings(settings);
+						}}
+						className={classNames(classes.cloudAction, classes.attnGrabber)}
+					>
+						<SettingsIcon></SettingsIcon>
+						<CopyIcon></CopyIcon>
 					</IconButton>
 				</Tooltip>
 				<Tooltip placement="bottom" title="Open Your RapCloud in New Tab">
@@ -394,4 +410,4 @@ const RapCloud = (props) => {
 	);
 };
 
-export default connect(null, { deleteClouds })(RapCloud);
+export default connect(null, { deleteClouds, copyCloudSettings })(RapCloud);

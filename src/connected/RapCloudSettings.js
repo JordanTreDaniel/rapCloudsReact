@@ -1147,7 +1147,7 @@ const RapCloudSettings = (props) => {
 											</Grid>
 											<Slider
 												id="whiteThreshold"
-												aria-label="Brightness Sensitivity Slider"
+												getAriaLabel={() => "Brightness Sensitivity Slider"}
 												max={256}
 												min={0}
 												step={1}
@@ -1643,7 +1643,7 @@ const RapCloudSettings = (props) => {
 													`Choose whether you want the cloud to be partially transparent`,
 												]}
 											>
-												Fade Mask
+												Fade Cloud
 											</HelpTooltip>
 										}
 									/>
