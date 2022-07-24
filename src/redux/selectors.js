@@ -3,6 +3,7 @@ import { normalizeLyrics, whichPath, replaceDiacritics } from "./utils";
 import { createMatchSelector } from "connected-react-router";
 import sortBy from "lodash/sortBy";
 import { initialState as cloudInitialState } from "./reducers/clouds";
+import { SettingsInputSvideo } from "@mui/icons-material";
 const { settings: initialCloudSettings } = cloudInitialState;
 //General
 /********************************************************************* */
@@ -261,17 +262,13 @@ export const getSearchedFontList = createSelector(
 export const getCloudSettingsForFlight = createSelector(
 	getCloudSettings,
 	getCurrentFont,
-	(settings, currentFont) => {
-		// Object.entries(settings).map((key, val) => {
-		// 	const _type = typeof val;
-		// 	if ([ 'string', 'number' ].includes(_type)) {
-		// 		const stringVal = String(val);
-		// 		settings[key] = stringVal.length ? stringVal : String(initialCloudSettings[key]);
-		// 	}
-		// });
+	(_, officialCloud) => officialCloud,
+	(currentSettings, currentFont, officialCloud) => {
+		const settings = officialCloud ? initialCloudSettings : currentSettings;
+		const includingMask = settings.maskDesired && settings.maskId;
 		return {
 			...settings,
-			maskId: settings.maskDesired && settings.maskId ? settings.maskId : null,
+			maskId: includingMask ? settings.maskId : null,
 			contourWidth: settings.contour ? settings.contourWidth : "0",
 			width: String(settings.width).length
 				? settings.width
@@ -301,6 +298,7 @@ export const getCloudSettingsForFlight = createSelector(
 			cloudOpacity: parseInt(settings.cloudOpacity),
 			fadeCloud: !!settings.fadeCloud,
 			blackoutThreshold: parseInt(settings.blackoutThreshold) || 0,
+			maskAsWords: settings.maskAsWords,
 		};
 	}
 );

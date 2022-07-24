@@ -47,6 +47,7 @@ export const initialState = {
 		includeNumbers: true,
 		margin: 2,
 		maskAsBackground: false,
+		maskAsWords: false,
 		maskDesired: false,
 		maskId: null,
 		cloudOpacity: 255,
@@ -159,13 +160,14 @@ const removeClouds = (state, action) => {
 };
 
 const updateCloudSettings = (state, action) => {
-	const mutallyExclPropSets = [
+	const mutuallyExclPropSets = [
 		["coloredBackground", "transparentBackground", "maskAsBackground"],
 		["useCustomColors", "colorFromMask", "useRandomColors"],
+		["maskAsWords", "maskAsBackground", "fadeCloud"],
 	];
 	const { key, val } = action;
 	const newSettings = { ...state.settings, [key]: val };
-	mutallyExclPropSets.forEach((mutallyExclProps) => {
+	mutuallyExclPropSets.forEach((mutallyExclProps) => {
 		const propIdx = mutallyExclProps.indexOf(key);
 		if (propIdx === -1) return;
 		mutallyExclProps.forEach((prop, idx) => {
@@ -173,25 +175,32 @@ const updateCloudSettings = (state, action) => {
 			newSettings[prop] = val ? false : state.settings[prop];
 		});
 	});
-
 	//Settings that require mask in order to be "on"
-	newSettings["contour"] =
+	newSettings.contour =
 		newSettings.contour &&
 		newSettings.coloredBackground &&
 		newSettings.maskId &&
 		newSettings.maskDesired;
-	newSettings["maskAsBackground"] =
+	newSettings.maskAsWords =
+		newSettings.maskAsWords &&
+		(newSettings.coloredBackground || newSettings.transparentBackground) &&
+		newSettings.maskId &&
+		newSettings.maskDesired;
+	if (newSettings.maskAsWords && newSettings.colors.length > 1) {
+		newSettings.colors = [newSettings.colors[0]];
+	}
+	newSettings.maskAsBackground =
 		newSettings.maskAsBackground &&
 		newSettings.maskId &&
 		newSettings.maskDesired;
-	newSettings["colorFromMask"] =
+	newSettings.colorFromMask =
 		newSettings.colorFromMask && newSettings.maskId && newSettings.maskDesired;
 
 	//Defaults for mutually exlc prop sets
-	newSettings["transparentBackground"] =
+	newSettings.transparentBackground =
 		newSettings.transparentBackground ||
 		(!newSettings.coloredBackground && !newSettings.maskAsBackground);
-	newSettings["useCustomColors"] =
+	newSettings.useCustomColors =
 		newSettings.useCustomColors ||
 		(!newSettings.useRandomColors && !newSettings.colorFromMask);
 

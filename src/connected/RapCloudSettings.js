@@ -1256,6 +1256,33 @@ const RapCloudSettings = (props) => {
 													</HelpTooltip>
 												}
 											/>
+											<FormControlLabel
+												control={
+													<Switch
+														checked={cloudSettings.maskAsWords}
+														onChange={(e) => {
+															updateCloudSettings(
+																e.target.name,
+																e.target.checked
+															);
+														}}
+														color="secondary"
+														name="maskAsWords"
+														inputProps={{
+															"aria-label": "Toggle Mask as Words",
+														}}
+													/>
+												}
+												label={
+													<HelpTooltip
+														titles={[
+															`Generates a Rap Cloud with a solid background and clear words; so that you can see your mask image in the background through the letters`,
+														]}
+													>
+														Mask as Words
+													</HelpTooltip>
+												}
+											/>
 										</FormGroup>
 									</Grid>
 									<Grid
