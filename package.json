@@ -62,5 +62,8 @@
   "devDependencies": {
     "node-pre-gyp": "0.12.0",
     "redux-devtools-extension": "^2.13.8"
+  },
+  "engines": {
+    "node": "20.x"
   }
 }
