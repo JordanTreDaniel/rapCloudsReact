@@ -12,7 +12,7 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "axios": "^0.21.1",
-    "canvas": "^2.6.1",
+    "canvas": "^2.11.2",
     "connected-react-router": "^6.8.0",
     "d3": "^5.15.1",
     "d3-cloud": "^1.2.5",
@@ -39,7 +39,7 @@
   },
   "scripts": {
     "start": "node server.js",
-    "start:dev": "react-scripts start",
+    "start:dev": "react-scripts --openssl-legacy-provider start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -60,7 +60,7 @@
     ]
   },
   "devDependencies": {
-    "redux-devtools-extension": "^2.13.8",
-    "node-pre-gyp": "0.12.0"
+    "node-pre-gyp": "0.12.0",
+    "redux-devtools-extension": "^2.13.8"
   }
 }
