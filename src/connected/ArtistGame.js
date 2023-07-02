@@ -119,7 +119,7 @@ export const QuizBox = (props) => {
 		questionIdx,
 		updateQuestionIdx,
 		answersOnBottomOnly = false,
-		isRealQuestion = true,
+		isDemoQuestion = false,
 		customOnClickForAnswerChoices,
 		customSeconds,
 	} = props;
@@ -135,7 +135,7 @@ export const QuizBox = (props) => {
 		}, 900);
 	};
 	useEffect(() => {
-		if (isRealQuestion) {
+		if (!isDemoQuestion) {
 			const { answerIdx } = question;
 			const isAnswered = answerIdx === 0 || !!answerIdx;
 			if (!isAnswered) {
@@ -163,7 +163,7 @@ export const QuizBox = (props) => {
 			className={classes.quizBoxContainer}
 		>
 			<Grid item xs={12} container direction="column">
-				{!isRealQuestion && (
+				{isDemoQuestion && (
 					<Typography
 						alignItems="center"
 						variant="h6"
@@ -242,7 +242,7 @@ export const QuizBox = (props) => {
 											: classes.decoyAnswer
 									)}
 									onClick={() => {
-										if (isRealQuestion) {
+										if (!isDemoQuestion) {
 											if (isAnswered) return;
 											answerQuestion(gameId, questionIdx, i);
 											updateQuestionIdxDelayed(questionIdx + 1);
@@ -934,7 +934,7 @@ const GameCover = (props) => {
 					// questionIdx={questionIdx} //Shouldn't need this
 					updateQuestionIdx={() => null}
 					gameOver={false}
-					isRealQuestion={false}
+					isDemoQuestion={true}
 					customSeconds={10}
 					customOnClickForAnswerChoices={(answerIdx, answer) => {
 						setDemoAnswerIdx(answerIdx);
