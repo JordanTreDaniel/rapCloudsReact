@@ -436,7 +436,11 @@ export function* fetchSongClouds(action) {
 			const cloudsThatWontMakeIt = {};
 			for (let cloud of userMadeClouds) {
 				const hasInfo = !!cloud.info;
-				if (!hasInfo) {
+				const {createdAt } = cloud;
+				//createdAt: "2023-07-02T05:17:13.000Z"
+				const cloudAge = Date.now() - new Date(createdAt).getTime();
+				const isOlderThanOneHour = cloudAge > 3600000; // 1 hour in milliseconds
+				if (!hasInfo && isOlderThanOneHour) {
 					//TO-DO: Roll the deletions together into one call
 					console.log("Got cloud with no info. Deleting", cloud);
 					cloudsThatWontMakeIt[cloud.id] = true;
