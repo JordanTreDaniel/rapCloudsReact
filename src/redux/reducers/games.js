@@ -1,4 +1,4 @@
-import { FETCH_ARTIST_GAME, ANSWER_QUESTION } from '../actionTypes';
+import { FETCH_ARTIST_GAME, ANSWER_QUESTION, RESET_GAME } from '../actionTypes';
 
 const initialState = {
 	byId: {},
@@ -40,12 +40,26 @@ const answerQuestion = (state, action) => {
 	};
 };
 
+const resetGame = (state, action) => {
+	const { gameId } = action;
+	const game = state.byId[gameId];
+	if ((!gameId || !game)) return state;
+	let { questions } = game;
+	console.log("going to reset", {questions});
+	questions = questions.map((question) => ({ ...question, answerIdx: null }));
+	return {
+		...state,
+		byId: { ...state.byId, [gameId]: { ...game, questions } },
+	};
+};
+
 const handlers = {};
 // Note: Easily set the handlers for each of the FETCH variations, since they mostly just manage loading states anyway.
 Object.values(FETCH_ARTIST_GAME).forEach((actionType) => (handlers[actionType] = setLoading));
 // Note: Be sure to over-write the .success variations of FETCH actions, like below.
 handlers[FETCH_ARTIST_GAME.success] = addGame;
 handlers[ANSWER_QUESTION] = answerQuestion;
+handlers[RESET_GAME] = resetGame;
 
 export default (state = initialState, action) => {
 	const handle = handlers[action.type];

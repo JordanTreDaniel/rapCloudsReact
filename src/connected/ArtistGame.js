@@ -11,6 +11,7 @@ import {
 	fetchArtistGame,
 	fetchSongDetails,
 	answerQuestion,
+	resetGame
 } from "../redux/actions";
 import { connect } from "react-redux";
 import paths from "../paths";
@@ -270,7 +271,7 @@ const ConnectedQuizBox = connect(null, { answerQuestion })(QuizBox);
 
 const ArtistGame = (props) => {
 	const classes = useStyles();
-	const { fetchSongDetails, game } = props;
+	const { fetchSongDetails, game, resetGame } = props;
 	const { questions = [], artist, gameOver, percentageRight } = game || {};
 	const [questionIdx, updateQuestionIdx] = useState(0);
 	const question = questions[questionIdx] || {};
@@ -350,6 +351,13 @@ const ArtistGame = (props) => {
 							className={classes.playAgainLink}
 						>
 							New Artist
+						</Button>
+						<Button
+							variant="contained"
+							onClick={() => resetGame(game.id)}
+							className={classes.playAgainLink}
+						>
+							Play Again
 						</Button>
 					</Typography>
 				</Grid>
@@ -963,7 +971,7 @@ const mapState = (state) => ({
 	areSongLyricsLoading: selectors.areSongLyricsLoading(state),
 });
 
-const ConnectedArtistGame = connect(mapState, { fetchSongDetails })(ArtistGame);
+const ConnectedArtistGame = connect(mapState, { fetchSongDetails, resetGame })(ArtistGame);
 
 const _ArtistGameLoadingGate = (props) => {
 	const { game, fetchArtistGame, artist } = props;

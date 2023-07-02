@@ -25,6 +25,7 @@ import {
 	SIGN_OUT,
 	UPDATE_CLOUD_SETTINGS,
 	UPDATE_USER,
+	RESET_GAME
 } from "./actionTypes";
 import normalizeLyrics from "./utils/normalizeLyrics";
 
@@ -124,6 +125,10 @@ export const resetCloudDefaults = () => {
 
 export const fetchArtistGame = (artistId, level) => {
 	return { type: FETCH_ARTIST_GAME.start, artistId, level };
+};
+
+export const resetGame = (gameId) => {
+	return { type: RESET_GAME, gameId };
 };
 
 export const answerQuestion = (gameId, questionIdx, answerIdx) => {

@@ -29,6 +29,7 @@ export const UPDATE_USER = actionNamesForProcess("UPDATE_USER");
 export const FETCH_CLOUDS = actionNamesForProcess("FETCH_CLOUDS");
 export const DELETE_CLOUDS = actionNamesForProcess("DELETE_CLOUDS");
 export const FETCH_ARTIST_GAME = actionNamesForProcess("FETCH_ARTIST_GAME");
+export const RESET_GAME = "RESET_GAME";
 export const SET_SONG_LYRICS = actionNamesForProcess("SET_SONG_LYRICS");
 export const SIGN_OUT = "SIGN_OUT";
 export const COPY_CLOUD_SETTINGS = "COPY_CLOUD_SETTINGS";
