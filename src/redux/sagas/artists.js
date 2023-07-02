@@ -19,6 +19,7 @@ import { fetchSongLyrics, fetchSongEverything } from "./songs";
 import { generateCloud } from "./clouds";
 import axios from "axios";
 import normalizeLyrics from "../utils/normalizeLyrics";
+import { genAnswersFromSongs } from "../../utils";
 
 const REACT_APP_SERVER_ROOT =
   process.env.NODE_ENV === "development"
@@ -226,26 +227,6 @@ export function* fetchArtistGame(action) {
       artistId,
       level,
     });
-    const genAnswers = (song) => {
-      const { full_title, id: songId } = song;
-      let answers = [{ title: full_title, correct: true, songId: song.id }],
-        visited = [];
-      do {
-        let randomIdx = Math.floor(Math.random() * (songs.length - 1));
-        while (visited.includes(randomIdx)) {
-          randomIdx = Math.floor(Math.random() * (songs.length - 1));
-        }
-        visited.push(randomIdx);
-        const song = songs[randomIdx];
-        if (song.id === songId) continue;
-        answers.splice(Math.floor(Math.random() * 3), 0, {
-          title: song.full_title,
-          songId: song.id,
-          correct: song.full_title === full_title,
-        });
-      } while (answers.length < 4);
-      return answers;
-    };
 
     if (error) {
       yield put({ type: FETCH_ARTIST_GAME.failure });
@@ -260,7 +241,7 @@ export function* fetchArtistGame(action) {
         artistId,
         questions: songs.map((song) => ({
           songId: song.id,
-          answers: genAnswers(song),
+          answers: genAnswersFromSongs(song, songs),
         })),
       };
       yield put({ type: FETCH_ARTIST_GAME.success, game });

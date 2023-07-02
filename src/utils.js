@@ -105,3 +105,25 @@ export const defaultShadows = [
   "0px 11px 14px -7px rgba(0,0,0,0.2),0px 23px 36px 3px rgba(0,0,0,0.14),0px 9px 44px 8px rgba(0,0,0,0.12)",
   "0px 11px 15px -7px rgba(0,0,0,0.2),0px 24px 38px 3px rgba(0,0,0,0.14),0px 9px 46px 8px rgba(0,0,0,0.12)",
 ];
+
+
+export const genAnswersFromSongs = (songOfFocus, songs) => {
+  const { full_title, id: songId } = songOfFocus;
+  let answers = [{ title: full_title, correct: true, songId: songOfFocus.id }],
+    visited = [];
+  do {
+    let randomIdx = Math.floor(Math.random() * (songs.length - 1));
+    while (visited.includes(randomIdx)) {
+      randomIdx = Math.floor(Math.random() * (songs.length - 1));
+    }
+    visited.push(randomIdx);
+    const songOfFocus = songs[randomIdx];
+    if (songOfFocus.id === songId) continue;
+    answers.splice(Math.floor(Math.random() * 3), 0, {
+      title: songOfFocus.full_title,
+      songId: songOfFocus.id,
+      correct: songOfFocus.full_title === full_title,
+    });
+  } while (answers.length < 4);
+  return answers;
+};
