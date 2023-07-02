@@ -64,6 +64,6 @@
     "redux-devtools-extension": "^2.13.8"
   },
   "engines": {
-    "node": "20.x"
+    "node": "18.16.0"
   }
 }
