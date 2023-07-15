@@ -1,18 +1,20 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import { Provider } from "react-redux";
 import { store, persistor } from "./redux/store";
-import { Switch, Route } from "react-router-dom";
-import { ConnectedRouter } from "connected-react-router";
+import { Route, createBrowserRouter, RouterProvider, createRoutesFromElements, } from "react-router-dom";
+import {
+	
+  } from "react-router-dom";
 import { PersistGate } from "redux-persist/es/integration/react";
-import { history } from "./redux/store";
 import SplashScreen from "./components/SplashScreen";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Paper } from "@mui/material";
+import { createRoot } from 'react-dom/client';
+
 // import createTypography from "material-ui/styles/typography";
 // import createPalette from "material-ui/styles/palette";
 
@@ -67,13 +69,22 @@ const theme = createTheme({
 	// }),
 	type: "dark",
 });
-history.listen((event, method) => {
-	const appContainer = document.getElementById("appContainer");
-	if (appContainer) {
-		appContainer.scrollTop = 0;
-	}
-});
-ReactDOM.render(
+
+const container = document.getElementById('root');
+const root = createRoot(container); // createRoot(container!) if you use TypeScript
+const router = createBrowserRouter(
+	createRoutesFromElements(
+		<Route
+			path="*"
+			element={
+				<ErrorBoundary>
+					<App />
+				</ErrorBoundary>}
+		/>
+	)
+  );
+  
+root.render(
 	<React.StrictMode>
 		<Provider store={store}>
 			<ThemeProvider theme={theme}>
@@ -92,25 +103,13 @@ ReactDOM.render(
 						onBeforeLift={onBeforeLift}
 						persistor={persistor}
 					>
-						<ConnectedRouter history={history}>
-							<Switch>
-								<Route
-									path="/"
-									render={(routerProps) => (
-										<ErrorBoundary>
-											<App {...routerProps} />
-										</ErrorBoundary>
-									)}
-								/>
-							</Switch>
-						</ConnectedRouter>
+						<RouterProvider router={router} />
 					</PersistGate>
 				</Paper>
 			</ThemeProvider>
 		</Provider>
-	</React.StrictMode>,
-	document.getElementById("root")
-);
+	</React.StrictMode>
+	);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

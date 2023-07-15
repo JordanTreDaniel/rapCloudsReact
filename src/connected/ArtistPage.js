@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Redirect, useParams } from "react-router-dom";
+import { redirect, useParams } from "react-router-dom";
 import {
   Typography,
   AppBar,
@@ -159,7 +159,7 @@ const ArtistPage = (props) => {
     }
   }, [artistId, fetchArtist]);
 
-  if (!artistId) return <Redirect to={paths.search} />;
+  if (!artistId) redirect(paths.search);
   if (!artist && !isArtistLoading) return null;
 
   const { name, path, nextPage } = artist || {};

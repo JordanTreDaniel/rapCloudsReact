@@ -1,5 +1,5 @@
 import React, { useEffect, useState, Fragment } from "react";
-import { Redirect, useParams, Link } from "react-router-dom";
+import { redirect, useParams, Link } from "react-router-dom";
 import {
 	Typography,
 	AppBar,
@@ -184,7 +184,10 @@ const SongDetail = (props) => {
 		}
 	}, [songId, fetchSongDetails]);
 
-	if (!songId) return <Redirect to={paths.search} />;
+	if (!songId) {
+		redirect(paths.search);
+		return null;
+	}
 	if (!song) return null;
 
 	const { full_title, path, writer_artists, primary_artist, lyrics } = song;
