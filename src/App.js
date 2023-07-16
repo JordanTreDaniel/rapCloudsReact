@@ -1,159 +1,155 @@
-import React, { useEffect } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
-import './App.css';
-import SignIn from './components/SignIn';
-import SongDetail from './components/SongDetail';
-import Search from './connected/Search';
-import Navbar from './connected/Navbar';
-import ArtistPage from './connected/ArtistPage';
-import ProfilePage from './connected/ProfilePage.jsx';
-import GameMaker from './connected/GameMaker';
-import ArtistGame from './connected/ArtistGame';
-import { setUser, addCustomMask } from './redux/actions'; //TO-DO: is setUser needed?
-import { redirect, useLocation } from 'react-router-dom';
-import * as selectors from './redux/selectors';
-import { connect } from 'react-redux';
-import { Paper } from '@mui/material';
-import { makeStyles } from '@mui/styles';
-import paths from './paths.js';
-import ReactGA from 'react-ga';
-import Footer from './components/Footer';
-import LandingPage from './components/LandingPage';
-import { classNames } from './utils';
+import React, { useEffect } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import "./App.css";
+import SignIn from "./components/SignIn";
+import SongDetail from "./components/SongDetail";
+import Search from "./connected/Search";
+import Navbar from "./connected/Navbar";
+import ArtistPage from "./connected/ArtistPage";
+import ProfilePage from "./connected/ProfilePage.jsx";
+import GameMaker from "./connected/GameMaker";
+import ArtistGame from "./connected/ArtistGame";
+import { setUser, addCustomMask, setLocation } from "./redux/actions"; //TO-DO: is setUser needed?
+import { redirect, useLocation } from "react-router-dom";
+import * as selectors from "./redux/selectors";
+import { connect } from "react-redux";
+import { Paper } from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import paths from "./paths.js";
+import ReactGA from "react-ga";
+import Footer from "./components/Footer";
+import LandingPage from "./components/LandingPage";
+import { classNames } from "./utils";
 
 function initializeReactGA() {
-    console.log('Initializing analytics');
-    ReactGA.initialize('UA-166594032-2');
+  console.log("Initializing analytics");
+  ReactGA.initialize("UA-166594032-2");
 }
 const useStyles = makeStyles((theme) => {
-    return {
-        appContainer: {
-            minHeight: '100vh',
-            minWidth: '100vw',
-            backgroundColor: theme.palette.primary.dark,
-        },
-        pagesContainer: {
-            minHeight: '91vh',
-            minWidth: '100vw',
-            overflow: 'hidden',
-            backgroundColor: theme.palette.primary.dark,
-        },
-        square: {
-            borderRadius: 0,
-        },
-    };
+  return {
+    appContainer: {
+      minHeight: "100vh",
+      minWidth: "100vw",
+      backgroundColor: theme.palette.primary.dark,
+    },
+    pagesContainer: {
+      minHeight: "91vh",
+      minWidth: "100vw",
+      overflow: "hidden",
+      backgroundColor: theme.palette.primary.dark,
+    },
+    square: {
+      borderRadius: 0,
+    },
+  };
 });
 
 const App = (props) => {
-    const { user, appIsHydrated, addCustomMask, mongoUserId } = props;
-    const classes = useStyles();
-    let location = useLocation();
-    console.log({ location });
-    useEffect(() => {
-        // Google Analytics
-        // ReactGA.set({ page: location.pathname });
-        // ReactGA.pageview(location.pathname);
-        const appContainer = document.getElementById('appContainer');
-        if (appContainer) {
-            appContainer.scrollTop = 0;
-        }
-    }, [location]);
-
-    useEffect(() => {
-        initializeReactGA();
-        //Creating the uploadWidget here for performance. Fast for UX, & not creating extra widgets on re-renders.
-        window.uploadWidget = window.cloudinary
-            ? window.cloudinary.createUploadWidget(
-                  {
-                      cloudName: 'rap-clouds',
-                      uploadPreset:
-                          process.env.NODE_ENV === 'development'
-                              ? 'reactMasksDev'
-                              : 'reactMasks',
-                  },
-                  (error, result) => {
-                      if (!error && result && result.event === 'success') {
-                          // console.log('Done! Here is the image info: ', result.info);
-                          const mask = {
-                              userId: mongoUserId,
-                              cloudinaryInfo: result.info,
-                          };
-                          addCustomMask(mask);
-                      }
-                  }
-              )
-            : null;
-        window.openWidget = async () => {
-            window.uploadWidget.open();
-        };
-    }, [mongoUserId, addCustomMask]);
-    if (
-        !user &&
-        appIsHydrated &&
-        ![paths.signIn, paths.about, paths.root].includes(location.pathname)
-    ) {
-        console.log('APP rendered w/ no user after hydration, redirecting.');
-        redirect(paths.signIn);
+  const { user, appIsHydrated, addCustomMask, mongoUserId, setLocation } =
+    props;
+  const classes = useStyles();
+  let location = useLocation();
+  useEffect(() => {
+    setLocation(location);
+    // Google Analytics
+    // ReactGA.set({ page: location.pathname });
+    // ReactGA.pageview(location.pathname);
+    const appContainer = document.getElementById("appContainer");
+    if (appContainer) {
+      appContainer.scrollTop = 0;
     }
-    return appIsHydrated ? (
-        <Paper
-            className={classNames(classes.appContainer, classes.square)}
-            elevation={0}
-        >
-            <Navbar />
-            <Paper
-                className={classNames(classes.pagesContainer, classes.square)}
-                elevation={0}
-            >
-                <Routes>
-                    <Route
-                        path={paths.about}
-                        element={<LandingPage user={user} />}
-                    />
-                    <Route path={paths.signIn} element={<SignIn />} />
-                    <Route path={paths.search} element={<Search />} />
-                    <Route path={paths.songPage} element={<SongDetail />} />
-                    <Route path={paths.profile} element={<ProfilePage />} />
-                    <Route path={paths.artistPage} element={<ArtistPage />} />
-                    <Route path={paths.play} element={<GameMaker />} />
-                    <Route path={paths.game} element={<ArtistGame />} />
-                    <Route
-                        path="/"
-                        element={
-                            <Navigate to={user ? paths.search : paths.about} />
-                        }
-                    />
-                </Routes>
-            </Paper>
-            <Footer />
-            <Paper
-                id="copyright"
-                className={classes.square}
-                elevation={0}
-                style={{
-                    height: '2em',
-                    width: '100vw',
-                    overflow: 'hidden',
-                    backgroundColor: '#424242',
-                    color: '#ffffff',
-                    display: 'block',
-                    textAlign: 'center',
-                    paddingTop: '.5em',
-                    paddingBottom: '.5em',
-                }}
-            >
-                @RapClouds 2021
-            </Paper>
-        </Paper>
-    ) : (
-        <h1>Rap Clouds</h1>
-    );
+  }, [location]);
+
+  useEffect(() => {
+    initializeReactGA();
+    //Creating the uploadWidget here for performance. Fast for UX, & not creating extra widgets on re-renders.
+    window.uploadWidget = window.cloudinary
+      ? window.cloudinary.createUploadWidget(
+          {
+            cloudName: "rap-clouds",
+            uploadPreset:
+              process.env.NODE_ENV === "development"
+                ? "reactMasksDev"
+                : "reactMasks",
+          },
+          (error, result) => {
+            if (!error && result && result.event === "success") {
+              // console.log('Done! Here is the image info: ', result.info);
+              const mask = {
+                userId: mongoUserId,
+                cloudinaryInfo: result.info,
+              };
+              addCustomMask(mask);
+            }
+          }
+        )
+      : null;
+    window.openWidget = async () => {
+      window.uploadWidget.open();
+    };
+  }, [mongoUserId, addCustomMask]);
+  if (
+    !user &&
+    appIsHydrated &&
+    ![paths.signIn, paths.about, paths.root].includes(location.pathname)
+  ) {
+    console.log("APP rendered w/ no user after hydration, redirecting.");
+    redirect(paths.signIn);
+  }
+  return appIsHydrated ? (
+    <Paper
+      className={classNames(classes.appContainer, classes.square)}
+      elevation={0}
+    >
+      <Navbar />
+      <Paper
+        className={classNames(classes.pagesContainer, classes.square)}
+        elevation={0}
+      >
+        <Routes>
+          <Route path={paths.about} element={<LandingPage user={user} />} />
+          <Route path={paths.signIn} element={<SignIn />} />
+          <Route path={paths.search} element={<Search />} />
+          <Route path={paths.songPage} element={<SongDetail />} />
+          <Route path={paths.profile} element={<ProfilePage />} />
+          <Route path={paths.artistPage} element={<ArtistPage />} />
+          <Route path={paths.play} element={<GameMaker />} />
+          <Route path={paths.game} element={<ArtistGame />} />
+          <Route
+            path="/"
+            element={<Navigate to={user ? paths.search : paths.about} />}
+          />
+        </Routes>
+      </Paper>
+      <Footer />
+      <Paper
+        id="copyright"
+        className={classes.square}
+        elevation={0}
+        style={{
+          height: "2em",
+          width: "100vw",
+          overflow: "hidden",
+          backgroundColor: "#424242",
+          color: "#ffffff",
+          display: "block",
+          textAlign: "center",
+          paddingTop: ".5em",
+          paddingBottom: ".5em",
+        }}
+      >
+        @RapClouds 2021
+      </Paper>
+    </Paper>
+  ) : (
+    <h1>Rap Clouds</h1>
+  );
 };
 
 const mapState = (state) => ({
-    user: selectors.getUser(state),
-    appIsHydrated: selectors.isAppRehydrated(state),
-    mongoUserId: selectors.getUserMongoId(state),
+  user: selectors.getUser(state),
+  appIsHydrated: selectors.isAppRehydrated(state),
+  mongoUserId: selectors.getUserMongoId(state),
 });
 
-export default connect(mapState, { setUser, addCustomMask })(App);
+export default connect(mapState, { setUser, addCustomMask, setLocation })(App);
