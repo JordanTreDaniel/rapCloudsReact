@@ -39,9 +39,9 @@
   },
   "scripts": {
     "start": "node server.js",
-    "start:dev": "react-scripts --openssl-legacy-provider start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start:dev": "react-app-rewired --openssl-legacy-provider start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -60,7 +60,10 @@
     ]
   },
   "devDependencies": {
+    "babel-plugin-import": "^1.13.6",
+    "customize-cra": "^1.0.0",
     "node-pre-gyp": "0.17.0",
+    "react-app-rewired": "^2.2.1",
     "redux-devtools-extension": "^2.13.8"
   },
   "engines": {
