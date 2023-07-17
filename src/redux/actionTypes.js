@@ -1,11 +1,12 @@
 const actionNamesForProcess = (baseName) => {
 	return {
-		failure: `${baseName}_FAILURE`,
-		success: `${baseName}_SUCCESS`,
 		start: `${baseName}_START`,
+		success: `${baseName}_SUCCESS`,
+		failure: `${baseName}_FAILURE`,
 		cancellation: `${baseName}_CANCELLATION`,
 	};
 };
+export const SET_LOCATION = "SET_LOCATION";
 export const SET_USER = "SET_USER";
 export const ADD_SONGS = "ADD_SONGS";
 export const ADD_ARTISTS = "ADD_ARTISTS";

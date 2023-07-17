@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Typography,
   AppBar,
@@ -16,7 +16,6 @@ import {
   Grid,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { history } from "../redux/store";
 import { signOut } from "../redux/actions";
 import * as selectors from "../redux/selectors";
 import { connect } from "react-redux";
@@ -115,6 +114,7 @@ const Navbar = (props) => {
   const { userImgURL, userName, signOut } = props;
   const [logOutDialogOpen, toggleLogOutDialog] = useState(false);
   const [drawerOpen, toggleDrawer] = useState(false);
+  const navigate = useNavigate();
   return (
     <React.Fragment>
       <AppBar color="inherit" position="static">
@@ -337,7 +337,7 @@ const Navbar = (props) => {
               onClick={async () => {
                 signOut();
                 toggleLogOutDialog(false);
-                history.push("/signin");
+                navigate(paths.signIn)
               }}
             >
               Log Out

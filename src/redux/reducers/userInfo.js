@@ -1,5 +1,4 @@
-import { SET_USER, SET_HYDRATION_TRUE } from '../actionTypes';
-import { SIGN_OUT } from '../actionTypes';
+import { SET_USER, SET_HYDRATION_TRUE, SIGN_OUT } from '../actionTypes';
 
 const initialState = {
 	user: null,

@@ -1,16 +1,13 @@
 import { createStore, applyMiddleware } from "redux";
 import createRootReducer from "./reducers";
 import createSagaMiddleware from "redux-saga";
-import { createBrowserHistory } from "history";
 import sagas from "./sagas";
 import { composeWithDevTools } from "redux-devtools-extension";
-import { routerMiddleware } from "connected-react-router";
 import { persistStore, persistReducer, createMigrate } from "redux-persist";
 import localforage from "localforage";
 import axios from "axios";
 import { SIGN_OUT } from "./actionTypes";
 
-export const history = createBrowserHistory();
 const migrations = {
 	// This version 0 is actually an attempt to reset loading properties.
 	//TO-DO: Actually reset loading properties
@@ -48,14 +45,14 @@ const persistConfig = {
 		debug: process.env.NODE_ENV === "development",
 	}),
 };
-const rootReducer = createRootReducer(history);
+const rootReducer = createRootReducer();
 const pReducer = persistReducer(persistConfig, rootReducer);
 const sagaMiddleware = createSagaMiddleware();
 // const allMiddleWare = [sagaMiddleware];
 const store = createStore(
 	pReducer,
 	composeWithDevTools(
-		applyMiddleware(sagaMiddleware, routerMiddleware(history))
+		applyMiddleware(sagaMiddleware)
 	)
 );
 const persistor = persistStore(store);

@@ -54,7 +54,12 @@ export const getConnectedSocket = () => {
         ? "http://localhost:3333"
         : "https://rap-clouds-server.herokuapp.com";
     const socket = io(API_URL);
+    socket.on("error", (err) => {
+      console.error("Couldn't get socket connection to RapClouds server.", err);
+      reject(err);
+    });
     socket.on("connect", () => {
+      console.log("socket connected", socket.id);
       resolve(socket);
     });
   });

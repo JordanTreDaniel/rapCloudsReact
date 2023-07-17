@@ -236,7 +236,7 @@ const LandingPage = (props) => {
         >
           <Button
             variant="contained"
-            item
+            item="true"
             component={Link}
             to={user ? paths.play : paths.signIn}
             color="primary"
@@ -248,7 +248,7 @@ const LandingPage = (props) => {
           </Button>
           <Button
             variant="contained"
-            item
+            item="true"
             component={Link}
             to={user ? paths.search : paths.signIn}
             color="secondary"
